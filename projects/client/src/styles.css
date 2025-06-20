@@ -1,0 +1,35 @@
+/* You can add global styles to this file, and also import other style files */
+/* You can add global styles to this file, and also import other style files */
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
+
+
+@font-face {
+  font-family: 'komix';
+  src: url('/assets/fonts/komix-eighties.ttf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Dax';
+  src: url('/assets/fonts/dax-regular.ttf') format('opentype');
+}
+
+.heading-custom{
+  font-family: "komix", sans-serif !important;
+}
+
+.for-dax-font {
+  font-family: "Dax", sans-serif !important;
+}
+
+.form-control-flush {
+  box-shadow: none !important;
+  background-color: transparent !important;
+  border-width: 0!important;
+  padding: 0 !important;
+}
+
+.form-control-flush:focus {
+  box-shadow: none!important;
+  background-color: transparent!important;
+  border-width: 0 !important;
+}

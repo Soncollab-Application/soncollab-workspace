@@ -1,0 +1,18 @@
+@font-face {
+  font-family: 'komix';
+  src: url('/assets/fonts/deezer-regular.ttf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Dax';
+  src: url('/assets/fonts/dax-regular.ttf') format('opentype');
+}
+
+
+.heading-custom {
+  font-family: "komix", sans-serif !important;
+}
+
+.for-dax-font {
+  font-family: "Dax", sans-serif !important;
+}
