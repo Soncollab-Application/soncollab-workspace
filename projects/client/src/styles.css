@@ -1,6 +1,10 @@
-/* You can add global styles to this file, and also import other style files */
-/* You can add global styles to this file, and also import other style files */
+
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
+
+* {
+  box-sizing: border-box;
+
+}
 
 
 @font-face {
@@ -11,6 +15,18 @@
 @font-face {
   font-family: 'Dax';
   src: url('/assets/fonts/dax-regular.ttf') format('opentype');
+}
+
+
+.joti-one-regular {
+  font-family: "Joti One", sans-serif;
+  font-style: normal;
+}
+
+.merriweather-300{
+  font-family: "Merriweather", serif;
+  font-style: normal;
+  font-weight: 300;
 }
 
 .heading-custom{
@@ -32,4 +48,46 @@
   box-shadow: none!important;
   background-color: transparent!important;
   border-width: 0 !important;
+}
+
+.green-low-gradient-for-hero {
+  background: linear-gradient(to right, #000000, #0E2828, #000000);
+}
+
+.green-low-gradient-for-aside {
+  background: linear-gradient(to bottom, #000000, #0E2828, #000000);
+}
+
+@media (min-width: 768px) {
+  .green-low-gradient-for-aside {
+    background: none !important;
+  }
+}
+
+
+.bg-semi-dark {
+  background-color: #02090A !important;
+}
+
+.bg-semi-green {
+  background-color: #041E18 !important;
+}
+
+.bg-semi-green-dark {
+  background-color: #0E2828 !important;
+}
+
+
+.dropdown-item-custom:hover {
+  background: #292626 !important;
+  color: white !important;
+}
+
+.text-cyan {
+  color: #00FFFF !important;
+}
+
+
+.bg-semi-green-gradient {
+  background: linear-gradient(to bottom, #ffffff, #0E2828, #000000);
 }

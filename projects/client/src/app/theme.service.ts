@@ -8,42 +8,35 @@ export class ThemeService {
     this.setupThemeListener();
   }
 
-  // 🎨 Thème : 'light' | 'dark' | 'auto'
+  // 🎨 Forcer uniquement le thème dark
   getStoredTheme(): string {
-    const theme = localStorage.getItem('theme');
-    if (theme === 'light' || theme === 'dark' || theme === 'auto') {
-      return theme;
-    }
-    // Sauvegarde par défaut si aucun thème trouvé
-    this.setStoredTheme('light');
-    return 'light';
+    return 'dark'; // Toujours retourner 'dark'
   }
 
   setStoredTheme(theme: string): void {
-    localStorage.setItem('theme', theme);
+    // Ne rien stocker, toujours forcer dark
+    localStorage.setItem('theme', 'dark');
   }
 
   getPreferredTheme(): string {
-    return this.getStoredTheme();
+    return 'dark'; // Toujours retourner 'dark'
   }
 
   setTheme(theme: string): void {
-    if (theme === 'auto') {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      document.documentElement.setAttribute('data-bs-theme', prefersDark ? 'dark' : 'light');
-    } else {
-      document.documentElement.setAttribute('data-bs-theme', theme);
-    }
-
-    this.showActiveTheme(theme);
+    // Ignorer le paramètre theme et toujours appliquer dark
+    document.documentElement.setAttribute('data-bs-theme', 'dark');
+    this.showActiveTheme('dark');
   }
 
   showActiveTheme(theme: string, focus: boolean = false): void {
+    // Forcer theme à 'dark'
+    const forcedTheme = 'dark';
+
     const themeSwitcher = document.querySelector('.theme-switcher');
     if (!themeSwitcher) return;
 
     const activeThemeIcon = document.querySelector('.theme-icon-active i');
-    const btnToActive = document.querySelector(`[data-bs-theme-value="${theme}"]`);
+    const btnToActive = document.querySelector(`[data-bs-theme-value="${forcedTheme}"]`);
 
     if (btnToActive && activeThemeIcon) {
       const iconOfActiveBtn = btnToActive.querySelector('.theme-icon i')?.className;
@@ -59,7 +52,7 @@ export class ThemeService {
         activeThemeIcon.className = iconOfActiveBtn;
       }
 
-      themeSwitcher.setAttribute('aria-label', `Toggle theme (${theme})`);
+      themeSwitcher.setAttribute('aria-label', `Toggle theme (${forcedTheme})`);
       if (focus) {
         (themeSwitcher as HTMLElement).focus();
       }
@@ -67,30 +60,28 @@ export class ThemeService {
   }
 
   setupThemeListener(): void {
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-      const theme = this.getStoredTheme();
-      if (theme !== 'light' && theme !== 'dark') {
-        this.setTheme(this.getPreferredTheme());
-      }
-    });
+    // Supprimer l'écoute des préférences système
+    // window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    //   // Plus besoin d'écouter les changements
+    // });
 
     window.addEventListener('DOMContentLoaded', () => {
-      const theme = this.getPreferredTheme();
-      this.setStoredTheme(theme); // 🟢 Ajout essentiel : stocker le thème au premier chargement
-      this.setTheme(theme);
+      // Toujours forcer dark
+      this.setStoredTheme('dark');
+      this.setTheme('dark');
 
       document.querySelectorAll('[data-bs-theme-value]').forEach((toggle) => {
         toggle.addEventListener('click', () => {
-          const selectedTheme = toggle.getAttribute('data-bs-theme-value')!;
-          this.setStoredTheme(selectedTheme);
-          this.setTheme(selectedTheme);
+          // Ignorer le clic et toujours appliquer dark
+          this.setStoredTheme('dark');
+          this.setTheme('dark');
         });
       });
     });
   }
 
-  // ✅ Appliquer toutes les préférences (si besoin)
+  // ✅ Appliquer uniquement le thème dark
   applyPreferences(): void {
-    this.setTheme(this.getPreferredTheme());
+    this.setTheme('dark');
   }
 }
