@@ -1,4 +1,4 @@
-<footer class="footer bg-semi-dark border-top">
+<footer class="footer bg-transparent border-top">
   <div class="container pb-md-2">
 
     <div class="accordion row pt-4 pt-sm-5 mt-3 mt-sm-0" id="footerLinks">
@@ -6,6 +6,7 @@
         <a class="d-inline-flex align-items-center text-dark-emphasis text-decoration-none mb-3" href="index.html">
           <img src="/assets/images/logo/soncollablightlogo.svg"  width="160"  alt="Soncollab Logo" class="d-block">
         </a>
+
         <div class="mb-3">
           <select class="form-select form-select-lg w-auto d-inline-block mt-2" aria-label="Select language">
             <option value="fr" selected>Français</option>
@@ -43,53 +44,17 @@
 
         </div>
       </div>
-      <!-- Column with links that are turned into accordion on screens < 500px wide (sm breakpoint) -->
-      <div class="col-sm-6 col-md-6 col-lg-4 mb-2">
+      <div class="col-sm-12 col-md-6 col-lg-3 mb-md-4 mb-sm-2">
         <div class="accordion-item border-0">
-          <h6 class="accordion-header" id="resourcesLinksHeading">
-            <span class="h5 d-none d-sm-block">
-              Ressources
-            </span>
-            <button type="button" class="accordion-button collapsed py-3 d-sm-none" data-bs-toggle="collapse" data-bs-target="#resourcesLinks" aria-expanded="false" aria-controls="resourcesLinks">
-              Ressources
-            </button>
-          </h6>
-          <div class="accordion-collapse collapse d-sm-block" id="resourcesLinks" aria-labelledby="resourcesLinksHeading" data-bs-parent="#footerLinks">
-            <div class="row row-cols-2">
-              <div class="col">
-                <ul class="nav flex-column gap-2 pt-sm-1 pt-lg-2 pb-3 pb-sm-0 mt-n1 mb-1 mb-sm-0">
-
-                  <li class="pt-1">
-                    <a class="nav-link hover-effect-underline d-inline text-body fw-normal p-0" href="#!">
-                      Api Documentation
-                    </a>
-                  </li>
-
-                  <li class="pt-1">
-                    <a class="nav-link hover-effect-underline d-inline text-body fw-normal p-0" href="#!">
-                      Help Center
-                    </a>
-                  </li>
-
-                </ul>
-              </div>
-            </div>
-          </div>
-          <hr class="d-sm-none my-0">
-        </div>
-      </div>
-
-      <div class="col-sm-6 col-md-6 col-lg-2 mb-2">
-        <div class="accordion-item border-0">
-          <h6 class="accordion-header" id="companyLinksHeading">
-            <span class="h5 d-none d-sm-block">
+          <h6 class="accordion-header mb-2" id="companyLinksHeading">
+            <span class="h5 d-none d-sm-block for-dax-font">
               Entreprise
             </span>
-            <button type="button" class="accordion-button collapsed py-3 d-sm-none" data-bs-toggle="collapse" data-bs-target="#companyLinks" aria-expanded="false" aria-controls="companyLinks">
+            <button type="button" class="accordion-button collapsed py-3 d-sm-none for-dax-font" data-bs-toggle="collapse" data-bs-target="#companyLinks" aria-expanded="false" aria-controls="companyLinks">
               Entreprise
             </button>
           </h6>
-          <div class="accordion-collapse collapse d-sm-block" id="companyLinks" aria-labelledby="companyLinksHeading" data-bs-parent="#footerLinks">
+          <div class="accordion-collapse collapse d-sm-block mb-sm-3" id="companyLinks" aria-labelledby="companyLinksHeading" data-bs-parent="#footerLinks">
             <ul class="nav flex-column gap-2 pt-sm-1 pt-lg-2 pb-3 pb-sm-0 mt-n1 mb-1 mb-sm-0">
               <li class="pt-1">
                 <a class="nav-link hover-effect-underline d-inline text-body fw-normal p-0" href="#!">
@@ -120,6 +85,40 @@
                 <a class="nav-link hover-effect-underline d-inline text-body fw-normal p-0" href="#!">Politique antifraude</a>
               </li>
             </ul>
+          </div>
+          <hr class="d-sm-none my-0">
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-6 col-lg-4 mb-2">
+        <div class="accordion-item border-0">
+          <h6 class="accordion-header" id="resourcesLinksHeading">
+            <span class="h5 d-none for-dax-font d-sm-block">
+              Ressources
+            </span>
+            <button type="button" class="accordion-button collapsed for-dax-font py-3 d-sm-none" data-bs-toggle="collapse" data-bs-target="#resourcesLinks" aria-expanded="false" aria-controls="resourcesLinks">
+              Ressources
+            </button>
+          </h6>
+          <div class="accordion-collapse collapse d-sm-block" id="resourcesLinks" aria-labelledby="resourcesLinksHeading" data-bs-parent="#footerLinks">
+            <div class="row row-cols-2">
+              <div class="col">
+                <ul class="nav flex-column gap-2 pt-sm-1 pt-lg-2 pb-3 pb-sm-0 mt-n1 mb-1 mb-sm-0">
+
+                  <li class="pt-1">
+                    <a class="nav-link hover-effect-underline d-inline text-body fw-normal p-0" href="#!">
+                      Api Documentation
+                    </a>
+                  </li>
+
+                  <li class="pt-1">
+                    <a class="nav-link hover-effect-underline d-inline text-body fw-normal p-0" href="#!">
+                      Help Center
+                    </a>
+                  </li>
+
+                </ul>
+              </div>
+            </div>
           </div>
           <hr class="d-sm-none my-0">
         </div>
