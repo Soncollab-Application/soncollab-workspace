@@ -1,9 +1,8 @@
-import {AfterViewInit, Component, ElementRef, HostListener, ViewChild, OnDestroy} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
 
 @Component({
   selector: 'app-home',
-  imports: [
-  ],
+  imports: [],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
@@ -38,16 +37,15 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       document.removeEventListener('scroll', markUserInteraction);
     };
 
-    document.addEventListener('click', markUserInteraction, { once: true, passive: true });
-    document.addEventListener('touchstart', markUserInteraction, { once: true, passive: true });
-    document.addEventListener('scroll', markUserInteraction, { once: true, passive: true });
+    document.addEventListener('click', markUserInteraction, {once: true, passive: true});
+    document.addEventListener('touchstart', markUserInteraction, {once: true, passive: true});
+    document.addEventListener('scroll', markUserInteraction, {once: true, passive: true});
   }
 
   private setupLazyVideoLoading(): void {
     this.intersectionObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting && !this.videoLoaded) {
-          // Retarder le chargement vidéo sur mobile
           if (this.isMobileDevice()) {
             setTimeout(() => this.loadVideo(), 1000);
           } else {
@@ -56,7 +54,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
         }
       });
     }, {
-      rootMargin: '100px' // Augmenté pour mobile
+      rootMargin: '100px',
     });
 
     const videoElement = this.videoRef?.nativeElement;
@@ -77,7 +75,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
     if (!videoElement) return;
 
-    // Sur mobile, attendre que l'utilisateur interagisse avant de charger
     if (this.isMobileDevice() && !this.userInteracted) {
       this.setupVideoPlayOnInteraction(videoElement);
       return;
@@ -92,22 +89,19 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     };
 
     if ('requestIdleCallback' in window) {
-      requestIdleCallback(callback, { timeout: 3000 });
+      requestIdleCallback(callback, {timeout: 3000});
     } else {
-      setTimeout(callback, 500); // Augmenté pour mobile
+      setTimeout(callback, 500);
     }
   }
 
   private initializeVideo(videoElement: HTMLVideoElement): void {
-    // Configuration optimisée pour mobile
     videoElement.muted = true;
     videoElement.loop = true;
     videoElement.playsInline = true;
     videoElement.preload = this.isMobileDevice() ? 'none' : 'metadata';
-
-    // Réduire la qualité sur mobile si possible
     if (this.isMobileDevice()) {
-      videoElement.style.transform = 'scale(1.1)'; // Léger zoom pour masquer la compression
+      videoElement.style.transform = 'scale(1.1)';
     }
 
     videoElement.setAttribute('playsinline', '');
@@ -141,7 +135,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
           })
           .catch(error => {
             console.warn('Lecture vidéo différée:', error.message);
-            // Fallback : masquer la vidéo et afficher l'image de fond
             videoElement.style.display = 'none';
           });
       }
@@ -151,7 +144,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       if (videoElement.readyState >= 2) {
         playVideo();
       } else {
-        videoElement.addEventListener('loadeddata', playVideo, { once: true });
+        videoElement.addEventListener('loadeddata', playVideo, {once: true});
       }
     });
   }
@@ -164,9 +157,9 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       document.removeEventListener('scroll', playOnInteraction);
     };
 
-    document.addEventListener('click', playOnInteraction, { once: true, passive: true });
-    document.addEventListener('touchstart', playOnInteraction, { once: true, passive: true });
-    document.addEventListener('scroll', playOnInteraction, { once: true, passive: true });
+    document.addEventListener('click', playOnInteraction, {once: true, passive: true});
+    document.addEventListener('touchstart', playOnInteraction, {once: true, passive: true});
+    document.addEventListener('scroll', playOnInteraction, {once: true, passive: true});
   }
 
 }

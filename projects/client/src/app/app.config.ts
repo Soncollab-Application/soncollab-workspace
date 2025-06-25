@@ -1,8 +1,8 @@
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {ApplicationConfig, importProvidersFrom, provideZoneChangeDetection} from '@angular/core';
-import { provideRouter } from '@angular/router';
+import {provideRouter} from '@angular/router';
 
-import { routes } from './app.routes';
+import {routes} from './app.routes';
 import {HttpClient, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {IMAGE_CONFIG} from '@angular/common';
 import {provideAnimations, provideNoopAnimations} from '@angular/platform-browser/animations';
@@ -17,7 +17,7 @@ export function HttpLoaderFactory(http: HttpClient) {
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideZoneChangeDetection({eventCoalescing: true}),
     provideRouter(routes),
     provideHttpClient(
       withInterceptorsFromDi(),

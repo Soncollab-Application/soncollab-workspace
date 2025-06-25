@@ -1,5 +1,5 @@
-import {Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {NavigationEnd, Router, RouterLink} from '@angular/router';
+import {Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {NavigationEnd, Router, RouterLink, RouterLinkActive} from '@angular/router';
 import {NgClass} from '@angular/common';
 import {filter} from 'rxjs';
 
@@ -8,6 +8,7 @@ import {filter} from 'rxjs';
   imports: [
     RouterLink,
     NgClass,
+    RouterLinkActive,
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
@@ -22,7 +23,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private scrollThrottleTimer: number | null = null;
   private ticking: boolean = false;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) {
+  }
 
   // Scroll optimisé avec requestAnimationFrame
   @HostListener('window:scroll', ['$event'])
@@ -34,11 +36,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
       });
       this.ticking = true;
     }
-  }
-
-  private updateScrollState(): void {
-    const scrollY = window.scrollY || window.pageYOffset;
-    this.isScrolled = scrollY > 50;
   }
 
   ngOnInit(): void {
@@ -56,6 +53,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
     if (this.scrollThrottleTimer) {
       cancelAnimationFrame(this.scrollThrottleTimer);
     }
+  }
+
+  private updateScrollState(): void {
+    const scrollY = window.scrollY || window.pageYOffset;
+    this.isScrolled = scrollY > 50;
   }
 
   private checkCurrentRoute(): void {

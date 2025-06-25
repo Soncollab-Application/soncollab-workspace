@@ -119,9 +119,15 @@
 }
 
 @keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 /* Responsive adjustments - Optimisations spéciales Android */
@@ -227,9 +233,15 @@
 
 /* Flottement doux du shape.svg - désactivé sur mobile */
 @keyframes float-shape {
-  0%   { transform: translate(-50%, -50%) scale(1); }
-  50%  { transform: translate(-50%, -52%) scale(1.02); }
-  100% { transform: translate(-50%, -50%) scale(1); }
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -52%) scale(1.02);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
 }
 
 /* Pour que le texte reste au-dessus */
@@ -264,9 +276,8 @@
   position: absolute;
   inset: 0;
   z-index: -1;
-  background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.18) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.21) 1px, transparent 1px);
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.18) 1px, transparent 1px),
+  linear-gradient(to bottom, rgba(255, 255, 255, 0.21) 1px, transparent 1px);
   background-size: 120px 120px;
   background-position: center top;
   opacity: 0.5;

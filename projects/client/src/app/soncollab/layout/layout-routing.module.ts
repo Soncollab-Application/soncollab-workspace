@@ -3,7 +3,7 @@ import {LayoutComponent} from "./layout.component";
 import {NgModule} from "@angular/core";
 import {Routing} from '../../pages/routing';
 
-const routes : Routes = [
+const routes: Routes = [
   {
     path: '',
     component: LayoutComponent,
@@ -18,4 +18,5 @@ const routes : Routes = [
   exports: [RouterModule]
 })
 
-export class LayoutRoutingModule { }
+export class LayoutRoutingModule {
+}

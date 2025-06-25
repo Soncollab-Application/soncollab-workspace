@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import {RouterOutlet} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {ThemeService} from './theme.service';
 
@@ -9,7 +9,7 @@ import {ThemeService} from './theme.service';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent  implements OnInit{
+export class AppComponent implements OnInit {
 
   constructor(
     private translate: TranslateService,
