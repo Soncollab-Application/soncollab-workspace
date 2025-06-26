@@ -44,14 +44,17 @@
             </a>
             <ul class="dropdown-menu border-0 rounded-4 p-3 shadow bg-semi-dark">
               <li class="hover-effect-opacity px-2 mx-n2">
-                <a class="dropdown-item dropdown-item-custom d-block mb-0" href="/studio">
+                <a class="dropdown-item dropdown-item-custom d-block mb-0"
+                   [routerLinkActiveOptions]="{ exact: true }" [routerLinkActive]="['active']"
+                   [routerLink]="['/products/studio']">
                   <span class="fw-lighter text-white">
                     Soncollab Studio
                   </span>
                 </a>
               </li>
               <li class="hover-effect-opacity px-2 mx-n2">
-                <a class="dropdown-item dropdown-item-custom d-block mb-0" href="/connect">
+                <a class="dropdown-item dropdown-item-custom d-block mb-0" [routerLinkActiveOptions]="{ exact: true }" [routerLinkActive]="['active']"
+                   [routerLink]="['/products/connect']">
                   <span class="fw-lighter text-white">Soncollab Connect</span>
                 </a>
               </li>
@@ -60,7 +63,8 @@
 
 
           <li class="nav-item py-lg-2 me-lg-n2 me-xl-0">
-            <a class="nav-link" href="">
+            <a class="nav-link" [routerLinkActiveOptions]="{ exact: true }" [routerLinkActive]="['active']"
+               [routerLink]="['/pricing']">
               Pricing
             </a>
           </li>
