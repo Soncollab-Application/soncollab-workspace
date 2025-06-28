@@ -1,7 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
-import {ThemeService} from './theme.service';
+import {ThemeService} from './services/theme.service';
+import {AosService} from './services/aos.service';
 
 @Component({
   selector: 'app-root',
@@ -9,11 +10,12 @@ import {ThemeService} from './theme.service';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewInit {
 
   constructor(
     private translate: TranslateService,
-    private themeService: ThemeService) {
+    private themeService: ThemeService,
+    private aosService: AosService){
     this.initTranslate();
 
     const storedTheme = this.themeService.getStoredTheme();
@@ -22,9 +24,12 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    this.aosService.initializeAOS();
   }
 
+  ngAfterViewInit(): void {
+    this.aosService.initializeAOS();
+  }
 
   private initTranslate() {
     let lang = localStorage.getItem('lang');

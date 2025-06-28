@@ -1,6 +1,5 @@
 import {Routes} from '@angular/router';
 import {HomeComponent} from './components/home/home.component';
-import {NotFoundComponent} from '../modules/errors/not-found/not-found.component';
 import {FeaturesComponent} from './components/features/features/features.component';
 import {CatalogComponent} from './components/features/catalog/catalog.component';
 import {RightsComponent} from './components/features/rights/rights.component';
@@ -17,6 +16,7 @@ import {ContactComponent} from './components/company/contact/contact.component';
 import {PrivacyPolicyComponent} from './components/company/privacy-policy/privacy-policy.component';
 import {UseConditionComponent} from './components/company/use-condition/use-condition.component';
 import {PricingComponent} from './components/pricing/pricing.component';
+import {NotFoundComponent} from './components/errors/not-found/not-found.component';
 
 const Routing: Routes = [
   {path: '', component: HomeComponent},
