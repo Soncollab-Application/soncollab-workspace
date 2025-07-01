@@ -1,6 +1,5 @@
 import {Routes} from '@angular/router';
 import {HomeComponent} from './components/home/home.component';
-import {FeaturesComponent} from './components/features/features/features.component';
 import {CatalogComponent} from './components/features/catalog/catalog.component';
 import {RightsComponent} from './components/features/rights/rights.component';
 import {DistributionDeliveryComponent} from './components/features/distribution-delivery/distribution-delivery.component';
@@ -21,7 +20,6 @@ import {NotFoundComponent} from './components/errors/not-found/not-found.compone
 const Routing: Routes = [
   {path: '', component: HomeComponent},
   // Features
-  {path: 'features', component: FeaturesComponent},
   {path: 'features/catalog', component: CatalogComponent},
   {path: 'features/rights', component: RightsComponent},
   {path: 'features/distribution-delivery', component: DistributionDeliveryComponent},

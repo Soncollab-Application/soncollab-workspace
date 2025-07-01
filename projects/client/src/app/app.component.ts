@@ -1,8 +1,8 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
-import {ThemeService} from './services/theme.service';
-import {AosService} from './services/aos.service';
+import {ThemeService} from './core/services/theme.service';
+import {AosService} from './core/services/aos.service';
 
 @Component({
   selector: 'app-root',

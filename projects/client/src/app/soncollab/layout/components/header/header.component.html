@@ -29,12 +29,119 @@
       </div>
       <div class="offcanvas-body pt-2 pb-4 py-lg-0 mx-lg-auto">
         <ul class="navbar-nav position-relative">
-          <li class="nav-item py-lg-2 me-lg-n1 me-xl-0">
-            <a [routerLinkActiveOptions]="{ exact: true }" [routerLinkActive]="['active']"
-               [routerLink]="['/features']"
-               class="nav-link">
+
+
+          <li class="nav-item dropdown position-static py-lg-2 me-lg-n1 me-xl-0">
+            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" data-bs-trigger="hover" aria-expanded="false">
               Caractéristiques
             </a>
+
+            <div class="dropdown-menu bg-semi-dark-low border-0 rounded-4 p-4 shadow-lg">
+              <div class="row g-4">
+                <!-- Colonne 1 -->
+                <div class="col-12 col-lg-6 mb-0">
+                  <ul class="nav flex-column gap-2">
+                    <li class="feature-item ">
+                      <a class="nav-link hover-effect-slide d-flex align-items-center gap-3 fw-normal p-2 transition-all"
+                         [routerLinkActiveOptions]="{ exact: true }" [routerLinkActive]="['active-feature']"
+                         [routerLink]="['/features/catalog']">
+                        <div class="feature-icon-wrapper d-flex align-items-center justify-content-center rounded-2">
+                          <i class="fi-mic fs-5"></i>
+                        </div>
+                        <div>
+                          <div class="fw-medium">Catalogue</div>
+                          <small class="text-muted d-none d-lg-block">Gérez votre bibliothèque musicale</small>
+                        </div>
+                      </a>
+                    </li>
+
+                    <li class="feature-item">
+                      <a class="nav-link hover-effect-slide d-flex align-items-center gap-3 fw-normal p-2 transition-all"
+                         [routerLink]="['/features/rights']" [routerLinkActive]="['active-feature']">
+                        <div class="feature-icon-wrapper d-flex align-items-center justify-content-center rounded-2">
+                          <i class="fi-lock fs-5"></i>
+                        </div>
+                        <div>
+                          <div class="fw-medium">Rights</div>
+                          <small class="text-muted d-none d-lg-block">Contrôlez vos droits d’auteur</small>
+                        </div>
+                      </a>
+                    </li>
+
+                    <li class="feature-item">
+                      <a class="nav-link hover-effect-slide d-flex align-items-center gap-3 fw-normal p-2 transition-all"
+                         [routerLink]="['/features/distribution-delivery']" [routerLinkActive]="['active-feature']">
+                        <div class="feature-icon-wrapper d-flex align-items-center justify-content-center rounded-2">
+                          <i class="fi-upload fs-5"></i>
+                        </div>
+                        <div>
+                          <div class="fw-medium">Distribution & Delivery</div>
+                          <small class="text-muted d-none d-lg-block">Diffusez sur toutes les plateformes</small>
+                        </div>
+                      </a>
+                    </li>
+
+                    <li class="feature-item">
+                      <a class="nav-link hover-effect-slide d-flex align-items-center gap-3 fw-normal p-2 transition-all"
+                         [routerLink]="['/features/income-tracking']" [routerLinkActive]="['active-feature']">
+                        <div class="feature-icon-wrapper d-flex align-items-center justify-content-center rounded-2">
+                          <i class="fi-bar-chart fs-5"></i>
+                        </div>
+                        <div>
+                          <div class="fw-medium">Income Tracking</div>
+                          <small class="text-muted d-none d-lg-block">Suivez vos revenus en temps réel</small>
+                        </div>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+
+                <!-- Colonne 2 -->
+                <div class="col-12 col-lg-6 mb-0 pt-0">
+                  <ul class="nav flex-column gap-2">
+                    <li class="feature-item">
+                      <a class="nav-link hover-effect-slide d-flex align-items-center gap-3 fw-normal p-2 transition-all"
+                         [routerLink]="['/features/analytics']" [routerLinkActive]="['active-feature']">
+                        <div class="feature-icon-wrapper d-flex align-items-center justify-content-center rounded-2">
+                          <i class="fi-pie-chart fs-5"></i>
+                        </div>
+                        <div>
+                          <div class="fw-medium">Analytics</div>
+                          <small class="text-muted d-none d-lg-block">Analyses détaillées de performance</small>
+                        </div>
+                      </a>
+                    </li>
+
+                    <li class="feature-item">
+                      <a class="nav-link hover-effect-slide d-flex align-items-center gap-3 fw-normal p-2 transition-all"
+                         [routerLink]="['/features/payments']" [routerLinkActive]="['active-feature']">
+                        <div class="feature-icon-wrapper d-flex align-items-center justify-content-center rounded-2">
+                          <i class="fi-credit-card fs-5"></i>
+                        </div>
+                        <div>
+                          <div class="fw-medium">Global Payments</div>
+                          <small class="text-muted d-none d-lg-block">Paiements internationaux sécurisés</small>
+                        </div>
+                      </a>
+                    </li>
+
+                    <li class="feature-item">
+                      <a class="nav-link hover-effect-slide d-flex align-items-center gap-3 fw-normal p-2 transition-all"
+                         [routerLink]="['/features/royalties']" [routerLinkActive]="['active-feature']">
+                        <div class="feature-icon-wrapper d-flex align-items-center justify-content-center rounded-2">
+                          <i class="fi-money-check fs-5"></i>
+                        </div>
+                        <div>
+                          <div class="fw-medium">Royalties</div>
+                          <small class="text-muted d-none d-lg-block">Gestion automatisée des royalties</small>
+                        </div>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
           </li>
 
           <li class="nav-item dropdown py-lg-2 me-lg-n1 me-xl-0">
@@ -42,18 +149,19 @@
                href="#" role="button">
               Produits
             </a>
-            <ul class="dropdown-menu border-0 rounded-4 p-3 shadow bg-semi-dark">
-              <li class="hover-effect-opacity px-2 mx-n2">
-                <a class="dropdown-item dropdown-item-custom d-block mb-0"
-                   [routerLinkActiveOptions]="{ exact: true }" [routerLinkActive]="['active']"
+            <ul class="dropdown-menu border-0 rounded-4 p-3 shadow bg-semi-dark-low">
+              <li class="feature-item mb-2">
+                <a class="nav-link hover-effect-slide d-flex align-items-center gap-3 fw-normal p-2 transition-all"
+                   [routerLinkActiveOptions]="{ exact: true }" [routerLinkActive]="['active-feature']"
                    [routerLink]="['/products/studio']">
                   <span class="fw-lighter text-white">
                     Soncollab Studio
                   </span>
                 </a>
               </li>
-              <li class="hover-effect-opacity px-2 mx-n2">
-                <a class="dropdown-item dropdown-item-custom d-block mb-0" [routerLinkActiveOptions]="{ exact: true }" [routerLinkActive]="['active']"
+              <li class="feature-item">
+                <a class="nav-link hover-effect-slide d-flex align-items-center gap-3 fw-normal p-2 transition-all"
+                   [routerLinkActiveOptions]="{ exact: true }" [routerLinkActive]="['active-feature']"
                    [routerLink]="['/products/connect']">
                   <span class="fw-lighter text-white">Soncollab Connect</span>
                 </a>
@@ -74,16 +182,18 @@
                href="#" role="button">
               Resources
             </a>
-            <ul class="dropdown-menu border-0 rounded-4 p-3 shadow bg-semi-dark">
-              <li class="hover-effect-opacity px-2 mx-n2">
-                <a class="dropdown-item dropdown-item-custom d-block mb-0" href="">
+            <ul class="dropdown-menu border-0 rounded-4 p-3 shadow bg-semi-dark-low">
+              <li class="feature-item mb-2">
+                <a class="nav-link hover-effect-slide d-flex align-items-center gap-3 fw-normal p-2 transition-all"
+                   [routerLink]="['/']">
                   <span class="fw-lighter text-white">
                     Centre d'aide
                   </span>
                 </a>
               </li>
-              <li class="hover-effect-opacity px-2 mx-n2">
-                <a class="dropdown-item dropdown-item-custom d-block mb-0" href="/connect">
+              <li class="feature-item">
+                <a class="nav-link hover-effect-slide d-flex align-items-center gap-3 fw-normal p-2 transition-all"
+                   [routerLink]="['/']">
                   <span class="fw-lighter text-white">
                     Documentation API
                   </span>
