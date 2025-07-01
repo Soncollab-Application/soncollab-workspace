@@ -1,7 +1,7 @@
 import {Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {NavigationEnd, Router, RouterLink, RouterLinkActive} from '@angular/router';
 import {NgClass} from '@angular/common';
-import {filter} from 'rxjs';
+import {filter, Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -14,21 +14,21 @@ import {filter} from 'rxjs';
   styleUrl: './header.component.css'
 })
 export class HeaderComponent implements OnInit, OnDestroy {
-
   showVideoBackground: boolean = false;
   isScrolled: boolean = false;
 
   @ViewChild('backgroundVideo') videoRef!: ElementRef<HTMLVideoElement>;
 
-  private scrollThrottleTimer: number | null = null;
+  private routerSubscription?: Subscription;
   private ticking: boolean = false;
 
   constructor(private router: Router) {
   }
 
-  // Scroll optimisé avec requestAnimationFrame
+  // Scroll optimisé avec requestAnimationFrame et passive listener
   @HostListener('window:scroll', ['$event'])
-  onWindowScroll(): void {
+  onWindowScroll(event: Event): void {
+    // Ne pas empêcher le comportement par défaut
     if (!this.ticking) {
       requestAnimationFrame(() => {
         this.updateScrollState();
@@ -41,7 +41,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.checkCurrentRoute();
 
-    this.router.events
+    // Utiliser une subscription pour pouvoir la désabonner proprement
+    this.routerSubscription = this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         console.log('NavigationEnd:', event);
@@ -50,13 +51,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.scrollThrottleTimer) {
-      cancelAnimationFrame(this.scrollThrottleTimer);
+    // Nettoyer les subscriptions
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
     }
   }
 
   private updateScrollState(): void {
-    const scrollY = window.scrollY || window.pageYOffset;
+    // Utiliser une méthode plus robuste pour détecter le scroll
+    const scrollY = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
     this.isScrolled = scrollY > 50;
   }
 
@@ -67,5 +70,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private isHomePage(url: string): boolean {
     const cleanUrl = url.split('#')[0].split('?')[0];
     return cleanUrl === '/' || cleanUrl === '';
+  }
+
+  isSectionActive(baseRoute: string): boolean {
+    return this.router.url.startsWith(baseRoute);
   }
 }

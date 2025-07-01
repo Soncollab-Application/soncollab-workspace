@@ -32,7 +32,7 @@
 
 
           <li class="nav-item dropdown position-static py-lg-2 me-lg-n1 me-xl-0">
-            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" data-bs-trigger="hover" aria-expanded="false">
+            <a class="nav-link dropdown-toggle d-flex align-items-center" [class.active]="isSectionActive('/features')"  href="#" role="button" data-bs-toggle="dropdown" data-bs-trigger="hover" [attr.aria-expanded]="isSectionActive('/features')">
               Caractéristiques
             </a>
 
@@ -145,7 +145,7 @@
           </li>
 
           <li class="nav-item dropdown py-lg-2 me-lg-n1 me-xl-0">
-            <a aria-expanded="false" class="nav-link dropdown-toggle" data-bs-auto-close="outside" data-bs-toggle="dropdown" data-bs-trigger="hover"
+            <a [class.active]="isSectionActive('/products')" [class.aria-expanded]="isSectionActive('/products')"  class="nav-link dropdown-toggle" data-bs-auto-close="outside" data-bs-toggle="dropdown" data-bs-trigger="hover"
                href="#" role="button">
               Produits
             </a>
@@ -178,7 +178,7 @@
           </li>
 
           <li class="nav-item dropdown py-lg-2 me-lg-n1 me-xl-0">
-            <a aria-expanded="false" class="nav-link dropdown-toggle" data-bs-auto-close="outside" data-bs-toggle="dropdown" data-bs-trigger="hover"
+            <a [class.active]="isSectionActive('/resources')" [class.aria-expanded]="isSectionActive('/resources')"   class="nav-link dropdown-toggle" data-bs-auto-close="outside" data-bs-toggle="dropdown" data-bs-trigger="hover"
                href="#" role="button">
               Resources
             </a>
