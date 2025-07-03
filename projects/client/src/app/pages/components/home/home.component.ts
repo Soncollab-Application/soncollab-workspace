@@ -231,7 +231,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       if (playPromise !== undefined) {
         playPromise
           .then(() => {
-            console.log('✅ Vidéo démarrée');
             this.cacheService.set('video_playing', true, 5 * 60 * 1000, 'low');
           })
           .catch(error => {

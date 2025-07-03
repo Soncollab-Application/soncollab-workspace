@@ -14,7 +14,8 @@
 
     <!-- Navbar brand (Logo) -->
     <a [routerLink]="['/']" aria-label="Soncollab Home"
-       class="navbar-brand py-1 py-md-2 py-xl-1 me-2 me-sm-n4 me-md-n5 me-lg-0">
+       class="navbar-brand py-1 py-md-2 py-xl-1 me-2 me-sm-n4 me-md-n5 me-lg-0"
+       (click)="closeMenu()">
       <img alt="Soncollab Logo" class="d-block" src="/assets/images/logo/soncollablightlogo.svg" width="160">
     </a>
 
@@ -30,7 +31,6 @@
       <div class="offcanvas-body pt-2 pb-4 py-lg-0 mx-lg-auto">
         <ul class="navbar-nav position-relative">
 
-
           <li class="nav-item dropdown position-static py-lg-2 me-lg-n1 me-xl-0">
             <a class="nav-link dropdown-toggle d-flex align-items-center" [class.active]="isSectionActive('/features')"  href="#" role="button" data-bs-toggle="dropdown" data-bs-trigger="hover" [attr.aria-expanded]="isSectionActive('/features')">
               Caractéristiques
@@ -41,10 +41,11 @@
                 <!-- Colonne 1 -->
                 <div class="col-12 col-lg-6 mb-0">
                   <ul class="nav flex-column gap-2">
-                    <li class="feature-item ">
+                    <li class="feature-item">
                       <a class="nav-link hover-effect-slide d-flex align-items-center gap-3 fw-normal p-2 transition-all"
                          [routerLinkActiveOptions]="{ exact: true }" [routerLinkActive]="['active-feature']"
-                         [routerLink]="['/features/catalog']">
+                         [routerLink]="['/features/catalog']"
+                         (click)="closeMenu()">
                         <div class="feature-icon-wrapper d-flex align-items-center justify-content-center rounded-2">
                           <i class="fi-folder fs-5"></i>
                         </div>
@@ -57,20 +58,22 @@
 
                     <li class="feature-item">
                       <a class="nav-link hover-effect-slide d-flex align-items-center gap-3 fw-normal p-2 transition-all"
-                         [routerLink]="['/features/rights']" [routerLinkActive]="['active-feature']">
+                         [routerLink]="['/features/rights']" [routerLinkActive]="['active-feature']"
+                         (click)="closeMenu()">
                         <div class="feature-icon-wrapper d-flex align-items-center justify-content-center rounded-2">
                           <i class="bi-signpost-split fs-5"></i>
                         </div>
                         <div>
                           <div class="fw-medium">Rights</div>
-                          <small class="text-muted d-none d-lg-block">Contrôlez vos droits d’auteur</small>
+                          <small class="text-muted d-none d-lg-block">Contrôlez vos droits d'auteur</small>
                         </div>
                       </a>
                     </li>
 
                     <li class="feature-item">
                       <a class="nav-link hover-effect-slide d-flex align-items-center gap-3 fw-normal p-2 transition-all"
-                         [routerLink]="['/features/distribution-delivery']" [routerLinkActive]="['active-feature']">
+                         [routerLink]="['/features/distribution-delivery']" [routerLinkActive]="['active-feature']"
+                         (click)="closeMenu()">
                         <div class="feature-icon-wrapper d-flex align-items-center justify-content-center rounded-2">
                           <i class="fi-upload fs-5"></i>
                         </div>
@@ -83,7 +86,8 @@
 
                     <li class="feature-item">
                       <a class="nav-link hover-effect-slide d-flex align-items-center gap-3 fw-normal p-2 transition-all"
-                         [routerLink]="['/features/income-tracking']" [routerLinkActive]="['active-feature']">
+                         [routerLink]="['/features/income-tracking']" [routerLinkActive]="['active-feature']"
+                         (click)="closeMenu()">
                         <div class="feature-icon-wrapper d-flex align-items-center justify-content-center rounded-2">
                           <i class="fi-bar-chart fs-5"></i>
                         </div>
@@ -101,7 +105,8 @@
                   <ul class="nav flex-column gap-2">
                     <li class="feature-item">
                       <a class="nav-link hover-effect-slide d-flex align-items-center gap-3 fw-normal p-2 transition-all"
-                         [routerLink]="['/features/analytics']" [routerLinkActive]="['active-feature']">
+                         [routerLink]="['/features/analytics']" [routerLinkActive]="['active-feature']"
+                         (click)="closeMenu()">
                         <div class="feature-icon-wrapper d-flex align-items-center justify-content-center rounded-2">
                           <i class="fi-pie-chart fs-5"></i>
                         </div>
@@ -114,7 +119,8 @@
 
                     <li class="feature-item">
                       <a class="nav-link hover-effect-slide d-flex align-items-center gap-3 fw-normal p-2 transition-all"
-                         [routerLink]="['/features/payments']" [routerLinkActive]="['active-feature']">
+                         [routerLink]="['/features/payments']" [routerLinkActive]="['active-feature']"
+                         (click)="closeMenu()">
                         <div class="feature-icon-wrapper d-flex align-items-center justify-content-center rounded-2">
                           <i class="bi bi-bank fs-5"></i>
                         </div>
@@ -127,7 +133,8 @@
 
                     <li class="feature-item">
                       <a class="nav-link hover-effect-slide d-flex align-items-center gap-3 fw-normal p-2 transition-all"
-                         [routerLink]="['/features/royalties']" [routerLinkActive]="['active-feature']">
+                         [routerLink]="['/features/royalties']" [routerLinkActive]="['active-feature']"
+                         (click)="closeMenu()">
                         <div class="feature-icon-wrapper d-flex align-items-center justify-content-center rounded-2">
                           <i class="fi fi-shuffle fs-5"></i>
                         </div>
@@ -141,7 +148,6 @@
                 </div>
               </div>
             </div>
-
           </li>
 
           <li class="nav-item dropdown py-lg-2 me-lg-n1 me-xl-0">
@@ -153,7 +159,8 @@
               <li class="feature-item mb-2">
                 <a class="nav-link hover-effect-slide d-flex align-items-center gap-3 fw-normal p-2 transition-all"
                    [routerLinkActiveOptions]="{ exact: true }" [routerLinkActive]="['active-feature']"
-                   [routerLink]="['/products/studio']">
+                   [routerLink]="['/products/studio']"
+                   (click)="closeMenu()">
                   <span class="fw-lighter text-white">
                     Soncollab Studio
                   </span>
@@ -162,17 +169,18 @@
               <li class="feature-item">
                 <a class="nav-link hover-effect-slide d-flex align-items-center gap-3 fw-normal p-2 transition-all"
                    [routerLinkActiveOptions]="{ exact: true }" [routerLinkActive]="['active-feature']"
-                   [routerLink]="['/products/connect']">
+                   [routerLink]="['/products/connect']"
+                   (click)="closeMenu()">
                   <span class="fw-lighter text-white">Soncollab Connect</span>
                 </a>
               </li>
             </ul>
           </li>
 
-
           <li class="nav-item py-lg-2 me-lg-n2 me-xl-0">
             <a class="nav-link" [routerLinkActiveOptions]="{ exact: true }" [routerLinkActive]="['active']"
-               [routerLink]="['/pricing']">
+               [routerLink]="['/pricing']"
+               (click)="closeMenu()">
               Pricing
             </a>
           </li>
@@ -185,7 +193,8 @@
             <ul class="dropdown-menu border-0 rounded-4 p-3 shadow bg-semi-dark-low">
               <li class="feature-item mb-2">
                 <a class="nav-link hover-effect-slide d-flex align-items-center gap-3 fw-normal p-2 transition-all"
-                   [routerLink]="['/']">
+                   [routerLink]="['/']"
+                   (click)="closeMenu()">
                   <span class="fw-lighter text-white">
                     Centre d'aide
                   </span>
@@ -193,7 +202,8 @@
               </li>
               <li class="feature-item">
                 <a class="nav-link hover-effect-slide d-flex align-items-center gap-3 fw-normal p-2 transition-all"
-                   [routerLink]="['/']">
+                   [routerLink]="['/']"
+                   (click)="closeMenu()">
                   <span class="fw-lighter text-white">
                     Documentation API
                   </span>
@@ -207,14 +217,12 @@
 
     <!-- Button group -->
     <div class="d-flex gap-sm-1">
-
       <!-- Join button  -->
-      <a class="btn btn-primary animate-scale" href="">
+      <a class="btn btn-primary animate-scale" href=""
+         (click)="closeMenu()">
         <i class="fi-plus fs-lg animate-target ms-n2 me-1"></i>
         Démarrer
       </a>
-
     </div>
   </div>
 </header>
-

@@ -3,6 +3,9 @@ import {NavigationEnd, Router, RouterLink, RouterLinkActive} from '@angular/rout
 import {NgClass} from '@angular/common';
 import {filter, Subscription} from 'rxjs';
 
+// Déclaration pour Bootstrap (pour éviter les erreurs TypeScript)
+declare var bootstrap: any;
+
 @Component({
   selector: 'app-header',
   imports: [
@@ -45,8 +48,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.routerSubscription = this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
-        console.log('NavigationEnd:', event);
         this.showVideoBackground = this.isHomePage(event.urlAfterRedirects);
+
+        // Fermer le menu mobile après navigation uniquement sur mobile
+        if (window.innerWidth < 992) {
+          setTimeout(() => {
+            this.forceCloseOffcanvas();
+          }, 150);
+        }
       });
   }
 
@@ -54,6 +63,77 @@ export class HeaderComponent implements OnInit, OnDestroy {
     // Nettoyer les subscriptions
     if (this.routerSubscription) {
       this.routerSubscription.unsubscribe();
+    }
+  }
+
+  private forceCloseOffcanvas(): void {
+    const offcanvasElement = document.getElementById('navbarNav');
+    if (!offcanvasElement) return;
+
+    // Méthode 1: Utiliser Bootstrap si disponible
+    if (typeof bootstrap !== 'undefined') {
+      try {
+        const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasElement);
+        if (offcanvasInstance) {
+          offcanvasInstance.hide();
+          return;
+        }
+      } catch (error) {
+        console.log('Bootstrap method failed, using fallback');
+      }
+    }
+
+    // Méthode 2: Simulation du clic sur le bouton close
+    const closeButton = offcanvasElement.querySelector('.btn-close');
+    if (closeButton) {
+      (closeButton as HTMLElement).click();
+      return;
+    }
+
+    // Méthode 3: Manipulation directe du DOM
+    this.manualCloseOffcanvas();
+  }
+
+  private manualCloseOffcanvas(): void {
+    const offcanvasElement = document.getElementById('navbarNav');
+    if (!offcanvasElement) return;
+
+    // Supprimer les classes Bootstrap
+    offcanvasElement.classList.remove('show', 'showing');
+    offcanvasElement.style.visibility = 'hidden';
+    offcanvasElement.setAttribute('aria-hidden', 'true');
+
+    // Supprimer le backdrop
+    const backdrop = document.querySelector('.offcanvas-backdrop');
+    if (backdrop) {
+      backdrop.remove();
+    }
+
+    // Restaurer le body
+    document.body.classList.remove('offcanvas-open');
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
+
+    // Remettre la visibilité après l'animation
+    setTimeout(() => {
+      if (offcanvasElement) {
+        offcanvasElement.style.visibility = '';
+      }
+    }, 300);
+  }
+
+  // Méthode publique pour fermer le menu (utilisable dans le template)
+  public closeMenu(): void {
+    // Seulement sur mobile
+    if (window.innerWidth < 992) {
+      // Utiliser la méthode native de Bootstrap d'abord
+      const offcanvasElement = document.getElementById('navbarNav');
+      if (offcanvasElement) {
+        const closeButton = offcanvasElement.querySelector('.btn-close');
+        if (closeButton) {
+          (closeButton as HTMLElement).click();
+        }
+      }
     }
   }
 
