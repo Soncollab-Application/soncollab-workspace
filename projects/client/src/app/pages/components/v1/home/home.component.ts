@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, ElementRef, inject, OnDestroy, ViewChild} from '@angular/core';
-import {CacheService} from '../../../core/services/cache.service';
-import {AppInitService} from '../../../core/services/app-init.service';
+import {CacheService} from '../../../../core/services/cache.service';
+import {AppInitService} from '../../../../core/services/app-init.service';
 
 @Component({
   selector: 'app-home',
