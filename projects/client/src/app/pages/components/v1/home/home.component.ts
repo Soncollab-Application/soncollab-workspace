@@ -2,6 +2,8 @@ import {AfterViewInit, Component, ElementRef, HostListener, ViewChild, OnDestroy
 import {Subject, takeUntil} from 'rxjs';
 import {PageService} from '../../../services/page.service';
 import {Hero} from '../../../models/hero.model';
+import {VideoManagerService} from '../../../../core/services/video-manager.service';
+import {VideoSource} from '../../../../core/models/video-source.model';
 
 @Component({
   selector: 'app-home',
@@ -15,6 +17,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   hero: Hero | null = null;
   isLoading = true;
+  currentVideo: VideoSource | null = null;
   private destroy$ = new Subject<void>();
 
   private intersectionObserver?: IntersectionObserver;
@@ -27,12 +30,16 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   private currentMode: 'mobile' | 'desktop' = 'desktop';
   private videoContainer?: HTMLElement;
 
-  constructor(private pageService: PageService) {
+  constructor(
+    private pageService: PageService,
+    private videoManager: VideoManagerService
+  ) {
     this.setupUserInteractionDetection();
   }
 
   ngOnInit(): void {
     this.loadHeroData();
+    this.initializeVideoRotation();
   }
 
   private loadHeroData(): void {
@@ -48,6 +55,14 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
           this.isLoading = false;
         }
       });
+  }
+
+  // ✅ Initialiser la rotation des vidéos
+  private initializeVideoRotation(): void {
+    this.currentVideo = this.videoManager.getCurrentVideo();
+
+    // Logger les stats pour debug
+    const stats = this.videoManager.getRotationStats();
   }
 
   ngAfterViewInit(): void {
@@ -177,12 +192,10 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     // Réinitialiser et relancer le processus vidéo
     this.videoLoaded = false;
     this.setupLazyVideoLoading();
-
-    console.log('Vidéo activée pour desktop');
   }
 
   private loadVideo(): void {
-    if (this.videoLoaded || this.isMobileDevice()) return;
+    if (this.videoLoaded || this.isMobileDevice() || !this.currentVideo) return;
 
     this.videoLoaded = true;
     const videoElement = this.videoRef?.nativeElement;
@@ -209,27 +222,22 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private initializeVideo(videoElement: HTMLVideoElement): void {
-    if (this.isMobileDevice()) {
+    if (this.isMobileDevice() || !this.currentVideo) {
       return;
     }
 
-    // Configuration pour desktop
+    // ✅ Configurer la vidéo avec les sources de la vidéo actuelle
     videoElement.muted = true;
     videoElement.loop = true;
     videoElement.playsInline = true;
     videoElement.preload = 'metadata';
+    videoElement.poster = this.currentVideo.poster;
 
     videoElement.setAttribute('playsinline', '');
     videoElement.setAttribute('webkit-playsinline', '');
 
-    // Recharger les sources si nécessaire
-    const sources = videoElement.querySelectorAll('source');
-    sources.forEach(source => {
-      const src = source.getAttribute('src');
-      if (src) {
-        source.setAttribute('src', src);
-      }
-    });
+    // ✅ Mettre à jour les sources vidéo
+    this.updateVideoSources(videoElement);
 
     videoElement.load();
 
@@ -237,6 +245,32 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       this.startVideoPlayback(videoElement);
     } else {
       this.setupVideoPlayOnInteraction(videoElement);
+    }
+  }
+
+  // ✅ Mettre à jour les sources de la vidéo
+  private updateVideoSources(videoElement: HTMLVideoElement): void {
+    if (!this.currentVideo) return;
+
+    const sources = videoElement.querySelectorAll('source');
+
+    // Mettre à jour les sources existantes
+    sources.forEach(source => {
+      const type = source.getAttribute('type');
+      if (type === 'video/mp4') {
+        source.setAttribute('src', this.currentVideo!.mp4);
+      } else if (type === 'video/webm') {
+        source.setAttribute('src', this.currentVideo!.webm);
+      }
+    });
+
+    // Si pas de sources, les créer
+    if (sources.length === 0) {
+      videoElement.innerHTML = `
+        <source src="${this.currentVideo.mp4}" type="video/mp4">
+        <source src="${this.currentVideo.webm}" type="video/webm">
+        Votre navigateur ne supporte pas les vidéos HTML5.
+      `;
     }
   }
 
@@ -251,11 +285,10 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       if (playPromise !== undefined) {
         playPromise
           .then(() => {
-            console.log('Vidéo démarrée avec succès');
+            console.log(`✅ Vidéo "${this.currentVideo?.name}" démarrée avec succès`);
           })
           .catch(error => {
-            console.warn('Lecture vidéo différée:', error.message);
-            // Ne pas cacher la vidéo, juste logger l'erreur
+            console.warn(`⚠️ Lecture vidéo différée pour "${this.currentVideo?.name}":`, error.message);
           });
       }
     };
@@ -284,5 +317,18 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     document.addEventListener('click', playOnInteraction, { once: true, passive: true });
     document.addEventListener('touchstart', playOnInteraction, { once: true, passive: true });
     document.addEventListener('scroll', playOnInteraction, { once: true, passive: true });
+  }
+
+  // ✅ Méthodes pour debug/admin (optionnelles)
+  forceVideoRotation(): void {
+    this.currentVideo = this.videoManager.rotateToNewVideo();
+    if (!this.isMobileDevice()) {
+      this.videoLoaded = false;
+      this.loadVideo();
+    }
+  }
+
+  getVideoStats(): any {
+    return this.videoManager.getRotationStats();
   }
 }
