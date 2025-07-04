@@ -1,4 +1,7 @@
-import {AfterViewInit, Component, ElementRef, HostListener, ViewChild, OnDestroy} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostListener, ViewChild, OnDestroy, OnInit} from '@angular/core';
+import {Subject, takeUntil} from 'rxjs';
+import {PageService} from '../../../services/page.service';
+import {Hero} from '../../../models/hero.model';
 
 @Component({
   selector: 'app-home',
@@ -7,16 +10,40 @@ import {AfterViewInit, Component, ElementRef, HostListener, ViewChild, OnDestroy
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
-export class HomeComponent implements AfterViewInit, OnDestroy {
+export class HomeComponent implements   OnInit,  AfterViewInit, OnDestroy {
   @ViewChild('backgroundVideo') videoRef!: ElementRef<HTMLVideoElement>;
+
+  hero: Hero | null = null;
+  isLoading = true;
+  private destroy$ = new Subject<void>();
 
   private intersectionObserver?: IntersectionObserver;
   private videoLoaded = false;
   private userInteracted = false;
   private scrollThrottleTimer: number | null = null;
 
-  constructor() {
+  constructor(private pageService: PageService) {
     this.setupUserInteractionDetection();
+  }
+
+  ngOnInit(): void {
+    this.loadHeroData();
+  }
+
+
+  private loadHeroData(): void {
+    this.pageService.getHero()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (hero) => {
+          this.hero = hero;
+          this.isLoading = false;
+        },
+        error: (error) => {
+          console.error('Erreur lors du chargement du hero:', error);
+          this.isLoading = false;
+        }
+      });
   }
 
   ngAfterViewInit(): void {
@@ -28,6 +55,9 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     if (this.scrollThrottleTimer) {
       cancelAnimationFrame(this.scrollThrottleTimer);
     }
+
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private setupUserInteractionDetection(): void {

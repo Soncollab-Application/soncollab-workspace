@@ -25,20 +25,59 @@
     <div class="position-relative p-0 pt-sm-2 pt-5 mb-5 mt-3 mt-sm-4 mt-md-5">
       <div class="row pt-xl-3 pt-xxl-4">
         <div class="col-lg-7 col-xxl-6">
-          <h1 class="display-3 fw-lighter for-dax-font text-lg-start  mb-lg-4 mb-3 mb-sm-3">
-            Permettre à la musique indépendante de prospérer
-          </h1>
 
-          <p class="fs-5 text-lg-start pb-2 display-4 fw-lighter pb-sm-0 pb-md-1 mb-4 mb-sm-5 ">
-            Une plateforme conçue pour faire évoluer, protéger et monétiser la musique indépendante, à l'échelle
-            mondiale.
-          </p>
+          <!-- Skeleton loader pendant le chargement -->
+          @if (isLoading) {
+            <div class="placeholder-glow">
+              <h1 class="display-3 fw-lighter for-dax-font text-lg-start mb-lg-4 mb-3 mb-sm-3">
+                <span class="placeholder col-8"></span>
+              </h1>
+              <p class="fs-5 text-lg-start pb-2 display-4 fw-lighter pb-sm-0 pb-md-1 mb-4 mb-sm-5">
+                <span class="placeholder col-12"></span>
+                <span class="placeholder col-10"></span>
+              </p>
+              <div class="d-sm-flex hero-buttons">
+                <span class="placeholder btn btn-lg w-100 w-md-auto"></span>
+              </div>
+            </div>
+          }
 
-          <div class="d-sm-flex hero-buttons">
-            <a class="btn btn-lg btn-outline-light w-100 w-md-auto" href="#">
-              Commencer
-            </a>
-          </div>
+          <!-- Contenu dynamique -->
+          @if (!isLoading && hero) {
+            <div>
+              <h1 class="display-3 fw-lighter for-dax-font text-lg-start mb-lg-4 mb-3 mb-sm-3">
+                {{ hero.title }}
+              </h1>
+
+              <p class="fs-5 text-lg-start pb-2 display-4 fw-lighter pb-sm-0 pb-md-1 mb-4 mb-sm-5">
+                {{ hero.subtitle }}
+              </p>
+
+              <div class="d-sm-flex hero-buttons">
+                <a class="btn btn-lg btn-outline-light w-100 w-md-auto" href="#">
+                  {{ hero.actionBtn }}
+                </a>
+              </div>
+            </div>
+          }
+
+          <!-- Fallback si erreur -->
+          @if (!isLoading && !hero) {
+            <div>
+              <h1 class="display-3 fw-lighter for-dax-font text-lg-start mb-lg-4 mb-3 mb-sm-3">
+                Permettre à la musique indépendante de prospérer
+              </h1>
+              <p class="fs-5 text-lg-start pb-2 display-4 fw-lighter pb-sm-0 pb-md-1 mb-4 mb-sm-5">
+                Une plateforme conçue pour faire évoluer, protéger et monétiser la musique indépendante, à l'échelle mondiale.
+              </p>
+              <div class="d-sm-flex hero-buttons">
+                <a class="btn btn-lg btn-outline-light w-100 w-md-auto" href="#">
+                  Commencer
+                </a>
+              </div>
+            </div>
+          }
+
         </div>
       </div>
     </div>
