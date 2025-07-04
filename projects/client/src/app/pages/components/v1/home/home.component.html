@@ -1,5 +1,7 @@
+
 <div class="shared-video-background position-relative overflow-hidden">
-  <div class="shared-video-container">
+  <!-- ✅ Vidéo affichée uniquement sur desktop -->
+  <div class="shared-video-container d-none d-md-block">
     <video
       #backgroundVideo
       aria-hidden="true"
@@ -20,6 +22,9 @@
 
     <div class="shared-video-overlay"></div>
   </div>
+
+  <!-- ✅ Overlay toujours présent pour le fond -->
+  <div class="shared-video-overlay d-md-none"></div>
 
   <section class="container pt-5 mt-5 pb-4 mb-0 hero-content">
     <div class="position-relative p-0 pt-sm-2 pt-5 mb-5 mt-3 mt-sm-4 mt-md-5">

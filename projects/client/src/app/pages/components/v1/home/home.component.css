@@ -1,3 +1,4 @@
+/* Styles existants... */
 .hover-gradient:hover {
   color: white !important;
 }
@@ -18,10 +19,14 @@
   background: linear-gradient(to right, #1d976c, #196736);
 }
 
-/* Conteneur partagé pour la vidéo header + hero - Optimisé mobile */
+/* ✅ Conteneur avec background de fallback TOUJOURS présent */
 .shared-video-background {
   padding-bottom: 80px;
-  /* Amélioration pour Android */
+  /* Background de fallback pour éviter le noir */
+  background: linear-gradient(135deg, #000000 0%, #0E2828 50%, #000000 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 12s ease-in-out infinite;
+  /* Optimisations GPU */
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
   -webkit-backface-visibility: hidden;
@@ -35,10 +40,12 @@
   width: 100%;
   height: 100%;
   z-index: -1;
-  /* Optimisations GPU pour Android */
+  /* Optimisations GPU */
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
   will-change: transform;
+  /* ✅ Transition smooth pour les changements responsive */
+  transition: opacity 0.3s ease;
 }
 
 .shared-background-video {
@@ -50,74 +57,73 @@
   object-fit: cover;
   z-index: -1;
   pointer-events: none;
-  /* Optimisations critiques pour Android */
+  /* Optimisations GPU */
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   will-change: transform;
+  /* ✅ Transition smooth */
+  transition: opacity 0.3s ease;
 }
 
-.gradient-text {
-  background: linear-gradient(90deg, #ffffff, #E65D1C, #0e593c, #ffffff);
-  background-size: 200% auto;
-  color: transparent;
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: gradientFlow 6s ease infinite;
-  /* Optimisation animation sur mobile */
-  will-change: background-position;
-}
-
-@keyframes gradientFlow {
-  0% {
-    background-position: 200% center;
-  }
-  100% {
-    background-position: -200% center;
-  }
-}
-
-/* Overlay amélioré - optimisé pour les performances */
+/* ✅ Overlay toujours présent avec priorité selon le mode */
 .shared-video-overlay {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.8) 100%);
   z-index: 0;
-  /* Optimisation GPU */
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
+  /* ✅ Overlay adaptatif selon la présence de vidéo */
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.7) 100%);
+  transition: background 0.3s ease;
 }
 
-/* Version alternative avec animation - désactivée sur mobile pour les performances */
-.shared-video-overlay-animated {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(45deg,
-  rgba(2, 2, 2, 0.4) 0%,
-  rgba(30, 60, 114, 0.6) 50%,
-  rgba(0, 0, 0, 0.4) 100%);
-  background-size: 400% 400%;
-  z-index: 0;
-  /* Désactiver l'animation sur mobile */
-  animation: none;
-}
+/* ✅ Styles responsive avec media queries précises */
+@media (max-width: 768px) {
+  .shared-video-container {
+    display: none !important;
+    opacity: 0 !important;
+  }
 
-/* Animation seulement sur desktop */
-@media (min-width: 769px) {
-  .shared-video-overlay-animated {
+  .shared-background-video {
+    display: none !important;
+    opacity: 0 !important;
+  }
+
+  /* Overlay plus prononcé sur mobile */
+  .shared-video-overlay {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(14, 40, 40, 0.6));
+  }
+
+  /* Background animé plus visible sur mobile */
+  .shared-video-background {
+    background: linear-gradient(135deg, #000000 0%, #0E2828 30%, #1a3d2b 70%, #000000 100%);
     animation: gradientShift 8s ease-in-out infinite;
-    will-change: background-position;
   }
 }
 
+@media (min-width: 769px) {
+  .shared-video-container {
+    display: block !important;
+    opacity: 1 !important;
+  }
+
+  .shared-background-video {
+    display: block !important;
+    opacity: 1 !important;
+  }
+
+  /* Overlay plus subtil sur desktop avec vidéo */
+  .shared-video-overlay {
+    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.8) 100%);
+  }
+}
+
+/* ✅ Animation du background de fallback */
 @keyframes gradientShift {
   0% {
     background-position: 0% 50%;
@@ -130,20 +136,51 @@
   }
 }
 
-/* Responsive adjustments - Optimisations spéciales Android */
+.gradient-text {
+  background: linear-gradient(90deg, #ffffff, #E65D1C, #0e593c, #ffffff);
+  background-size: 200% auto;
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientFlow 6s ease infinite;
+  will-change: background-position;
+}
+
+@keyframes gradientFlow {
+  0% {
+    background-position: 200% center;
+  }
+  100% {
+    background-position: -200% center;
+  }
+}
+
+.shared-video-overlay-animated {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg,
+  rgba(2, 2, 2, 0.4) 0%,
+  rgba(30, 60, 114, 0.6) 50%,
+  rgba(0, 0, 0, 0.4) 100%);
+  background-size: 400% 400%;
+  z-index: 0;
+  animation: none;
+}
+
+/* Animation seulement sur desktop */
+@media (min-width: 769px) {
+  .shared-video-overlay-animated {
+    animation: gradientShift 8s ease-in-out infinite;
+    will-change: background-position;
+  }
+}
+
+/* ✅ Désactiver animations coûteuses sur mobile */
 @media (max-width: 768px) {
-  .shared-background-video {
-    object-fit: cover;
-    /* Réduction de la qualité sur mobile */
-    filter: brightness(0.9);
-  }
-
-  /* Overlay plus prononcé sur mobile pour une meilleure lisibilité */
-  .shared-video-overlay {
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.4));
-  }
-
-  /* Désactiver les animations coûteuses sur mobile */
   .gradient-text {
     animation: none;
     background: linear-gradient(90deg, #ffffff, #1f702f);
@@ -151,35 +188,33 @@
     background-clip: text;
   }
 
-  /* Simplifier l'overlay sur mobile */
   .shared-video-overlay-animated {
     background: rgba(0, 0, 0, 0.6);
     animation: none;
   }
 }
 
-/* Optimisations spécifiques Android */
-@media screen and (max-width: 768px) and (-webkit-min-device-pixel-ratio: 1) {
-  .shared-video-background {
-    /* Forcer l'accélération GPU sur Android */
-    -webkit-transform: translate3d(0, 0, 0);
-    transform: translate3d(0, 0, 0);
-  }
+/* ✅ Fallback pour très anciens navigateurs */
+@supports not (display: none) {
+  @media (max-width: 768px) {
+    .shared-video-container {
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
 
-  .shared-background-video {
-    /* Réduire la résolution effective sur Android */
-    transform: scale(1.1);
-    -webkit-transform: scale(1.1);
+    .shared-background-video {
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
   }
 }
-
-
 
 .top-mount-custom {
   z-index: 1;
   position: relative;
   margin-top: -20px;
-  /* Optimisation GPU */
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
 }
@@ -187,7 +222,6 @@
 .hero-content {
   position: relative;
   z-index: 10 !important;
-  /* Optimisation GPU */
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
 }
@@ -195,7 +229,6 @@
 .shared-video-background .container {
   position: relative;
   z-index: 10 !important;
-  /* Optimisation GPU */
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
 }
@@ -211,7 +244,6 @@
   pointer-events: none;
   object-fit: cover;
   transition: filter 0.4s ease, opacity 0.4s ease, transform 5s ease-in-out;
-  /* Désactiver l'animation sur mobile */
   animation: none;
 }
 
@@ -228,7 +260,6 @@
   filter: blur(6px);
 }
 
-/* Flottement doux du shape.svg - désactivé sur mobile */
 @keyframes float-shape {
   0% {
     transform: translate(-50%, -50%) scale(1);
@@ -241,9 +272,7 @@
   }
 }
 
-/* Pour que le texte reste au-dessus */
 .card-body {
   position: relative;
   z-index: 1;
 }
-
