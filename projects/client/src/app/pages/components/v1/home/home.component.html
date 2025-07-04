@@ -1,4 +1,3 @@
-
 <div class="shared-video-background position-relative overflow-hidden">
   <!-- ✅ Vidéo avec sources dynamiques affichée uniquement sur desktop -->
   <div class="shared-video-container d-none d-md-block">
@@ -54,7 +53,7 @@
             </div>
           }
 
-          <!-- Contenu dynamique -->
+          <!-- Contenu dynamique du HERO (géré par l'API) -->
           @if (!isLoading && hero) {
             <div>
               <h1 class="display-3 fw-lighter for-dax-font text-lg-start mb-lg-4 mb-3 mb-sm-3">
@@ -78,14 +77,14 @@
           @if (!isLoading && !hero) {
             <div>
               <h1 class="display-3 fw-lighter for-dax-font text-lg-start mb-lg-4 mb-3 mb-sm-3">
-                Permettre à la musique indépendante de prospérer
+                {{ 'home.heroFallback.title' | translate }}
               </h1>
               <p class="fs-5 text-lg-start pb-2 display-4 fw-lighter pb-sm-0 pb-md-1 mb-4 mb-sm-5">
-                Une plateforme conçue pour faire évoluer, protéger et monétiser la musique indépendante, à l'échelle mondiale.
+                {{ 'home.heroFallback.subtitle' | translate }}
               </p>
               <div class="d-sm-flex hero-buttons">
                 <a class="btn btn-lg btn-outline-light w-100 w-md-auto" href="#">
-                  Commencer
+                  {{ 'home.heroFallback.button' | translate }}
                 </a>
               </div>
             </div>
@@ -97,23 +96,20 @@
   </section>
 </div>
 
-
-
 <div class="raduis-custom rounded-bottom-0 top-mount-custom shadow-lg bg-semi-dark">
 
   <section class="section-grid-pattern position-relative pb-0 mb-0 mb-sm-0 pt-3">
     <div class="mb-2 container pb-5 mt-3 pt-sm-3 position-relative py-md-5 my-md-5 py-sm-5 my-sm-5">
       <h1 class="mb-0 joti-one-regular fw-lighter lh-base text-center text-lg-start gradient-text">
-        Une nouvelle façon de distribuer, protéger et monétiser la musique
+        {{ 'home.tagline' | translate }}
       </h1>
     </div>
   </section>
 
-
   <section class="bg-semi-green rounded-7 pt-4 pt-sm-3 pt-md-4 pt-lg-5 pb-5">
     <div class="container py-md-4 my-md-4 py-sm-4 my-sm-4">
       <h2 class="h1 fw-lighter text-cyan pb-sm-4  pt-3 pb-lg-0 mb-4 mb-md-3 mb-lg-4 mb-xl-5">
-        Pour les labels et les distributeurs de musique
+        {{ 'home.forLabelsTitle' | translate }}
       </h2>
       <br>
       <div class="row row-cols-1 row-cols-md-2 row-cols-sm-1 pt-sm-4 gy-3 gy-md-4 gy-xl-5 gx-sm-5">
@@ -126,10 +122,9 @@
               style="width: 240px; height: 240px;"
             >
             <div class="ps-xl-4 ">
-              <h5 class="joti-one-regular  mt-2">Centralisez les catalogues</h5>
+              <h5 class="joti-one-regular  mt-2">{{ 'home.features.catalog.title' | translate }}</h5>
               <p class="fs-sm mb-0">
-                Gérez les releases de vos artistes facilement : import, organisation et livraison à grande échelle sans
-                erreurs ni doublons.
+                {{ 'home.features.catalog.description' | translate }}
               </p>
             </div>
           </div>
@@ -141,11 +136,10 @@
                  class="mb-3 d-block mx-auto mx-lg-0" src="/assets/images/for_ld/distribution.svg" style="width: 240px; height: 240px;">
             <div class="ps-xl-4">
               <h5 class="joti-one-regular mt-2">
-                Une infrastructure de distribution mondiale
+                {{ 'home.features.distribution.title' | translate }}
               </h5>
               <p class="fs-sm mb-0">
-                Gérez vos livraisons vers toutes les plateformes DSP comme Spotify, Apple Music, Boomplay, Deezer,
-                TikTok, YouTube, etc. — sans friction, sans limite.
+                {{ 'home.features.distribution.description' | translate }}
               </p>
             </div>
           </div>
@@ -157,10 +151,10 @@
                  class="mb-3 d-block mx-auto mx-lg-0" src="/assets/images/for_ld/royalties.svg" style="width: 240px; height: 240px;">
             <div class="ps-xl-4">
               <h5 class="joti-one-regular mt-2">
-                Suivi & partages automatisés (Splits)
+                {{ 'home.features.royalties.title' | translate }}
               </h5>
               <p class="fs-sm mb-0">
-                Analysez les royalties artistes et gérez les parts en un clic.
+                {{ 'home.features.royalties.description' | translate }}
               </p>
             </div>
           </div>
@@ -171,9 +165,9 @@
             <img alt="payment"
                  class="mb-3 d-block mx-auto mx-lg-0" src="/assets/images/for_ld/payment.svg" style="width: 240px; height: 240px;">
             <div class="ps-xl-4">
-              <h5 class="joti-one-regular mt-2 ">Des revenus et paiements transparents.</h5>
+              <h5 class="joti-one-regular mt-2 ">{{ 'home.features.payment.title' | translate }}</h5>
               <p class="fs-sm mb-0">
-                Visualisez, segmentez, et payez automatiquement vos ayants droit.
+                {{ 'home.features.payment.description' | translate }}
               </p>
             </div>
           </div>
@@ -184,10 +178,9 @@
             <img alt="analytics"
                  class="mb-3 d-block mx-auto mx-lg-0" src="/assets/images/for_ld/analytics.svg" style="width: 240px; height: 240px;">
             <div class="ps-xl-4">
-              <h5 class="joti-one-regular mt-2">Analysez vos performances</h5>
+              <h5 class="joti-one-regular mt-2">{{ 'home.features.analytics.title' | translate }}</h5>
               <p class="fs-sm mb-0">
-                Accédez aux statistiques clés de vos artistes : revenus, streams, plateformes, territoires, et bien plus
-                — le tout en temps réel.
+                {{ 'home.features.analytics.description' | translate }}
               </p>
             </div>
           </div>
@@ -198,9 +191,8 @@
             <img alt="teams"
                  class="mb-3 d-block mx-auto mx-lg-0" src="/assets/images/for_ld/teams.svg" style="width: 240px; height: 240px;">
             <div class="ps-xl-4">
-              <h5 class="joti-one-regular mt-2">Gérez vos équipes</h5>
-              <p class="fs-sm mb-0">Attribuez des rôles, gérez les accès et collaborez efficacement avec vos
-                partenaires.</p>
+              <h5 class="joti-one-regular mt-2">{{ 'home.features.teams.title' | translate }}</h5>
+              <p class="fs-sm mb-0">{{ 'home.features.teams.description' | translate }}</p>
             </div>
           </div>
         </div>
@@ -209,20 +201,18 @@
     </div>
   </section>
 
-
   <section class="container section-grid-pattern ">
     <div class="row align-items-center  py-4 my-4">
       <div class="col-md-6 mb-4 mb-md-0">
         <img alt="API Soncollab" src="/assets/images/for_ld/api.svg">
       </div>
       <div class="col-md-6">
-        <h2 class="h2 fw-lighter for-dax-font mb-3">Connectez votre back-office à Soncollab</h2>
+        <h2 class="h2 fw-lighter for-dax-font mb-3">{{ 'home.api.title' | translate }}</h2>
         <p class="fs-6 text-muted mb-4">
-          Intégrez notre API REST sécurisée pour automatiser la livraison, récupérer les royalties,
-          gérer les splits, ou construire votre propre portail de distribution.
+          {{ 'home.api.description' | translate }}
         </p>
         <a class="btn btn-outline-primary btn-lg" href="">
-          Api Docs
+          {{ 'home.api.button' | translate }}
         </a>
       </div>
     </div>
@@ -233,7 +223,4 @@
     </svg>
   </div>
 
-
 </div>
-
-

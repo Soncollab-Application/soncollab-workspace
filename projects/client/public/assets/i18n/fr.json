@@ -1,1 +1,118 @@
-{}
+{
+  "header": {
+    "navigation": {
+      "features": "Caractéristiques",
+      "products": "Produits",
+      "pricing": "Pricing",
+      "resources": "Resources",
+      "start": "Démarrer"
+    },
+    "features": {
+      "catalog": {
+        "title": "Catalogue",
+        "description": "Gérez votre bibliothèque musicale"
+      },
+      "rights": {
+        "title": "Rights",
+        "description": "Contrôlez vos droits d'auteur"
+      },
+      "distribution": {
+        "title": "Distribution & Delivery",
+        "description": "Diffusez sur toutes les plateformes"
+      },
+      "income": {
+        "title": "Income Tracking",
+        "description": "Suivez vos revenus en temps réel"
+      },
+      "analytics": {
+        "title": "Analytics",
+        "description": "Analyses détaillées de performance"
+      },
+      "payments": {
+        "title": "Global Payments",
+        "description": "Paiements internationaux sécurisés"
+      },
+      "royalties": {
+        "title": "Royalties",
+        "description": "Gestion automatisée des royalties"
+      }
+    },
+    "products": {
+      "studio": "Soncollab Studio",
+      "connect": "Soncollab Connect"
+    },
+    "resources": {
+      "help": "Centre d'aide",
+      "api": "Documentation API"
+    }
+  },
+  "home": {
+    "heroFallback": {
+      "title": "Permettre à la musique indépendante de prospérer",
+      "subtitle": "Une plateforme conçue pour faire évoluer, protéger et monétiser la musique indépendante, à l'échelle mondiale.",
+      "button": "Commencer"
+    },
+    "tagline": "Une nouvelle façon de distribuer, protéger et monétiser la musique",
+    "forLabelsTitle": "Pour les labels et les distributeurs de musique",
+    "features": {
+      "catalog": {
+        "title": "Centralisez les catalogues",
+        "description": "Gérez les releases de vos artistes facilement : import, organisation et livraison à grande échelle sans erreurs ni doublons."
+      },
+      "distribution": {
+        "title": "Une infrastructure de distribution mondiale",
+        "description": "Gérez vos livraisons vers toutes les plateformes DSP comme Spotify, Apple Music, Boomplay, Deezer, TikTok, YouTube, etc. — sans friction, sans limite."
+      },
+      "royalties": {
+        "title": "Suivi & partages automatisés (Splits)",
+        "description": "Analysez les royalties artistes et gérez les parts en un clic."
+      },
+      "payment": {
+        "title": "Des revenus et paiements transparents.",
+        "description": "Visualisez, segmentez, et payez automatiquement vos ayants droit."
+      },
+      "analytics": {
+        "title": "Analysez vos performances",
+        "description": "Accédez aux statistiques clés de vos artistes : revenus, streams, plateformes, territoires, et bien plus — le tout en temps réel."
+      },
+      "teams": {
+        "title": "Gérez vos équipes",
+        "description": "Attribuez des rôles, gérez les accès et collaborez efficacement avec vos partenaires."
+      }
+    },
+    "api": {
+      "title": "Connectez votre back-office à Soncollab",
+      "description": "Intégrez notre API REST sécurisée pour automatiser la livraison, récupérer les royalties, gérer les splits, ou construire votre propre portail de distribution.",
+      "button": "Api Docs"
+    }
+  },
+  "footer": {
+    "company": {
+      "title": "Entreprise",
+      "about": "A propos",
+      "careers": "Carrières",
+      "contact": "Contact",
+      "privacy": "Politique de confidentialité",
+      "terms": "Conditions d'utilisation",
+      "antiFraud": "Politique antifraude"
+    },
+    "resources": {
+      "title": "Ressources",
+      "api": "Api Documentation",
+      "help": "Help Center"
+    },
+    "social": {
+      "youtube": "Nous suivre sur YouTube",
+      "instagram": "Nous suivre sur Instagram",
+      "facebook": "Nous suivre sur Facebook",
+      "twitter": "Nous suivre sur X (Twitter)",
+      "tiktok": "Nous suivre sur TikTok",
+      "threads": "Nous suivre sur Threads",
+      "linkedin": "Nous suivre sur LinkedIn"
+    },
+    "language": {
+      "select": "Sélectionner la langue"
+    },
+    "copyright": "© 2025 Soncollab. Tous droits réservés."
+  }
+}

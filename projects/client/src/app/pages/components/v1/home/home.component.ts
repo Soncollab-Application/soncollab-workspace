@@ -5,10 +5,12 @@ import {Hero} from '../../../models/hero.model';
 import {VideoManagerService} from '../../../../core/services/video-manager.service';
 import {VideoSource} from '../../../../core/models/video-source.model';
 import {LanguageService} from '../../../../core/services/language.service';
+import {TranslatePipe} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-home',
   imports: [
+    TranslatePipe
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'

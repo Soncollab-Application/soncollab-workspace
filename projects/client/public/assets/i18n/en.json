@@ -1,1 +1,118 @@
-{}
+{
+  "header": {
+    "navigation": {
+      "features": "Features",
+      "products": "Products",
+      "pricing": "Pricing",
+      "resources": "Resources",
+      "start": "Get Started"
+    },
+    "features": {
+      "catalog": {
+        "title": "Catalog",
+        "description": "Manage your music library"
+      },
+      "rights": {
+        "title": "Rights",
+        "description": "Control your copyrights"
+      },
+      "distribution": {
+        "title": "Distribution & Delivery",
+        "description": "Distribute on all platforms"
+      },
+      "income": {
+        "title": "Income Tracking",
+        "description": "Track your revenue in real-time"
+      },
+      "analytics": {
+        "title": "Analytics",
+        "description": "Detailed performance analytics"
+      },
+      "payments": {
+        "title": "Global Payments",
+        "description": "Secure international payments"
+      },
+      "royalties": {
+        "title": "Royalties",
+        "description": "Automated royalty management"
+      }
+    },
+    "products": {
+      "studio": "Soncollab Studio",
+      "connect": "Soncollab Connect"
+    },
+    "resources": {
+      "help": "Help Center",
+      "api": "API Documentation"
+    }
+  },
+  "home": {
+    "heroFallback": {
+      "title": "Empowering independent music to thrive",
+      "subtitle": "A platform designed to scale, protect and monetize independent music, globally.",
+      "button": "Get Started"
+    },
+    "tagline": "A new way to distribute, protect and monetize music",
+    "forLabelsTitle": "For music labels and distributors",
+    "features": {
+      "catalog": {
+        "title": "Centralize catalogs",
+        "description": "Easily manage your artists' releases: import, organize and deliver at scale without errors or duplicates."
+      },
+      "distribution": {
+        "title": "A global distribution infrastructure",
+        "description": "Manage your deliveries to all DSP platforms like Spotify, Apple Music, Boomplay, Deezer, TikTok, YouTube, etc. — frictionless, without limits."
+      },
+      "royalties": {
+        "title": "Automated tracking & splits",
+        "description": "Analyze artist royalties and manage splits with one click."
+      },
+      "payment": {
+        "title": "Transparent revenue and payments.",
+        "description": "Visualize, segment, and automatically pay your rights holders."
+      },
+      "analytics": {
+        "title": "Analyze your performance",
+        "description": "Access key statistics for your artists: revenue, streams, platforms, territories, and much more — all in real-time."
+      },
+      "teams": {
+        "title": "Manage your teams",
+        "description": "Assign roles, manage access and collaborate effectively with your partners."
+      }
+    },
+    "api": {
+      "title": "Connect your back-office to Soncollab",
+      "description": "Integrate our secure REST API to automate delivery, retrieve royalties, manage splits, or build your own distribution portal.",
+      "button": "Api Docs"
+    }
+  },
+  "footer": {
+    "company": {
+      "title": "Company",
+      "about": "About",
+      "careers": "Careers",
+      "contact": "Contact",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Use",
+      "antiFraud": "Anti-fraud Policy"
+    },
+    "resources": {
+      "title": "Resources",
+      "api": "API Documentation",
+      "help": "Help Center"
+    },
+    "social": {
+      "youtube": "Follow us on YouTube",
+      "instagram": "Follow us on Instagram",
+      "facebook": "Follow us on Facebook",
+      "twitter": "Follow us on X (Twitter)",
+      "tiktok": "Follow us on TikTok",
+      "threads": "Follow us on Threads",
+      "linkedin": "Follow us on LinkedIn"
+    },
+    "language": {
+      "select": "Select language"
+    },
+    "copyright": "© 2025 Soncollab. All rights reserved."
+  }
+}

@@ -4,12 +4,14 @@ import { Subject, takeUntil } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { LanguageService } from '../../../../../core/services/language.service';
 import { Language } from '../../../../../core/models/language.model';
+import {TranslatePipe} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-footer',
   imports: [
     RouterLink,
-    FormsModule
+    FormsModule,
+    TranslatePipe
   ],
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.css'

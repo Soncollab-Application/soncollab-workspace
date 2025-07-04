@@ -33,7 +33,7 @@
 
           <li class="nav-item dropdown position-static py-lg-2 me-lg-n1 me-xl-0">
             <a class="nav-link dropdown-toggle d-flex align-items-center" [class.active]="isSectionActive('/features')"  href="#" role="button" data-bs-toggle="dropdown" data-bs-trigger="hover" [attr.aria-expanded]="isSectionActive('/features')">
-              Caractéristiques
+              {{ 'header.navigation.features' | translate }}
             </a>
 
             <div class="dropdown-menu bg-semi-dark-low border-0 rounded-4 p-4 shadow-lg">
@@ -50,8 +50,8 @@
                           <i class="fi-folder fs-5"></i>
                         </div>
                         <div>
-                          <div class="fw-medium">Catalogue</div>
-                          <small class="text-muted d-none d-lg-block">Gérez votre bibliothèque musicale</small>
+                          <div class="fw-medium">{{ 'header.features.catalog.title' | translate }}</div>
+                          <small class="text-muted d-none d-lg-block">{{ 'header.features.catalog.description' | translate }}</small>
                         </div>
                       </a>
                     </li>
@@ -64,8 +64,8 @@
                           <i class="bi-signpost-split fs-5"></i>
                         </div>
                         <div>
-                          <div class="fw-medium">Rights</div>
-                          <small class="text-muted d-none d-lg-block">Contrôlez vos droits d'auteur</small>
+                          <div class="fw-medium">{{ 'header.features.rights.title' | translate }}</div>
+                          <small class="text-muted d-none d-lg-block">{{ 'header.features.rights.description' | translate }}</small>
                         </div>
                       </a>
                     </li>
@@ -78,8 +78,8 @@
                           <i class="fi-upload fs-5"></i>
                         </div>
                         <div>
-                          <div class="fw-medium">Distribution & Delivery</div>
-                          <small class="text-muted d-none d-lg-block">Diffusez sur toutes les plateformes</small>
+                          <div class="fw-medium">{{ 'header.features.distribution.title' | translate }}</div>
+                          <small class="text-muted d-none d-lg-block">{{ 'header.features.distribution.description' | translate }}</small>
                         </div>
                       </a>
                     </li>
@@ -92,8 +92,8 @@
                           <i class="fi-bar-chart fs-5"></i>
                         </div>
                         <div>
-                          <div class="fw-medium">Income Tracking</div>
-                          <small class="text-muted d-none d-lg-block">Suivez vos revenus en temps réel</small>
+                          <div class="fw-medium">{{ 'header.features.income.title' | translate }}</div>
+                          <small class="text-muted d-none d-lg-block">{{ 'header.features.income.description' | translate }}</small>
                         </div>
                       </a>
                     </li>
@@ -111,8 +111,8 @@
                           <i class="fi-pie-chart fs-5"></i>
                         </div>
                         <div>
-                          <div class="fw-medium">Analytics</div>
-                          <small class="text-muted d-none d-lg-block">Analyses détaillées de performance</small>
+                          <div class="fw-medium">{{ 'header.features.analytics.title' | translate }}</div>
+                          <small class="text-muted d-none d-lg-block">{{ 'header.features.analytics.description' | translate }}</small>
                         </div>
                       </a>
                     </li>
@@ -125,8 +125,8 @@
                           <i class="bi bi-bank fs-5"></i>
                         </div>
                         <div>
-                          <div class="fw-medium">Global Payments</div>
-                          <small class="text-muted d-none d-lg-block">Paiements internationaux sécurisés</small>
+                          <div class="fw-medium">{{ 'header.features.payments.title' | translate }}</div>
+                          <small class="text-muted d-none d-lg-block">{{ 'header.features.payments.description' | translate }}</small>
                         </div>
                       </a>
                     </li>
@@ -139,8 +139,8 @@
                           <i class="fi fi-shuffle fs-5"></i>
                         </div>
                         <div>
-                          <div class="fw-medium">Royalties</div>
-                          <small class="text-muted d-none d-lg-block">Gestion automatisée des royalties</small>
+                          <div class="fw-medium">{{ 'header.features.royalties.title' | translate }}</div>
+                          <small class="text-muted d-none d-lg-block">{{ 'header.features.royalties.description' | translate }}</small>
                         </div>
                       </a>
                     </li>
@@ -153,7 +153,7 @@
           <li class="nav-item dropdown py-lg-2 me-lg-n1 me-xl-0">
             <a [class.active]="isSectionActive('/products')" [class.aria-expanded]="isSectionActive('/products')"  class="nav-link dropdown-toggle" data-bs-auto-close="outside" data-bs-toggle="dropdown" data-bs-trigger="hover"
                href="#" role="button">
-              Produits
+              {{ 'header.navigation.products' | translate }}
             </a>
             <ul class="dropdown-menu border-0 rounded-4 p-3 shadow bg-semi-dark-low">
               <li class="feature-item mb-2">
@@ -162,7 +162,7 @@
                    [routerLink]="['/products/studio']"
                    (click)="closeMenu()">
                   <span class="fw-lighter text-white">
-                    Soncollab Studio
+                    {{ 'header.products.studio' | translate }}
                   </span>
                 </a>
               </li>
@@ -171,7 +171,7 @@
                    [routerLinkActiveOptions]="{ exact: true }" [routerLinkActive]="['active-feature']"
                    [routerLink]="['/products/connect']"
                    (click)="closeMenu()">
-                  <span class="fw-lighter text-white">Soncollab Connect</span>
+                  <span class="fw-lighter text-white">{{ 'header.products.connect' | translate }}</span>
                 </a>
               </li>
             </ul>
@@ -181,14 +181,14 @@
             <a class="nav-link" [routerLinkActiveOptions]="{ exact: true }" [routerLinkActive]="['active']"
                [routerLink]="['/pricing']"
                (click)="closeMenu()">
-              Pricing
+              {{ 'header.navigation.pricing' | translate }}
             </a>
           </li>
 
           <li class="nav-item dropdown py-lg-2 me-lg-n1 me-xl-0">
             <a [class.active]="isSectionActive('/resources')" [class.aria-expanded]="isSectionActive('/resources')"   class="nav-link dropdown-toggle" data-bs-auto-close="outside" data-bs-toggle="dropdown" data-bs-trigger="hover"
                href="#" role="button">
-              Resources
+              {{ 'header.navigation.resources' | translate }}
             </a>
             <ul class="dropdown-menu border-0 rounded-4 p-3 shadow bg-semi-dark-low">
               <li class="feature-item mb-2">
@@ -196,7 +196,7 @@
                    [routerLink]="['/']"
                    (click)="closeMenu()">
                   <span class="fw-lighter text-white">
-                    Centre d'aide
+                    {{ 'header.resources.help' | translate }}
                   </span>
                 </a>
               </li>
@@ -205,7 +205,7 @@
                    [routerLink]="['/']"
                    (click)="closeMenu()">
                   <span class="fw-lighter text-white">
-                    Documentation API
+                    {{ 'header.resources.api' | translate }}
                   </span>
                 </a>
               </li>
@@ -221,7 +221,7 @@
       <a class="btn btn-primary animate-scale" href=""
          (click)="closeMenu()">
         <i class="fi-plus fs-lg animate-target ms-n2 me-1"></i>
-        Démarrer
+        {{ 'header.navigation.start' | translate }}
       </a>
     </div>
   </div>

@@ -2,6 +2,8 @@ import {Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from 
 import {NavigationEnd, Router, RouterLink, RouterLinkActive} from '@angular/router';
 import {NgClass} from '@angular/common';
 import {filter, Subscription} from 'rxjs';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { LanguageService } from '../../../../../core/services/language.service';
 
 // Déclaration pour Bootstrap (pour éviter les erreurs TypeScript)
 declare var bootstrap: any;
@@ -12,6 +14,7 @@ declare var bootstrap: any;
     RouterLink,
     NgClass,
     RouterLinkActive,
+    TranslateModule // ✅ Ajout du module de traduction
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
@@ -23,10 +26,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
   @ViewChild('backgroundVideo') videoRef!: ElementRef<HTMLVideoElement>;
 
   private routerSubscription?: Subscription;
+  private languageSubscription?: Subscription; // ✅ Subscription pour les changements de langue
   private ticking: boolean = false;
 
-  constructor(private router: Router) {
-  }
+  constructor(
+    private router: Router,
+  ) {}
 
   // Scroll optimisé avec requestAnimationFrame et passive listener
   @HostListener('window:scroll', ['$event'])
@@ -64,7 +69,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
     if (this.routerSubscription) {
       this.routerSubscription.unsubscribe();
     }
+    if (this.languageSubscription) {
+      this.languageSubscription.unsubscribe();
+    }
   }
+
 
   private forceCloseOffcanvas(): void {
     const offcanvasElement = document.getElementById('navbarNav');
@@ -155,4 +164,5 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isSectionActive(baseRoute: string): boolean {
     return this.router.url.startsWith(baseRoute);
   }
+
 }
