@@ -1,8 +1,10 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit, OnDestroy} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
-import {TranslateService} from '@ngx-translate/core';
 import {ThemeService} from './core/services/theme.service';
 import {AosService} from './core/services/aos.service';
+import {LanguageService} from './core/services/language.service';
+import { Subject, takeUntil } from 'rxjs';
+import {PageService} from './pages/services/page.service';
 
 @Component({
   selector: 'app-root',
@@ -10,35 +12,55 @@ import {AosService} from './core/services/aos.service';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent implements OnInit, AfterViewInit {
+export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
+
+  private destroy$ = new Subject<void>();
 
   constructor(
-    private translate: TranslateService,
     private themeService: ThemeService,
-    private aosService: AosService){
-    this.initTranslate();
-
-    const storedTheme = this.themeService.getStoredTheme();
-    this.themeService.applyPreferences();
-    this.themeService.setTheme(storedTheme);
+    private aosService: AosService,
+    private languageService: LanguageService,
+    private pageService: PageService,
+  ) {
+    this.initializeServices();
   }
 
   ngOnInit() {
     this.aosService.initializeAOS();
+    this.setupLanguageListener();
+    this.pageService.preloadHeroForAllLanguages();
   }
 
   ngAfterViewInit(): void {
     this.aosService.initializeAOS();
   }
 
-  private initTranslate() {
-    let lang = localStorage.getItem('lang');
-    if (!lang) {
-      const browserLang = navigator.language?.split('-')[0] || 'fr';
-      lang = ['fr', 'en'].includes(browserLang) ? browserLang : 'fr';
-      localStorage.setItem('lang', lang);
-    }
-    this.translate.setDefaultLang('fr');
-    this.translate.use(lang);
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
+
+  /**
+   * Initialise les services de base
+   */
+  private initializeServices(): void {
+    // Configuration du thème
+    const storedTheme = this.themeService.getStoredTheme();
+    this.themeService.applyPreferences();
+    this.themeService.setTheme(storedTheme);
+  }
+
+  /**
+   * Écoute les changements de langue
+   */
+  private setupLanguageListener(): void {
+    this.languageService.onLanguageChange()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((newLanguage: string) => {
+        //console.log(`🔄 Application: Langue changée vers ${newLanguage}`);
+        // Ici vous pouvez ajouter d'autres actions lors du changement de langue
+        // Par exemple : recharger certaines données, mettre à jour l'URL, etc.
+      });
+  }
+
 }

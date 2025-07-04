@@ -4,6 +4,7 @@ import {PageService} from '../../../services/page.service';
 import {Hero} from '../../../models/hero.model';
 import {VideoManagerService} from '../../../../core/services/video-manager.service';
 import {VideoSource} from '../../../../core/models/video-source.model';
+import {LanguageService} from '../../../../core/services/language.service';
 
 @Component({
   selector: 'app-home',
@@ -32,17 +33,30 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     private pageService: PageService,
-    private videoManager: VideoManagerService
+    private videoManager: VideoManagerService,
+    private languageService: LanguageService // ✅ Injection du service de langue
   ) {
     this.setupUserInteractionDetection();
   }
 
   ngOnInit(): void {
-    this.loadHeroData();
     this.initializeVideoRotation();
+    this.setupLanguageListener(); // ✅ Écouter les changements de langue
+    this.loadHeroData(); // Charger les données initiales
+  }
+
+  // ✅ Écouter les changements de langue
+  private setupLanguageListener(): void {
+    this.languageService.onLanguageChange()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((newLanguage: string) => {
+        this.loadHeroData(); // Recharger les données du hero
+      });
   }
 
   private loadHeroData(): void {
+    this.isLoading = true; // ✅ Afficher le loader lors du changement
+
     this.pageService.getHero()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -248,7 +262,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  // ✅ Mettre à jour les sources de la vidéo
   private updateVideoSources(videoElement: HTMLVideoElement): void {
     if (!this.currentVideo) return;
 
@@ -285,7 +298,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       if (playPromise !== undefined) {
         playPromise
           .then(() => {
-            console.log(`✅ Vidéo "${this.currentVideo?.name}" démarrée avec succès`);
+            //console.log(`✅ Vidéo "${this.currentVideo?.name}" démarrée avec succès`);
           })
           .catch(error => {
             console.warn(`⚠️ Lecture vidéo différée pour "${this.currentVideo?.name}":`, error.message);
@@ -330,5 +343,10 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getVideoStats(): any {
     return this.videoManager.getRotationStats();
+  }
+
+  // ✅ Méthode pour obtenir la langue actuelle (utile pour le template)
+  getCurrentLanguage(): string {
+    return this.languageService.getCurrentLanguage();
   }
 }
