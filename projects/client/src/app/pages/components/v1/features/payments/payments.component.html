@@ -1,1 +1,473 @@
-<p>payments works!</p>
+<!-- Hero Section -->
+<section class="feature-hero bg-semi-dark py-5 position-relative">
+  <div class="container py-5">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <div class="hero-content">
+          <h1 class="display-4 fw-lighter for-dax-font mb-4">
+            {{ 'payments.hero.title' | translate }}
+          </h1>
+          <p class="fs-5 text-muted mb-4 pe-lg-5">
+            {{ 'payments.hero.subtitle' | translate }}
+          </p>
+          <div class="d-flex gap-3 mb-4">
+            <a href="#features" class="btn btn-primary btn-lg">
+              {{ 'payments.hero.getStarted' | translate }}
+            </a>
+            <a href="#demo" class="btn btn-outline-light btn-lg">
+              {{ 'payments.hero.learnMore' | translate }}
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="hero-dashboard">
+          <div class="dashboard-frame">
+            <!--<img src="/assets/images/payments/hero-dashboard.png"
+                 alt="Global Payments Dashboard Overview"
+                 class="img-fluid dashboard-image">-->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Key Benefits -->
+<section class="feature-benefits py-5 bg-semi-green">
+  <div class="container">
+    <div class="row text-center">
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="benefit-item">
+          <div class="benefit-icon mb-3">
+            <i class="fi-globe fs-2 text-primary"></i>
+          </div>
+          <h5 class="fw-semibold mb-2">{{ 'payments.benefits.crossborder.title' | translate }}</h5>
+          <p class="text-muted small">{{ 'payments.benefits.crossborder.description' | translate }}</p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="benefit-item">
+          <div class="benefit-icon mb-3">
+            <i class="fi-users fs-2 text-primary"></i>
+          </div>
+          <h5 class="fw-semibold mb-2">{{ 'payments.benefits.multiparty.title' | translate }}</h5>
+          <p class="text-muted small">{{ 'payments.benefits.multiparty.description' | translate }}</p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="benefit-item">
+          <div class="benefit-icon mb-3">
+            <i class="fi-dollar-sign fs-2 text-primary"></i>
+          </div>
+          <h5 class="fw-semibold mb-2">{{ 'payments.benefits.multicurrency.title' | translate }}</h5>
+          <p class="text-muted small">{{ 'payments.benefits.multicurrency.description' | translate }}</p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="benefit-item">
+          <div class="benefit-icon mb-3">
+            <i class="fi-smartphone fs-2 text-primary"></i>
+          </div>
+          <h5 class="fw-semibold mb-2">{{ 'payments.benefits.mobilemoney.title' | translate }}</h5>
+          <p class="text-muted small">{{ 'payments.benefits.mobilemoney.description' | translate }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Main Features -->
+<section id="features" class="features py-5 bg-semi-dark">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="display-5 fw-lighter for-dax-font mb-3">
+        {{ 'payments.features.title' | translate }}
+      </h2>
+      <p class="fs-6 text-muted mx-auto" style="max-width: 600px;">
+        {{ 'payments.features.subtitle' | translate }}
+      </p>
+    </div>
+
+    <!-- Payment Gateways -->
+    <div class="feature-section mb-5 pb-5">
+      <div class="row align-items-center">
+        <div class="col-lg-6 order-lg-1">
+          <div class="feature-content pe-lg-4">
+            <div class="feature-header mb-4">
+              <div class="feature-icon-large mb-3">
+                <i class="fi-credit-card fs-1 text-primary"></i>
+              </div>
+              <h3 class="h2 fw-semibold mb-3">{{ 'payments.features.gateways.title' | translate }}</h3>
+              <p class="fs-5 text-muted mb-4">{{ 'payments.features.gateways.description' | translate }}</p>
+            </div>
+            <ul class="feature-list list-unstyled">
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'payments.features.gateways.feature1' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'payments.features.gateways.feature2' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'payments.features.gateways.feature3' | translate }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-lg-6 order-lg-2">
+          <div class="feature-image-container">
+            <div class="dashboard-frame">
+              <!--<img src="/assets/images/payments/payment-gateways-dashboard.png"
+                   alt="Payment Gateways Dashboard"
+                   class="img-fluid dashboard-image">-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cross-Border Payments -->
+    <div class="feature-section mb-5 pb-5">
+      <div class="row align-items-center">
+        <div class="col-lg-6 order-lg-2">
+          <div class="feature-content ps-lg-4">
+            <div class="feature-header mb-4">
+              <div class="feature-icon-large mb-3">
+                <i class="fi-map fs-1 text-primary"></i>
+              </div>
+              <h3 class="h2 fw-semibold mb-3">{{ 'payments.features.crossborder.title' | translate }}</h3>
+              <p class="fs-5 text-muted mb-4">{{ 'payments.features.crossborder.description' | translate }}</p>
+            </div>
+            <ul class="feature-list list-unstyled">
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'payments.features.crossborder.feature1' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'payments.features.crossborder.feature2' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'payments.features.crossborder.feature3' | translate }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-lg-6 order-lg-1">
+          <div class="feature-image-container">
+            <div class="dashboard-frame">
+              <!--<img src="/assets/images/payments/crossborder-payments-dashboard.png"
+                   alt="Cross-Border Payments Dashboard"
+                   class="img-fluid dashboard-image">-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Money & African Payments -->
+    <div class="feature-section mb-5 pb-5">
+      <div class="row align-items-center">
+        <div class="col-lg-6 order-lg-1">
+          <div class="feature-content pe-lg-4">
+            <div class="feature-header mb-4">
+              <div class="feature-icon-large mb-3">
+                <i class="fi-smartphone fs-1 text-primary"></i>
+              </div>
+              <h3 class="h2 fw-semibold mb-3">{{ 'payments.features.mobilemoney.title' | translate }}</h3>
+              <p class="fs-5 text-muted mb-4">{{ 'payments.features.mobilemoney.description' | translate }}</p>
+            </div>
+            <ul class="feature-list list-unstyled">
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'payments.features.mobilemoney.feature1' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'payments.features.mobilemoney.feature2' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'payments.features.mobilemoney.feature3' | translate }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-lg-6 order-lg-2">
+          <div class="feature-image-container">
+            <div class="dashboard-frame">
+              <!--<img src="/assets/images/payments/mobile-money-dashboard.png"
+                   alt="Mobile Money Dashboard"
+                   class="img-fluid dashboard-image">-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Batch Payments -->
+    <div class="feature-section mb-5 pb-5">
+      <div class="row align-items-center">
+        <div class="col-lg-6 order-lg-2">
+          <div class="feature-content ps-lg-4">
+            <div class="feature-header mb-4">
+              <div class="feature-icon-large mb-3">
+                <i class="fi-layers fs-1 text-primary"></i>
+              </div>
+              <h3 class="h2 fw-semibold mb-3">{{ 'payments.features.batch.title' | translate }}</h3>
+              <p class="fs-5 text-muted mb-4">{{ 'payments.features.batch.description' | translate }}</p>
+            </div>
+            <ul class="feature-list list-unstyled">
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'payments.features.batch.feature1' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'payments.features.batch.feature2' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'payments.features.batch.feature3' | translate }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-lg-6 order-lg-1">
+          <div class="feature-image-container">
+            <div class="dashboard-frame">
+              <!--<img src="/assets/images/payments/batch-payments-dashboard.png"
+                   alt="Batch Payments Dashboard"
+                   class="img-fluid dashboard-image">-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Crypto & Instant Payments -->
+    <div class="feature-section mb-5 pb-5">
+      <div class="row align-items-center">
+        <div class="col-lg-6 order-lg-1">
+          <div class="feature-content pe-lg-4">
+            <div class="feature-header mb-4">
+              <div class="feature-icon-large mb-3">
+                <i class="fi-zap fs-1 text-primary"></i>
+              </div>
+              <h3 class="h2 fw-semibold mb-3">{{ 'payments.features.crypto.title' | translate }}</h3>
+              <p class="fs-5 text-muted mb-4">{{ 'payments.features.crypto.description' | translate }}</p>
+            </div>
+            <ul class="feature-list list-unstyled">
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'payments.features.crypto.feature1' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'payments.features.crypto.feature2' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'payments.features.crypto.feature3' | translate }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-lg-6 order-lg-2">
+          <div class="feature-image-container">
+            <div class="dashboard-frame">
+              <!--<img src="/assets/images/payments/crypto-payments-dashboard.png"
+                   alt="Crypto Payments Dashboard"
+                   class="img-fluid dashboard-image">-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How it Works -->
+<section class="feature-workflow py-5 bg-semi-green">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="display-5 fw-lighter for-dax-font mb-3">
+        {{ 'payments.workflow.title' | translate }}
+      </h2>
+      <p class="fs-6 text-muted">
+        {{ 'payments.workflow.subtitle' | translate }}
+      </p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3">
+        <div class="workflow-step text-center">
+          <div class="step-number mb-3">1</div>
+          <h5 class="fw-semibold mb-2">{{ 'payments.workflow.step1.title' | translate }}</h5>
+          <p class="text-muted small">{{ 'payments.workflow.step1.description' | translate }}</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="workflow-step text-center">
+          <div class="step-number mb-3">2</div>
+          <h5 class="fw-semibold mb-2">{{ 'payments.workflow.step2.title' | translate }}</h5>
+          <p class="text-muted small">{{ 'payments.workflow.step2.description' | translate }}</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="workflow-step text-center">
+          <div class="step-number mb-3">3</div>
+          <h5 class="fw-semibold mb-2">{{ 'payments.workflow.step3.title' | translate }}</h5>
+          <p class="text-muted small">{{ 'payments.workflow.step3.description' | translate }}</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="workflow-step text-center">
+          <div class="step-number mb-3">4</div>
+          <h5 class="fw-semibold mb-2">{{ 'payments.workflow.step4.title' | translate }}</h5>
+          <p class="text-muted small">{{ 'payments.workflow.step4.description' | translate }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Full Dashboard Demo -->
+<section id="demo" class="feature-demo py-5 bg-semi-dark">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="display-5 fw-lighter for-dax-font mb-3">
+        {{ 'payments.demo.title' | translate }}
+      </h2>
+      <p class="fs-6 text-muted">
+        {{ 'payments.demo.subtitle' | translate }}
+      </p>
+    </div>
+
+    <div class="demo-dashboard-container">
+      <div class="dashboard-frame large">
+        <!--<img src="/assets/images/payments/full-payments-dashboard.png"
+             alt="Complete Global Payments Dashboard"
+             class="img-fluid dashboard-image">-->
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Payment Methods Integration -->
+<section class="feature-integrations py-5 bg-semi-green">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="display-5 fw-lighter for-dax-font mb-3">
+        {{ 'payments.integrations.title' | translate }}
+      </h2>
+      <p class="fs-6 text-muted">
+        {{ 'payments.integrations.subtitle' | translate }}
+      </p>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <div class="payments-grid mb-5">
+          <h4 class="text-center mb-4 text-muted">{{ 'payments.integrations.traditional' | translate }}</h4>
+          <div class="platforms-grid" style="grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1.5rem;">
+            @for (method of ['paypal', 'stripe', 'wise', 'bank-transfer', 'swift', 'sepa']; track method) {
+              <div class="platform-item">
+                <!--<img [src]="'/assets/images/payment-methods/' + method + '.png'"
+                     [alt]="method"
+                     class="platform-logo">-->
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="payments-grid mb-5">
+          <h4 class="text-center mb-4 text-muted">{{ 'payments.integrations.mobilemoney' | translate }}</h4>
+          <div class="platforms-grid" style="grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1.5rem;">
+            @for (mobile of ['mpesa', 'mtn-money', 'orange-money', 'airtel-money', 'wave', 'flutterwave']; track mobile) {
+              <div class="platform-item">
+                <!--<img [src]="'/assets/images/mobile-money/' + mobile + '.png'"
+                     [alt]="mobile"
+                     class="platform-logo">-->
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="payments-grid">
+          <h4 class="text-center mb-4 text-muted">{{ 'payments.integrations.crypto' | translate }}</h4>
+          <div class="platforms-grid" style="grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1.5rem;">
+            @for (crypto of ['usdc', 'usdt', 'ethereum', 'bitcoin', 'polygon', 'binance']; track crypto) {
+              <div class="platform-item">
+                <!--<img [src]="'/assets/images/crypto/' + crypto + '.png'"
+                     [alt]="crypto"
+                     class="platform-logo">-->
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="text-center mt-4">
+          <p class="text-muted small">{{ 'payments.integrations.more' | translate }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing Preview -->
+<app-pricing-preview featureContext="payments" backgroundClass="bg-semi-dark"></app-pricing-preview>
+
+<!-- Related Features -->
+<section class="feature-related py-5 bg-semi-green">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="h3 fw-lighter for-dax-font mb-3">
+        {{ 'payments.related.title' | translate }}
+      </h2>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-md-6 col-lg-3">
+        <a [routerLink]="['/features/catalog']" class="related-link d-block text-decoration-none">
+          <div class="related-card p-4 text-center">
+            <i class="fi-folder fs-2 text-primary mb-3"></i>
+            <h5 class="fw-semibold mb-2">{{ 'payments.related.catalog' | translate }}</h5>
+            <p class="text-muted small mb-0">{{ 'payments.related.catalogDesc' | translate }}</p>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <a [routerLink]="['/features/rights']" class="related-link d-block text-decoration-none">
+          <div class="related-card p-4 text-center">
+            <i class="fi-shield fs-2 text-primary mb-3"></i>
+            <h5 class="fw-semibold mb-2">{{ 'payments.related.rights' | translate }}</h5>
+            <p class="text-muted small mb-0">{{ 'payments.related.rightsDesc' | translate }}</p>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <a [routerLink]="['/features/income-tracking']" class="related-link d-block text-decoration-none">
+          <div class="related-card p-4 text-center">
+            <i class="fi-bar-chart fs-2 text-primary mb-3"></i>
+            <h5 class="fw-semibold mb-2">{{ 'payments.related.income' | translate }}</h5>
+            <p class="text-muted small mb-0">{{ 'payments.related.incomeDesc' | translate }}</p>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <a [routerLink]="['/features/royalties']" class="related-link d-block text-decoration-none">
+          <div class="related-card p-4 text-center">
+            <i class="fi-dollar-sign fs-2 text-primary mb-3"></i>
+            <h5 class="fw-semibold mb-2">{{ 'payments.related.royalties' | translate }}</h5>
+            <p class="text-muted small mb-0">{{ 'payments.related.royaltiesDesc' | translate }}</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

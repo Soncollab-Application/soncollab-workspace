@@ -114,5 +114,805 @@
       "select": "Sélectionner la langue"
     },
     "copyright": "© 2025 Soncollab. Tous droits réservés."
+  },
+
+  "pricing": {
+    "catalog": {
+      "title": "Gérez Votre Catalogue Efficacement",
+      "description": "Nos plans s'adaptent à la taille de votre catalogue et à vos besoins de distribution.",
+      "viewPlans": "Voir les tarifs",
+      "contactSales": "Nous contacter",
+      "highlight1": "Stockage illimité",
+      "highlight2": "Support dédié",
+      "highlight3": "Évolutivité garantie"
+    },
+    "rights": {
+      "title": "Protégez Vos Droits Musicaux",
+      "description": "Sécurisez et gérez tous vos droits d'auteur avec nos solutions juridiques intégrées.",
+      "viewPlans": "Voir les tarifs",
+      "contactSales": "Nous contacter",
+      "highlight1": "Protection juridique",
+      "highlight2": "Conseils d'experts",
+      "highlight3": "Couverture mondiale"
+    },
+    "distribution": {
+      "title": "Diffusez Partout dans le Monde",
+      "description": "Atteignez toutes les plateformes musicales avec notre réseau de distribution global.",
+      "viewPlans": "Voir les tarifs",
+      "contactSales": "Nous contacter",
+      "highlight1": "200+ plateformes",
+      "highlight2": "Distribution rapide",
+      "highlight3": "Reporting détaillé"
+    },
+    "analytics": {
+      "title": "Analysez Vos Performances",
+      "description": "Prenez des décisions éclairées grâce à nos outils d'analyse avancés.",
+      "viewPlans": "Voir les tarifs",
+      "contactSales": "Nous contacter",
+      "highlight1": "Données temps réel",
+      "highlight2": "Rapports personnalisés",
+      "highlight3": "Insights actionables"
+    },
+    "royalties": {
+      "title": "Optimisez Vos Revenus",
+      "description": "Maximisez et suivez tous vos revenus musicaux avec précision.",
+      "viewPlans": "Voir les tarifs",
+      "contactSales": "Nous contacter",
+      "highlight1": "Calculs précis",
+      "highlight2": "Paiements rapides",
+      "highlight3": "Transparence totale"
+    },
+    "payments": {
+      "title": "Recevez Vos Paiements Rapidement",
+      "description": "Solutions de paiement flexibles et sécurisées pour tous vos revenus musicaux.",
+      "viewPlans": "Voir les tarifs",
+      "contactSales": "Nous contacter",
+      "highlight1": "Paiements sécurisés",
+      "highlight2": "Frais réduits",
+      "highlight3": "Support multidevise"
+    },
+    "income-tracking": {
+      "title": "Suivez Vos Revenus en Détail",
+      "description": "Contrôlez chaque source de revenus avec nos outils de suivi avancés.",
+      "viewPlans": "Voir les tarifs",
+      "contactSales": "Nous contacter",
+      "highlight1": "Suivi multi-sources",
+      "highlight2": "Alertes automatiques",
+      "highlight3": "Prévisions précises"
+    }
+  },
+
+  "catalog": {
+    "hero": {
+      "title": "Gestion de Catalogue Simplifiée",
+      "subtitle": "Organisez, gérez et distribuez votre musique en toute simplicité. Une plateforme centralisée pour tout votre contenu musical.",
+      "getStarted": "Commencer",
+      "learnMore": "En savoir plus"
+    },
+    "demo": {
+      "title": "Workflow Complet en Action",
+      "subtitle": "Découvrez l'interface complète qui transforme la gestion de votre catalogue musical."
+    },
+    "benefits": {
+      "upload": {
+        "title": "Upload Facile",
+        "description": "Importez vos fichiers en quelques clics"
+      },
+      "organize": {
+        "title": "Organisation Claire",
+        "description": "Classez et retrouvez facilement vos contenus"
+      },
+      "distribute": {
+        "title": "Distribution Rapide",
+        "description": "Diffusez sur toutes les plateformes"
+      },
+      "track": {
+        "title": "Suivi Précis",
+        "description": "Analysez vos performances en temps réel"
+      }
+    },
+    "features": {
+      "title": "Fonctionnalités Essentielles",
+      "subtitle": "Tout ce dont vous avez besoin pour gérer efficacement votre catalogue musical.",
+      "management": {
+        "title": "Gestion des Fichiers",
+        "description": "Organisez tous vos fichiers audio et métadonnées dans une interface claire et intuitive.",
+        "feature1": "Upload par lot et organisation automatique",
+        "feature2": "Support de tous les formats audio",
+        "feature3": "Prévisualisation et modification en temps réel"
+      },
+      "metadata": {
+        "title": "Gestion des Métadonnées",
+        "description": "Enrichissez vos contenus avec des informations complètes et précises.",
+        "feature1": "Édition simple des informations",
+        "feature2": "Gestion des crédits et collaborateurs",
+        "feature3": "Tags automatiques et personnalisés"
+      },
+      "distribution": {
+        "title": "Distribution Globale",
+        "description": "Diffusez votre musique sur toutes les plateformes de streaming mondiales.",
+        "feature1": "Accès à 200+ plateformes",
+        "feature2": "Distribution automatisée",
+        "feature3": "Gestion des sorties programmées"
+      },
+      "analytics": {
+        "title": "Analytics Détaillées",
+        "description": "Suivez les performances de votre catalogue avec des données précises.",
+        "feature1": "Statistiques en temps réel",
+        "feature2": "Rapports détaillés par plateforme",
+        "feature3": "Analyses des tendances d'écoute"
+      }
+    },
+    "workflow": {
+      "title": "Comment ça marche",
+      "subtitle": "Un processus simple en 4 étapes pour gérer votre catalogue.",
+      "step1": {
+        "title": "Upload",
+        "description": "Importez vos fichiers et métadonnées"
+      },
+      "step2": {
+        "title": "Organisation",
+        "description": "Classez et enrichissez votre contenu"
+      },
+      "step3": {
+        "title": "Distribution",
+        "description": "Diffusez sur toutes les plateformes"
+      },
+      "step4": {
+        "title": "Analyse",
+        "description": "Suivez et optimisez vos performances"
+      }
+    },
+    "integrations": {
+      "title": "Intégrations Complètes",
+      "subtitle": "Connectez-vous à toutes les plateformes de streaming majeures.",
+      "more": "Et plus de 200 autres plateformes..."
+    },
+    "related": {
+      "title": "Fonctionnalités Complémentaires",
+      "rights": "Gestion des Droits",
+      "rightsDesc": "Protégez et gérez vos droits d'auteur",
+      "distribution": "Distribution",
+      "distributionDesc": "Diffusez votre musique partout",
+      "royalties": "Royautés",
+      "royaltiesDesc": "Suivez vos revenus en détail",
+      "analytics": "Analytics",
+      "analyticsDesc": "Analysez vos performances"
+    }
+  },
+
+  "rights": {
+    "hero": {
+      "title": "Protégez Vos Droits Musicaux",
+      "subtitle": "Sécurisez, gérez et monétisez vos droits d'auteur avec notre plateforme juridique complète. Protection mondiale et expertise légale intégrées.",
+      "getStarted": "Commencer",
+      "learnMore": "En savoir plus"
+    },
+    "benefits": {
+      "protect": {
+        "title": "Protection Légale",
+        "description": "Sécurisez vos œuvres avec nos experts juridiques"
+      },
+      "register": {
+        "title": "Enregistrement",
+        "description": "Déposez vos droits dans le monde entier"
+      },
+      "monitor": {
+        "title": "Surveillance",
+        "description": "Détectez les utilisations non autorisées"
+      },
+      "monetize": {
+        "title": "Monétisation",
+        "description": "Récupérez tous vos revenus légitimes"
+      }
+    },
+    "features": {
+      "title": "Protection Juridique Complète",
+      "subtitle": "Tous les outils nécessaires pour protéger et gérer efficacement vos droits musicaux.",
+      "registration": {
+        "title": "Enregistrement des Droits",
+        "description": "Déposez et enregistrez automatiquement vos droits d'auteur dans toutes les juridictions mondiales.",
+        "feature1": "Dépôt automatique multi-juridictions",
+        "feature2": "Certificats officiels de droit d'auteur",
+        "feature3": "Base de données sécurisée et horodatée"
+      },
+      "monitoring": {
+        "title": "Surveillance des Violations",
+        "description": "Détectez en temps réel les utilisations non autorisées de vos œuvres sur internet et les médias.",
+        "feature1": "Surveillance 24/7 automatisée",
+        "feature2": "Détection IA avancée",
+        "feature3": "Alertes instantanées de violation"
+      },
+      "legal": {
+        "title": "Assistance Juridique",
+        "description": "Bénéficiez de l'expertise de nos avocats spécialisés en droit de la propriété intellectuelle.",
+        "feature1": "Conseil juridique expert inclus",
+        "feature2": "Procédures de mise en demeure",
+        "feature3": "Représentation légale si nécessaire"
+      },
+      "claims": {
+        "title": "Récupération de Revenus",
+        "description": "Réclamez et récupérez automatiquement tous les revenus dus pour vos œuvres utilisées.",
+        "feature1": "Claims automatiques sur plateformes",
+        "feature2": "Négociation de licences rétroactives",
+        "feature3": "Recouvrement de dommages-intérêts"
+      }
+    },
+    "workflow": {
+      "title": "Protection en 4 Étapes Simples",
+      "subtitle": "De l'enregistrement à la récupération des revenus, notre processus juridique optimisé.",
+      "step1": {
+        "title": "Enregistrement",
+        "description": "Déposez vos droits d'auteur automatiquement"
+      },
+      "step2": {
+        "title": "Surveillance",
+        "description": "Monitoring continu des violations potentielles"
+      },
+      "step3": {
+        "title": "Action Légale",
+        "description": "Procédures automatisées contre les infractions"
+      },
+      "step4": {
+        "title": "Récupération",
+        "description": "Collecte des revenus et dommages-intérêts"
+      }
+    },
+    "demo": {
+      "title": "Interface Juridique Complète",
+      "subtitle": "Découvrez notre plateforme de gestion des droits avec assistance juridique intégrée."
+    },
+    "partners": {
+      "title": "Partenaires Juridiques Mondiaux",
+      "subtitle": "Nous travaillons avec les principales sociétés de gestion collective et cabinets d'avocats.",
+      "more": "Et plus de 50 partenaires juridiques mondiaux..."
+    },
+    "related": {
+      "title": "Fonctionnalités Complémentaires",
+      "catalog": "Gestion de Catalogue",
+      "catalogDesc": "Organisez vos œuvres protégées",
+      "royalties": "Suivi des Royautés",
+      "royaltiesDesc": "Suivez vos revenus de droits",
+      "payments": "Paiements",
+      "paymentsDesc": "Recevez vos compensations légales",
+      "analytics": "Analytics Juridiques",
+      "analyticsDesc": "Analysez vos violations et récupérations"
+    }
+  },
+
+  "distribution": {
+    "hero": {
+      "title": "Diffusez Votre Musique Partout",
+      "subtitle": "Distribuez votre musique aux quatre coins du monde, rapidement et sans faille. Maîtrisez le processus de bout en bout.",
+      "getStarted": "Commencer",
+      "learnMore": "En savoir plus"
+    },
+    "benefits": {
+      "global": {
+        "title": "Portée Mondiale",
+        "description": "Diffusez sur toutes les plateformes mondiales"
+      },
+      "trusted": {
+        "title": "Partenaire de Confiance",
+        "description": "Accédez aux plus hauts standards de livraison"
+      },
+      "speed": {
+        "title": "Rapidité & Efficacité",
+        "description": "Contrôle granulaire de votre chaîne d'approvisionnement"
+      },
+      "flexible": {
+        "title": "Accords DSP Flexibles",
+        "description": "Tirez parti de nos partenariats directs"
+      }
+    },
+    "features": {
+      "title": "Distribution Musicale Avancée",
+      "subtitle": "Tous les outils pour distribuer efficacement votre musique sur les plateformes mondiales.",
+      "dsp": {
+        "title": "Accords DSP Flexibles",
+        "description": "Profitez d'accords directs avec les DSP, d'accords Merlin ou Soncollab pour une expérience de distribution fluide.",
+        "feature1": "Accords directs avec les principales plateformes",
+        "feature2": "Réseau DSP étendu ou vos partenaires préférés",
+        "feature3": "Stratégie de distribution entièrement personnalisable"
+      },
+      "markets": {
+        "title": "Accès aux Marchés Mondiaux",
+        "description": "Distribuez via les DSP mondiaux et locaux, atteignant les principales plateformes de streaming musical et vidéo, réseaux sociaux et marchés émergents.",
+        "feature1": "Plateformes de streaming majeures mondiales",
+        "feature2": "Marchés émergents gaming et fitness",
+        "feature3": "Expansion d'audience et découvrabilité"
+      },
+      "ugc": {
+        "title": "Monétisation UGC Complète",
+        "description": "Libérez le vrai potentiel de revenus de votre musique sur toutes les plateformes de contenu généré par les utilisateurs.",
+        "feature1": "Facebook, Instagram, TikTok, YouTube",
+        "feature2": "Rémunération à chaque utilisation, partage ou stream",
+        "feature3": "Suivi automatique des revenus UGC"
+      },
+      "quality": {
+        "title": "Contrôle Qualité Assuré",
+        "description": "Rationalisez votre processus de sortie avec notre Inspecteur de Métadonnées pour répondre à toutes les exigences DSP.",
+        "feature1": "Validation rapide des métadonnées musicales",
+        "feature2": "Respect de toutes les exigences DSP",
+        "feature3": "Livraison fluide sur le marché mondial"
+      },
+      "delivery": {
+        "title": "Options de Livraison Flexibles",
+        "description": "Personnalisez votre distribution pour un impact maximal. Programmez des sorties mondiales précises selon votre stratégie.",
+        "feature1": "Paramètres personnalisés par service et région",
+        "feature2": "Horaires de sortie mondiale précis",
+        "feature3": "Lancements régionaux ciblés"
+      },
+      "batch": {
+        "title": "Opérations par Lots",
+        "description": "Augmentez vos opérations avec la distribution par lots. Livrez, mettez à jour ou retirez de gros volumes de contenu.",
+        "feature1": "Distribution massive multi-plateformes",
+        "feature2": "Mises à jour et retraits en lot",
+        "feature3": "Gestion efficace de catalogues volumineux"
+      }
+    },
+    "workflow": {
+      "title": "Distribution en 4 Étapes",
+      "subtitle": "De la préparation à la diffusion mondiale, notre processus optimisé pour votre succès.",
+      "step1": {
+        "title": "Préparation",
+        "description": "Préparez vos fichiers et métadonnées"
+      },
+      "step2": {
+        "title": "Validation",
+        "description": "Contrôle qualité automatique"
+      },
+      "step3": {
+        "title": "Distribution",
+        "description": "Diffusion sur toutes les plateformes"
+      },
+      "step4": {
+        "title": "Monitoring",
+        "description": "Suivi des performances et revenus"
+      }
+    },
+    "demo": {
+      "title": "Plateforme de Distribution Complète",
+      "subtitle": "Découvrez notre interface de distribution avec contrôle total sur votre stratégie mondiale."
+    },
+    "platforms": {
+      "title": "Réseau de Distribution Mondial",
+      "subtitle": "Diffusez sur toutes les plateformes majeures et émergentes avec un seul clic.",
+      "more": "Et plus de 300 plateformes dans le monde..."
+    },
+    "related": {
+      "title": "Fonctionnalités Complémentaires",
+      "catalog": "Gestion de Catalogue",
+      "catalogDesc": "Organisez vos contenus à distribuer",
+      "rights": "Gestion des Droits",
+      "rightsDesc": "Protégez vos œuvres distribuées",
+      "tracking": "Suivi des Revenus",
+      "trackingDesc": "Suivez vos gains par plateforme",
+      "analytics": "Analytics",
+      "analyticsDesc": "Analysez vos performances de distribution"
+    }
+  },
+
+  "income": {
+    "hero": {
+      "title": "Optimisez Votre Suivi des Revenus",
+      "subtitle": "Gérez et réconciliez facilement vos rapports de revenus, assurant une visibilité et un contrôle complets sur vos données financières. Sachez exactement comment vos revenus circulent, de la source au règlement.",
+      "getStarted": "Commencer",
+      "learnMore": "En savoir plus"
+    },
+    "benefits": {
+      "automated": {
+        "title": "Ingestion Automatisée",
+        "description": "Réduisez le temps et l'effort de suivi des revenus"
+      },
+      "data": {
+        "title": "Gestion de Gros Volumes",
+        "description": "Rationalisez vos opérations de reporting"
+      },
+      "accurate": {
+        "title": "Reporting Précis",
+        "description": "Obtenez des rapports financiers précis"
+      },
+      "visibility": {
+        "title": "Visibilité Complète",
+        "description": "Contrôlez tous vos flux de revenus"
+      }
+    },
+    "features": {
+      "title": "Suivi des Revenus Intelligent",
+      "subtitle": "Tous les outils pour gérer précisément vos données financières et maximiser vos revenus musicaux.",
+      "ingestion": {
+        "title": "Ingestion des Rapports de Revenus",
+        "description": "Ingérez les rapports de revenus via API, FTP ou upload direct pour capturer toutes les données de revenus avec précision et efficacité.",
+        "feature1": "Import via API, FTP ou upload direct",
+        "feature2": "Élimination de la saisie manuelle",
+        "feature3": "Données consolidées prêtes à l'emploi"
+      },
+      "reconcile": {
+        "title": "Réconciliation des Paiements",
+        "description": "Rationalisez la gestion financière en faisant automatiquement correspondre les transactions avec les données du catalogue.",
+        "feature1": "Correspondance automatique des transactions",
+        "feature2": "Résolution facile des écarts",
+        "feature3": "Ajustements FX pour réconciliation précise"
+      },
+      "matching": {
+        "title": "Correspondance Intelligente d'Actifs",
+        "description": "Détectez et suggérez automatiquement des correspondances pour les transactions non appariées.",
+        "feature1": "Détection automatique de correspondances",
+        "feature2": "Approbation des correspondances et comblement des lacunes",
+        "feature3": "Données financières toujours précises et à jour"
+      },
+      "currency": {
+        "title": "Ajustements de Devise",
+        "description": "Rationalisez les conversions de devises et les ajustements financiers, incluant taxes, frais et montants manquants.",
+        "feature1": "Conversions de devises rationalisées",
+        "feature2": "Calcul automatique des taux FX",
+        "feature3": "Données financières cohérentes et fiables"
+      },
+      "audit": {
+        "title": "Audit des Rapports de Revenus",
+        "description": "Obtenez une visibilité complète sur vos revenus avec nos outils d'audit. Suivez les paiements manquants et résolvez rapidement les problèmes.",
+        "feature1": "Suivi des paiements manquants",
+        "feature2": "Identification des écarts",
+        "feature3": "Résolution rapide avec insights temps réel"
+      }
+    },
+    "workflow": {
+      "title": "Suivi des Revenus en 4 Étapes",
+      "subtitle": "De l'ingestion à l'audit, notre processus optimisé pour une gestion financière parfaite.",
+      "step1": {
+        "title": "Ingestion",
+        "description": "Import automatique des rapports de revenus"
+      },
+      "step2": {
+        "title": "Réconciliation",
+        "description": "Correspondance des transactions et du catalogue"
+      },
+      "step3": {
+        "title": "Ajustements",
+        "description": "Corrections de devises et ajustements"
+      },
+      "step4": {
+        "title": "Audit",
+        "description": "Vérification et validation finale"
+      }
+    },
+    "demo": {
+      "title": "Plateforme de Suivi Complète",
+      "subtitle": "Découvrez notre interface de gestion des revenus avec contrôle total sur vos données financières."
+    },
+    "integrations": {
+      "title": "Sources de Données Multiples",
+      "subtitle": "Intégrez toutes vos sources de revenus avec flexibilité et précision.",
+      "more": "Et bien d'autres formats de données..."
+    },
+    "related": {
+      "title": "Fonctionnalités Complémentaires",
+      "catalog": "Gestion de Catalogue",
+      "catalogDesc": "Organisez vos actifs générateurs de revenus",
+      "distribution": "Distribution",
+      "distributionDesc": "Suivez les revenus par plateforme",
+      "royalties": "Comptabilité des Royautés",
+      "royaltiesDesc": "Calculez précisément vos royautés",
+      "payments": "Paiements Globaux",
+      "paymentsDesc": "Recevez vos paiements rapidement"
+    }
+  },
+  "analytics": {
+    "hero": {
+      "title": "Analysez Vos Données avec Clarté",
+      "subtitle": "Libérez le pouvoir de vos données. Exploitez des analyses avancées pour comprendre les tendances de streaming, les modèles de revenus et l'efficacité marketing, guidant des stratégies plus intelligentes et la croissance.",
+      "getStarted": "Commencer",
+      "learnMore": "En savoir plus"
+    },
+    "benefits": {
+      "comprehensive": {
+        "title": "Données Complètes",
+        "description": "Vue à 360° des performances de votre catalogue"
+      },
+      "actionable": {
+        "title": "Insights Actionnables",
+        "description": "Identifiez les tendances pour des décisions plus intelligentes"
+      },
+      "growth": {
+        "title": "Croissance Data-Driven",
+        "description": "Repérez les opportunités pour booster votre succès"
+      }
+    },
+    "features": {
+      "title": "Analytics & Insights Avancés",
+      "subtitle": "Transformez vos données en stratégies gagnantes avec nos outils d'analyse puissants.",
+      "catalog": {
+        "title": "Analysez les Performances du Catalogue",
+        "description": "Analysez les données de streaming et de téléchargement sur plusieurs DSP avec une granularité inégalée.",
+        "feature1": "Analyse détaillée par Release, DSP, Marché, Format",
+        "feature2": "Surveillance de tous vos actifs depuis un tableau de bord unique",
+        "feature3": "Données de performance en temps réel"
+      },
+      "revenue": {
+        "title": "Suivez les Tendances de Revenus",
+        "description": "Suivez les revenus avec des détails par actifs, DSP, marchés et territoires pour optimiser vos performances financières.",
+        "feature1": "Vue complète des gains par source",
+        "feature2": "Identification des principaux moteurs de revenus",
+        "feature3": "Tendances et prévisions de revenus"
+      },
+      "export": {
+        "title": "Partagez les Données Facilement",
+        "description": "Exportez facilement les données en formats CSV ou PDF pour partager avec votre équipe ou vos parties prenantes.",
+        "feature1": "Export en formats CSV et PDF",
+        "feature2": "Jusqu'à 1000 lignes disponibles",
+        "feature3": "Intégration dans des rapports externes"
+      },
+      "audience": {
+        "title": "Comprenez Votre Audience",
+        "description": "Suivez la croissance quotidienne des auditeurs et découvrez qui ils sont, d'où ils viennent et comment ils interagissent.",
+        "feature1": "Suivi de la croissance quotidienne des auditeurs",
+        "feature2": "Insights démographiques et géographiques",
+        "feature3": "Optimisation des stratégies marketing"
+      },
+      "ai": {
+        "title": "Insights Alimentés par l'IA",
+        "description": "Prenez des décisions plus intelligentes avec des résumés pilotés par l'IA et des actions recommandées.",
+        "feature1": "Résumés pilotés par l'IA",
+        "feature2": "Actions recommandées basées sur les performances",
+        "feature3": "Insights faciles à comprendre pour affiner votre stratégie"
+      }
+    },
+    "workflow": {
+      "title": "Analytics en 4 Étapes",
+      "subtitle": "De la collecte de données aux insights actionnables, notre processus optimisé pour votre croissance.",
+      "step1": {
+        "title": "Collecte",
+        "description": "Agrégation automatique des données multi-plateformes"
+      },
+      "step2": {
+        "title": "Analyse",
+        "description": "Traitement et analyse des tendances"
+      },
+      "step3": {
+        "title": "Insights",
+        "description": "Génération d'insights actionnables par l'IA"
+      },
+      "step4": {
+        "title": "Action",
+        "description": "Implémentation des stratégies optimisées"
+      }
+    },
+    "demo": {
+      "title": "Plateforme Analytics Complète",
+      "subtitle": "Découvrez notre interface d'analyse avec des insights en temps réel et des recommandations intelligentes."
+    },
+    "integrations": {
+      "title": "Sources de Données Unifiées",
+      "subtitle": "Connectez toutes vos plateformes et sources de données pour une analyse centralisée.",
+      "more": "Et plus de 50 sources de données..."
+    },
+    "related": {
+      "title": "Fonctionnalités Complémentaires",
+      "catalog": "Gestion de Catalogue",
+      "catalogDesc": "Organisez vos contenus à analyser",
+      "rights": "Gestion des Droits",
+      "rightsDesc": "Analysez les performances de vos droits",
+      "distribution": "Distribution",
+      "distributionDesc": "Optimisez vos stratégies de distribution",
+      "income": "Suivi des Revenus",
+      "incomeDesc": "Analysez vos sources de revenus"
+    }
+  },
+  "payments": {
+    "hero": {
+      "title": "Sécurisez Vos Paiements Globaux",
+      "subtitle": "Gérez les paiements transfrontaliers de manière transparente. Assurez un support multi-devises sécurisé et des distributions de royautés rapides et précises, rendant la gestion financière mondiale sans effort.",
+      "getStarted": "Commencer",
+      "learnMore": "En savoir plus"
+    },
+    "benefits": {
+      "crossborder": {
+        "title": "Paiements Transfrontaliers",
+        "description": "Payez les ayants droit dans le monde entier"
+      },
+      "multiparty": {
+        "title": "Répartitions Multi-Parties",
+        "description": "Payez tout le monde en toute transparence"
+      },
+      "multicurrency": {
+        "title": "Multi-Devises",
+        "description": "Payez en FIAT ou cryptomonnaies stables"
+      },
+      "mobilemoney": {
+        "title": "Mobile Money",
+        "description": "Support complet des solutions de paiement mobile africaines"
+      }
+    },
+    "features": {
+      "title": "Solutions de Paiement Globales",
+      "subtitle": "Tous les outils pour gérer efficacement vos paiements mondiaux et maximiser la satisfaction de vos artistes.",
+      "gateways": {
+        "title": "Passerelles de Paiement Multiples",
+        "description": "Automatisez votre distribution de royautés du calcul au paiement, minimisant le travail manuel et les erreurs.",
+        "feature1": "Intégration Tipalti avec PayPal et ACH",
+        "feature2": "Options de paiement flexibles",
+        "feature3": "Réduction du travail manuel et des erreurs"
+      },
+      "crossborder": {
+        "title": "Paiements Transfrontaliers",
+        "description": "Gérez efficacement les paiements en plusieurs devises, garantissant que les bénéficiaires sont payés dans leur devise préférée.",
+        "feature1": "Gestion efficace des paiements multi-devises",
+        "feature2": "Conversions de devises automatisées",
+        "feature3": "Réduction des erreurs et amélioration de la précision"
+      },
+      "mobilemoney": {
+        "title": "Mobile Money & Solutions Africaines",
+        "description": "Accès complet aux solutions de paiement mobile africaines incluant M-Pesa, MTN Money, Orange Money et autres.",
+        "feature1": "Support M-Pesa, MTN Money, Orange Money, Wave",
+        "feature2": "Intégration Wave et Flutterwave",
+        "feature3": "Paiements instantanés sur mobile dans toute l'Afrique"
+      },
+      "batch": {
+        "title": "Traitez les Paiements par Lots",
+        "description": "Traitez les paiements pour n'importe quel nombre d'ayants droit—d'un à des milliers—rapidement et efficacement.",
+        "feature1": "Paiements de un à des milliers de bénéficiaires",
+        "feature2": "Traitement par lots conçu pour l'évolutivité",
+        "feature3": "Croissance sans effort des opérations de paiement"
+      },
+      "crypto": {
+        "title": "Paiements Globaux à Vitesse Internet",
+        "description": "Effectuez des paiements instantanés et sécurisés aux artistes et ayants droit mondialement, 7 jours sur 7, en utilisant des cryptomonnaies stables.",
+        "feature1": "Paiements instantanés et sécurisés 24/7",
+        "feature2": "Cryptomonnaies stables pour règlement rapide",
+        "feature3": "Flexibilité en continu pour les artistes globaux"
+      }
+    },
+    "workflow": {
+      "title": "Paiements en 4 Étapes",
+      "subtitle": "Du calcul au règlement, notre processus optimisé pour des paiements globaux sans friction.",
+      "step1": {
+        "title": "Calcul",
+        "description": "Calcul automatique des royautés et répartitions"
+      },
+      "step2": {
+        "title": "Validation",
+        "description": "Vérification des montants et bénéficiaires"
+      },
+      "step3": {
+        "title": "Traitement",
+        "description": "Exécution des paiements par lots"
+      },
+      "step4": {
+        "title": "Confirmation",
+        "description": "Notifications et rapports de paiement"
+      }
+    },
+    "demo": {
+      "title": "Plateforme de Paiements Complète",
+      "subtitle": "Découvrez notre interface de paiements globaux avec support multi-devises et mobile money."
+    },
+    "integrations": {
+      "title": "Méthodes de Paiement Complètes",
+      "subtitle": "Payez vos artistes avec leurs méthodes préférées, partout dans le monde.",
+      "traditional": "Méthodes Traditionnelles",
+      "mobilemoney": "Mobile Money",
+      "crypto": "Cryptomonnaies Stables",
+      "more": "Et plus de 100 méthodes de paiement..."
+    },
+    "related": {
+      "title": "Fonctionnalités Complémentaires",
+      "catalog": "Gestion de Catalogue",
+      "catalogDesc": "Organisez vos contenus générateurs de revenus",
+      "rights": "Gestion des Droits",
+      "rightsDesc": "Gérez les droits des ayants droit",
+      "income": "Suivi des Revenus",
+      "incomeDesc": "Suivez les revenus à distribuer",
+      "royalties": "Comptabilité des Royautés",
+      "royaltiesDesc": "Calculez précisément les montants à payer"
+    }
+  },
+  "royalties": {
+    "hero": {
+      "title": "Comptabilité des Royalties Automatisée",
+      "subtitle": "Optimisez votre gestion des royalties avec une automatisation intelligente, des rapports transparents et une distribution instantanée sur tous les flux de revenus.",
+      "getStarted": "Commencer",
+      "learnMore": "En savoir plus"
+    },
+    "benefits": {
+      "automate": {
+        "title": "Tout Automatiser",
+        "description": "Laissez l'IA gérer les calculs complexes de royalties, les approbations et les distributions automatiquement."
+      },
+      "transparent": {
+        "title": "Transparence Totale",
+        "description": "Visibilité en temps réel sur tous les flux de royalties avec des rapports détaillés et des analyses."
+      },
+      "portal": {
+        "title": "Portail Artiste",
+        "description": "Donnez à vos artistes un accès direct à leurs données de royalties et à leur historique de paiements."
+      }
+    },
+    "features": {
+      "title": "Fonctionnalités Puissantes pour les Royalties",
+      "subtitle": "Tout ce dont vous avez besoin pour gérer efficacement les royalties, des calculs automatisés aux paiements blockchain.",
+      "runs": {
+        "title": "Calculs Automatisés des Royalties",
+        "description": "Configurez des calculs automatisés de royalties qui s'exécutent selon un calendrier, gèrent les répartitions complexes et génèrent des rapports détaillés sans intervention manuelle.",
+        "feature1": "Calculs automatiques programmés",
+        "feature2": "Gestion des répartitions complexes",
+        "feature3": "Rapports détaillés et pistes d'audit"
+      },
+      "approvals": {
+        "title": "Approbations Simplifiées",
+        "description": "Rationalisez le processus d'approbation avec des flux de travail intelligents, des approbations en masse et des étapes de révision personnalisables pour différentes parties prenantes.",
+        "feature1": "Flux d'approbation intelligents",
+        "feature2": "Capacités d'approbation en masse",
+        "feature3": "Étapes de révision personnalisables"
+      },
+      "analytics": {
+        "title": "Analyses des Royalties",
+        "description": "Obtenez des insights approfondis sur vos performances de royalties avec des analyses complètes, une analyse des tendances et des rapports prédictifs.",
+        "feature1": "Analyse des tendances de performance",
+        "feature2": "Prévisions de revenus",
+        "feature3": "Création de tableaux de bord personnalisés"
+      },
+      "distribution": {
+        "title": "Accélération de la Distribution",
+        "description": "Accélérez la distribution des royalties avec un traitement automatisé des paiements, le support multi-devises et le suivi en temps réel.",
+        "feature1": "Traitement automatisé des paiements",
+        "feature2": "Support multi-devises",
+        "feature3": "Suivi des paiements en temps réel"
+      },
+      "youtube": {
+        "title": "Intégration YouTube MCN",
+        "description": "Intégrez facilement les données YouTube MCN pour calculer et distribuer automatiquement les royalties YouTube à vos créateurs.",
+        "feature1": "Connexion directe à l'API YouTube MCN",
+        "feature2": "Calcul automatique des royalties des créateurs",
+        "feature3": "Rapports spécifiques à YouTube"
+      },
+      "blockchain": {
+        "title": "Paiements Blockchain",
+        "description": "Exploitez la technologie blockchain pour des paiements de royalties transparents, instantanés et sécurisés avec l'automatisation des contrats intelligents.",
+        "feature1": "Automatisation des contrats intelligents",
+        "feature2": "Paiements blockchain instantanés",
+        "feature3": "Enregistrements de transactions immuables"
+      }
+    },
+    "workflow": {
+      "title": "Comment Ça Fonctionne",
+      "subtitle": "De l'ingestion des données à la distribution des paiements en quatre étapes simples",
+      "step1": {
+        "title": "Connecter les Sources",
+        "description": "Liez vos plateformes de streaming, PRO et autres sources de revenus"
+      },
+      "step2": {
+        "title": "Définir les Règles",
+        "description": "Configurez les répartitions de royalties, les taux et les flux d'approbation"
+      },
+      "step3": {
+        "title": "Calcul Automatique",
+        "description": "L'IA traite toutes les données et calcule automatiquement les royalties"
+      },
+      "step4": {
+        "title": "Distribuer",
+        "description": "Les paiements sont traités et distribués à toutes les parties prenantes"
+      }
+    },
+    "demo": {
+      "title": "Voir en Action",
+      "subtitle": "Explorez notre tableau de bord complet de gestion des royalties"
+    },
+    "integrations": {
+      "title": "Intégrations Sources de Revenus",
+      "subtitle": "Connectez-vous avec toutes les principales plateformes et sociétés de perception",
+      "more": "Et bien d'autres sources de revenus..."
+    },
+    "related": {
+      "title": "Fonctionnalités Connexes",
+      "catalog": "Gestion de Catalogue",
+      "catalogDesc": "Organisez et gérez votre catalogue musical",
+      "rights": "Gestion des Droits",
+      "rightsDesc": "Suivez et gérez les droits de propriété intellectuelle",
+      "income": "Suivi des Revenus",
+      "incomeDesc": "Surveillez tous les flux de revenus en temps réel",
+      "payments": "Traitement des Paiements",
+      "paymentsDesc": "Gérez toutes les transactions financières en toute sécurité"
+    }
   }
 }

@@ -1,1 +1,474 @@
-<p>royalties works!</p>
+<!-- Hero Section -->
+<section class="feature-hero bg-semi-dark py-5 position-relative">
+  <div class="container py-5">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <div class="hero-content">
+          <h1 class="display-4 fw-lighter for-dax-font mb-4">
+            {{ 'royalties.hero.title' | translate }}
+          </h1>
+          <p class="fs-5 text-muted mb-4 pe-lg-5">
+            {{ 'royalties.hero.subtitle' | translate }}
+          </p>
+          <div class="d-flex gap-3 mb-4">
+            <a href="#features" class="btn btn-primary btn-lg">
+              {{ 'royalties.hero.getStarted' | translate }}
+            </a>
+            <a href="#demo" class="btn btn-outline-light btn-lg">
+              {{ 'royalties.hero.learnMore' | translate }}
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="hero-dashboard">
+          <div class="dashboard-frame">
+           <!-- <img src="/assets/images/royalties/hero-dashboard.png"
+                 alt="Royalty Accounting Dashboard Overview"
+                 class="img-fluid dashboard-image">-->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Key Benefits -->
+<section class="feature-benefits py-5 bg-semi-green">
+  <div class="container">
+    <div class="row text-center">
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="benefit-item">
+          <div class="benefit-icon mb-3">
+            <i class="fi-settings fs-2 text-primary"></i>
+          </div>
+          <h5 class="fw-semibold mb-2">{{ 'royalties.benefits.automate.title' | translate }}</h5>
+          <p class="text-muted small">{{ 'royalties.benefits.automate.description' | translate }}</p>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="benefit-item">
+          <div class="benefit-icon mb-3">
+            <i class="fi-eye fs-2 text-primary"></i>
+          </div>
+          <h5 class="fw-semibold mb-2">{{ 'royalties.benefits.transparent.title' | translate }}</h5>
+          <p class="text-muted small">{{ 'royalties.benefits.transparent.description' | translate }}</p>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="benefit-item">
+          <div class="benefit-icon mb-3">
+            <i class="fi-user fs-2 text-primary"></i>
+          </div>
+          <h5 class="fw-semibold mb-2">{{ 'royalties.benefits.portal.title' | translate }}</h5>
+          <p class="text-muted small">{{ 'royalties.benefits.portal.description' | translate }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Main Features -->
+<section id="features" class="features py-5 bg-semi-dark">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="display-5 fw-lighter for-dax-font mb-3">
+        {{ 'royalties.features.title' | translate }}
+      </h2>
+      <p class="fs-6 text-muted mx-auto" style="max-width: 600px;">
+        {{ 'royalties.features.subtitle' | translate }}
+      </p>
+    </div>
+
+    <!-- Automated Royalty Runs -->
+    <div class="feature-section mb-5 pb-5">
+      <div class="row align-items-center">
+        <div class="col-lg-6 order-lg-1">
+          <div class="feature-content pe-lg-4">
+            <div class="feature-header mb-4">
+              <div class="feature-icon-large mb-3">
+                <i class="fi-play fs-1 text-primary"></i>
+              </div>
+              <h3 class="h2 fw-semibold mb-3">{{ 'royalties.features.runs.title' | translate }}</h3>
+              <p class="fs-5 text-muted mb-4">{{ 'royalties.features.runs.description' | translate }}</p>
+            </div>
+            <ul class="feature-list list-unstyled">
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'royalties.features.runs.feature1' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'royalties.features.runs.feature2' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'royalties.features.runs.feature3' | translate }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-lg-6 order-lg-2">
+          <div class="feature-image-container">
+            <div class="dashboard-frame">
+              <!--<img src="/assets/images/royalties/royalty-runs-dashboard.png"
+                   alt="Automated Royalty Runs Dashboard"
+                   class="img-fluid dashboard-image">-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Simplified Approvals -->
+    <div class="feature-section mb-5 pb-5">
+      <div class="row align-items-center">
+        <div class="col-lg-6 order-lg-2">
+          <div class="feature-content ps-lg-4">
+            <div class="feature-header mb-4">
+              <div class="feature-icon-large mb-3">
+                <i class="fi-check-circle fs-1 text-primary"></i>
+              </div>
+              <h3 class="h2 fw-semibold mb-3">{{ 'royalties.features.approvals.title' | translate }}</h3>
+              <p class="fs-5 text-muted mb-4">{{ 'royalties.features.approvals.description' | translate }}</p>
+            </div>
+            <ul class="feature-list list-unstyled">
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'royalties.features.approvals.feature1' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'royalties.features.approvals.feature2' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'royalties.features.approvals.feature3' | translate }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-lg-6 order-lg-1">
+          <div class="feature-image-container">
+            <div class="dashboard-frame">
+              <!--<img src="/assets/images/royalties/approvals-dashboard.png"
+                   alt="Royalty Approvals Dashboard"
+                   class="img-fluid dashboard-image">-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Royalty Analytics -->
+    <div class="feature-section mb-5 pb-5">
+      <div class="row align-items-center">
+        <div class="col-lg-6 order-lg-1">
+          <div class="feature-content pe-lg-4">
+            <div class="feature-header mb-4">
+              <div class="feature-icon-large mb-3">
+                <i class="fi-bar-chart fs-1 text-primary"></i>
+              </div>
+              <h3 class="h2 fw-semibold mb-3">{{ 'royalties.features.analytics.title' | translate }}</h3>
+              <p class="fs-5 text-muted mb-4">{{ 'royalties.features.analytics.description' | translate }}</p>
+            </div>
+            <ul class="feature-list list-unstyled">
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'royalties.features.analytics.feature1' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'royalties.features.analytics.feature2' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'royalties.features.analytics.feature3' | translate }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-lg-6 order-lg-2">
+          <div class="feature-image-container">
+            <div class="dashboard-frame">
+              <!--<img src="/assets/images/royalties/analytics-dashboard.png"
+                   alt="Royalty Analytics Dashboard"
+                   class="img-fluid dashboard-image">-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Distribution Acceleration -->
+    <div class="feature-section mb-5 pb-5">
+      <div class="row align-items-center">
+        <div class="col-lg-6 order-lg-2">
+          <div class="feature-content ps-lg-4">
+            <div class="feature-header mb-4">
+              <div class="feature-icon-large mb-3">
+                <i class="fi-zap fs-1 text-primary"></i>
+              </div>
+              <h3 class="h2 fw-semibold mb-3">{{ 'royalties.features.distribution.title' | translate }}</h3>
+              <p class="fs-5 text-muted mb-4">{{ 'royalties.features.distribution.description' | translate }}</p>
+            </div>
+            <ul class="feature-list list-unstyled">
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'royalties.features.distribution.feature1' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'royalties.features.distribution.feature2' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'royalties.features.distribution.feature3' | translate }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-lg-6 order-lg-1">
+          <div class="feature-image-container">
+            <div class="dashboard-frame">
+              <!--<img src="/assets/images/royalties/distribution-dashboard.png"
+                   alt="Royalty Distribution Dashboard"
+                   class="img-fluid dashboard-image">-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- YouTube MCN Integration -->
+    <div class="feature-section mb-5 pb-5">
+      <div class="row align-items-center">
+        <div class="col-lg-6 order-lg-1">
+          <div class="feature-content pe-lg-4">
+            <div class="feature-header mb-4">
+              <div class="feature-icon-large mb-3">
+                <i class="fi-youtube fs-1 text-primary"></i>
+              </div>
+              <h3 class="h2 fw-semibold mb-3">{{ 'royalties.features.youtube.title' | translate }}</h3>
+              <p class="fs-5 text-muted mb-4">{{ 'royalties.features.youtube.description' | translate }}</p>
+            </div>
+            <ul class="feature-list list-unstyled">
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'royalties.features.youtube.feature1' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'royalties.features.youtube.feature2' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'royalties.features.youtube.feature3' | translate }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-lg-6 order-lg-2">
+          <div class="feature-image-container">
+            <div class="dashboard-frame">
+              <!--<img src="/assets/images/royalties/youtube-mcn-dashboard.png"
+                   alt="YouTube MCN Dashboard"
+                   class="img-fluid dashboard-image">-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Blockchain Payments -->
+    <div class="feature-section mb-5 pb-5">
+      <div class="row align-items-center">
+        <div class="col-lg-6 order-lg-2">
+          <div class="feature-content ps-lg-4">
+            <div class="feature-header mb-4">
+              <div class="feature-icon-large mb-3">
+                <i class="fi-link fs-1 text-primary"></i>
+              </div>
+              <h3 class="h2 fw-semibold mb-3">{{ 'royalties.features.blockchain.title' | translate }}</h3>
+              <p class="fs-5 text-muted mb-4">{{ 'royalties.features.blockchain.description' | translate }}</p>
+            </div>
+            <ul class="feature-list list-unstyled">
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'royalties.features.blockchain.feature1' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'royalties.features.blockchain.feature2' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'royalties.features.blockchain.feature3' | translate }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-lg-6 order-lg-1">
+          <div class="feature-image-container">
+            <div class="dashboard-frame">
+              <!--<img src="/assets/images/royalties/blockchain-payments-dashboard.png"
+                   alt="Blockchain Payments Dashboard"
+                   class="img-fluid dashboard-image">-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How it Works -->
+<section class="feature-workflow py-5 bg-semi-green">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="display-5 fw-lighter for-dax-font mb-3">
+        {{ 'royalties.workflow.title' | translate }}
+      </h2>
+      <p class="fs-6 text-muted">
+        {{ 'royalties.workflow.subtitle' | translate }}
+      </p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3">
+        <div class="workflow-step text-center">
+          <div class="step-number mb-3">1</div>
+          <h5 class="fw-semibold mb-2">{{ 'royalties.workflow.step1.title' | translate }}</h5>
+          <p class="text-muted small">{{ 'royalties.workflow.step1.description' | translate }}</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="workflow-step text-center">
+          <div class="step-number mb-3">2</div>
+          <h5 class="fw-semibold mb-2">{{ 'royalties.workflow.step2.title' | translate }}</h5>
+          <p class="text-muted small">{{ 'royalties.workflow.step2.description' | translate }}</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="workflow-step text-center">
+          <div class="step-number mb-3">3</div>
+          <h5 class="fw-semibold mb-2">{{ 'royalties.workflow.step3.title' | translate }}</h5>
+          <p class="text-muted small">{{ 'royalties.workflow.step3.description' | translate }}</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="workflow-step text-center">
+          <div class="step-number mb-3">4</div>
+          <h5 class="fw-semibold mb-2">{{ 'royalties.workflow.step4.title' | translate }}</h5>
+          <p class="text-muted small">{{ 'royalties.workflow.step4.description' | translate }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Full Dashboard Demo -->
+<section id="demo" class="feature-demo py-5 bg-semi-dark">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="display-5 fw-lighter for-dax-font mb-3">
+        {{ 'royalties.demo.title' | translate }}
+      </h2>
+      <p class="fs-6 text-muted">
+        {{ 'royalties.demo.subtitle' | translate }}
+      </p>
+    </div>
+
+    <div class="demo-dashboard-container">
+      <div class="dashboard-frame large">
+        <!--<img src="/assets/images/royalties/full-royalties-dashboard.png"
+             alt="Complete Royalty Accounting Dashboard"
+             class="img-fluid dashboard-image">-->
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Integration Sources -->
+<section class="feature-integrations py-5 bg-semi-green">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="display-5 fw-lighter for-dax-font mb-3">
+        {{ 'royalties.integrations.title' | translate }}
+      </h2>
+      <p class="fs-6 text-muted">
+        {{ 'royalties.integrations.subtitle' | translate }}
+      </p>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <div class="platforms-grid" style="grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1.5rem;">
+          @for (source of ['spotify', 'apple-music', 'youtube', 'soundcloud', 'bandcamp', 'merlin', 'mcn', 'pro-societies', 'collecting-societies', 'blockchain']; track source) {
+            <div class="platform-item">
+              <!--<img [src]="'/assets/images/royalty-sources/' + source + '.png'"
+                   [alt]="source"
+                   class="platform-logo">-->
+            </div>
+          }
+        </div>
+        <div class="text-center mt-4">
+          <p class="text-muted small">{{ 'royalties.integrations.more' | translate }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing Preview -->
+<app-pricing-preview featureContext="royalties" backgroundClass="bg-semi-dark"></app-pricing-preview>
+
+<!-- Related Features -->
+<section class="feature-related py-5 bg-semi-green">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="h3 fw-lighter for-dax-font mb-3">
+        {{ 'royalties.related.title' | translate }}
+      </h2>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-md-6 col-lg-3">
+        <a [routerLink]="['/features/catalog']" class="related-link d-block text-decoration-none">
+          <div class="related-card p-4 text-center">
+            <i class="fi-folder fs-2 text-primary mb-3"></i>
+            <h5 class="fw-semibold mb-2">{{ 'royalties.related.catalog' | translate }}</h5>
+            <p class="text-muted small mb-0">{{ 'royalties.related.catalogDesc' | translate }}</p>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <a [routerLink]="['/features/rights']" class="related-link d-block text-decoration-none">
+          <div class="related-card p-4 text-center">
+            <i class="fi-shield fs-2 text-primary mb-3"></i>
+            <h5 class="fw-semibold mb-2">{{ 'royalties.related.rights' | translate }}</h5>
+            <p class="text-muted small mb-0">{{ 'royalties.related.rightsDesc' | translate }}</p>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <a [routerLink]="['/features/income-tracking']" class="related-link d-block text-decoration-none">
+          <div class="related-card p-4 text-center">
+            <i class="fi-bar-chart fs-2 text-primary mb-3"></i>
+            <h5 class="fw-semibold mb-2">{{ 'royalties.related.income' | translate }}</h5>
+            <p class="text-muted small mb-0">{{ 'royalties.related.incomeDesc' | translate }}</p>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <a [routerLink]="['/features/payments']" class="related-link d-block text-decoration-none">
+          <div class="related-card p-4 text-center">
+            <i class="fi-credit-card fs-2 text-primary mb-3"></i>
+            <h5 class="fw-semibold mb-2">{{ 'royalties.related.payments' | translate }}</h5>
+            <p class="text-muted small mb-0">{{ 'royalties.related.paymentsDesc' | translate }}</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

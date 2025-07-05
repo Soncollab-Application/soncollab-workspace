@@ -1,5 +1,15 @@
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
 
+@font-face {
+  font-family: 'komix';
+  src: url('/assets/fonts/komix-eighties.ttf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Dax';
+  src: url('/assets/fonts/dax-regular.ttf') format('opentype');
+}
+
 html, body {
   overflow-x: hidden !important;
   scroll-behavior: smooth !important;
@@ -102,15 +112,7 @@ body.scrolling::after {
 }
 
 
-@font-face {
-  font-family: 'komix';
-  src: url('/assets/fonts/komix-eighties.ttf') format('opentype');
-}
 
-@font-face {
-  font-family: 'Dax';
-  src: url('/assets/fonts/dax-regular.ttf') format('opentype');
-}
 
 
 .joti-one-regular {
@@ -235,3 +237,6 @@ body.scrolling::after {
   border-top-left-radius: 30px !important;
   border-top-right-radius: 30px !important;
 }
+
+
+

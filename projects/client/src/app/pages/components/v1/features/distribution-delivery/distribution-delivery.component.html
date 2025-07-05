@@ -1,1 +1,483 @@
-<p>distribution-delivery works!</p>
+<!-- Hero Section -->
+<section class="feature-hero bg-semi-dark py-5 position-relative">
+  <div class="container py-5">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <div class="hero-content">
+          <h1 class="display-4 fw-lighter for-dax-font mb-4">
+            {{ 'distribution.hero.title' | translate }}
+          </h1>
+          <p class="fs-5 text-muted mb-4 pe-lg-5">
+            {{ 'distribution.hero.subtitle' | translate }}
+          </p>
+          <div class="d-flex gap-3 mb-4">
+            <a href="#features" class="btn btn-primary btn-lg">
+              {{ 'distribution.hero.getStarted' | translate }}
+            </a>
+            <a href="#demo" class="btn btn-outline-light btn-lg">
+              {{ 'distribution.hero.learnMore' | translate }}
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="hero-dashboard">
+          <div class="dashboard-frame">
+            <!--<img src="/assets/images/distribution/hero-dashboard.png"
+                 alt="Distribution Dashboard Overview"
+                 class="img-fluid dashboard-image">-->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Key Benefits -->
+<section class="feature-benefits py-5 bg-semi-green">
+  <div class="container">
+    <div class="row text-center">
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="benefit-item">
+          <div class="benefit-icon mb-3">
+            <i class="fi-globe fs-2 text-primary"></i>
+          </div>
+          <h5 class="fw-semibold mb-2">{{ 'distribution.benefits.global.title' | translate }}</h5>
+          <p class="text-muted small">{{ 'distribution.benefits.global.description' | translate }}</p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="benefit-item">
+          <div class="benefit-icon mb-3">
+            <i class="fi-award fs-2 text-primary"></i>
+          </div>
+          <h5 class="fw-semibold mb-2">{{ 'distribution.benefits.trusted.title' | translate }}</h5>
+          <p class="text-muted small">{{ 'distribution.benefits.trusted.description' | translate }}</p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="benefit-item">
+          <div class="benefit-icon mb-3">
+            <i class="fi-zap fs-2 text-primary"></i>
+          </div>
+          <h5 class="fw-semibold mb-2">{{ 'distribution.benefits.speed.title' | translate }}</h5>
+          <p class="text-muted small">{{ 'distribution.benefits.speed.description' | translate }}</p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="benefit-item">
+          <div class="benefit-icon mb-3">
+            <i class="fi-settings fs-2 text-primary"></i>
+          </div>
+          <h5 class="fw-semibold mb-2">{{ 'distribution.benefits.flexible.title' | translate }}</h5>
+          <p class="text-muted small">{{ 'distribution.benefits.flexible.description' | translate }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Main Features -->
+<section id="features" class="features py-5 bg-semi-dark">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="display-5 fw-lighter for-dax-font mb-3">
+        {{ 'distribution.features.title' | translate }}
+      </h2>
+      <p class="fs-6 text-muted mx-auto" style="max-width: 600px;">
+        {{ 'distribution.features.subtitle' | translate }}
+      </p>
+    </div>
+
+    <!-- DSP Deals -->
+    <div class="feature-section mb-5 pb-5">
+      <div class="row align-items-center">
+        <div class="col-lg-6 order-lg-1">
+          <div class="feature-content pe-lg-4">
+            <div class="feature-header mb-4">
+              <div class="feature-icon-large mb-3">
+                <i class="fi-link fs-1 text-primary"></i>
+              </div>
+              <h3 class="h2 fw-semibold mb-3">{{ 'distribution.features.dsp.title' | translate }}</h3>
+              <p class="fs-5 text-muted mb-4">{{ 'distribution.features.dsp.description' | translate }}</p>
+            </div>
+            <ul class="feature-list list-unstyled">
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'distribution.features.dsp.feature1' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'distribution.features.dsp.feature2' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'distribution.features.dsp.feature3' | translate }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-lg-6 order-lg-2">
+          <div class="feature-image-container">
+            <div class="dashboard-frame">
+              <!--<img src="/assets/images/distribution/dsp-deals-dashboard.png"
+                   alt="DSP Deals Dashboard"
+                   class="img-fluid dashboard-image">-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Global Markets -->
+    <div class="feature-section mb-5 pb-5">
+      <div class="row align-items-center">
+        <div class="col-lg-6 order-lg-2">
+          <div class="feature-content ps-lg-4">
+            <div class="feature-header mb-4">
+              <div class="feature-icon-large mb-3">
+                <i class="fi-map fs-1 text-primary"></i>
+              </div>
+              <h3 class="h2 fw-semibold mb-3">{{ 'distribution.features.markets.title' | translate }}</h3>
+              <p class="fs-5 text-muted mb-4">{{ 'distribution.features.markets.description' | translate }}</p>
+            </div>
+            <ul class="feature-list list-unstyled">
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'distribution.features.markets.feature1' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'distribution.features.markets.feature2' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'distribution.features.markets.feature3' | translate }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-lg-6 order-lg-1">
+          <div class="feature-image-container">
+            <div class="dashboard-frame">
+              <!--<img src="/assets/images/distribution/global-markets-dashboard.png"
+                   alt="Global Markets Dashboard"
+                   class="img-fluid dashboard-image">-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- UGC Monetization -->
+    <div class="feature-section mb-5 pb-5">
+      <div class="row align-items-center">
+        <div class="col-lg-6 order-lg-1">
+          <div class="feature-content pe-lg-4">
+            <div class="feature-header mb-4">
+              <div class="feature-icon-large mb-3">
+                <i class="fi-share-2 fs-1 text-primary"></i>
+              </div>
+              <h3 class="h2 fw-semibold mb-3">{{ 'distribution.features.ugc.title' | translate }}</h3>
+              <p class="fs-5 text-muted mb-4">{{ 'distribution.features.ugc.description' | translate }}</p>
+            </div>
+            <ul class="feature-list list-unstyled">
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'distribution.features.ugc.feature1' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'distribution.features.ugc.feature2' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'distribution.features.ugc.feature3' | translate }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-lg-6 order-lg-2">
+          <div class="feature-image-container">
+            <div class="dashboard-frame">
+              <!--<img src="/assets/images/distribution/ugc-monetization-dashboard.png"
+                   alt="UGC Monetization Dashboard"
+                   class="img-fluid dashboard-image">-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quality Control -->
+    <div class="feature-section mb-5 pb-5">
+      <div class="row align-items-center">
+        <div class="col-lg-6 order-lg-2">
+          <div class="feature-content ps-lg-4">
+            <div class="feature-header mb-4">
+              <div class="feature-icon-large mb-3">
+                <i class="fi-check-circle fs-1 text-primary"></i>
+              </div>
+              <h3 class="h2 fw-semibold mb-3">{{ 'distribution.features.quality.title' | translate }}</h3>
+              <p class="fs-5 text-muted mb-4">{{ 'distribution.features.quality.description' | translate }}</p>
+            </div>
+            <ul class="feature-list list-unstyled">
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'distribution.features.quality.feature1' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'distribution.features.quality.feature2' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'distribution.features.quality.feature3' | translate }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-lg-6 order-lg-1">
+          <div class="feature-image-container">
+            <div class="dashboard-frame">
+              <!--<img src="/assets/images/distribution/quality-control-dashboard.png"
+                   alt="Quality Control Dashboard"
+                   class="img-fluid dashboard-image">-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delivery Options -->
+    <div class="feature-section mb-5 pb-5">
+      <div class="row align-items-center">
+        <div class="col-lg-6 order-lg-1">
+          <div class="feature-content pe-lg-4">
+            <div class="feature-header mb-4">
+              <div class="feature-icon-large mb-3">
+                <i class="fi-clock fs-1 text-primary"></i>
+              </div>
+              <h3 class="h2 fw-semibold mb-3">{{ 'distribution.features.delivery.title' | translate }}</h3>
+              <p class="fs-5 text-muted mb-4">{{ 'distribution.features.delivery.description' | translate }}</p>
+            </div>
+            <ul class="feature-list list-unstyled">
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'distribution.features.delivery.feature1' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'distribution.features.delivery.feature2' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'distribution.features.delivery.feature3' | translate }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-lg-6 order-lg-2">
+          <div class="feature-image-container">
+            <div class="dashboard-frame">
+              <!--<img src="/assets/images/distribution/delivery-options-dashboard.png"
+                   alt="Delivery Options Dashboard"
+                   class="img-fluid dashboard-image">-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Batch Operations -->
+    <div class="feature-section mb-5 pb-5">
+      <div class="row align-items-center">
+        <div class="col-lg-6 order-lg-2">
+          <div class="feature-content ps-lg-4">
+            <div class="feature-header mb-4">
+              <div class="feature-icon-large mb-3">
+                <i class="fi-layers fs-1 text-primary"></i>
+              </div>
+              <h3 class="h2 fw-semibold mb-3">{{ 'distribution.features.batch.title' | translate }}</h3>
+              <p class="fs-5 text-muted mb-4">{{ 'distribution.features.batch.description' | translate }}</p>
+            </div>
+            <ul class="feature-list list-unstyled">
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'distribution.features.batch.feature1' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'distribution.features.batch.feature2' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'distribution.features.batch.feature3' | translate }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-lg-6 order-lg-1">
+          <div class="feature-image-container">
+            <div class="dashboard-frame">
+              <!--<img src="/assets/images/distribution/batch-operations-dashboard.png"
+                   alt="Batch Operations Dashboard"
+                   class="img-fluid dashboard-image">-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How it Works -->
+<section class="feature-workflow py-5 bg-semi-green">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="display-5 fw-lighter for-dax-font mb-3">
+        {{ 'distribution.workflow.title' | translate }}
+      </h2>
+      <p class="fs-6 text-muted">
+        {{ 'distribution.workflow.subtitle' | translate }}
+      </p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3">
+        <div class="workflow-step text-center">
+          <div class="step-number mb-3">1</div>
+          <h5 class="fw-semibold mb-2">{{ 'distribution.workflow.step1.title' | translate }}</h5>
+          <p class="text-muted small">{{ 'distribution.workflow.step1.description' | translate }}</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="workflow-step text-center">
+          <div class="step-number mb-3">2</div>
+          <h5 class="fw-semibold mb-2">{{ 'distribution.workflow.step2.title' | translate }}</h5>
+          <p class="text-muted small">{{ 'distribution.workflow.step2.description' | translate }}</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="workflow-step text-center">
+          <div class="step-number mb-3">3</div>
+          <h5 class="fw-semibold mb-2">{{ 'distribution.workflow.step3.title' | translate }}</h5>
+          <p class="text-muted small">{{ 'distribution.workflow.step3.description' | translate }}</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="workflow-step text-center">
+          <div class="step-number mb-3">4</div>
+          <h5 class="fw-semibold mb-2">{{ 'distribution.workflow.step4.title' | translate }}</h5>
+          <p class="text-muted small">{{ 'distribution.workflow.step4.description' | translate }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Full Workflow Dashboard -->
+<section id="demo" class="feature-demo py-5 bg-semi-dark">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="display-5 fw-lighter for-dax-font mb-3">
+        {{ 'distribution.demo.title' | translate }}
+      </h2>
+      <p class="fs-6 text-muted">
+        {{ 'distribution.demo.subtitle' | translate }}
+      </p>
+    </div>
+
+    <div class="demo-dashboard-container">
+      <div class="dashboard-frame large">
+        <!--<img src="/assets/images/distribution/full-distribution-dashboard.png"
+             alt="Complete Distribution Dashboard"
+             class="img-fluid dashboard-image">-->
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Platforms Integration -->
+<section class="feature-integrations py-5 bg-semi-green">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="display-5 fw-lighter for-dax-font mb-3">
+        {{ 'distribution.platforms.title' | translate }}
+      </h2>
+      <p class="fs-6 text-muted">
+        {{ 'distribution.platforms.subtitle' | translate }}
+      </p>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <div class="platforms-grid" style="grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1.5rem;">
+          @for (platform of ['spotify', 'apple-music', 'youtube-music', 'amazon-music', 'deezer', 'tidal', 'soundcloud', 'bandcamp', 'tiktok', 'instagram', 'facebook', 'twitter']; track platform) {
+            <div class="platform-item">
+              <!--<img [src]="'/assets/images/platforms/' + platform + '.png'"
+                   [alt]="platform"
+                   class="platform-logo">-->
+            </div>
+          }
+        </div>
+        <div class="text-center mt-4">
+          <p class="text-muted small">{{ 'distribution.platforms.more' | translate }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing Preview -->
+<app-pricing-preview featureContext="distribution" backgroundClass="bg-semi-dark"></app-pricing-preview>
+
+<!-- Related Features -->
+<section class="feature-related py-5 bg-semi-green">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="h3 fw-lighter for-dax-font mb-3">
+        {{ 'distribution.related.title' | translate }}
+      </h2>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-md-6 col-lg-3">
+        <a [routerLink]="['/features/catalog']" class="related-link d-block text-decoration-none">
+          <div class="related-card p-4 text-center">
+            <i class="fi-folder fs-2 text-primary mb-3"></i>
+            <h5 class="fw-semibold mb-2">{{ 'distribution.related.catalog' | translate }}</h5>
+            <p class="text-muted small mb-0">{{ 'distribution.related.catalogDesc' | translate }}</p>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <a [routerLink]="['/features/rights']" class="related-link d-block text-decoration-none">
+          <div class="related-card p-4 text-center">
+            <i class="fi-shield fs-2 text-primary mb-3"></i>
+            <h5 class="fw-semibold mb-2">{{ 'distribution.related.rights' | translate }}</h5>
+            <p class="text-muted small mb-0">{{ 'distribution.related.rightsDesc' | translate }}</p>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <a [routerLink]="['/features/income-tracking']" class="related-link d-block text-decoration-none">
+          <div class="related-card p-4 text-center">
+            <i class="fi-bar-chart fs-2 text-primary mb-3"></i>
+            <h5 class="fw-semibold mb-2">{{ 'distribution.related.tracking' | translate }}</h5>
+            <p class="text-muted small mb-0">{{ 'distribution.related.trackingDesc' | translate }}</p>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <a [routerLink]="['/features/analytics']" class="related-link d-block text-decoration-none">
+          <div class="related-card p-4 text-center">
+            <i class="fi-trending-up fs-2 text-primary mb-3"></i>
+            <h5 class="fw-semibold mb-2">{{ 'distribution.related.analytics' | translate }}</h5>
+            <p class="text-muted small mb-0">{{ 'distribution.related.analyticsDesc' | translate }}</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

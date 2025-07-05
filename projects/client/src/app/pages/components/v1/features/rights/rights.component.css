@@ -1,0 +1,21 @@
+/* Rights Hero customizations */
+.feature-hero .hero-dashboard {
+  position: relative;
+}
+
+/* Rights-specific spacing adjustments */
+.features .feature-section:nth-child(odd) .feature-content {
+  padding-right: 2rem;
+}
+
+.features .feature-section:nth-child(even) .feature-content {
+  padding-left: 2rem;
+}
+
+/* Mobile adjustments for rights */
+@media (max-width: 992px) {
+  .features .feature-section .feature-content {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
