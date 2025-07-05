@@ -127,7 +127,7 @@
 .step-number {
   width: 50px;
   height: 50px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #095334 0%, #764ba2 100%);
   color: white;
   border-radius: 50%;
   display: flex;
@@ -604,18 +604,6 @@
 /* ===============================
    ACCESSIBILITY & UTILS
    =============================== */
-
-/* Focus states for accessibility */
-.dashboard-frame:focus-within {
-  outline: 2px solid #667eea;
-  outline-offset: 4px;
-}
-
-.feature-pricing .btn:focus,
-.related-link:focus .related-card {
-  outline: 2px solid #667eea;
-  outline-offset: 2px;
-}
 
 /* Print styles */
 @media print {
