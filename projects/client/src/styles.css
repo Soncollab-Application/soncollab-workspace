@@ -15,34 +15,6 @@ html, body {
   scroll-behavior: smooth !important;
 }
 
-body {
-  position: relative;
-}
-
-body::after {
-  content: '';
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 2px;
-  height: 100vh;
-  background: linear-gradient(to bottom,
-  transparent 0%,
-  rgba(232, 121, 249, 0.2) 20%,
-  rgba(41, 114, 30, 0.3) 50%,
-  rgba(14, 89, 60, 0.2) 80%,
-  transparent 100%
-  );
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
-  z-index: 9999;
-}
-
-
-body.scrolling::after {
-  opacity: 1;
-}
 
 * {
   -webkit-overflow-scrolling: touch;
@@ -111,10 +83,6 @@ body.scrolling::after {
   animation: scrollPulse 2s ease-in-out infinite;
 }
 
-
-
-
-
 .joti-one-regular {
   font-family: "Joti One", sans-serif;
   font-style: normal;
@@ -133,66 +101,6 @@ body.scrolling::after {
 .for-dax-font {
   font-family: "Dax", sans-serif !important;
 }
-
-.form-control-flush {
-  box-shadow: none !important;
-  background-color: transparent !important;
-  border-width: 0 !important;
-  padding: 0 !important;
-}
-
-.form-control-flush:focus {
-  box-shadow: none !important;
-  background-color: transparent !important;
-  border-width: 0 !important;
-}
-
-.green-low-gradient-for-hero {
-  background: linear-gradient(to right, #000000, #0E2828, #000000);
-}
-
-.green-low-gradient-for-aside {
-  background: linear-gradient(to bottom, #000000, #0E2828, #000000);
-}
-
-@media (min-width: 768px) {
-  .green-low-gradient-for-aside {
-    background: none !important;
-  }
-}
-
-
-.bg-semi-dark {
-  background-color: #02090A !important;
-}
-
-.bg-semi-dark-low {
-  background-color: #0d0f10 !important;
-}
-
-.bg-semi-green {
-  background-color: #041E18 !important;
-}
-
-.bg-semi-green-dark {
-  background-color: #0E2828 !important;
-}
-
-
-.dropdown-item-custom:hover {
-  background: #292626 !important;
-  color: white !important;
-}
-
-.text-cyan {
-  color: #00FFFF !important;
-}
-
-
-.bg-semi-green-gradient {
-  background: linear-gradient(to bottom, #ffffff, #0E2828, #000000);
-}
-
 
 .section-grid-pattern {
   position: relative;
@@ -231,12 +139,3 @@ body.scrolling::after {
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
 }
-
-
-.raduis-custom {
-  border-top-left-radius: 30px !important;
-  border-top-right-radius: 30px !important;
-}
-
-
-

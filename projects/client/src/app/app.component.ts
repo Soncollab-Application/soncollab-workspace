@@ -28,7 +28,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     this.aosService.initializeAOS();
     this.setupLanguageListener();
-    this.pageService.preloadHeroForAllLanguages();
+   // this.pageService.preloadHeroForAllLanguages();
   }
 
   ngAfterViewInit(): void {

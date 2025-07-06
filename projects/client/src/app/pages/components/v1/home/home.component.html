@@ -1,100 +1,65 @@
-<div class="shared-video-background position-relative overflow-hidden">
-  <!-- ✅ Vidéo avec sources dynamiques affichée uniquement sur desktop -->
-  <div class="shared-video-container d-none d-md-block">
-    <video
-      #backgroundVideo
-      aria-hidden="true"
-      autoplay
-      class="shared-background-video"
-      decoding="async"
-      loading="lazy"
-      loop
-      muted
-      playsinline
-      [poster]="currentVideo?.poster || '/assets/images/hero-fallback.jpg'"
-      preload="none"
-    >
-      <!-- ✅ Sources vidéo dynamiques -->
-      @if (currentVideo) {
-        <source [src]="currentVideo.mp4" type="video/mp4"/>
-        <source [src]="currentVideo.webm" type="video/webm"/>
-      } @else {
-        <!-- Fallback vers la vidéo principale -->
-        <source src="/assets/videos/hero-background.mp4" type="video/mp4"/>
-        <source src="/assets/videos/hero-background.webm" type="video/webm"/>
-      }
-      Votre navigateur ne supporte pas les vidéos HTML5.
-    </video>
+<section class="container pt-5 mt-5 pb-4 mb-0 ">
+  <div class="position-relative p-0 pt-sm-2 pt-5 mb-5 mt-3 mt-sm-4 mt-md-5">
+    <div class="row pt-xl-3 pt-xxl-4">
+      <div class="col-lg-7 col-xxl-6">
 
-    <div class="shared-video-overlay"></div>
-  </div>
-
-  <!-- ✅ Overlay toujours présent pour le fond mobile -->
-  <div class="shared-video-overlay d-md-none"></div>
-
-  <section class="container pt-5 mt-5 pb-4 mb-0 hero-content">
-    <div class="position-relative p-0 pt-sm-2 pt-5 mb-5 mt-3 mt-sm-4 mt-md-5">
-      <div class="row pt-xl-3 pt-xxl-4">
-        <div class="col-lg-7 col-xxl-6">
-
-          <!-- Skeleton loader pendant le chargement -->
-          @if (isLoading) {
-            <div class="placeholder-glow">
-              <h1 class="display-3 fw-lighter for-dax-font text-lg-start mb-lg-4 mb-3 mb-sm-3">
-                <span class="placeholder col-8"></span>
-              </h1>
-              <p class="fs-5 text-lg-start pb-2 display-4 fw-lighter pb-sm-0 pb-md-1 mb-4 mb-sm-5">
-                <span class="placeholder col-12"></span>
-                <span class="placeholder col-10"></span>
-              </p>
-              <div class="d-sm-flex hero-buttons">
-                <span class="placeholder btn btn-lg w-100 w-md-auto"></span>
-              </div>
+        <!-- Skeleton loader pendant le chargement -->
+        @if (isLoading) {
+          <div class="placeholder-glow">
+            <h1 class="display-3 fw-lighter for-dax-font text-lg-start mb-lg-4 mb-3 mb-sm-3">
+              <span class="placeholder col-8"></span>
+            </h1>
+            <p class="fs-5 text-lg-start pb-2 display-4 fw-lighter pb-sm-0 pb-md-1 mb-4 mb-sm-5">
+              <span class="placeholder col-12"></span>
+              <span class="placeholder col-10"></span>
+            </p>
+            <div class="d-sm-flex">
+              <span class="placeholder btn btn-lg w-100 w-md-auto"></span>
             </div>
-          }
+          </div>
+        }
 
-          <!-- Contenu dynamique du HERO (géré par l'API) -->
-          @if (!isLoading && hero) {
-            <div>
-              <h1 class="display-3 fw-lighter for-dax-font text-lg-start mb-lg-4 mb-3 mb-sm-3">
-                {{ hero.title }}
-              </h1>
+        <!-- Contenu dynamique du HERO (géré par l'API) -->
+        @if (!isLoading && hero) {
+          <div>
+            <h1 class="display-3 fw-lighter for-dax-font text-lg-start mb-lg-4 mb-3 mb-sm-3">
+              {{ hero.title }}
+            </h1>
 
-              <p class="fs-5 text-lg-start pb-2 display-4 fw-lighter pb-sm-0 pb-md-1 mb-4 mb-sm-5">
-                {{ hero.subtitle }}
-              </p>
+            <p class="fs-5 text-lg-start pb-2 display-4 fw-lighter pb-sm-0 pb-md-1 mb-4 mb-sm-5">
+              {{ hero.subtitle }}
+            </p>
 
-              <div class="d-sm-flex hero-buttons">
-                <a class="btn btn-lg btn-outline-light w-100 w-md-auto" href="#">
-                  {{ hero.actionBtn }}
-                </a>
+            <div class="d-sm-flex ">
+              <a class="btn btn-lg btn-outline-light w-100 w-md-auto" href="#">
+                {{ hero.actionBtn }}
+              </a>
 
-              </div>
             </div>
-          }
+          </div>
+        }
 
-          <!-- Fallback si erreur -->
-          @if (!isLoading && !hero) {
-            <div>
-              <h1 class="display-3 fw-lighter for-dax-font text-lg-start mb-lg-4 mb-3 mb-sm-3">
-                {{ 'home.heroFallback.title' | translate }}
-              </h1>
-              <p class="fs-5 text-lg-start pb-2 display-4 fw-lighter pb-sm-0 pb-md-1 mb-4 mb-sm-5">
-                {{ 'home.heroFallback.subtitle' | translate }}
-              </p>
-              <div class="d-sm-flex hero-buttons">
-                <a class="btn btn-lg btn-outline-light w-100 w-md-auto" href="#">
-                  {{ 'home.heroFallback.button' | translate }}
-                </a>
-              </div>
+        <!-- Fallback si erreur -->
+        @if (!isLoading && !hero) {
+          <div>
+            <h1 class="display-3 fw-lighter for-dax-font text-lg-start mb-lg-4 mb-3 mb-sm-3">
+              {{ 'home.heroFallback.title' | translate }}
+            </h1>
+            <p class="fs-5 text-lg-start pb-2 display-4 fw-lighter pb-sm-0 pb-md-1 mb-4 mb-sm-5">
+              {{ 'home.heroFallback.subtitle' | translate }}
+            </p>
+            <div class="d-sm-flex hero-buttons">
+              <a class="btn btn-lg btn-outline-light w-100 w-md-auto" href="#">
+                {{ 'home.heroFallback.button' | translate }}
+              </a>
             </div>
-          }
+          </div>
+        }
 
-        </div>
       </div>
     </div>
-  </section>
-</div>
+  </div>
+</section>
 
 <div class="raduis-custom rounded-bottom-0 top-mount-custom shadow-lg bg-semi-dark">
 

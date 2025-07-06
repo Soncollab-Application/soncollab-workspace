@@ -36,7 +36,8 @@
               "projects/client/public/assets/vendor/nouislider/nouislider.min.css",
               "projects/client/public/assets/vendor/swiper/swiper-bundle.min.css",
               "projects/client/public/assets/css/features-global.css",
-              "projects/client/public/assets/css/theme.min.css"
+              "projects/client/public/assets/css/theme.min.css",
+              "projects/client/public/assets/css/custom-header.css"
             ],
             "scripts": [
               "node_modules/sweetalert2/dist/sweetalert2.min.js",

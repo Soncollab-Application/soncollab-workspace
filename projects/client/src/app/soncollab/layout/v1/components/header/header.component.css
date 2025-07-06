@@ -17,94 +17,6 @@
   overflow: hidden;
 }
 
-.feature-icon-wrapper {
-  width: 32px;
-  height: 32px;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  flex-shrink: 0;
-  transition: all 0.3s ease;
-}
-
-/* Taille icône plus grande sur desktop */
-@media (min-width: 992px) {
-  .feature-icon-wrapper {
-    width: 40px;
-    height: 40px;
-  }
-}
-
-.nav-link.hover-effect-slide {
-  position: relative;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 8px !important;
-}
-
-.nav-link.hover-effect-slide::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-  transition: left 0.5s ease;
-}
-
-.nav-link.hover-effect-slide:hover::before {
-  left: 100%;
-}
-
-.nav-link.hover-effect-slide:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.15);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-}
-
-.nav-link.hover-effect-slide:hover .feature-icon-wrapper {
-  background: rgba(255, 255, 255, 0.2);
-  transform: scale(1.1);
-}
-
-.nav-link.hover-effect-slide:hover .feature-title {
-  color: #fff !important;
-}
-
-.feature-content {
-  flex: 1;
-  min-width: 0;
-}
-
-.feature-title {
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 0.9rem;
-  margin-bottom: 2px;
-  transition: color 0.3s ease;
-}
-
-/* Titre plus grand sur desktop */
-@media (min-width: 992px) {
-  .feature-title {
-    font-size: 0.95rem;
-  }
-}
-
-.nav-link.active-feature {
-  background: rgba(255, 255, 255, 0.1) !important;
-  border-color: rgba(255, 255, 255, 0.2) !important;
-  border-radius: 8px !important;
-}
-
-.nav-link.active-feature .feature-icon-wrapper {
-  background: rgba(255, 255, 255, 0.25);
-}
-
-.nav-link.active-feature .feature-title {
-  color: #fff !important;
-}
 
 /* Animation d'entrée pour le dropdown */
 .dropdown-menu {
@@ -118,10 +30,6 @@
   transform: translateY(0);
 }
 
-/* Amélioration du hover sur le trigger */
-.nav-link.dropdown-toggle:hover {
-  color: rgba(255, 255, 255, 0.9) !important;
-}
 
 .nav-link.dropdown-toggle i {
   transition: transform 0.3s ease;

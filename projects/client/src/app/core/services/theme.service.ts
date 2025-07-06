@@ -1,87 +1,141 @@
-import {Injectable} from '@angular/core';
+
+import { Injectable, Inject } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { BehaviorSubject } from 'rxjs';
+
+export type Theme = 'light' | 'dark' | 'auto';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class ThemeService {
-  constructor() {
-    this.setupThemeListener();
+  private readonly THEME_KEY = 'soncollab-theme';
+  private themeSubject = new BehaviorSubject<Theme>('light');
+  public theme$ = this.themeSubject.asObservable();
+
+  constructor(@Inject(DOCUMENT) private document: Document) {
+    this.initializeTheme();
   }
 
-  // 🎨 Forcer uniquement le thème dark
-  getStoredTheme(): string {
-    return 'dark'; // Toujours retourner 'dark'
+  /**
+   * Initialise le thème au démarrage de l'application
+   */
+  private initializeTheme(): void {
+    const savedTheme = this.getStoredTheme();
+    this.applyTheme(savedTheme);
   }
 
-  setStoredTheme(theme: string): void {
-    // Ne rien stocker, toujours forcer dark
-    localStorage.setItem('theme', 'dark');
+  /**
+   * Récupère le thème stocké ou détecte la préférence système
+   */
+  getStoredTheme(): Theme {
+    const stored = localStorage.getItem(this.THEME_KEY) as Theme;
+
+    if (stored && ['light', 'dark', 'auto'].includes(stored)) {
+      return stored;
+    }
+
+    // Détection automatique si pas de préférence stockée
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark';
+    }
+
+    return 'light';
   }
 
-  getPreferredTheme(): string {
-    return 'dark'; // Toujours retourner 'dark'
+  /**
+   * Applique le thème et met à jour le DOM
+   */
+  setTheme(theme: Theme): void {
+    this.applyTheme(theme);
+    localStorage.setItem(this.THEME_KEY, theme);
+    this.themeSubject.next(theme);
   }
 
-  setTheme(theme: string): void {
-    // Ignorer le paramètre theme et toujours appliquer dark
-    document.documentElement.setAttribute('data-bs-theme', 'dark');
-    this.showActiveTheme('dark');
+  /**
+   * Applique physiquement le thème au DOM
+   */
+  private applyTheme(theme: Theme): void {
+    const htmlElement = this.document.documentElement;
+    const bodyElement = this.document.body;
+
+    // Supprime tous les attributs de thème existants
+    htmlElement.removeAttribute('data-bs-theme');
+    bodyElement.removeAttribute('data-bs-theme');
+
+    // Supprime les classes de thème si elles existent
+    htmlElement.classList.remove('dark-theme', 'light-theme');
+    bodyElement.classList.remove('dark-theme', 'light-theme');
+
+    let effectiveTheme: 'light' | 'dark';
+
+    if (theme === 'auto') {
+      // Détecte automatiquement selon la préférence système
+      effectiveTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    } else {
+      effectiveTheme = theme;
+    }
+
+    // Applique l'attribut data-bs-theme sur l'élément HTML
+    htmlElement.setAttribute('data-bs-theme', effectiveTheme);
+
+    // Optionnel : ajoute aussi une classe pour la compatibilité
+    htmlElement.classList.add(`${effectiveTheme}-theme`);
   }
 
-  showActiveTheme(theme: string, focus: boolean = false): void {
-    // Forcer theme à 'dark'
-    const forcedTheme = 'dark';
+  /**
+   * Récupère le thème actuel
+   */
+  getCurrentTheme(): Theme {
+    return this.themeSubject.value;
+  }
 
-    const themeSwitcher = document.querySelector('.theme-switcher');
-    if (!themeSwitcher) return;
+  /**
+   * Bascule entre light et dark
+   */
+  toggleTheme(): void {
+    const currentTheme = this.getCurrentTheme();
+    const newTheme: Theme = currentTheme === 'light' ? 'dark' : 'light';
+    this.setTheme(newTheme);
+  }
 
-    const activeThemeIcon = document.querySelector('.theme-icon-active i');
-    const btnToActive = document.querySelector(`[data-bs-theme-value="${forcedTheme}"]`);
+  /**
+   * Vérifie si le thème sombre est actif
+   */
+  isDarkTheme(): boolean {
+    const htmlElement = this.document.documentElement;
+    return htmlElement.getAttribute('data-bs-theme') === 'dark';
+  }
 
-    if (btnToActive && activeThemeIcon) {
-      const iconOfActiveBtn = btnToActive.querySelector('.theme-icon i')?.className;
+  /**
+   * Applique les préférences utilisateur (appelé au démarrage)
+   */
+  applyPreferences(): void {
+    // Écoute les changements de préférence système pour le mode auto
+    if (window.matchMedia) {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
-      document.querySelectorAll('[data-bs-theme-value]').forEach((el) => {
-        el.classList.remove('active');
-        el.setAttribute('aria-pressed', 'false');
+      mediaQuery.addEventListener('change', (e) => {
+        const currentTheme = this.getCurrentTheme();
+        if (currentTheme === 'auto') {
+          this.applyTheme('auto'); // Réapplique le thème auto
+        }
       });
-
-      btnToActive.classList.add('active');
-      btnToActive.setAttribute('aria-pressed', 'true');
-      if (iconOfActiveBtn) {
-        activeThemeIcon.className = iconOfActiveBtn;
-      }
-
-      themeSwitcher.setAttribute('aria-label', `Toggle theme (${forcedTheme})`);
-      if (focus) {
-        (themeSwitcher as HTMLElement).focus();
-      }
     }
   }
 
-  setupThemeListener(): void {
-    // Supprimer l'écoute des préférences système
-    // window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-    //   // Plus besoin d'écouter les changements
-    // });
+  /**
+   * Méthode pour déboguer le thème actuel
+   */
+  debugTheme(): void {
+    const htmlElement = this.document.documentElement;
+    const dataTheme = htmlElement.getAttribute('data-bs-theme');
+    const classes = Array.from(htmlElement.classList);
 
-    window.addEventListener('DOMContentLoaded', () => {
-      // Toujours forcer dark
-      this.setStoredTheme('dark');
-      this.setTheme('dark');
-
-      document.querySelectorAll('[data-bs-theme-value]').forEach((toggle) => {
-        toggle.addEventListener('click', () => {
-          // Ignorer le clic et toujours appliquer dark
-          this.setStoredTheme('dark');
-          this.setTheme('dark');
-        });
-      });
-    });
-  }
-
-  // ✅ Appliquer uniquement le thème dark
-  applyPreferences(): void {
-    this.setTheme('dark');
+    console.log('🔍 Debug Thème:');
+    console.log('- data-bs-theme:', dataTheme);
+    console.log('- Classes HTML:', classes);
+    console.log('- Thème stocké:', localStorage.getItem(this.THEME_KEY));
+    console.log('- Préférence système:', window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
   }
 }
