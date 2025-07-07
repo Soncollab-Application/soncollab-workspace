@@ -1,5 +1,11 @@
 {
   "header": {
+    "theme": {
+      "light": "Clair",
+      "dark": "Sombre",
+      "auto": "Auto"
+    },
+
     "navigation": {
       "features": "Caractéristiques",
       "products": "Produits",
@@ -38,8 +44,8 @@
       }
     },
     "products": {
-      "studio": "Soncollab Studio",
-      "connect": "Soncollab Connect"
+      "studio": "Studio",
+      "connect": "Connect"
     },
     "resources": {
       "help": "Centre d'aide",

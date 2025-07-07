@@ -1,5 +1,10 @@
 {
   "header": {
+    "theme": {
+      "light": "Light",
+      "dark": "Dark",
+      "auto": "Auto"
+    },
     "navigation": {
       "features": "Features",
       "products": "Products",
@@ -38,8 +43,8 @@
       }
     },
     "products": {
-      "studio": "Soncollab Studio",
-      "connect": "Soncollab Connect"
+      "studio": "Studio",
+      "connect": "Connect"
     },
     "resources": {
       "help": "Help Center",

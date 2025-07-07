@@ -1,7 +1,7 @@
-<header class="navbar navbar-expand-lg bg-body border fixed-top px-0 "
+<header class="navbar navbar-expand-lg bg-body  fixed-top px-0 "
         [ngClass]="{
-          'border-bottom': isScrolled,
-          'border-0': !isScrolled,
+          'shadow-sm': isScrolled,
+          'bg-body-tertiary': !isScrolled,
         }"
 >
   <div class="container">
@@ -11,11 +11,22 @@
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <!-- Navbar brand (Logo) -->
+    <!-- Navbar brand (Logo) - ✅ Logo dynamique selon le thème -->
     <a [routerLink]="['/']" aria-label="Soncollab Home"
        class="navbar-brand py-1 py-md-2 py-xl-1 me-2 me-sm-n4 me-md-n5 me-lg-0"
        (click)="closeMenu()">
-      <img alt="Soncollab Logo" class="d-block" src="/assets/images/logo/soncollablightlogo.svg" width="160">
+
+        <span class="d-none d-md-block d-sm-flex flex-shrink-0 text-primary rtl-flip me-2">
+          <img [alt]="'Soncollab Logo - ' + (isDarkTheme ? 'Dark Theme' : 'Light Theme')"
+               class="d-none d-md-block"
+               [src]="currentLogo"
+               width="160">
+        </span>
+
+      <img [alt]="'Soncollab Mobile'"
+           class="d-block d-md-none rounded-2 logo-transition"
+           [src]="'/assets/images/logo/soncollab-mobile.png'"
+           width="38">
     </a>
 
     <!-- Main navigation that turns into offcanvas on screens < 992px wide (lg breakpoint) -->
@@ -23,7 +34,11 @@
          tabindex="-1">
       <div class="offcanvas-header py-3">
         <h5 class="offcanvas-title" id="navbarNavLabel">
-          <img alt="Soncollab Logo" class="d-block" src="/assets/images/logo/soncollablightlogo.svg" width="160">
+          <!-- ✅ Logo dynamique aussi dans l'offcanvas mobile -->
+          <img [alt]="'Soncollab Logo - ' + (isDarkTheme ? 'Dark Theme' : 'Light Theme')"
+               class="d-block  logo-transition"
+               [src]="currentLogo"
+               width="160">
         </h5>
         <button aria-label="Close" class="btn-close" data-bs-dismiss="offcanvas" type="button"></button>
       </div>
@@ -35,7 +50,7 @@
               {{ 'header.navigation.features' | translate }}
             </a>
 
-            <div class="dropdown-menu  border-1  p-4">
+            <div class="dropdown-menu  border-1 shadow-sm  p-4">
               <div class="row g-4">
                 <!-- Colonne 1 -->
                 <div class="col-12 col-lg-6 mb-0">
@@ -154,7 +169,7 @@
                href="#" role="button">
               {{ 'header.navigation.products' | translate }}
             </a>
-            <ul class="dropdown-menu border-1  p-3">
+            <ul class="dropdown-menu border-1 shadow-sm  p-3">
               <li class="feature-item mb-2">
                 <a class="nav-link hover-effect-slide d-flex align-items-center gap-3 fw-normal p-2 transition-all"
                    [routerLinkActiveOptions]="{ exact: true }" [routerLinkActive]="['active-feature']"
@@ -189,7 +204,7 @@
                href="#" role="button">
               {{ 'header.navigation.resources' | translate }}
             </a>
-            <ul class="dropdown-menu border-0 rounded-4 p-3 shadow ">
+            <ul class="dropdown-menu border-1 shadow-sm p-3">
               <li class="feature-item mb-2">
                 <a class="nav-link hover-effect-slide d-flex align-items-center gap-3 fw-normal p-2 transition-all"
                    [routerLink]="['/']"
@@ -215,7 +230,73 @@
     </nav>
 
     <!-- Button group -->
-    <div class="d-flex gap-sm-1">
+    <div class="d-flex gap-2 align-items-center">
+      <!-- ✅ Theme switcher (light/dark/auto) -->
+      <div class="dropdown position-relative">
+        <button type="button"
+                class="theme-switcher btn btn-icon btn-outline-secondary fs-lg border-0 animate-scale"
+                data-bs-toggle="dropdown"
+                data-bs-display="static"
+                data-bs-auto-close="true"
+                aria-expanded="false"
+                [attr.aria-label]="'Toggle theme (' + getActiveThemeLabel() + ')'">
+          <span class="theme-icon-active d-flex animate-target">
+            <i [class]="getActiveThemeIcon()"></i>
+          </span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-center"
+            data-bs-popper="static">
+
+          <!-- Light Theme -->
+          <li>
+            <button type="button"
+                    class="dropdown-item d-flex align-items-center"
+                    [class.active]="isThemeActive('light')"
+                    [attr.aria-pressed]="isThemeActive('light')"
+                    (click)="setTheme('light')">
+              <span class="theme-icon d-flex fs-base me-2">
+                <i class="fi-sun"></i>
+              </span>
+              <span class="theme-label flex-grow-1">{{ 'header.theme.light' | translate }}</span>
+              <i class="item-active-indicator fi-check ms-auto"
+                 [style.opacity]="isThemeActive('light') ? '1' : '0'"></i>
+            </button>
+          </li>
+
+          <!-- Dark Theme -->
+          <li>
+            <button type="button"
+                    class="dropdown-item d-flex align-items-center"
+                    [class.active]="isThemeActive('dark')"
+                    [attr.aria-pressed]="isThemeActive('dark')"
+                    (click)="setTheme('dark')">
+              <span class="theme-icon d-flex fs-base me-2">
+                <i class="fi-moon"></i>
+              </span>
+              <span class="theme-label flex-grow-1">{{ 'header.theme.dark' | translate }}</span>
+              <i class="item-active-indicator fi-check ms-auto"
+                 [style.opacity]="isThemeActive('dark') ? '1' : '0'"></i>
+            </button>
+          </li>
+
+          <!-- Auto Theme -->
+          <li>
+            <button type="button"
+                    class="dropdown-item d-flex align-items-center"
+                    [class.active]="isThemeActive('auto')"
+                    [attr.aria-pressed]="isThemeActive('auto')"
+                    (click)="setTheme('auto')">
+              <span class="theme-icon d-flex fs-base me-2">
+                <i class="fi-monitor"></i>
+              </span>
+              <span class="theme-label flex-grow-1">{{ 'header.theme.auto' | translate }}</span>
+              <i class="item-active-indicator fi-check ms-auto"
+                 [style.opacity]="isThemeActive('auto') ? '1' : '0'"></i>
+            </button>
+          </li>
+        </ul>
+      </div>
+
       <!-- Join button  -->
       <a class="btn btn-primary animate-scale" href=""
          (click)="closeMenu()">
@@ -223,7 +304,6 @@
         {{ 'header.navigation.start' | translate }}
       </a>
     </div>
-
 
   </div>
 </header>

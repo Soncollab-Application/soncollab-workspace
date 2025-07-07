@@ -1,4 +1,9 @@
-<footer class="footer bg-black pt-0 my-0">
+<footer class="footer bg-info pt-0 my-0">
+  <div class="d-flex w-100 justify-content-center overflow-hidden text-warning opacity-75">
+    <svg class="flex-shrink-0" width="3000" height="18" xmlns="http://www.w3.org/2000/svg">
+      <polygon fill="currentColor" points="3000,0 3000,12.3 2751,7.2 2460,18 2239,7.2 2017,10.7 1911.5,7.2 1368,18 831,7.2 540,18 319,7.2 97,10.7 0,7.5 0,0 "></polygon>
+    </svg>
+  </div>
   <div class="container pb-md-2">
 
     <div class="accordion row pt-4 pt-sm-5 mt-3 mt-sm-0" id="footerLinks">
@@ -57,7 +62,7 @@
       <div class="col-sm-12 col-md-6 col-lg-3 mb-md-4 mb-sm-2">
         <div class="accordion-item border-0">
           <h6 class="accordion-header mb-2" id="companyLinksHeading">
-            <span class="h5 d-none d-sm-block for-dax-font">
+            <span class="h5 d-none d-sm-block for-dax-font text-white">
               {{ 'footer.company.title' | translate }}
             </span>
             <button aria-controls="companyLinks" aria-expanded="false"
@@ -70,32 +75,32 @@
                data-bs-parent="#footerLinks" id="companyLinks">
             <ul class="nav flex-column gap-2 pt-sm-1 pt-lg-2 pb-3 pb-sm-0 mt-n1 mb-1 mb-sm-0">
               <li class="pt-1">
-                <a class="nav-link hover-effect-underline d-inline text-body fw-normal p-0" [routerLink]="['/company/about']">
+                <a class="nav-link hover-effect-underline d-inline text-white fw-normal p-0" [routerLink]="['/company/about']">
                   {{ 'footer.company.about' | translate }}
                 </a>
               </li>
               <li class="pt-1">
-                <a class="nav-link hover-effect-underline d-inline text-body fw-normal p-0" href="#!">
+                <a class="nav-link hover-effect-underline d-inline text-white fw-normal p-0" href="#!">
                   {{ 'footer.company.careers' | translate }}
                 </a>
               </li>
               <li class="pt-1">
-                <a class="nav-link hover-effect-underline d-inline text-body fw-normal p-0" [routerLink]="['/company/contact']">
+                <a class="nav-link hover-effect-underline d-inline text-white fw-normal p-0" [routerLink]="['/company/contact']">
                   {{ 'footer.company.contact' | translate }}
                 </a>
               </li>
               <li class="pt-1">
-                <a class="nav-link hover-effect-underline d-inline text-body fw-normal p-0" [routerLink]="['/company/privacy-policy']">
+                <a class="nav-link hover-effect-underline d-inline text-white fw-normal p-0" [routerLink]="['/company/privacy-policy']">
                   {{ 'footer.company.privacy' | translate }}
                 </a>
               </li>
               <li class="pt-1">
-                <a class="nav-link hover-effect-underline d-inline text-body fw-normal p-0" [routerLink]="['/company/use-condition']">
+                <a class="nav-link hover-effect-underline d-inline text-white fw-normal p-0" [routerLink]="['/company/use-condition']">
                   {{ 'footer.company.terms' | translate }}
                 </a>
               </li>
               <li class="pt-1">
-                <a class="nav-link hover-effect-underline d-inline text-body fw-normal p-0" [routerLink]="['/company/anti-fraud-policy']" >{{ 'footer.company.antiFraud' | translate }}</a>
+                <a class="nav-link hover-effect-underline d-inline text-white fw-normal p-0" [routerLink]="['/company/anti-fraud-policy']" >{{ 'footer.company.antiFraud' | translate }}</a>
               </li>
             </ul>
           </div>
@@ -105,7 +110,7 @@
       <div class="col-sm-12 col-md-6 col-lg-4 mb-2">
         <div class="accordion-item border-0">
           <h6 class="accordion-header" id="resourcesLinksHeading">
-            <span class="h5 d-none for-dax-font d-sm-block">
+            <span class="h5 d-none for-dax-font d-sm-block text-white">
               {{ 'footer.resources.title' | translate }}
             </span>
             <button aria-controls="resourcesLinks" aria-expanded="false"
@@ -121,13 +126,13 @@
                 <ul class="nav flex-column gap-2 pt-sm-1 pt-lg-2 pb-3 pb-sm-0 mt-n1 mb-1 mb-sm-0">
 
                   <li class="pt-1">
-                    <a class="nav-link hover-effect-underline d-inline text-body fw-normal p-0" href="#!">
+                    <a class="nav-link hover-effect-underline d-inline text-white fw-normal p-0" href="#!">
                       {{ 'footer.resources.api' | translate }}
                     </a>
                   </li>
 
                   <li class="pt-1">
-                    <a class="nav-link hover-effect-underline d-inline text-body fw-normal p-0" href="#!">
+                    <a class="nav-link hover-effect-underline d-inline text-white fw-normal p-0" href="#!">
                       {{ 'footer.resources.help' | translate }}
                     </a>
                   </li>
@@ -142,7 +147,7 @@
     </div>
 
     <div class="d-md-flex align-items-center py-4 pt-sm-5 mt-3 mt-sm-0">
-      <p class="text-body-secondary fs-sm text-center text-md-start mb-0 me-md-4 order-md-1">
+      <p class="text-white-50 fs-sm text-center text-md-start mb-0 me-md-4 order-md-1">
         {{ 'footer.copyright' | translate }}
       </p>
     </div>

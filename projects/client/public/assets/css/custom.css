@@ -94,8 +94,76 @@
 
 
 
+[data-bs-theme=dark] .gradient-text {
+  background: linear-gradient(90deg, #ffffff, rgba(68, 140, 116, 0.87), #ffffff, #ffffff);
+  background-size: 200% auto;
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientFlow 6s ease infinite;
+  will-change: background-position;
+}
+
+@keyframes gradientFlow {
+  0% {
+    background-position: 200% center;
+  }
+  100% {
+    background-position: -200% center;
+  }
+}
 
 
+
+
+[data-bs-theme=dark] .section-grid-pattern {
+  position: relative;
+  z-index: 0;
+  background-color: transparent;
+  overflow: hidden;
+  transform: translateZ(0); /* GPU optimization */
+
+  /* Standard syntax (Chrome, Firefox, etc.) */
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 20%, rgba(0, 0, 0, 1) 90%, rgba(0, 0, 0, 0) 100%);
+
+  /* WebKit fallback (Safari, older Chrome) */
+  -webkit-mask-image: -webkit-linear-gradient(to top, rgba(0, 0, 0, 1) 20%, rgba(0, 0, 0, 1) 90%, rgba(0, 0, 0, 0) 100%);
+
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+
+  mask-size: 100% 100%;
+  -webkit-mask-size: 100% 100%;
+}
+
+
+[data-bs-theme=dark] .section-grid-pattern::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.18) 1px, transparent 1px),
+  linear-gradient(to bottom, rgba(255, 255, 255, 0.21) 1px, transparent 1px);
+  background-size: 120px 120px;
+  background-position: center top;
+  opacity: 0.5;
+  filter: blur(0.3px);
+  pointer-events: none;
+  /* Optimisation GPU */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+
+
+
+
+
+
+
+
+/* ------------------------------ Light --------------------------------- */
 
 
 
@@ -133,7 +201,7 @@
   left: -100% !important;
   width: 100% !important;
   height: 100% !important;
-  background: linear-gradient(90deg, transparent, rgba(68, 140, 116, 0.1), transparent) !important;
+  background: linear-gradient(90deg, transparent, rgba(166, 191, 183, 0.22), transparent) !important;
   transition: left 0.5s ease !important;
 }
 
@@ -162,7 +230,7 @@
 
 [data-bs-theme=light] .nav-link.active-feature {
   background: rgba(68, 140, 116, 0.1) !important;
-  border-color: rgba(68, 140, 116, 0.2) !important;
+  border-color: rgba(18, 103, 79, 0.9) !important;
   border-radius: 8px !important;
 }
 
@@ -171,7 +239,13 @@
 }
 
 [data-bs-theme=light] .nav-link.active-feature  {
-  color: #448c74 !important;
+  color: #16674c !important;
+}
+
+[data-bs-theme=light] .nav-link.active-feature small  {
+  color: rgba(0, 0, 0, 0.94) !important;
+  font-weight: 400 !important;
+
 }
 
 /* Animation d'entrée pour le dropdown */
@@ -192,4 +266,66 @@
 
 [data-bs-theme=light] .nav-link.dropdown-toggle:hover i {
   transform: scale(1.1) !important;
+}
+
+
+[data-bs-theme=light] .gradient-text {
+  background: linear-gradient(90deg, #000000, rgba(68, 140, 116, 0.87), #000000, #000000);
+  background-size: 200% auto;
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientFlow 6s ease infinite;
+  will-change: background-position;
+}
+
+@keyframes gradientFlow {
+  0% {
+    background-position: 200% center;
+  }
+  100% {
+    background-position: -200% center;
+  }
+}
+
+
+
+
+[data-bs-theme=light] .section-grid-pattern {
+  position: relative;
+  z-index: 0;
+  background-color: transparent;
+  overflow: hidden;
+  transform: translateZ(0); /* GPU optimization */
+
+  /* Standard syntax (Chrome, Firefox, etc.) */
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 20%, rgba(0, 0, 0, 1) 90%, rgba(0, 0, 0, 0) 100%);
+
+  /* WebKit fallback (Safari, older Chrome) */
+  -webkit-mask-image: -webkit-linear-gradient(to top, rgba(0, 0, 0, 1) 20%, rgba(0, 0, 0, 1) 90%, rgba(0, 0, 0, 0) 100%);
+
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+
+  mask-size: 100% 100%;
+  -webkit-mask-size: 100% 100%;
+}
+
+
+[data-bs-theme=light] .section-grid-pattern::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0.18) 1px, transparent 1px),
+  linear-gradient(to bottom, rgba(0, 0, 0, 0.21) 1px, transparent 1px);
+  background-size: 120px 120px;
+  background-position: center top;
+  opacity: 0.5;
+  filter: blur(0.3px);
+  pointer-events: none;
+  /* Optimisation GPU */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }

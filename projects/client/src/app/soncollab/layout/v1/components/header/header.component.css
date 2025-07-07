@@ -10,13 +10,10 @@
   position: relative;
 }
 
-/* Pas de séparateur entre colonnes */
-
 .feature-item {
   position: relative;
   overflow: hidden;
 }
-
 
 /* Animation d'entrée pour le dropdown */
 .dropdown-menu {
@@ -30,11 +27,234 @@
   transform: translateY(0);
 }
 
-
 .nav-link.dropdown-toggle i {
   transition: transform 0.3s ease;
 }
 
 .nav-link.dropdown-toggle:hover i {
   transform: scale(1.1);
+}
+
+/* ✅ Transition fluide pour le changement de logo */
+.logo-transition {
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.logo-transition:hover {
+  transform: scale(1.02);
+}
+
+/* ✅ Animation lors du changement de thème */
+@keyframes logoFadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.logo-transition {
+  animation: logoFadeIn 0.3s ease-in-out;
+}
+
+/* ✅ Styles pour le theme switcher avec vos couleurs */
+.theme-switcher {
+  position: relative;
+  transition: all 0.3s ease;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--fn-primary);
+  border: 1px solid var(--fn-primary-border-subtle) !important;
+}
+
+.theme-switcher:hover {
+  transform: scale(1.1);
+  background-color: var(--fn-primary-bg-subtle);
+  border-color: var(--fn-primary) !important;
+  color: var(--fn-primary-text-emphasis);
+}
+
+.theme-switcher:focus {
+  box-shadow: 0 0 0 0.2rem rgba(var(--fn-primary-rgb), 0.25);
+  border-color: var(--fn-primary) !important;
+}
+
+.theme-icon-active {
+  transition: transform 0.3s ease;
+  color: inherit;
+}
+
+.theme-switcher[aria-expanded="true"] {
+  background-color: var(--fn-primary-bg-subtle);
+  border-color: var(--fn-primary) !important;
+  color: var(--fn-primary-text-emphasis);
+}
+
+.theme-switcher[aria-expanded="true"] .theme-icon-active {
+  transform: rotate(180deg);
+}
+
+/* ✅ Positionnement centré du dropdown avec vos couleurs */
+.dropdown-menu-center[data-bs-popper="static"] {
+  position: absolute !important;
+  top: calc(100% + 0.5rem) !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  min-width: 9rem;
+  z-index: 1050;
+  background-color: var(--bs-body-bg);
+  border: 1px solid var(--fn-primary-border-subtle);
+  border-radius: 0.5rem;
+  box-shadow: 0 0.5rem 1rem rgba(var(--fn-primary-rgb), 0.15);
+}
+
+/* Styles pour les items du dropdown avec vos couleurs */
+.dropdown-item.active {
+  background-color: var(--fn-primary-bg-subtle) !important;
+  color: var(--fn-primary-text-emphasis) !important;
+}
+
+.dropdown-item.active .item-active-indicator {
+  opacity: 1 !important;
+  color: var(--fn-primary) !important;
+}
+
+.dropdown-item {
+  white-space: nowrap;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  transition: all 0.2s ease;
+  color: var(--bs-body-color);
+}
+
+.dropdown-item:hover {
+  background-color: var(--fn-primary-bg-subtle) !important;
+  color: var(--fn-primary-text-emphasis) !important;
+}
+
+.dropdown-item .item-active-indicator {
+  transition: opacity 0.2s ease;
+  min-width: 1rem;
+  color: var(--fn-primary);
+}
+
+.dropdown-item:hover .item-active-indicator {
+  opacity: 0.5;
+}
+
+.theme-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.theme-label {
+  font-weight: 500;
+}
+
+/* Animation pour le changement d'icône du theme switcher */
+.theme-icon-active i {
+  transition: all 0.3s ease;
+}
+
+/* Styles responsifs pour le theme switcher centré */
+@media (max-width: 991px) {
+
+  .dropdown-menu-center[data-bs-popper="static"] {
+    min-width: 8rem !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+  }
+}
+
+@media (max-width: 576px) {
+
+  .dropdown-menu-center[data-bs-popper="static"] {
+    min-width: 7.5rem !important;
+    font-size: 0.875rem;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+  }
+
+  .dropdown-item {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .theme-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .theme-label {
+    font-size: 0.875rem;
+  }
+}
+
+/* ✅ Fix pour très petits écrans avec centrage */
+@media (max-width: 400px) {
+  .dropdown-menu-center[data-bs-popper="static"] {
+    min-width: 7rem !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+  }
+
+  .theme-switcher {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* Focus states pour l'accessibilité avec vos couleurs */
+.theme-switcher:focus {
+  outline: 2px solid var(--fn-primary);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 0.2rem rgba(var(--fn-primary-rgb), 0.25);
+}
+
+/* ✅ Retire le focus automatiquement après fermeture du dropdown */
+.theme-switcher:not([aria-expanded="true"]):focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.dropdown-item:focus {
+  background-color: var(--fn-primary-bg-subtle) !important;
+  color: var(--fn-primary-text-emphasis) !important;
+  outline: none;
+}
+
+/* ✅ Focus temporaire pour les items sélectionnés */
+.dropdown-item:active {
+  background-color: var(--fn-primary) !important;
+  color: white !important;
+  transform: scale(0.98);
+  transition: all 0.1s ease;
+}
+
+/* Animation pour l'indicateur actif avec vos couleurs */
+@keyframes checkFadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.dropdown-item.active .item-active-indicator {
+  animation: checkFadeIn 0.2s ease;
+  color: var(--fn-primary) !important;
 }
