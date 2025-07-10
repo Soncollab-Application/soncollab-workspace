@@ -1,12 +1,21 @@
+const endpoint = {
+  protocol: 'http',
+  ip: 'localhost',
+  port: '1337'
+};
+
+const baseUrl = `${endpoint.protocol}://${endpoint.ip}:${endpoint.port}`;
+const api = `${baseUrl}/api`;
+
 export const environment = {
   production: false,
 
   api: {
-    ip: 'localhost',
-    port: 1337,
-    protocol: 'http',
-    fullUrl: 'http://localhost:1337/api',
-    baseUrl: 'http://localhost:1337'
+    ip: endpoint.ip,
+    protocol: endpoint.protocol,
+    port: endpoint.port,
+    fullUrl: api,
+    baseUrl: baseUrl
   },
 
   app: {

@@ -79,16 +79,41 @@
       "analytics": {
         "title": "Analyze your performance",
         "description": "Access key statistics for your artists: revenue, streams, platforms, territories, and much more — all in real-time."
-      },
-      "teams": {
-        "title": "Manage your teams",
-        "description": "Assign roles, manage access and collaborate effectively with your partners."
       }
     },
-    "api": {
-      "title": "Connect your back-office to Soncollab",
-      "description": "Integrate our secure REST API to automate delivery, retrieve royalties, manage splits, or build your own distribution portal.",
-      "button": "Api Docs"
+    "benefits": {
+      "title": "Why do 10,000+ artists trust us?",
+      "subtitle": "Discover the concrete results achieved by our users",
+      "stats": {
+        "timeSaved": {
+          "title": "Time Saved",
+          "description": "Complete automation of distribution and royalties"
+        },
+        "platforms": {
+          "title": "Platforms",
+          "description": "Distribute to all major platforms with one click"
+        },
+        "processing": {
+          "title": "Processing Time",
+          "description": "Automatic payments and instant reconciliation"
+        },
+        "accuracy": {
+          "title": "Accuracy",
+          "description": "Analytics and reporting with maximum precision"
+        }
+      },
+      "cta": {
+        "title": "Ready to join the music revolution?",
+        "subtitle": "Discover how Soncollab can transform your music business today.",
+        "button": "See a demo"
+      }
+    },
+    "whiteLabel": {
+      "title": "Your brand, our technology",
+      "subtitle": "Create your own music platform with our fully customizable white label solution. Domain, colors, logo - everything can be adapted to your identity.",
+      "cta": {
+        "demo": "See a demo"
+      }
     }
   },
   "footer": {
@@ -184,7 +209,120 @@
       "highlight1": "Multi-source tracking",
       "highlight2": "Automatic alerts",
       "highlight3": "Accurate forecasts"
-    }
+    },
+
+    "hero": {
+      "title": "Choose Your Plan",
+      "subtitle": "Flexible pricing for music labels and distributors of all sizes. Scale with confidence."
+    },
+    "tabs": {
+      "portal": "Portal",
+      "api": "API"
+    },
+    "portal": {
+      "title": "Soncollab Portal",
+      "subtitle": "Complete user interface with branding and admin features"
+    },
+    "api": {
+      "title": "Soncollab API",
+      "subtitle": "Headless full access for developers and custom integrations"
+    },
+    "popular": "Most Popular",
+    "recommended": "Recommended",
+    "selectPlan": "Select",
+    "features": {
+      "assets": "assets max",
+      "royalties": "royalties max/month",
+      "support": "Support",
+      "whiteLabel": "White Label"
+    },
+    "plans": {
+      "portal": {
+        "start": {
+          "name": "Start",
+          "description": "Perfect for getting started with your music business"
+        },
+        "growth": {
+          "name": "Growth",
+          "description": "Perfect for growing your label"
+        },
+        "pro": {
+          "name": "Pro Label",
+          "description": "For professional labels"
+        },
+        "enterprise": {
+          "name": "Enterprise",
+          "description": "Complete solution for large organizations"
+        }
+      },
+      "api": {
+        "delivery": {
+          "name": "Delivery & Analytics",
+          "description": "API for distribution and analytics"
+        },
+        "rights": {
+          "name": "Rights & Royalties",
+          "description": "Complete API for rights and royalties"
+        },
+        "full": {
+          "name": "Full API Suite",
+          "description": "Complete access to all our APIs"
+        }
+      }
+    },
+    "modules": {
+      "catalog": "Catalog",
+      "distribution": "Distribution",
+      "analytics": "Analytics",
+      "rights": "Rights",
+      "payments": "Payments",
+      "royaltyReporting": "Royalty Reporting",
+      "publishing": "Publishing",
+      "syncLicensing": "Sync Licensing",
+      "teamCollaboration": "Team Collaboration",
+      "apiAccess": "API Access",
+      "prioritySLA": "Priority SLA",
+      "legalModule": "Legal Module",
+      "aiAnomalies": "AI/Anomalies",
+      "revenue": "Revenue",
+      "legal": "Legal",
+      "allModules": "All modules",
+      "sandbox": "Sandbox"
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "subtitle": "Have questions? We have answers.",
+      "q1": {
+        "question": "Can I upgrade or downgrade my plan?",
+        "answer": "Yes, you can change your plan at any time. Changes will be prorated and reflected in your next billing cycle."
+      },
+      "q2": {
+        "question": "What's included in white label?",
+        "answer": "White label includes custom domain, branding customization, and removal of Soncollab branding from the interface."
+      },
+      "q3": {
+        "question": "What payment methods do you accept?",
+        "answer": "We accept all major credit cards, bank transfers, and can set up custom payment terms for Enterprise customers."
+      },
+      "q4": {
+        "question": "Is there a free trial available?",
+        "answer": "Yes, we offer a 14-day free trial for all Portal plans. Contact us to set up your trial account."
+      }
+    },
+    "contact": {
+      "title": "Need a Custom Plan?",
+      "subtitle": "Contact our sales team for enterprise solutions and custom pricing.",
+      "email": {
+        "title": "Email Us"
+      },
+      "phone": {
+        "title": "Call Us"
+      },
+      "cta": "Contact Sales"
+    },
+    "currency": "€",
+    "period": "/month",
+    "priority": "Priority"
   },
 
   "catalog": {
@@ -926,5 +1064,208 @@
       "payments": "Payment Processing",
       "paymentsDesc": "Handle all financial transactions securely"
     }
+  },
+  "studio": {
+    "hero": {
+      "title": "Power Your Music Business",
+      "subtitle": "Soncollab Studio offers one unified platform to manage digital assets, supply chain, rights management, business intelligence, financial reporting, and royalty payment distribution.",
+      "getStarted": "Get Started",
+      "learnMore": "Learn More"
+    },
+    "benefits": {
+      "unified": {
+        "title": "Unified Platform",
+        "description": "All your music business tools in one place"
+      },
+      "scalable": {
+        "title": "Scalable Solution",
+        "description": "Grows with your business from indie to enterprise"
+      },
+      "automated": {
+        "title": "Automated Workflows",
+        "description": "Streamline operations with intelligent automation"
+      },
+      "global": {
+        "title": "Global Reach",
+        "description": "Distribute and manage rights worldwide"
+      }
+    },
+    "features": {
+      "title": "Complete Music Business Suite",
+      "subtitle": "Everything you need to manage, distribute, and monetize your music catalog effectively.",
+      "catalog": {
+        "title": "Catalog Management",
+        "description": "Your music catalog is your most valuable asset—unlock its full potential with Soncollab Studio.",
+        "feature1": "Organize all your digital assets in one place",
+        "feature2": "Manage copyrights and metadata with ease",
+        "feature3": "Import and export your catalog effortlessly via DDEX, CSV, or XML",
+        "explore": "Explore"
+      },
+      "rights": {
+        "title": "Rights Management",
+        "description": "Simplify rights management and ensure every artist and rights holder gets paid—accurately and as fast as possible.",
+        "feature1": "Manage and secure your rights with customizable contracts",
+        "feature2": "Process complex terms with precise rights ingestion for full compliance",
+        "feature3": "Automate royalty splits to eliminate errors and ensure timely payments",
+        "explore": "Explore"
+      },
+      "distribution": {
+        "title": "Distribution & Delivery",
+        "description": "Distribute your music anywhere and reach fans—fast, seamless, and hassle-free.",
+        "feature1": "Leverage direct DSP, Merlin, or Soncollab deals",
+        "feature2": "Distribute to 300+ global DSPs, social platforms, and more",
+        "feature3": "Ensure quality control with Soncollab's Metadata Inspector",
+        "explore": "Explore"
+      },
+      "income": {
+        "title": "Income Tracking",
+        "description": "Gain full revenue control with seamless tracking, reconciliation, and real-time insights—all in one place.",
+        "feature1": "Ingest revenue reports via API, FTP, or direct upload",
+        "feature2": "Reconcile payments effortlessly by auto-matching transactions with your catalog",
+        "feature3": "Automatically detect and suggest matches for unmatched transactions",
+        "explore": "Explore"
+      },
+      "royalties": {
+        "title": "Royalty Accounting",
+        "description": "Ditch spreadsheets—automate payouts, track earnings in real time, and simplify royalty accounting with precision.",
+        "feature1": "Generate detailed financial reports covering revenue, royalties, and expenses",
+        "feature2": "Gain insights into cash flow, earnings trends, and payout history",
+        "feature3": "Customize reports by artist, label, DSP, or territory for granular analysis",
+        "explore": "Explore"
+      },
+      "payments": {
+        "title": "Global Payments",
+        "description": "Seamless and secure cross-border multi-currency payments and fast, accurate royalty payouts—simplified.",
+        "feature1": "Automate royalty distribution from calculation to payment",
+        "feature2": "Manage payments in multiple currencies with automated FX conversions",
+        "feature3": "Process payments for any number of rights holders—whether one or thousands",
+        "explore": "Explore"
+      },
+      "analytics": {
+        "title": "Analytics & Insights",
+        "description": "Unlock the power of your data with advanced analytics, streaming trends, revenue patterns, and audience engagement for smarter decision-making.",
+        "feature1": "Break down streaming and download data by release, DSP, market, and more",
+        "feature2": "Track growth, demographics, and engagement to optimize marketing and expand reach",
+        "feature3": "Export data in CSV or PDF formats for easy collaboration and reporting",
+        "explore": "Explore"
+      },
+      "whitelabel": {
+        "title": "White Label Solution",
+        "description": "Empower your music business with a fully customizable, scalable platform to enhance your brand, extend reach, and streamline distribution.",
+        "feature1": "Customize domains, visuals, and UI for a seamless, professional look",
+        "feature2": "Personalize onboarding with branded pages and secure authentication",
+        "feature3": "Manage labels and artists at scale while ensuring quality and compliance",
+        "explore": "Explore"
+      }
+    },
+    "cta": {
+      "title": "Ready to Transform Your Music Business?",
+      "subtitle": "Join thousands of labels and artists who trust Soncollab Studio to power their success.",
+      "getStarted": "Get Started",
+      "viewPricing": "View Pricing"
+    }
+  },
+  "connect": {
+    "hero": {
+      "title": "Build Your App With One Powerful API",
+      "subtitle": "Built for developers and tailored for music companies, it lets you automate operations, workflows, integrate seamlessly with your existing tech stack, and scale your music app platform with confidence.",
+      "getStarted": "Get Started",
+      "learnMore": "API Documentation"
+    },
+    "benefits": {
+      "api": {
+        "title": "Powerful API",
+        "description": "One API for all your music operations"
+      },
+      "automation": {
+        "title": "Workflow Automation",
+        "description": "Automate complex music business processes"
+      },
+      "integration": {
+        "title": "Seamless Integration",
+        "description": "Integrate with your existing tech stack"
+      },
+      "scale": {
+        "title": "Scale with Confidence",
+        "description": "Built to grow with your music platform"
+      }
+    },
+    "features": {
+      "title": "Complete API Suite",
+      "subtitle": "Everything you need to build and scale your music platform with our comprehensive API.",
+      "delivery": {
+        "title": "Delivery & Distribution",
+        "description": "Streamline and manage your end-to-end release workflows with a single, powerful API",
+        "feature1": "Create and manage releases, tracks, metadata, and rights",
+        "feature2": "Automate release scheduling and version control",
+        "feature3": "Deliver to DSPs using your own deals or Soncollab's deals",
+        "feature4": "Monitor delivery status and DSP ingestion with webhook support",
+        "cta": "Get Started"
+      },
+      "catalog": {
+        "title": "Catalog Management",
+        "description": "Complete catalog control through API endpoints for efficient music library management",
+        "feature1": "Full CRUD operations on catalog items",
+        "feature2": "Bulk import and export capabilities",
+        "feature3": "Advanced search and filtering",
+        "feature4": "Metadata validation and enrichment",
+        "cta": "Get Started"
+      },
+      "analytics": {
+        "title": "Reporting & Analytics",
+        "description": "Access structured performance data via API and embed real-time insights into your workflows",
+        "feature1": "Query streaming and revenue data by track, release, region, or DSP",
+        "feature2": "Monitor trends in audience behavior and engagement",
+        "feature3": "Export structured data or integrate directly into analytics tools",
+        "feature4": "Supports CSV export and raw data sync",
+        "cta": "Get Started"
+      },
+      "royalties": {
+        "title": "Rights, Royalties & Payments",
+        "description": "Automate calculations and streamline royalty reporting with a powerful API",
+        "feature1": "Define contracts with configurable terms: splits, recoupables, payout logic",
+        "feature2": "Import and reconcile DSP statements with contract data",
+        "feature3": "Generate audit-ready statements, invoices, and payout summaries",
+        "feature4": "Full API access to royalty line items, reports, and payment status",
+        "cta": "Get Started"
+      }
+    },
+    "resources": {
+      "title": "Developer Resources",
+      "subtitle": "Everything you need to get started with the Soncollab API.",
+      "documentation": {
+        "title": "API Reference",
+        "description": "Complete documentation with examples and use cases",
+        "cta": "View Docs"
+      },
+      "authentication": {
+        "title": "Authentication",
+        "description": "Secure API access and key management",
+        "cta": "Learn More"
+      },
+      "processing": {
+        "title": "Royalty Processing",
+        "description": "Advanced royalty calculation and processing workflows",
+        "cta": "Explore"
+      },
+      "webhooks": {
+        "title": "Webhooks",
+        "description": "Real-time notifications and event handling",
+        "cta": "Setup Guide"
+      }
+    },
+    "cta": {
+      "title": "Ready to Power Your Music Platform?",
+      "subtitle": "Join hundreds of developers and music companies building the future with Soncollab Connect API.",
+      "getStarted": "Start Building",
+      "viewPricing": "View API Pricing"
+    }
+  },
+
+
+  "notFound": {
+    "title": "Page Not Found",
+    "description": "The page you are looking for has been moved, deleted, or may have never existed.",
+    "homeButton": "Go to Homepage"
   }
 }

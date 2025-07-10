@@ -1,4 +1,5 @@
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Joti+One&display=swap");
 
 @font-face {
   font-family: 'komix';
@@ -20,6 +21,7 @@ html, body {
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
   scrollbar-color: rgb(15, 85, 61) rgba(0, 0, 0, 0.1);
+
 }
 
 /* Optimisation pour les appareils tactiles */
@@ -84,7 +86,7 @@ html, body {
 }
 
 .joti-one-regular {
-  font-family: "Joti One", sans-serif;
+  font-family: "Joti One", serif;
   font-style: normal;
 }
 
@@ -101,5 +103,3 @@ html, body {
 .for-dax-font {
   font-family: "Dax", sans-serif !important;
 }
-
-

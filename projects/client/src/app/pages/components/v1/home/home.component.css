@@ -1,19 +1,54 @@
-
-
-.gradient-1 {
-  background: linear-gradient(to right, #1e3c72, #2a5298);
+/* Animations et effets hover */
+.transition-all:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
-.gradient-2 {
-  background: linear-gradient(to right, #5f0a87, #a4508b);
+.transition-all:hover .position-absolute {
+  opacity: 1 !important;
 }
 
-.gradient-3 {
-  background: linear-gradient(to right, #2c3e50, #4ca1af);
+/* Animation des statistiques */
+@keyframes countUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.gradient-4 {
-  background: linear-gradient(to right, #1d976c, #196736);
+.display-4 {
+  animation: countUp 0.8s ease-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .display-4 {
+    font-size: 2.5rem !important;
+  }
+
+  .fs-4 {
+    font-size: 1.2rem !important;
+  }
+
+  .p-lg-5 {
+    padding: 2rem !important;
+  }
+}
+
+/* Animation au scroll (optionnel avec AOS) */
+[data-aos="fade-up"] {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease;
+}
+
+[data-aos="fade-up"].aos-animate {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 

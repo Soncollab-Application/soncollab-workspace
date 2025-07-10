@@ -2,8 +2,12 @@
    FEATURES PAGES - GLOBAL STYLES
    ================================= */
 
+/* ===========================
+   DARK THEME - EXISTING STYLES
+   =========================== */
+
 /* Dashboard Frame Styles - Réutilisable pour toutes les features */
-.dashboard-frame {
+[data-bs-theme=dark] .dashboard-frame {
   position: relative;
   background: transparent;
   border-radius: 16px;
@@ -12,16 +16,16 @@
   transition: all 0.4s ease;
 }
 
-.dashboard-frame:hover {
+[data-bs-theme=dark] .dashboard-frame:hover {
   transform: translateY(-5px);
 }
 
-.dashboard-frame.large {
+[data-bs-theme=dark] .dashboard-frame.large {
   padding: 30px;
   border-radius: 20px;
 }
 
-.dashboard-image {
+[data-bs-theme=dark] .dashboard-image {
   width: 100%;
   height: auto;
   border-radius: 12px;
@@ -29,50 +33,50 @@
   transition: all 0.3s ease;
 }
 
-.dashboard-frame.large .dashboard-image {
+[data-bs-theme=dark] .dashboard-frame.large .dashboard-image {
   border-radius: 16px;
 }
 
 /* Hero Section - Commun à toutes les features */
-.feature-hero {
+[data-bs-theme=dark] .feature-hero {
   min-height: 80vh;
   display: flex;
   align-items: center;
 }
 
-.feature-hero .hero-content h1 {
+[data-bs-theme=dark] .feature-hero .hero-content h1 {
   line-height: 1.2;
 }
 
-.feature-hero .hero-dashboard {
+[data-bs-theme=dark] .feature-hero .hero-dashboard {
   position: relative;
 }
 
 /* Benefits Section - 4 colonnes standard */
-.feature-benefits {
+[data-bs-theme=dark] .feature-benefits {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.benefit-item {
+[data-bs-theme=dark] .benefit-item {
   padding: 1.5rem 1rem;
   transition: all 0.3s ease;
 }
 
-.benefit-item:hover {
+[data-bs-theme=dark] .benefit-item:hover {
   transform: translateY(-5px);
 }
 
-.benefit-icon {
+[data-bs-theme=dark] .benefit-icon {
   opacity: 0.9;
 }
 
 /* Feature Sections - Layout alterné */
-.feature-section {
+[data-bs-theme=dark] .feature-section {
   position: relative;
 }
 
-.feature-section:not(:last-child)::after {
+[data-bs-theme=dark] .feature-section:not(:last-child)::after {
   content: '';
   position: absolute;
   bottom: 0;
@@ -83,15 +87,15 @@
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
 }
 
-.feature-content {
+[data-bs-theme=dark] .feature-content {
   padding: 2rem 0;
 }
 
-.feature-header {
+[data-bs-theme=dark] .feature-header {
   margin-bottom: 2rem;
 }
 
-.feature-icon-large {
+[data-bs-theme=dark] .feature-icon-large {
   width: 80px;
   height: 80px;
   background: rgba(255, 255, 255, 0.1);
@@ -103,28 +107,28 @@
   transition: all 0.3s ease;
 }
 
-.feature-section:hover .feature-icon-large {
+[data-bs-theme=dark] .feature-section:hover .feature-icon-large {
   background: rgba(255, 255, 255, 0.15);
   transform: scale(1.05);
 }
 
-.feature-list li {
+[data-bs-theme=dark] .feature-list li {
   font-size: 1rem;
   color: rgba(255, 255, 255, 0.9);
   padding: 0.5rem 0;
 }
 
-.feature-image-container {
+[data-bs-theme=dark] .feature-image-container {
   position: relative;
   padding: 2rem 0;
 }
 
 /* Workflow Section - 4 étapes standard */
-.feature-workflow .workflow-step {
+[data-bs-theme=dark] .feature-workflow .workflow-step {
   padding: 2rem 1rem;
 }
 
-.step-number {
+[data-bs-theme=dark] .step-number {
   width: 50px;
   height: 50px;
   background: linear-gradient(135deg, #1c573a 0%, #80710f 100%);
@@ -139,17 +143,17 @@
 }
 
 /* Demo Section - Dashboard complet */
-.feature-demo {
+[data-bs-theme=dark] .feature-demo {
   padding: 5rem 0;
 }
 
-.demo-dashboard-container {
+[data-bs-theme=dark] .demo-dashboard-container {
   max-width: 1000px;
   margin: 0 auto;
 }
 
 /* Integrations Section - Grid de plateformes */
-.feature-integrations .platforms-grid {
+[data-bs-theme=dark] .feature-integrations .platforms-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 2rem;
@@ -159,18 +163,18 @@
 }
 
 @media (min-width: 576px) {
-  .feature-integrations .platforms-grid {
+  [data-bs-theme=dark] .feature-integrations .platforms-grid {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
 @media (min-width: 768px) {
-  .feature-integrations .platforms-grid {
+  [data-bs-theme=dark] .feature-integrations .platforms-grid {
     grid-template-columns: repeat(6, 1fr);
   }
 }
 
-.platform-item {
+[data-bs-theme=dark] .platform-item {
   padding: 1rem;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -182,47 +186,47 @@
   justify-content: center;
 }
 
-.platform-item:hover {
+[data-bs-theme=dark] .platform-item:hover {
   background: rgba(255, 255, 255, 0.1);
   transform: translateY(-2px);
 }
 
-.platform-logo {
+[data-bs-theme=dark] .platform-logo {
   max-height: 35px;
   max-width: 100px;
   filter: grayscale(100%) brightness(0.7);
   transition: all 0.3s ease;
 }
 
-.platform-item:hover .platform-logo {
+[data-bs-theme=dark] .platform-item:hover .platform-logo {
   filter: grayscale(0%) brightness(1);
 }
 
 /* Pricing Preview Section */
-.feature-pricing {
+[data-bs-theme=dark] .feature-pricing {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.pricing-highlights {
+[data-bs-theme=dark] .pricing-highlights {
   padding-left: 2rem;
 }
 
-.highlight-item {
+[data-bs-theme=dark] .highlight-item {
   font-size: 1rem;
   color: rgba(255, 255, 255, 0.9);
 }
 
 /* Related Features Section */
-.feature-related .row {
+[data-bs-theme=dark] .feature-related .row {
   display: flex;
   flex-wrap: wrap;
 }
 
-.feature-related .row > div {
+[data-bs-theme=dark] .feature-related .row > div {
   display: flex;
 }
 
-.feature-related .related-card {
+[data-bs-theme=dark] .feature-related .related-card {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
@@ -231,21 +235,272 @@
   min-height: 160px;
 }
 
-.related-link {
+[data-bs-theme=dark] .related-link {
   color: inherit;
   text-decoration: none;
   width: 100%;
   height: 100%;
 }
 
-.related-link:hover {
+[data-bs-theme=dark] .related-link:hover {
   color: inherit;
   text-decoration: none;
 }
 
-.related-link:hover .related-card {
+[data-bs-theme=dark] .related-link:hover .related-card {
   background: rgba(255, 255, 255, 0.08);
   border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+/* ===========================
+   LIGHT THEME - NEW STYLES
+   =========================== */
+
+/* Dashboard Frame Styles - Réutilisable pour toutes les features */
+[data-bs-theme=light] .dashboard-frame {
+  position: relative;
+  background: transparent;
+  border-radius: 16px;
+  padding: 20px;
+  backdrop-filter: blur(10px);
+  transition: all 0.4s ease;
+}
+
+[data-bs-theme=light] .dashboard-frame:hover {
+  transform: translateY(-5px);
+}
+
+[data-bs-theme=light] .dashboard-frame.large {
+  padding: 30px;
+  border-radius: 20px;
+}
+
+[data-bs-theme=light] .dashboard-image {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(68, 140, 116, 0.15);
+  transition: all 0.3s ease;
+}
+
+[data-bs-theme=light] .dashboard-frame.large .dashboard-image {
+  border-radius: 16px;
+}
+
+/* Hero Section - Commun à toutes les features */
+[data-bs-theme=light] .feature-hero {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+}
+
+[data-bs-theme=light] .feature-hero .hero-content h1 {
+  line-height: 1.2;
+}
+
+[data-bs-theme=light] .feature-hero .hero-dashboard {
+  position: relative;
+}
+
+/* Benefits Section - 4 colonnes standard */
+[data-bs-theme=light] .feature-benefits {
+  border-top: 1px solid rgba(68, 140, 116, 0.15);
+  border-bottom: 1px solid rgba(68, 140, 116, 0.15);
+}
+
+[data-bs-theme=light] .benefit-item {
+  padding: 1.5rem 1rem;
+  transition: all 0.3s ease;
+}
+
+[data-bs-theme=light] .benefit-item:hover {
+  transform: translateY(-5px);
+}
+
+[data-bs-theme=light] .benefit-icon {
+  opacity: 0.9;
+}
+
+/* Feature Sections - Layout alterné */
+[data-bs-theme=light] .feature-section {
+  position: relative;
+}
+
+[data-bs-theme=light] .feature-section:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(68, 140, 116, 0.3), transparent);
+}
+
+[data-bs-theme=light] .feature-content {
+  padding: 2rem 0;
+}
+
+[data-bs-theme=light] .feature-header {
+  margin-bottom: 2rem;
+}
+
+[data-bs-theme=light] .feature-icon-large {
+  width: 80px;
+  height: 80px;
+  background: rgba(68, 140, 116, 0.08);
+  border: 1px solid rgba(68, 140, 116, 0.2);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+[data-bs-theme=light] .feature-section:hover .feature-icon-large {
+  background: rgba(68, 140, 116, 0.15);
+  transform: scale(1.05);
+}
+
+[data-bs-theme=light] .feature-list li {
+  font-size: 1rem;
+  color: rgba(33, 37, 41, 0.8);
+  padding: 0.5rem 0;
+}
+
+[data-bs-theme=light] .feature-image-container {
+  position: relative;
+  padding: 2rem 0;
+}
+
+/* Workflow Section - 4 étapes standard */
+[data-bs-theme=light] .feature-workflow .workflow-step {
+  padding: 2rem 1rem;
+}
+
+[data-bs-theme=light] .step-number {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #22654e 0%, #1c573a 100%);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin: 0 auto;
+}
+
+/* Demo Section - Dashboard complet */
+[data-bs-theme=light] .feature-demo {
+  padding: 5rem 0;
+}
+
+[data-bs-theme=light] .demo-dashboard-container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Integrations Section - Grid de plateformes */
+[data-bs-theme=light] .feature-integrations .platforms-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  align-items: center;
+  justify-items: center;
+  padding: 2rem 0;
+}
+
+@media (min-width: 576px) {
+  [data-bs-theme=light] .feature-integrations .platforms-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  [data-bs-theme=light] .feature-integrations .platforms-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+[data-bs-theme=light] .platform-item {
+  padding: 1rem;
+  background: rgba(68, 140, 116, 0.05);
+  border: 1px solid rgba(68, 140, 116, 0.1);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+[data-bs-theme=light] .platform-item:hover {
+  background: rgba(68, 140, 116, 0.1);
+  transform: translateY(-2px);
+}
+
+[data-bs-theme=light] .platform-logo {
+  max-height: 35px;
+  max-width: 100px;
+  filter: grayscale(100%) brightness(0.4);
+  transition: all 0.3s ease;
+}
+
+[data-bs-theme=light] .platform-item:hover .platform-logo {
+  filter: grayscale(0%) brightness(1);
+}
+
+/* Pricing Preview Section */
+[data-bs-theme=light] .feature-pricing {
+  border-top: 1px solid rgba(68, 140, 116, 0.15);
+}
+
+[data-bs-theme=light] .pricing-highlights {
+  padding-left: 2rem;
+}
+
+[data-bs-theme=light] .highlight-item {
+  font-size: 1rem;
+  color: rgba(33, 37, 41, 0.8);
+}
+
+/* Related Features Section */
+[data-bs-theme=light] .feature-related .row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+[data-bs-theme=light] .feature-related .row > div {
+  display: flex;
+}
+
+[data-bs-theme=light] .feature-related .related-card {
+  background: rgba(68, 140, 116, 0.05);
+  border: 1px solid rgba(68, 140, 116, 0.1);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  height: 100%;
+  min-height: 160px;
+}
+
+[data-bs-theme=light] .related-link {
+  color: inherit;
+  text-decoration: none;
+  width: 100%;
+  height: 100%;
+}
+
+[data-bs-theme=light] .related-link:hover {
+  color: inherit;
+  text-decoration: none;
+}
+
+[data-bs-theme=light] .related-link:hover .related-card {
+  background: rgba(68, 140, 116, 0.08);
+  border-color: rgba(68, 140, 116, 0.2);
   transform: translateY(-2px);
 }
 
@@ -255,48 +510,58 @@
 
 /* Tablet Responsive */
 @media (max-width: 1200px) {
-  .feature-content {
+  [data-bs-theme=dark] .feature-content,
+  [data-bs-theme=light] .feature-content {
     padding: 1.5rem 0;
   }
 
-  .dashboard-frame {
+  [data-bs-theme=dark] .dashboard-frame,
+  [data-bs-theme=light] .dashboard-frame {
     padding: 15px;
   }
 
-  .dashboard-frame.large {
+  [data-bs-theme=dark] .dashboard-frame.large,
+  [data-bs-theme=light] .dashboard-frame.large {
     padding: 20px;
   }
 }
 
 @media (max-width: 992px) {
-  .feature-hero {
+  [data-bs-theme=dark] .feature-hero,
+  [data-bs-theme=light] .feature-hero {
     min-height: 70vh;
     text-align: center;
   }
 
-  .feature-hero .hero-content {
+  [data-bs-theme=dark] .feature-hero .hero-content,
+  [data-bs-theme=light] .feature-hero .hero-content {
     margin-bottom: 3rem;
   }
 
-  .feature-content {
+  [data-bs-theme=dark] .feature-content,
+  [data-bs-theme=light] .feature-content {
     padding: 1rem 0;
     margin-bottom: 2rem;
   }
 
-  .feature-image-container {
+  [data-bs-theme=dark] .feature-image-container,
+  [data-bs-theme=light] .feature-image-container {
     padding: 1rem 0;
   }
 
-  .feature-section {
+  [data-bs-theme=dark] .feature-section,
+  [data-bs-theme=light] .feature-section {
     margin-bottom: 3rem !important;
     padding-bottom: 3rem !important;
   }
 
-  .feature-demo {
+  [data-bs-theme=dark] .feature-demo,
+  [data-bs-theme=light] .feature-demo {
     padding: 3rem 0;
   }
 
-  .pricing-highlights {
+  [data-bs-theme=dark] .pricing-highlights,
+  [data-bs-theme=light] .pricing-highlights {
     padding-left: 0;
     margin-top: 2rem;
   }
@@ -304,237 +569,287 @@
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
-  .feature-hero .hero-content h1 {
+  [data-bs-theme=dark] .feature-hero .hero-content h1,
+  [data-bs-theme=light] .feature-hero .hero-content h1 {
     font-size: 2.2rem;
     margin-bottom: 1.5rem;
   }
 
-  .feature-hero .hero-content p {
+  [data-bs-theme=dark] .feature-hero .hero-content p,
+  [data-bs-theme=light] .feature-hero .hero-content p {
     font-size: 1.1rem;
     margin-bottom: 2rem;
   }
 
-  .feature-hero .hero-content .d-flex {
+  [data-bs-theme=dark] .feature-hero .hero-content .d-flex,
+  [data-bs-theme=light] .feature-hero .hero-content .d-flex {
     flex-direction: column;
     gap: 1rem !important;
   }
 
-  .feature-hero .hero-content .btn {
+  [data-bs-theme=dark] .feature-hero .hero-content .btn,
+  [data-bs-theme=light] .feature-hero .hero-content .btn {
     width: 100%;
     padding: 0.875rem 1.5rem;
   }
 
-  .benefit-item {
+  [data-bs-theme=dark] .benefit-item,
+  [data-bs-theme=light] .benefit-item {
     margin-bottom: 2rem;
     padding: 1rem;
   }
 
-  .benefit-item h5 {
+  [data-bs-theme=dark] .benefit-item h5,
+  [data-bs-theme=light] .benefit-item h5 {
     font-size: 1.1rem;
     margin-bottom: 0.75rem;
   }
 
-  .feature-header h3 {
+  [data-bs-theme=dark] .feature-header h3,
+  [data-bs-theme=light] .feature-header h3 {
     font-size: 1.5rem;
     margin-bottom: 1rem;
   }
 
-  .feature-header p {
+  [data-bs-theme=dark] .feature-header p,
+  [data-bs-theme=light] .feature-header p {
     font-size: 1rem;
     margin-bottom: 1.5rem;
   }
 
-  .feature-content {
+  [data-bs-theme=dark] .feature-content,
+  [data-bs-theme=light] .feature-content {
     text-align: center;
     padding: 2rem 0;
   }
 
-  .feature-list {
+  [data-bs-theme=dark] .feature-list,
+  [data-bs-theme=light] .feature-list {
     text-align: left;
     max-width: 400px;
     margin: 0 auto;
   }
 
-  .feature-list li {
+  [data-bs-theme=dark] .feature-list li,
+  [data-bs-theme=light] .feature-list li {
     font-size: 0.95rem;
     padding: 0.5rem 0;
   }
 
-  .feature-icon-large {
+  [data-bs-theme=dark] .feature-icon-large,
+  [data-bs-theme=light] .feature-icon-large {
     width: 60px;
     height: 60px;
     border-radius: 16px;
     margin: 0 auto;
   }
 
-  .dashboard-frame {
+  [data-bs-theme=dark] .dashboard-frame,
+  [data-bs-theme=light] .dashboard-frame {
     padding: 12px;
     margin: 2rem 0;
   }
 
-  .dashboard-frame.large {
+  [data-bs-theme=dark] .dashboard-frame.large,
+  [data-bs-theme=light] .dashboard-frame.large {
     padding: 16px;
     margin: 2rem 0;
   }
 
-  .feature-section {
+  [data-bs-theme=dark] .feature-section,
+  [data-bs-theme=light] .feature-section {
     margin-bottom: 4rem !important;
     padding-bottom: 2rem !important;
   }
 
-  .feature-integrations .platforms-grid {
+  [data-bs-theme=dark] .feature-integrations .platforms-grid,
+  [data-bs-theme=light] .feature-integrations .platforms-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
   }
 
-  .platform-item {
+  [data-bs-theme=dark] .platform-item,
+  [data-bs-theme=light] .platform-item {
     padding: 0.75rem;
   }
 
-  .platform-logo {
+  [data-bs-theme=dark] .platform-logo,
+  [data-bs-theme=light] .platform-logo {
     max-height: 28px;
   }
 
-  .feature-workflow .workflow-step {
+  [data-bs-theme=dark] .feature-workflow .workflow-step,
+  [data-bs-theme=light] .feature-workflow .workflow-step {
     padding: 1.5rem 0.5rem;
   }
 
-  .step-number {
+  [data-bs-theme=dark] .step-number,
+  [data-bs-theme=light] .step-number {
     width: 45px;
     height: 45px;
     font-size: 1.1rem;
     margin-bottom: 1rem;
   }
 
-  .feature-workflow .workflow-step h5 {
+  [data-bs-theme=dark] .feature-workflow .workflow-step h5,
+  [data-bs-theme=light] .feature-workflow .workflow-step h5 {
     font-size: 1.1rem;
     margin-bottom: 0.75rem;
   }
 
-  .feature-workflow .workflow-step p {
+  [data-bs-theme=dark] .feature-workflow .workflow-step p,
+  [data-bs-theme=light] .feature-workflow .workflow-step p {
     font-size: 0.9rem;
   }
 
-  .feature-pricing .d-flex {
+  [data-bs-theme=dark] .feature-pricing .d-flex,
+  [data-bs-theme=light] .feature-pricing .d-flex {
     flex-direction: column;
     gap: 1rem !important;
   }
 
-  .feature-pricing .btn {
+  [data-bs-theme=dark] .feature-pricing .btn,
+  [data-bs-theme=light] .feature-pricing .btn {
     width: 100%;
   }
 
-  .feature-related .related-card {
+  [data-bs-theme=dark] .feature-related .related-card,
+  [data-bs-theme=light] .feature-related .related-card {
     margin-bottom: 1rem;
   }
 }
 
 /* Small Mobile Responsive */
 @media (max-width: 576px) {
-  .feature-hero .hero-content h1 {
+  [data-bs-theme=dark] .feature-hero .hero-content h1,
+  [data-bs-theme=light] .feature-hero .hero-content h1 {
     font-size: 1.9rem;
     line-height: 1.3;
   }
 
-  .feature-hero .hero-content p {
+  [data-bs-theme=dark] .feature-hero .hero-content p,
+  [data-bs-theme=light] .feature-hero .hero-content p {
     font-size: 1rem;
   }
 
-  .feature-hero {
+  [data-bs-theme=dark] .feature-hero,
+  [data-bs-theme=light] .feature-hero {
     min-height: 60vh;
     padding: 2rem 0;
   }
 
-  .feature-benefits .row > div {
+  [data-bs-theme=dark] .feature-benefits .row > div,
+  [data-bs-theme=light] .feature-benefits .row > div {
     margin-bottom: 1.5rem;
   }
 
-  .benefit-item {
+  [data-bs-theme=dark] .benefit-item,
+  [data-bs-theme=light] .benefit-item {
     padding: 0.75rem;
   }
 
-  .benefit-icon {
+  [data-bs-theme=dark] .benefit-icon,
+  [data-bs-theme=light] .benefit-icon {
     margin-bottom: 1rem;
   }
 
-  .feature-header h3 {
+  [data-bs-theme=dark] .feature-header h3,
+  [data-bs-theme=light] .feature-header h3 {
     font-size: 1.3rem;
   }
 
-  .feature-header p {
+  [data-bs-theme=dark] .feature-header p,
+  [data-bs-theme=light] .feature-header p {
     font-size: 0.95rem;
   }
 
-  .feature-content {
+  [data-bs-theme=dark] .feature-content,
+  [data-bs-theme=light] .feature-content {
     padding: 1.5rem 0;
   }
 
-  .feature-list {
+  [data-bs-theme=dark] .feature-list,
+  [data-bs-theme=light] .feature-list {
     max-width: 350px;
   }
 
-  .feature-list li {
+  [data-bs-theme=dark] .feature-list li,
+  [data-bs-theme=light] .feature-list li {
     font-size: 0.9rem;
   }
 
-  .dashboard-frame {
+  [data-bs-theme=dark] .dashboard-frame,
+  [data-bs-theme=light] .dashboard-frame {
     padding: 8px;
     border-radius: 12px;
     margin: 1.5rem 0;
   }
 
-  .dashboard-frame.large {
+  [data-bs-theme=dark] .dashboard-frame.large,
+  [data-bs-theme=light] .dashboard-frame.large {
     padding: 12px;
   }
 
-  .dashboard-image {
+  [data-bs-theme=dark] .dashboard-image,
+  [data-bs-theme=light] .dashboard-image {
     border-radius: 8px;
   }
 
-  .feature-section {
+  [data-bs-theme=dark] .feature-section,
+  [data-bs-theme=light] .feature-section {
     margin-bottom: 3rem !important;
   }
 
-  .feature-demo {
+  [data-bs-theme=dark] .feature-demo,
+  [data-bs-theme=light] .feature-demo {
     padding: 3rem 0;
   }
 
-  .feature-integrations .platforms-grid {
+  [data-bs-theme=dark] .feature-integrations .platforms-grid,
+  [data-bs-theme=light] .feature-integrations .platforms-grid {
     grid-template-columns: 1fr 1fr;
     gap: 0.75rem;
   }
 
-  .platform-item {
+  [data-bs-theme=dark] .platform-item,
+  [data-bs-theme=light] .platform-item {
     padding: 0.5rem;
   }
 
-  .platform-logo {
+  [data-bs-theme=dark] .platform-logo,
+  [data-bs-theme=light] .platform-logo {
     max-height: 24px;
   }
 
-  .feature-workflow .workflow-step {
+  [data-bs-theme=dark] .feature-workflow .workflow-step,
+  [data-bs-theme=light] .feature-workflow .workflow-step {
     padding: 1rem 0.25rem;
   }
 
-  .step-number {
+  [data-bs-theme=dark] .step-number,
+  [data-bs-theme=light] .step-number {
     width: 40px;
     height: 40px;
     font-size: 1rem;
   }
 
-  .feature-related .row > div {
+  [data-bs-theme=dark] .feature-related .row > div,
+  [data-bs-theme=light] .feature-related .row > div {
     margin-bottom: 1rem;
   }
 
-  .feature-related .related-card {
+  [data-bs-theme=dark] .feature-related .related-card,
+  [data-bs-theme=light] .feature-related .related-card {
     padding: 1.5rem 1rem;
   }
 
-  .feature-related .related-card h5 {
+  [data-bs-theme=dark] .feature-related .related-card h5,
+  [data-bs-theme=light] .feature-related .related-card h5 {
     font-size: 1rem;
   }
 
-  .feature-related .related-card p {
+  [data-bs-theme=dark] .feature-related .related-card p,
+  [data-bs-theme=light] .feature-related .related-card p {
     font-size: 0.85rem;
   }
 }
@@ -544,22 +859,31 @@
    ================================ */
 
 /* Dashboard Image Hover Effects */
-.feature-image-container:hover .dashboard-frame {
+[data-bs-theme=dark] .feature-image-container:hover .dashboard-frame,
+[data-bs-theme=light] .feature-image-container:hover .dashboard-frame {
   transform: translateY(-8px) scale(1.02);
 }
 
-.demo-dashboard-container:hover .dashboard-frame {
+[data-bs-theme=dark] .demo-dashboard-container:hover .dashboard-frame,
+[data-bs-theme=light] .demo-dashboard-container:hover .dashboard-frame {
   transform: translateY(-10px);
 }
 
 /* Loading States for Images */
-.dashboard-image {
+[data-bs-theme=dark] .dashboard-image {
   background: linear-gradient(90deg, rgba(255,255,255,0.1) 25%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 75%);
   background-size: 200% 100%;
   animation: loading 1.5s infinite;
 }
 
-.dashboard-image[src] {
+[data-bs-theme=light] .dashboard-image {
+  background: linear-gradient(90deg, rgba(68,140,116,0.1) 25%, rgba(68,140,116,0.2) 50%, rgba(68,140,116,0.1) 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+[data-bs-theme=dark] .dashboard-image[src],
+[data-bs-theme=light] .dashboard-image[src] {
   background: none;
   animation: none;
 }
@@ -574,7 +898,7 @@
 }
 
 /* Enhanced Visual Effects */
-.dashboard-frame::before {
+[data-bs-theme=dark] .dashboard-frame::before {
   content: '';
   position: absolute;
   top: 0;
@@ -588,15 +912,33 @@
   transition: opacity 0.3s ease;
 }
 
-.dashboard-frame:hover::before {
+[data-bs-theme=light] .dashboard-frame::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(68,140,116,0.1), transparent);
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+[data-bs-theme=dark] .dashboard-frame:hover::before,
+[data-bs-theme=light] .dashboard-frame:hover::before {
   opacity: 1;
 }
 
 /* Clean animations */
 @media (prefers-reduced-motion: no-preference) {
-  .benefit-item,
-  .feature-related .related-card,
-  .platform-item {
+  [data-bs-theme=dark] .benefit-item,
+  [data-bs-theme=dark] .feature-related .related-card,
+  [data-bs-theme=dark] .platform-item,
+  [data-bs-theme=light] .benefit-item,
+  [data-bs-theme=light] .feature-related .related-card,
+  [data-bs-theme=light] .platform-item {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
@@ -605,25 +947,57 @@
    ACCESSIBILITY & UTILS
    =============================== */
 
+/* Focus states pour l'accessibilité */
+[data-bs-theme=dark] .dashboard-frame:focus-within {
+  outline: 2px solid #369751;
+  outline-offset: 4px;
+}
+
+[data-bs-theme=light] .dashboard-frame:focus-within {
+  outline: 2px solid #22654e;
+  outline-offset: 4px;
+}
+
+[data-bs-theme=dark] .feature-pricing .btn:focus,
+[data-bs-theme=dark] .related-link:focus .related-card {
+  outline: 2px solid #2b8a3e;
+  outline-offset: 2px;
+}
+
+[data-bs-theme=light] .feature-pricing .btn:focus,
+[data-bs-theme=light] .related-link:focus .related-card {
+  outline: 2px solid #22654e;
+  outline-offset: 2px;
+}
+
 /* Print styles */
 @media print {
-  .dashboard-frame {
+  [data-bs-theme=dark] .dashboard-frame,
+  [data-bs-theme=light] .dashboard-frame {
     border: 1px solid #ccc;
     box-shadow: none;
     background: white;
   }
 
-  .dashboard-image {
+  [data-bs-theme=dark] .dashboard-image,
+  [data-bs-theme=light] .dashboard-image {
     filter: none;
   }
 
-  .feature-hero,
-  .feature-benefits,
-  .feature-section,
-  .feature-workflow,
-  .feature-integrations,
-  .feature-pricing,
-  .feature-related {
+  [data-bs-theme=dark] .feature-hero,
+  [data-bs-theme=dark] .feature-benefits,
+  [data-bs-theme=dark] .feature-section,
+  [data-bs-theme=dark] .feature-workflow,
+  [data-bs-theme=dark] .feature-integrations,
+  [data-bs-theme=dark] .feature-pricing,
+  [data-bs-theme=dark] .feature-related,
+  [data-bs-theme=light] .feature-hero,
+  [data-bs-theme=light] .feature-benefits,
+  [data-bs-theme=light] .feature-section,
+  [data-bs-theme=light] .feature-workflow,
+  [data-bs-theme=light] .feature-integrations,
+  [data-bs-theme=light] .feature-pricing,
+  [data-bs-theme=light] .feature-related {
     break-inside: avoid;
   }
 }

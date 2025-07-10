@@ -1,9 +1,10 @@
 import {Component, HostListener, OnInit, OnDestroy} from '@angular/core';
 import { Router, RouterLink, RouterLinkActive} from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import {StickyDirective} from '../../../../../core/utils/directives/sticky.directive';
 import {NgClass} from '@angular/common';
 import { ThemeService, Theme } from '../../../../../core/services/theme.service';
+import { LanguageService } from '../../../../../core/services/language.service';
+import { Language } from '../../../../../core/models/language.model';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -22,18 +23,27 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private ticking: boolean = false;
   isScrolled: boolean = false;
 
+  // Theme properties
   currentLogo: string = '/assets/images/logo/soncollablightlogo.svg';
   isDarkTheme: boolean = false;
   currentTheme: Theme = 'light';
+
+  // Language properties
+  supportedLanguages: Language[] = [];
+  currentLanguage: string = 'fr';
+
   private destroy$ = new Subject<void>();
 
   constructor(
     private router: Router,
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private languageService: LanguageService
   ) {}
 
   ngOnInit(): void {
     this.setupThemeListener();
+    this.setupLanguageListener();
+    this.initializeLanguage();
     this.updateLogoBasedOnTheme();
     this.updateCurrentTheme();
   }
@@ -43,7 +53,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-
+  // ======= THEME METHODS =======
   private setupThemeListener(): void {
     this.themeService.theme$
       .pipe(takeUntil(this.destroy$))
@@ -53,11 +63,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
       });
   }
 
-
   private updateCurrentTheme(): void {
     this.currentTheme = this.themeService.getCurrentTheme();
   }
-
 
   private updateLogoBasedOnTheme(): void {
     this.isDarkTheme = this.themeService.isDarkTheme();
@@ -69,20 +77,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
   }
 
-
   setTheme(theme: Theme): void {
     this.themeService.setTheme(theme);
     this.closeThemeDropdown();
   }
 
-
   isThemeActive(theme: Theme): boolean {
     return this.currentTheme === theme;
   }
 
-
   private closeThemeDropdown(): void {
-    // Méthode 1: Utiliser Bootstrap directement
     const dropdownElement = document.querySelector('.theme-switcher[data-bs-toggle="dropdown"]') as HTMLElement;
     if (dropdownElement) {
       try {
@@ -93,14 +97,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
       } catch (error) {
         console.warn('Bootstrap Dropdown instance not found, using fallback method');
       }
-
-      // ✅ Retire le focus du bouton dropdown
       dropdownElement.blur();
     }
-
   }
-
-
 
   getActiveThemeIcon(): string {
     switch (this.currentTheme) {
@@ -109,7 +108,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       case 'dark':
         return 'fi-moon';
       case 'auto':
-        return 'fi-monitor'; // ou 'fi-auto' si disponible
+        return 'fi-monitor';
       default:
         return 'fi-sun';
     }
@@ -128,6 +127,61 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
   }
 
+  // ======= LANGUAGE METHODS =======
+  private initializeLanguage(): void {
+    this.supportedLanguages = this.languageService.getSupportedLanguages();
+    this.currentLanguage = this.languageService.getCurrentLanguage();
+  }
+
+  private setupLanguageListener(): void {
+    this.languageService.currentLanguage$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((language: string) => {
+        this.currentLanguage = language;
+      });
+  }
+
+  setLanguage(languageCode: string): void {
+    if (languageCode && languageCode !== this.currentLanguage) {
+      this.languageService.setLanguage(languageCode);
+      this.closeLanguageDropdown();
+    }
+  }
+
+  isLanguageActive(languageCode: string): boolean {
+    return this.currentLanguage === languageCode;
+  }
+
+  getCurrentLanguageName(): string {
+    const language = this.supportedLanguages.find(lang => lang.code === this.currentLanguage);
+    return language?.name || this.currentLanguage.toUpperCase();
+  }
+
+  getCurrentLanguageFlag(): string {
+    // Vous pouvez ajouter des drapeaux si nécessaire
+    const flags: { [key: string]: string } = {
+      'fr': '🇫🇷',
+      'en': '🇺🇸'
+    };
+    return flags[this.currentLanguage] || '🌐';
+  }
+
+  private closeLanguageDropdown(): void {
+    const dropdownElement = document.querySelector('.language-switcher[data-bs-toggle="dropdown"]') as HTMLElement;
+    if (dropdownElement) {
+      try {
+        const bsDropdown = (window as any).bootstrap?.Dropdown?.getInstance(dropdownElement);
+        if (bsDropdown) {
+          bsDropdown.hide();
+        }
+      } catch (error) {
+        console.warn('Bootstrap Dropdown instance not found');
+      }
+      dropdownElement.blur();
+    }
+  }
+
+  // ======= SCROLL & NAVIGATION METHODS =======
   @HostListener('window:scroll', ['$event'])
   onWindowScroll(event: Event): void {
     if (!this.ticking) {

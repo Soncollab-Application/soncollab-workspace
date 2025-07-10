@@ -1,1 +1,264 @@
-<p>pricing works!</p>
+<!-- Hero Section -->
+<section class="bg-body-tertiary py-5">
+  <div class="container pt-4 pt-md-5 pb-2 my-1 mt-sm-3 mt-md-0">
+    <div class="row justify-content-center text-center">
+      <div class="col-lg-8 col-xl-7">
+        <h1 class="pt-lg-2 pt-xl-3 mb-4">
+          {{ 'pricing.hero.title' | translate }}
+        </h1>
+        <p class="fs-lg mb-5">
+          {{ 'pricing.hero.subtitle' | translate }}
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing Sections -->
+<main class="content-wrapper">
+  @for (section of pricingSections; track section.id) {
+    <section class="py-5" [class.bg-body-tertiary]="section.id === 'api'">
+      <div class="container py-2 py-md-4 py-lg-5">
+
+        <!-- Section Header -->
+        <div class="row justify-content-center text-center mb-5">
+          <div class="col-lg-8">
+            <h2 class="mb-3">{{ section.titleKey | translate }}</h2>
+            <p class="fs-lg text-muted">{{ section.descriptionKey | translate }}</p>
+          </div>
+        </div>
+
+        <!-- Plans Grid -->
+        <div class="row g-4 justify-content-center">
+          @for (plan of section.plans; track plan.id) {
+            <div class="col-md-6 col-lg-4 col-xl-3">
+              <div class="position-relative h-100">
+
+                <!-- Highlighted Badge -->
+                @if (plan.highlighted) {
+                  <div class="position-absolute top-0 start-0 w-100 z-1 fs-sm fw-semibold text-white text-center"
+                       style="margin-top: -27px">
+                    {{ 'pricing.recommended' | translate }}
+                  </div>
+                  <div class="position-absolute top-0 start-0 bg-info rounded-5 ms-n1"
+                       style="width: calc(100% + 8px); height: calc(100% + 36px); margin-top: -32px"></div>
+                }
+
+                <!-- Plan Card -->
+                <div class="card h-100 border-0 rounded-5 p-3"
+                     [class.bg-body-tertiary]="!plan.highlighted"
+                     [class.position-relative]="plan.highlighted"
+                     [class.z-2]="plan.highlighted">
+                  <div class="card-body p-2 p-xl-3">
+
+                    <!-- Plan Icon -->
+                    <div class="mb-3 mb-xl-4">
+                      @if (section.id === 'portal') {
+                        @switch (plan.id) {
+                          @case ('start') {
+                            <svg class="d-block" xmlns="http://www.w3.org/2000/svg" width="56" height="56" fill="none">
+                              <path class="text-primary" d="M28 4c13.255 0 24 10.745 24 24s-10.745 24-24 24S4 41.255 4 28 14.745 4 28 4z" fill="currentColor" opacity="0.1"/>
+                              <path class="text-primary" d="M28 12c8.837 0 16 7.163 16 16s-7.163 16-16 16-16-7.163-16-16 7.163-16 16-16z" fill="currentColor"/>
+                            </svg>
+                          }
+                          @case ('growth') {
+                            <svg class="d-block" xmlns="http://www.w3.org/2000/svg" width="56" height="56" fill="none">
+                              <path class="text-info" d="M28 4c13.255 0 24 10.745 24 24s-10.745 24-24 24S4 41.255 4 28 14.745 4 28 4z" fill="currentColor" opacity="0.1"/>
+                              <path class="text-info" d="M20 32l6-6 4 4 10-10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                          }
+                          @case ('pro-label') {
+                            <svg class="d-block" xmlns="http://www.w3.org/2000/svg" width="56" height="56" fill="none">
+                              <path class="text-warning" d="M28 4c13.255 0 24 10.745 24 24s-10.745 24-24 24S4 41.255 4 28 14.745 4 28 4z" fill="currentColor" opacity="0.1"/>
+                              <path class="text-warning" d="M28 12l4 8h8l-6 6 2 8-8-4-8 4 2-8-6-6h8l4-8z" fill="currentColor"/>
+                            </svg>
+                          }
+                          @case ('enterprise') {
+                            <svg class="d-block" xmlns="http://www.w3.org/2000/svg" width="56" height="56" fill="none">
+                              <path class="text-success" d="M28 4c13.255 0 24 10.745 24 24s-10.745 24-24 24S4 41.255 4 28 14.745 4 28 4z" fill="currentColor" opacity="0.1"/>
+                              <path class="text-success" d="M20 28h16M20 20h16M20 36h16M16 16h24v24H16z" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                          }
+                        }
+                      } @else {
+                        @switch (plan.id) {
+                          @case ('delivery-analytics') {
+                            <svg class="d-block" xmlns="http://www.w3.org/2000/svg" width="56" height="56" fill="none">
+                              <path class="text-secondary" d="M28 4c13.255 0 24 10.745 24 24s-10.745 24-24 24S4 41.255 4 28 14.745 4 28 4z" fill="currentColor" opacity="0.1"/>
+                              <path class="text-secondary" d="M16 36l4-8 4 4 4-12 4 8 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                          }
+                          @case ('rights-royalties') {
+                            <svg class="d-block" xmlns="http://www.w3.org/2000/svg" width="56" height="56" fill="none">
+                              <path class="text-info" d="M28 4c13.255 0 24 10.745 24 24s-10.745 24-24 24S4 41.255 4 28 14.745 4 28 4z" fill="currentColor" opacity="0.1"/>
+                              <path class="text-info" d="M20 24v8M28 20v12M36 16v16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                          }
+                          @case ('full-api') {
+                            <svg class="d-block" xmlns="http://www.w3.org/2000/svg" width="56" height="56" fill="none">
+                              <path class="text-primary" d="M28 4c13.255 0 24 10.745 24 24s-10.745 24-24 24S4 41.255 4 28 14.745 4 28 4z" fill="currentColor" opacity="0.1"/>
+                              <path class="text-primary" d="M18 22l10-10 10 10M18 34l10-10 10 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                          }
+                        }
+                      }
+                    </div>
+
+                    <!-- Plan Name -->
+                    <h3 class="fs-lg fw-normal mb-3">{{ plan.name }}</h3>
+
+                    <!-- Price -->
+                    <div class="d-flex align-items-center pb-1 pb-xl-0 mb-2 mb-xl-3">
+                      <div class="h1 mb-0">{{ formatPrice(plan.price) }}{{ plan.currency }}</div>
+                      <div class="fs-sm ms-2">{{ plan.period }}</div>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="row g-2 mb-3 mb-xl-4">
+                      <div class="col-6">
+                        <div class="bg-body-secondary rounded-3 p-2 text-center">
+                          <div class="fs-sm text-muted">{{ 'pricing.assets' | translate }}</div>
+                          <div class="fw-medium">{{ formatNumber(plan.maxAssets) }}</div>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="bg-body-secondary rounded-3 p-2 text-center">
+                          <div class="fs-sm text-muted">{{ 'pricing.royaltie' | translate }}</div>
+                          <div class="fw-medium">{{ formatNumber(plan.maxRoyalties) }}{{ plan.currency }}</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Support Badge -->
+                    <div class="mb-3">
+                      <span class="badge bg-primary-subtle text-primary-emphasis rounded-pill">
+                        <i class="fi-headphones me-1"></i>
+                        {{ 'pricing.support' | translate }}: {{ plan.support }}
+                      </span>
+                      @if (plan.whiteLabel) {
+                        <span class="badge bg-success-subtle text-success-emphasis rounded-pill ms-2">
+                          <i class="fi-star me-1"></i>
+                          {{ 'pricing.whiteLabel' | translate }}
+                        </span>
+                      }
+                    </div>
+
+                    <!-- CTA Button -->
+                    <button type="button"
+                            class="btn btn-lg w-100 mb-4"
+                            [class.btn-info]="plan.highlighted"
+                            [class.btn-outline-info]="!plan.highlighted"
+                            (click)="onSelectPlan(plan.id)">
+                      {{ 'pricing.selectPlan' | translate }} {{ plan.name }}
+                    </button>
+
+                    <!-- Modules Included -->
+                    @if (plan.modules.length > 0) {
+                      <div class="h6 fs-sm mb-2">{{ 'pricing.modulesIncluded' | translate }}</div>
+                      <div class="d-flex flex-wrap gap-1 mb-3">
+                        @for (module of plan.modules; track module) {
+                          <span class="badge bg-body-secondary text-body-emphasis rounded-pill fs-xs">
+                            {{ module }}
+                          </span>
+                        }
+                      </div>
+                    }
+
+                    <!-- Features List -->
+                    <ul class="list-unstyled gap-md-3 fs-sm text-dark-emphasis mb-0">
+                      @for (feature of plan.features; track feature) {
+                        <li class="d-flex align-items-start">
+                          <i class="fi-check fs-base text-body-secondary me-2 mt-1 flex-shrink-0"></i>
+                          <span>{{ feature | translate }}</span>
+                        </li>
+                      }
+                    </ul>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Contact Sales CTA -->
+        <div class="text-center mt-5">
+          <p class="text-muted mb-3">{{ 'pricing.customNeedsText' | translate }}</p>
+          <button type="button"
+                  class="btn btn-outline-primary btn-lg"
+                  (click)="onContactSales()">
+            <i class="fi-mail me-2"></i>
+            {{ 'pricing.contactSales' | translate }}
+          </button>
+        </div>
+
+      </div>
+    </section>
+  }
+</main>
+
+<!-- FAQ Section -->
+<section class="py-5 bg-body-tertiary">
+  <div class="container py-2 py-md-4">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <h2 class="text-center mb-5">{{ 'pricing.faq.title' | translate }}</h2>
+
+        <div class="accordion" id="pricingFAQ">
+
+          <!-- FAQ Item 1 -->
+          <div class="accordion-item border-0 bg-transparent">
+            <h3 class="accordion-header">
+              <button class="accordion-button collapsed bg-transparent border-0 shadow-none"
+                      type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#faq1">
+                {{ 'pricing.faq.question1' | translate }}
+              </button>
+            </h3>
+            <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#pricingFAQ">
+              <div class="accordion-body">
+                {{ 'pricing.faq.answer1' | translate }}
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ Item 2 -->
+          <div class="accordion-item border-0 bg-transparent">
+            <h3 class="accordion-header">
+              <button class="accordion-button collapsed bg-transparent border-0 shadow-none"
+                      type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#faq2">
+                {{ 'pricing.faq.question2' | translate }}
+              </button>
+            </h3>
+            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#pricingFAQ">
+              <div class="accordion-body">
+                {{ 'pricing.faq.answer2' | translate }}
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ Item 3 -->
+          <div class="accordion-item border-0 bg-transparent">
+            <h3 class="accordion-header">
+              <button class="accordion-button collapsed bg-transparent border-0 shadow-none"
+                      type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#faq3">
+                {{ 'pricing.faq.question3' | translate }}
+              </button>
+            </h3>
+            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#pricingFAQ">
+              <div class="accordion-body">
+                {{ 'pricing.faq.answer3' | translate }}
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

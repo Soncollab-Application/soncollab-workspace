@@ -1,9 +1,9 @@
 
-<section class="bg-body-tertiary pt-5">
+<section class="bg-body-tertiary pt-5 rounded-bottom-5">
   <div class="container text-center pt-5 mt-lg-4 mt-xl-5 py-5">
     @if (!isLoading && hero) {
       <div class="position-relative mx-auto my-3" style="max-width: 850px;">
-        <h1 class="display-3 fw-lighter position-relative z-2 mb-0 for-dax-font">{{ hero.title }}</h1>
+        <h2 class="display-4 fw-lighter position-relative z-2 mb-0 for-dax-font">{{ hero.title }}</h2>
         <div class="text-primary position-absolute top-0 start-50 translate-middle-x w-100 mt-md-3">
           <svg width="608" height="66" viewBox="0 0 608 66" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path opacity=".35" d="M45.66 63.0651C48.1682 62.8708 50.692 62.5736 53.2046 62.482C55.5493 62.3949 57.8918 62.3033 60.232 62.2161C73.0671 61.7358 85.8977 61.1192 98.7394 60.9293C112.169 60.7304 125.603 60.402 139.035 60.3663C152.743 60.3328 166.446 60.2747 180.152 60.3417C206.867 60.4757 231.522 59.2366 258.233 59.3013C290.201 57.8797 306.797 56.9045 334.904 55.6546C348.07 55.5876 361.243 55.2681 374.408 55.0111C387.336 54.7632 399.538 53.6311 412.46 53.1396C415.299 53.0323 418.137 52.8201 420.972 52.6548C423.774 52.4894 426.583 52.3576 429.383 52.1432C436.572 51.5913 444.461 51.7091 451.639 51.0545C464.138 49.9061 476.595 48.378 489.11 47.4218C502.221 46.4209 515.361 45.8534 528.486 45.0379C534.408 44.6715 540.366 44.2135 546.249 43.4048C552.974 42.4865 559.639 41.3762 566.288 39.991C572.715 38.6505 579.137 37.2743 585.567 35.9584C588.655 35.3261 591.757 34.7497 594.873 34.2984C598.4 33.7868 601.894 33.2618 605.377 32.5044C607.052 32.138 607.381 29.8927 607.381 28.4494C607.388 27.6273 607.258 26.8297 606.995 26.0567C606.749 25.4065 606.232 24.3676 605.377 24.3967C599.094 24.6089 592.816 24.8234 586.535 25.1205C580.2 25.4177 573.853 25.6009 567.51 25.6903C555.192 25.8578 542.852 25.4311 530.548 24.9172C532.645 24.6335 534.742 24.3498 536.839 24.0638C544.371 23.0361 551.882 21.7448 559.453 21.0522C563.482 20.6813 567.524 20.373 571.541 19.8971C573.579 19.6581 575.599 19.381 577.614 18.9744C579.777 18.5365 581.91 17.9378 584.036 17.339C584.719 17.2653 585.234 16.9212 585.587 16.3158C586.213 15.4489 586.5 14.2872 586.608 13.1746C588.761 12.511 589.194 9.31622 589.194 7.39709C589.207 6.20853 589.022 5.05348 588.635 3.93417C588.261 2.94892 587.55 1.55034 586.297 1.53694C579.758 1.46321 573.23 1.01862 566.691 0.938188C565.93 0.931485 565.163 0.927017 564.397 0.927017C558.77 0.927017 553.155 1.17501 547.535 1.47885C535.016 2.1558 522.495 2.96679 509.989 3.87832C504.175 4.29834 498.369 4.79655 492.551 5.15178C485.435 5.58297 478.335 5.91139 471.212 6.19066C459.296 6.65536 447.361 6.83632 435.438 7.05527C421.763 7.3122 408.106 7.67189 394.447 8.31756C381.795 8.91631 369.155 9.7139 356.512 10.4757C343.816 11.2354 331.122 11.9905 318.427 12.7613C305.415 13.5499 292.394 14.1353 279.373 14.7206C272.783 15.02 266.185 15.1071 259.593 15.297C253.354 15.4758 247.107 15.5227 240.864 15.6143C228.574 15.7952 216.287 15.9069 203.998 16.0343C179.21 16.2867 154.428 16.6934 129.642 17.1067C116.025 17.3346 102.412 17.587 88.7943 17.8439C81.8486 17.9758 74.9007 18.2506 67.9594 18.4539C62.0236 18.6259 56.0901 19.0303 50.1565 19.3364C43.8406 19.6625 37.5247 20.0222 31.2089 20.3886C27.4542 20.6076 23.6952 20.8332 19.9362 21.0522C18.3053 21.1505 16.67 21.2443 15.0346 21.3426C13.5474 21.4297 12.0579 21.5415 10.5729 21.6554C9.51432 21.7358 8.47346 21.89 7.42818 22.0687C6.26798 22.2631 5.11442 22.7859 4.00063 23.1657C3.33545 23.7019 2.87138 24.381 2.61503 25.2099C2.24156 26.3002 2.05814 27.4217 2.0714 28.5768C2.05814 29.7341 2.24156 30.8556 2.61503 31.9459C2.81834 32.3569 3.02165 32.768 3.22496 33.1769C3.60506 33.8292 4.15974 34.1979 4.88901 34.2783C6.1818 34.6492 7.4547 35.0156 8.78063 35.2367C9.50548 35.1563 10.0602 34.7922 10.4381 34.142C10.5817 33.9432 10.7077 33.7309 10.8182 33.5075C11.5121 33.4896 12.2082 33.4919 12.9043 33.4919C13.5695 33.4919 14.2369 33.4874 14.9043 33.4718C16.407 33.4383 17.9053 33.4003 19.4058 33.3645C23.2709 33.2729 27.136 33.1791 31.0011 33.0875C35.1889 32.987 39.3766 32.911 43.5622 32.8373C43.129 32.8753 42.6981 32.9132 42.265 32.9467C32.3735 33.7242 22.4886 34.5062 12.606 35.3931C11.0038 35.5741 9.79056 36.3784 8.95301 37.806C7.71768 39.5129 7.04366 41.7135 6.70996 43.9231C4.97299 43.9075 3.2338 43.8873 1.49682 43.8739C0.28359 43.865 0.0449219 46.0031 0.0449219 46.8252C0.0449219 47.6608 0.28359 49.7564 1.50345 49.7698C3.1675 49.7855 4.83376 49.8145 6.49781 49.8369C6.64146 51.6934 7.01272 53.5098 7.62265 55.2882C8.06905 56.1908 8.51545 57.0934 8.96184 57.9937C9.79719 59.4213 15.9944 65.1786 17.5966 65.3596C26.9466 64.5218 36.3011 63.789 45.66 63.0651Z"></path>
@@ -17,8 +17,28 @@
         {{ hero.actionBtn }}
       </a>
     }
-  </div>
 
+
+    @if(!isLoading && !hero){
+      <div class="position-relative mx-auto my-3" style="max-width: 850px;">
+        <h1 class="display-3 fw-lighter position-relative z-2 mb-0 for-dax-font">
+          {{ 'home.heroFallback.title' | translate }}
+        </h1>
+        <div class="text-primary position-absolute top-0 start-50 translate-middle-x w-100 mt-md-3">
+          <svg width="608" height="66" viewBox="0 0 608 66" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path opacity=".35" d="M45.66 63.0651C48.1682 62.8708 50.692 62.5736 53.2046 62.482C55.5493 62.3949 57.8918 62.3033 60.232 62.2161C73.0671 61.7358 85.8977 61.1192 98.7394 60.9293C112.169 60.7304 125.603 60.402 139.035 60.3663C152.743 60.3328 166.446 60.2747 180.152 60.3417C206.867 60.4757 231.522 59.2366 258.233 59.3013C290.201 57.8797 306.797 56.9045 334.904 55.6546C348.07 55.5876 361.243 55.2681 374.408 55.0111C387.336 54.7632 399.538 53.6311 412.46 53.1396C415.299 53.0323 418.137 52.8201 420.972 52.6548C423.774 52.4894 426.583 52.3576 429.383 52.1432C436.572 51.5913 444.461 51.7091 451.639 51.0545C464.138 49.9061 476.595 48.378 489.11 47.4218C502.221 46.4209 515.361 45.8534 528.486 45.0379C534.408 44.6715 540.366 44.2135 546.249 43.4048C552.974 42.4865 559.639 41.3762 566.288 39.991C572.715 38.6505 579.137 37.2743 585.567 35.9584C588.655 35.3261 591.757 34.7497 594.873 34.2984C598.4 33.7868 601.894 33.2618 605.377 32.5044C607.052 32.138 607.381 29.8927 607.381 28.4494C607.388 27.6273 607.258 26.8297 606.995 26.0567C606.749 25.4065 606.232 24.3676 605.377 24.3967C599.094 24.6089 592.816 24.8234 586.535 25.1205C580.2 25.4177 573.853 25.6009 567.51 25.6903C555.192 25.8578 542.852 25.4311 530.548 24.9172C532.645 24.6335 534.742 24.3498 536.839 24.0638C544.371 23.0361 551.882 21.7448 559.453 21.0522C563.482 20.6813 567.524 20.373 571.541 19.8971C573.579 19.6581 575.599 19.381 577.614 18.9744C579.777 18.5365 581.91 17.9378 584.036 17.339C584.719 17.2653 585.234 16.9212 585.587 16.3158C586.213 15.4489 586.5 14.2872 586.608 13.1746C588.761 12.511 589.194 9.31622 589.194 7.39709C589.207 6.20853 589.022 5.05348 588.635 3.93417C588.261 2.94892 587.55 1.55034 586.297 1.53694C579.758 1.46321 573.23 1.01862 566.691 0.938188C565.93 0.931485 565.163 0.927017 564.397 0.927017C558.77 0.927017 553.155 1.17501 547.535 1.47885C535.016 2.1558 522.495 2.96679 509.989 3.87832C504.175 4.29834 498.369 4.79655 492.551 5.15178C485.435 5.58297 478.335 5.91139 471.212 6.19066C459.296 6.65536 447.361 6.83632 435.438 7.05527C421.763 7.3122 408.106 7.67189 394.447 8.31756C381.795 8.91631 369.155 9.7139 356.512 10.4757C343.816 11.2354 331.122 11.9905 318.427 12.7613C305.415 13.5499 292.394 14.1353 279.373 14.7206C272.783 15.02 266.185 15.1071 259.593 15.297C253.354 15.4758 247.107 15.5227 240.864 15.6143C228.574 15.7952 216.287 15.9069 203.998 16.0343C179.21 16.2867 154.428 16.6934 129.642 17.1067C116.025 17.3346 102.412 17.587 88.7943 17.8439C81.8486 17.9758 74.9007 18.2506 67.9594 18.4539C62.0236 18.6259 56.0901 19.0303 50.1565 19.3364C43.8406 19.6625 37.5247 20.0222 31.2089 20.3886C27.4542 20.6076 23.6952 20.8332 19.9362 21.0522C18.3053 21.1505 16.67 21.2443 15.0346 21.3426C13.5474 21.4297 12.0579 21.5415 10.5729 21.6554C9.51432 21.7358 8.47346 21.89 7.42818 22.0687C6.26798 22.2631 5.11442 22.7859 4.00063 23.1657C3.33545 23.7019 2.87138 24.381 2.61503 25.2099C2.24156 26.3002 2.05814 27.4217 2.0714 28.5768C2.05814 29.7341 2.24156 30.8556 2.61503 31.9459C2.81834 32.3569 3.02165 32.768 3.22496 33.1769C3.60506 33.8292 4.15974 34.1979 4.88901 34.2783C6.1818 34.6492 7.4547 35.0156 8.78063 35.2367C9.50548 35.1563 10.0602 34.7922 10.4381 34.142C10.5817 33.9432 10.7077 33.7309 10.8182 33.5075C11.5121 33.4896 12.2082 33.4919 12.9043 33.4919C13.5695 33.4919 14.2369 33.4874 14.9043 33.4718C16.407 33.4383 17.9053 33.4003 19.4058 33.3645C23.2709 33.2729 27.136 33.1791 31.0011 33.0875C35.1889 32.987 39.3766 32.911 43.5622 32.8373C43.129 32.8753 42.6981 32.9132 42.265 32.9467C32.3735 33.7242 22.4886 34.5062 12.606 35.3931C11.0038 35.5741 9.79056 36.3784 8.95301 37.806C7.71768 39.5129 7.04366 41.7135 6.70996 43.9231C4.97299 43.9075 3.2338 43.8873 1.49682 43.8739C0.28359 43.865 0.0449219 46.0031 0.0449219 46.8252C0.0449219 47.6608 0.28359 49.7564 1.50345 49.7698C3.1675 49.7855 4.83376 49.8145 6.49781 49.8369C6.64146 51.6934 7.01272 53.5098 7.62265 55.2882C8.06905 56.1908 8.51545 57.0934 8.96184 57.9937C9.79719 59.4213 15.9944 65.1786 17.5966 65.3596C26.9466 64.5218 36.3011 63.789 45.66 63.0651Z"></path>
+          </svg>
+        </div>
+      </div>
+      <p class="fs-lg pb-3 mb-2 mb-sm-3 mb-lg-4 mx-auto fw-lighter" style="max-width: 640px;">
+        {{ 'home.heroFallback.subtitle' | translate }}
+      </p>
+      <a class="btn btn-lg btn-primary" href="#">
+        {{ 'home.heroFallback.button' | translate }}
+      </a>
+    }
+
+  </div>
 </section>
 
 
@@ -30,113 +50,302 @@
   </div>
 </section>
 
-<!--<section class="bg-semi-green rounded-7 pt-4 pt-sm-3 pt-md-4 pt-lg-5 pb-5">
-  <div class="container py-md-4 my-md-4 py-sm-4 my-sm-4">
-    <h2 class="h1 fw-lighter text-cyan pb-sm-4  pt-3 pb-lg-0 mb-4 mb-md-3 mb-lg-4 mb-xl-5">
-      {{ 'home.forLabelsTitle' | translate }}
-    </h2>
-    <br>
-    <div class="row row-cols-1 row-cols-md-2 row-cols-sm-1 pt-sm-4 gy-3 gy-md-4 gy-xl-5 gx-sm-5">
-      <div class="col mb-4">
-        <div class="d-flex flex-column flex-lg-row align-items-lg-center pe-xl-4">
-          <img
-            alt="catalog"
-            class="mb-3 d-block mx-auto mx-lg-0"
-            src="/assets/images/for_ld/catalog.svg"
-            style="width: 240px; height: 240px;"
-          >
-          <div class="ps-xl-4 ">
-            <h5 class="joti-one-regular  mt-2">{{ 'home.features.catalog.title' | translate }}</h5>
-            <p class="fs-sm mb-0">
-              {{ 'home.features.catalog.description' | translate }}
-            </p>
-          </div>
+<section class="pt-2 pt-sm-3 pt-md-4 pt-lg-5 pb-5  my-xxl-3 shadow-lg ">
+  <div class="container">
+    <div class="d-flex align-items-center flex-wrap justify-content-between  gap-4 pb-3 mb-1 mb-sm-2 mb-md-3">
+      <h2 class="display-5  mb-0 fw-lighter for-dax-font"  [ngClass]="{
+       'text-warning': isDarkTheme,
+       'text-primary': !isDarkTheme
+      }" >
+        {{ 'home.forLabelsTitle' | translate }}
+      </h2>
+
+      <!-- Prev/next buttons -->
+      <div class="d-flex gap-2">
+        <button type="button" class="btn btn-icon btn-outline-secondary animate-slide-start bg-body rounded-circle me-1" id="events-prev" aria-label="Prev">
+          <i class="fi-chevron-left fs-lg animate-target"></i>
+        </button>
+        <button type="button" class="btn btn-icon btn-outline-secondary animate-slide-end bg-body rounded-circle" id="events-next" aria-label="Next">
+          <i class="fi-chevron-right fs-lg animate-target"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="container-start position-relative py-3">
+    <div class="position-relative my-3">
+
+      <!-- Carousel -->
+      <div class="swiper" appSwiper [swiperConfig]="eventsConfig">
+        <div class="swiper-wrapper">
+          @for (feature of features; track feature.key; let i = $index) {
+            <div class="swiper-slide" style="max-width: 966px">
+              <article class="w-100 rounded overflow-hidden p-4"
+                       [ngStyle]="getBackgroundGradient(feature.key)">
+
+                @if (feature.reversed) {
+                  <!-- Layout inversé : Image à gauche, texte à droite -->
+                  <div class="row align-items-center g-4">
+                    <div class="col-md-6 order-md-1 text-center">
+                      <img [src]="feature.imageSrc" [alt]="feature.imageAlt"
+                           class="img-fluid rounded-4" >
+                    </div>
+                    <div class="col-md-6 order-md-2">
+                      <div class="ps-md-4">
+                        <!-- Contenu texte -->
+                        <div class="d-flex align-items-center mb-3">
+                          <h3 class="fw-lighter for-dax-font  mb-0">{{ feature.titleKey | translate }}</h3>
+                        </div>
+                        <p class="mb-4 fw-light">{{ feature.descriptionKey | translate }}</p>
+                        <a class="btn" [class]="getButtonClass()" href="#!">
+                          Découvrir <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                } @else {
+                  <!-- Layout normal : Texte à gauche, image à droite -->
+                  <div class="row align-items-center g-4">
+                    <div class="col-md-6">
+                      <div class="pe-md-4">
+                        <!-- Contenu texte -->
+                        <div class="d-flex align-items-center mb-3">
+                          <h3 class="fw-lighter for-dax-font  mb-0">{{ feature.titleKey | translate }}</h3>
+                        </div>
+                        <p class="mb-4 fw-light">{{ feature.descriptionKey | translate }}</p>
+                        <a class="btn"  [class]="getButtonClass()" href="#!">
+                          Découvrir <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+                      </div>
+                    </div>
+                    <div class="col-md-6 text-center">
+                      <img [src]="feature.imageSrc" [alt]="feature.imageAlt"
+                           class="img-fluid rounded-4" >
+                    </div>
+                  </div>
+                }
+
+              </article>
+            </div>
+          }
         </div>
       </div>
 
-      <div class="col mb-4">
-        <div class="d-flex flex-column flex-lg-row align-items-lg-center pe-xl-4">
-          <img alt="distribution"
-               class="mb-3 d-block mx-auto mx-lg-0" src="/assets/images/for_ld/distribution.svg" style="width: 240px; height: 240px;">
-          <div class="ps-xl-4">
-            <h5 class="joti-one-regular mt-2">
-              {{ 'home.features.distribution.title' | translate }}
-            </h5>
-            <p class="fs-sm mb-0">
-              {{ 'home.features.distribution.description' | translate }}
-            </p>
-          </div>
+      <!-- Decorative border -->
+      <div class="container position-absolute top-0" style="height: calc(100% + 64px); margin-top: -32px">
+        <div class="position-relative h-100 mx-3">
+          <div class="position-absolute top-0 start-0 w-100 h-100 border rounded"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Section White Label -->
+<section class="bg-body-tertiary pt-1 pb-2 py-sm-3 py-md-4 py-lg-5 rounded-7">
+  <div class="container py-5 mb-xxl-3">
+    <div class="row row-cols-1 row-cols-lg-2 g-4 gy-sm-5">
+
+      <div class="col">
+
+        <!-- Titre principal -->
+        <h2 class="display-5 fw-lighter for-dax-font mb-4"
+            [ngClass]="{
+              'text-warning': isDarkTheme,
+              'text-primary': !isDarkTheme
+            }">
+          {{ 'home.whiteLabel.title' | translate }}
+        </h2>
+
+        <!-- Description -->
+        <p class="fs-5 fw-lighter mb-4">
+          {{ 'home.whiteLabel.subtitle' | translate }}
+        </p>
+
+
+        <!-- Call-to-action simple -->
+        <div class="d-flex gap-3">
+          <a href="#" class="btn btn-primary">
+            {{ 'home.whiteLabel.cta.demo' | translate }}
+          </a>
         </div>
       </div>
 
-      <div class="col mb-4">
-        <div class="d-flex flex-column flex-lg-row align-items-lg-center pe-xl-4">
-          <img alt="royalties"
-               class="mb-3 d-block mx-auto mx-lg-0" src="/assets/images/for_ld/royalties.svg" style="width: 240px; height: 240px;">
-          <div class="ps-xl-4">
-            <h5 class="joti-one-regular mt-2">
-              {{ 'home.features.royalties.title' | translate }}
-            </h5>
-            <p class="fs-sm mb-0">
-              {{ 'home.features.royalties.description' | translate }}
-            </p>
-          </div>
-        </div>
-      </div>
+      <!-- Mockup technique à droite -->
+      <div class="col">
+        <div class="position-relative">
 
-      <div class="col mb-4">
-        <div class="d-flex flex-column flex-lg-row align-items-lg-center pe-xl-4">
-          <img alt="payment"
-               class="mb-3 d-block mx-auto mx-lg-0" src="/assets/images/for_ld/payment.svg" style="width: 240px; height: 240px;">
-          <div class="ps-xl-4">
-            <h5 class="joti-one-regular mt-2 ">{{ 'home.features.payment.title' | translate }}</h5>
-            <p class="fs-sm mb-0">
-              {{ 'home.features.payment.description' | translate }}
-            </p>
+          <!-- Terminal/Code mockup -->
+          <div class="bg-black bg-opacity-75 rounded-3 p-4 mb-4 border border-secondary border-opacity-25" style="backdrop-filter: blur(10px);" data-bs-theme="dark">
+            <div class="d-flex align-items-center mb-3">
+              <div class="d-flex gap-2 me-3">
+                <div class="bg-danger rounded-circle" style="width: 10px; height: 10px;"></div>
+                <div class="bg-warning rounded-circle" style="width: 10px; height: 10px;"></div>
+                <div class="bg-success rounded-circle" style="width: 10px; height: 10px;"></div>
+              </div>
+              <small class="text-white-50 font-monospace">studio.votremarque.com</small>
+            </div>
+            <div class="font-monospace small"  data-bs-theme="dark">
+              <div class="text-success">POST <span class="text-white-50">https://api.soncollab.com/v1/</span></div>
+              <div class="text-primary">Authorization: <span class="text-warning">Bearer &lt;API_KEY&gt;</span></div>
+              <div class="text-white-50 mt-2">&#123;</div>
+              <div class="text-white-50 ms-3">"<span class="text-white-50">brand</span>": &#123;</div>
+              <div class="text-white-50 ms-4">"<span class="text-white-50">name</span>": "<span class="text-warning">Votre Marque</span>",</div>
+              <div class="text-white-50 ms-4">"<span class="text-white-50">domain</span>": "<span class="text-warning">studio.votremarque.com</span>",</div>
+              <div class="text-white-50 ms-4">"<span class="text-white-50">theme</span>": "<span class="text-warning">#1a73e8</span>"</div>
+              <div class="text-white-50 ms-3">&#125;</div>
+              <div class="text-white-50">&#125;</div>
+            </div>
           </div>
-        </div>
-      </div>
 
-      <div class="col mb-4">
-        <div class="d-flex flex-column flex-lg-row align-items-lg-center pe-xl-4">
-          <img alt="analytics"
-               class="mb-3 d-block mx-auto mx-lg-0" src="/assets/images/for_ld/analytics.svg" style="width: 240px; height: 240px;">
-          <div class="ps-xl-4">
-            <h5 class="joti-one-regular mt-2">{{ 'home.features.analytics.title' | translate }}</h5>
-            <p class="fs-sm mb-0">
-              {{ 'home.features.analytics.description' | translate }}
-            </p>
-          </div>
-        </div>
-      </div>
+          <!-- Color picker moderne -->
+          <div class="bg-black bg-opacity-75 rounded-3 p-3 position-relative" style="backdrop-filter: blur(10px);"  data-bs-theme="dark">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <small class="text-white-50 fw-medium">Brand Colors</small>
+              <div class="text-white-50">
+                <i class="fi-palette"></i>
+              </div>
+            </div>
 
-      <div class="col mb-4">
-        <div class="d-flex flex-column flex-lg-row align-items-lg-center pe-xl-4">
-          <img alt="teams"
-               class="mb-3 d-block mx-auto mx-lg-0" src="/assets/images/for_ld/teams.svg" style="width: 240px; height: 240px;">
-          <div class="ps-xl-4">
-            <h5 class="joti-one-regular mt-2">{{ 'home.features.teams.title' | translate }}</h5>
-            <p class="fs-sm mb-0">{{ 'home.features.teams.description' | translate }}</p>
+            <!-- Gradient color bar -->
+            <div class="position-relative mb-3">
+              <div class="rounded-pill overflow-hidden" style="height: 8px; background: linear-gradient(90deg, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);"></div>
+              <div class="position-absolute top-50 translate-middle bg-white rounded-circle border border-2" style="left: 40%; width: 16px; height: 16px; margin-top: -8px;"></div>
+            </div>
+
+            <!-- Color value -->
+            <div class="d-flex align-items-center justify-content-between">
+              <small class="text-white-50">Hex</small>
+              <div class="d-flex align-items-center gap-2">
+                <div class="bg-primary rounded" style="width: 20px; height: 20px;"></div>
+                <code class="text-success small">#1a73e8</code>
+              </div>
+            </div>
           </div>
+
+          <!-- Effet de glow -->
+          <div class="position-absolute top-0 start-0 w-100 h-100 rounded-3"
+               style="background: radial-gradient(circle at 70% 30%, rgba(26, 115, 232, 0.3) 0%, transparent 50%); pointer-events: none;"></div>
         </div>
       </div>
 
     </div>
   </div>
-</section>-->
-<section class="container section-grid-pattern ">
-  <div class="row align-items-center  py-4 my-4">
-    <div class="col-md-6 mb-4 mb-md-0">
-      <img alt="API Soncollab" src="/assets/images/for_ld/api.svg">
+</section>
+
+<section class="py-5 my-5 position-relative">
+  <div class="container">
+    <!-- En-tête de section -->
+    <div class="row justify-content-center text-center mb-5">
+      <div class="col-lg-8">
+        <h2 class="display-5 fw-lighter for-dax-font mb-4"
+            [ngClass]="{
+              'text-warning': isDarkTheme,
+              'text-primary': !isDarkTheme
+            }">
+          {{ 'home.benefits.title' | translate }}
+        </h2>
+        <p class="fs-5 text-muted mb-0">
+          {{ 'home.benefits.subtitle' | translate }}
+        </p>
+      </div>
     </div>
-    <div class="col-md-6">
-      <h2 class="h2 fw-lighter for-dax-font mb-3">{{ 'home.api.title' | translate }}</h2>
-      <p class="fs-6 text-muted mb-4">
-        {{ 'home.api.description' | translate }}
-      </p>
-      <a class="btn btn-outline-primary btn-lg" href="">
-        {{ 'home.api.button' | translate }}
-      </a>
+
+
+    <div class="row g-4 mb-5">
+      <!-- Stat 1 -->
+      <div class="col-md-6 col-lg-3">
+        <div class="text-center p-4 h-100 border rounded-4 bg-body-secondary bg-opacity-50 transition-all position-relative overflow-hidden"
+             style="transition: all 0.3s ease;">
+          <div class="position-relative z-2">
+            <div class="mb-3">
+              <i class="fi-clock text-primary fs-1"></i>
+            </div>
+            <div class="display-4 fw-bold text-primary mb-2 for-dax-font">95%</div>
+            <h5 class="fw-semibold mb-2">{{ 'home.benefits.stats.timeSaved.title' | translate }}</h5>
+            <p class="text-muted small mb-0">
+              {{ 'home.benefits.stats.timeSaved.description' | translate }}
+            </p>
+          </div>
+          <!-- Effet de fond au hover -->
+          <div class="position-absolute top-0 start-0 w-100 h-100 bg-primary bg-opacity-10 opacity-0 transition-all"
+               style="transition: opacity 0.3s ease;"></div>
+        </div>
+      </div>
+
+      <!-- Stat 2 -->
+      <div class="col-md-6 col-lg-3">
+        <div class="text-center p-4 h-100 border rounded-4 bg-body-secondary bg-opacity-50 transition-all position-relative overflow-hidden"
+             style="transition: all 0.3s ease;">
+          <div class="position-relative z-2">
+            <div class="mb-3">
+              <i class="fi-globe text-success fs-1"></i>
+            </div>
+            <div class="display-4 fw-bold text-success mb-2 for-dax-font">300+</div>
+            <h5 class="fw-semibold mb-2">{{ 'home.benefits.stats.platforms.title' | translate }}</h5>
+            <p class="text-muted small mb-0">
+              {{ 'home.benefits.stats.platforms.description' | translate }}
+            </p>
+          </div>
+          <div class="position-absolute top-0 start-0 w-100 h-100 bg-success bg-opacity-10 opacity-0 transition-all"
+               style="transition: opacity 0.3s ease;"></div>
+        </div>
+      </div>
+
+      <!-- Stat 3 -->
+      <div class="col-md-6 col-lg-3">
+        <div class="text-center p-4 h-100 border rounded-4 bg-body-secondary bg-opacity-50 transition-all position-relative overflow-hidden"
+             style="transition: all 0.3s ease;">
+          <div class="position-relative z-2">
+            <div class="mb-3">
+              <i class="fi-zap text-warning fs-1"></i>
+            </div>
+            <div class="display-4 fw-bold text-warning mb-2 for-dax-font">24h</div>
+            <h5 class="fw-semibold mb-2">{{ 'home.benefits.stats.processing.title' | translate }}</h5>
+            <p class="text-muted small mb-0">
+              {{ 'home.benefits.stats.processing.description' | translate }}
+            </p>
+          </div>
+          <div class="position-absolute top-0 start-0 w-100 h-100 bg-warning bg-opacity-10 opacity-0 transition-all"
+               style="transition: opacity 0.3s ease;"></div>
+        </div>
+      </div>
+
+      <!-- Stat 4 -->
+      <div class="col-md-6 col-lg-3">
+        <div class="text-center p-4 h-100 border rounded-4 bg-body-secondary bg-opacity-50 transition-all position-relative overflow-hidden"
+             style="transition: all 0.3s ease;">
+          <div class="position-relative z-2">
+            <div class="mb-3">
+              <i class="fi-target text-primary fs-1"></i>
+            </div>
+            <div class="display-4 fw-bold text-primary mb-2 for-dax-font">99.9%</div>
+            <h5 class="fw-semibold mb-2">{{ 'home.benefits.stats.accuracy.title' | translate }}</h5>
+            <p class="text-muted small mb-0">
+              {{ 'home.benefits.stats.accuracy.description' | translate }}
+            </p>
+          </div>
+          <div class="position-absolute top-0 start-0 w-100 h-100 bg-primary bg-opacity-10 opacity-0 transition-all"
+               style="transition: opacity 0.3s ease;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Call-to-action -->
+    <div class="row justify-content-center mt-5">
+      <div class="col-lg-6 text-center">
+        <h3 class="h4 fw-semibold mb-3 for-dax-font">
+          {{ 'home.benefits.cta.title' | translate }}
+        </h3>
+        <p class="text-muted mb-4">
+          {{ 'home.benefits.cta.subtitle' | translate }}
+        </p>
+        <div class="d-flex gap-3 justify-content-center flex-wrap">
+          <a href="#" class="btn btn-primary btn-lg">
+            {{ 'home.benefits.cta.button' | translate }}
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 </section>

@@ -1,1 +1,443 @@
-<p>studio works!</p>
+<!-- Hero Section -->
+<section class="feature-hero bg-semi-dark py-5 position-relative">
+  <div class="container py-5">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <div class="hero-content">
+          <h1 class="display-4 fw-lighter for-dax-font mb-4">
+            {{ 'studio.hero.title' | translate }}
+          </h1>
+          <p class="fs-5 text-muted mb-4 pe-lg-5">
+            {{ 'studio.hero.subtitle' | translate }}
+          </p>
+          <div class="d-flex gap-3 mb-4">
+            <a href="#features" class="btn btn-primary btn-lg">
+              {{ 'studio.hero.getStarted' | translate }}
+            </a>
+            <a href="#demo" class="btn btn-outline-dark btn-lg">
+              {{ 'studio.hero.learnMore' | translate }}
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="hero-dashboard">
+          <div class="dashboard-frame">
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Key Benefits -->
+<section class="feature-benefits py-5 bg-semi-green">
+  <div class="container">
+    <div class="row text-center">
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="benefit-item">
+          <div class="benefit-icon mb-3">
+            <i class="fi-layers fs-2 text-primary"></i>
+          </div>
+          <h5 class="fw-semibold mb-2">{{ 'studio.benefits.unified.title' | translate }}</h5>
+          <p class="text-muted small">{{ 'studio.benefits.unified.description' | translate }}</p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="benefit-item">
+          <div class="benefit-icon mb-3">
+            <i class="fi-trending-up fs-2 text-primary"></i>
+          </div>
+          <h5 class="fw-semibold mb-2">{{ 'studio.benefits.scalable.title' | translate }}</h5>
+          <p class="text-muted small">{{ 'studio.benefits.scalable.description' | translate }}</p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="benefit-item">
+          <div class="benefit-icon mb-3">
+            <i class="fi-settings fs-2 text-primary"></i>
+          </div>
+          <h5 class="fw-semibold mb-2">{{ 'studio.benefits.automated.title' | translate }}</h5>
+          <p class="text-muted small">{{ 'studio.benefits.automated.description' | translate }}</p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="benefit-item">
+          <div class="benefit-icon mb-3">
+            <i class="fi-globe fs-2 text-primary"></i>
+          </div>
+          <h5 class="fw-semibold mb-2">{{ 'studio.benefits.global.title' | translate }}</h5>
+          <p class="text-muted small">{{ 'studio.benefits.global.description' | translate }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Main Features -->
+<section id="features" class="features py-5 bg-semi-dark">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="display-5 fw-lighter for-dax-font mb-3">
+        {{ 'studio.features.title' | translate }}
+      </h2>
+      <p class="fs-6 text-muted mx-auto" style="max-width: 600px;">
+        {{ 'studio.features.subtitle' | translate }}
+      </p>
+    </div>
+
+    <!-- Catalog Management -->
+    <div class="feature-section mb-5 pb-5">
+      <div class="row align-items-center">
+        <div class="col-lg-6 order-lg-1">
+          <div class="feature-content pe-lg-4">
+            <div class="feature-header mb-4">
+              <div class="feature-icon-large mb-3">
+                <i class="fi-folder fs-1 text-primary"></i>
+              </div>
+              <h3 class="h2 fw-semibold mb-3">{{ 'studio.features.catalog.title' | translate }}</h3>
+              <p class="fs-5 text-muted mb-4">{{ 'studio.features.catalog.description' | translate }}</p>
+            </div>
+            <ul class="feature-list list-unstyled">
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'studio.features.catalog.feature1' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'studio.features.catalog.feature2' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'studio.features.catalog.feature3' | translate }}</span>
+              </li>
+            </ul>
+            <a [routerLink]="['/features/catalog']" class="btn btn-outline-primary">
+              {{ 'studio.features.catalog.explore' | translate }}
+            </a>
+          </div>
+        </div>
+        <div class="col-lg-6 order-lg-2">
+          <div class="hero-dashboard">
+            <div class="dashboard-frame">
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rights Management -->
+    <div class="feature-section mb-5 pb-5">
+      <div class="row align-items-center">
+        <div class="col-lg-6 order-lg-2">
+          <div class="feature-content ps-lg-4">
+            <div class="feature-header mb-4">
+              <div class="feature-icon-large mb-3">
+                <i class="fi-shield fs-1 text-primary"></i>
+              </div>
+              <h3 class="h2 fw-semibold mb-3">{{ 'studio.features.rights.title' | translate }}</h3>
+              <p class="fs-5 text-muted mb-4">{{ 'studio.features.rights.description' | translate }}</p>
+            </div>
+            <ul class="feature-list list-unstyled">
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'studio.features.rights.feature1' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'studio.features.rights.feature2' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'studio.features.rights.feature3' | translate }}</span>
+              </li>
+            </ul>
+            <a [routerLink]="['/features/rights']" class="btn btn-outline-primary">
+              {{ 'studio.features.rights.explore' | translate }}
+            </a>
+          </div>
+        </div>
+        <div class="col-lg-6 order-lg-1">
+          <div class="hero-dashboard">
+            <div class="dashboard-frame">
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Distribution & Delivery -->
+    <div class="feature-section mb-5 pb-5">
+      <div class="row align-items-center">
+        <div class="col-lg-6 order-lg-1">
+          <div class="feature-content pe-lg-4">
+            <div class="feature-header mb-4">
+              <div class="feature-icon-large mb-3">
+                <i class="fi-upload fs-1 text-primary"></i>
+              </div>
+              <h3 class="h2 fw-semibold mb-3">{{ 'studio.features.distribution.title' | translate }}</h3>
+              <p class="fs-5 text-muted mb-4">{{ 'studio.features.distribution.description' | translate }}</p>
+            </div>
+            <ul class="feature-list list-unstyled">
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'studio.features.distribution.feature1' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'studio.features.distribution.feature2' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'studio.features.distribution.feature3' | translate }}</span>
+              </li>
+            </ul>
+            <a [routerLink]="['/features/distribution-delivery']" class="btn btn-outline-primary">
+              {{ 'studio.features.distribution.explore' | translate }}
+            </a>
+          </div>
+        </div>
+        <div class="col-lg-6 order-lg-2">
+          <div class="hero-dashboard">
+            <div class="dashboard-frame">
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Income Tracking -->
+    <div class="feature-section mb-5 pb-5">
+      <div class="row align-items-center">
+        <div class="col-lg-6 order-lg-2">
+          <div class="feature-content ps-lg-4">
+            <div class="feature-header mb-4">
+              <div class="feature-icon-large mb-3">
+                <i class="fi-bar-chart fs-1 text-primary"></i>
+              </div>
+              <h3 class="h2 fw-semibold mb-3">{{ 'studio.features.income.title' | translate }}</h3>
+              <p class="fs-5 text-muted mb-4">{{ 'studio.features.income.description' | translate }}</p>
+            </div>
+            <ul class="feature-list list-unstyled">
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'studio.features.income.feature1' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'studio.features.income.feature2' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'studio.features.income.feature3' | translate }}</span>
+              </li>
+            </ul>
+            <a [routerLink]="['/features/income-tracking']" class="btn btn-outline-primary">
+              {{ 'studio.features.income.explore' | translate }}
+            </a>
+          </div>
+        </div>
+        <div class="col-lg-6 order-lg-1">
+          <div class="hero-dashboard">
+            <div class="dashboard-frame">
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Royalty Accounting -->
+    <div class="feature-section mb-5 pb-5">
+      <div class="row align-items-center">
+        <div class="col-lg-6 order-lg-1">
+          <div class="feature-content pe-lg-4">
+            <div class="feature-header mb-4">
+              <div class="feature-icon-large mb-3">
+                <i class="fi-dollar-sign fs-1 text-primary"></i>
+              </div>
+              <h3 class="h2 fw-semibold mb-3">{{ 'studio.features.royalties.title' | translate }}</h3>
+              <p class="fs-5 text-muted mb-4">{{ 'studio.features.royalties.description' | translate }}</p>
+            </div>
+            <ul class="feature-list list-unstyled">
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'studio.features.royalties.feature1' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'studio.features.royalties.feature2' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'studio.features.royalties.feature3' | translate }}</span>
+              </li>
+            </ul>
+            <a [routerLink]="['/features/royalties']" class="btn btn-outline-primary">
+              {{ 'studio.features.royalties.explore' | translate }}
+            </a>
+          </div>
+        </div>
+        <div class="col-lg-6 order-lg-2">
+          <div class="hero-dashboard">
+            <div class="dashboard-frame">
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Global Payments -->
+    <div class="feature-section mb-5 pb-5">
+      <div class="row align-items-center">
+        <div class="col-lg-6 order-lg-2">
+          <div class="feature-content ps-lg-4">
+            <div class="feature-header mb-4">
+              <div class="feature-icon-large mb-3">
+                <i class="fi-credit-card fs-1 text-primary"></i>
+              </div>
+              <h3 class="h2 fw-semibold mb-3">{{ 'studio.features.payments.title' | translate }}</h3>
+              <p class="fs-5 text-muted mb-4">{{ 'studio.features.payments.description' | translate }}</p>
+            </div>
+            <ul class="feature-list list-unstyled">
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'studio.features.payments.feature1' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'studio.features.payments.feature2' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'studio.features.payments.feature3' | translate }}</span>
+              </li>
+            </ul>
+            <a [routerLink]="['/features/payments']" class="btn btn-outline-primary">
+              {{ 'studio.features.payments.explore' | translate }}
+            </a>
+          </div>
+        </div>
+        <div class="col-lg-6 order-lg-1">
+          <div class="hero-dashboard">
+            <div class="dashboard-frame">
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Analytics & Insights -->
+    <div class="feature-section mb-5 pb-5">
+      <div class="row align-items-center">
+        <div class="col-lg-6 order-lg-1">
+          <div class="feature-content pe-lg-4">
+            <div class="feature-header mb-4">
+              <div class="feature-icon-large mb-3">
+                <i class="fi-pie-chart fs-1 text-primary"></i>
+              </div>
+              <h3 class="h2 fw-semibold mb-3">{{ 'studio.features.analytics.title' | translate }}</h3>
+              <p class="fs-5 text-muted mb-4">{{ 'studio.features.analytics.description' | translate }}</p>
+            </div>
+            <ul class="feature-list list-unstyled">
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'studio.features.analytics.feature1' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'studio.features.analytics.feature2' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'studio.features.analytics.feature3' | translate }}</span>
+              </li>
+            </ul>
+            <a [routerLink]="['/features/analytics']" class="btn btn-outline-primary">
+              {{ 'studio.features.analytics.explore' | translate }}
+            </a>
+          </div>
+        </div>
+        <div class="col-lg-6 order-lg-2">
+          <div class="hero-dashboard">
+            <div class="dashboard-frame">
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- White Label -->
+    <div class="feature-section mb-5 pb-5">
+      <div class="row align-items-center">
+        <div class="col-lg-6 order-lg-2">
+          <div class="feature-content ps-lg-4">
+            <div class="feature-header mb-4">
+              <div class="feature-icon-large mb-3">
+                <i class="fi-palette fs-1 text-primary"></i>
+              </div>
+              <h3 class="h2 fw-semibold mb-3">{{ 'studio.features.whitelabel.title' | translate }}</h3>
+              <p class="fs-5 text-muted mb-4">{{ 'studio.features.whitelabel.description' | translate }}</p>
+            </div>
+            <ul class="feature-list list-unstyled">
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'studio.features.whitelabel.feature1' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'studio.features.whitelabel.feature2' | translate }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <i class="fi-check text-success me-3 fs-5"></i>
+                <span>{{ 'studio.features.whitelabel.feature3' | translate }}</span>
+              </li>
+            </ul>
+            <a href="#demo" class="btn btn-outline-primary">
+              {{ 'studio.features.whitelabel.explore' | translate }}
+            </a>
+          </div>
+        </div>
+        <div class="col-lg-6 order-lg-1">
+          <div class="hero-dashboard">
+            <div class="dashboard-frame">
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- CTA Section -->
+<section class="py-5 bg-semi-green">
+  <div class="container">
+    <div class="row justify-content-center text-center">
+      <div class="col-lg-8">
+        <h2 class="display-5 fw-lighter for-dax-font mb-4">
+          {{ 'studio.cta.title' | translate }}
+        </h2>
+        <p class="fs-5 text-muted mb-4">
+          {{ 'studio.cta.subtitle' | translate }}
+        </p>
+        <div class="d-flex gap-3 justify-content-center flex-wrap">
+          <a href="#" class="btn btn-primary btn-lg">
+            {{ 'studio.cta.getStarted' | translate }}
+          </a>
+          <a [routerLink]="['/pricing']" class="btn btn-outline-dark btn-lg">
+            {{ 'studio.cta.viewPricing' | translate }}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

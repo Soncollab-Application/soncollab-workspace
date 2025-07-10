@@ -60,8 +60,9 @@
   animation: logoFadeIn 0.3s ease-in-out;
 }
 
-/* ✅ Styles pour le theme switcher avec vos couleurs */
-.theme-switcher {
+/* ✅ Styles communs pour les switchers (theme et language) */
+.theme-switcher,
+.language-switcher {
   position: relative;
   transition: all 0.3s ease;
   width: 40px;
@@ -73,30 +74,35 @@
   border: 1px solid var(--fn-primary-border-subtle) !important;
 }
 
-.theme-switcher:hover {
+.theme-switcher:hover,
+.language-switcher:hover {
   transform: scale(1.1);
   background-color: var(--fn-primary-bg-subtle);
   border-color: var(--fn-primary) !important;
   color: var(--fn-primary-text-emphasis);
 }
 
-.theme-switcher:focus {
+.theme-switcher:focus,
+.language-switcher:focus {
   box-shadow: 0 0 0 0.2rem rgba(var(--fn-primary-rgb), 0.25);
   border-color: var(--fn-primary) !important;
 }
 
-.theme-icon-active {
+.theme-icon-active,
+.language-icon-active {
   transition: transform 0.3s ease;
   color: inherit;
 }
 
-.theme-switcher[aria-expanded="true"] {
+.theme-switcher[aria-expanded="true"],
+.language-switcher[aria-expanded="true"] {
   background-color: var(--fn-primary-bg-subtle);
   border-color: var(--fn-primary) !important;
   color: var(--fn-primary-text-emphasis);
 }
 
-.theme-switcher[aria-expanded="true"] .theme-icon-active {
+.theme-switcher[aria-expanded="true"] .theme-icon-active,
+.language-switcher[aria-expanded="true"] .language-icon-active {
   transform: rotate(180deg);
 }
 
@@ -150,7 +156,8 @@
   opacity: 0.5;
 }
 
-.theme-icon {
+.theme-icon,
+.language-flag {
   width: 20px;
   height: 20px;
   display: flex;
@@ -158,18 +165,19 @@
   justify-content: center;
 }
 
-.theme-label {
+.theme-label,
+.language-label {
   font-weight: 500;
 }
 
-/* Animation pour le changement d'icône du theme switcher */
-.theme-icon-active i {
+/* Animation pour le changement d'icône des switchers */
+.theme-icon-active i,
+.language-icon-active i {
   transition: all 0.3s ease;
 }
 
-/* Styles responsifs pour le theme switcher centré */
+/* Styles responsifs pour les switchers centrés */
 @media (max-width: 991px) {
-
   .dropdown-menu-center[data-bs-popper="static"] {
     min-width: 8rem !important;
     left: 50% !important;
@@ -178,7 +186,6 @@
 }
 
 @media (max-width: 576px) {
-
   .dropdown-menu-center[data-bs-popper="static"] {
     min-width: 7.5rem !important;
     font-size: 0.875rem;
@@ -191,12 +198,14 @@
     font-size: 0.875rem;
   }
 
-  .theme-icon {
+  .theme-icon,
+  .language-flag {
     width: 16px;
     height: 16px;
   }
 
-  .theme-label {
+  .theme-label,
+  .language-label {
     font-size: 0.875rem;
   }
 }
@@ -208,22 +217,19 @@
     left: 50% !important;
     transform: translateX(-50%) !important;
   }
-
-  .theme-switcher {
-    width: 32px;
-    height: 32px;
-  }
 }
 
 /* Focus states pour l'accessibilité avec vos couleurs */
-.theme-switcher:focus {
+.theme-switcher:focus,
+.language-switcher:focus {
   outline: 2px solid var(--fn-primary);
   outline-offset: 2px;
   box-shadow: 0 0 0 0.2rem rgba(var(--fn-primary-rgb), 0.25);
 }
 
 /* ✅ Retire le focus automatiquement après fermeture du dropdown */
-.theme-switcher:not([aria-expanded="true"]):focus {
+.theme-switcher:not([aria-expanded="true"]):focus,
+.language-switcher:not([aria-expanded="true"]):focus {
   outline: none;
   box-shadow: none;
 }
@@ -257,4 +263,20 @@
 .dropdown-item.active .item-active-indicator {
   animation: checkFadeIn 0.2s ease;
   color: var(--fn-primary) !important;
+}
+
+/* ✅ Styles spécifiques pour le language switcher */
+.language-flag {
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Android Emoji", sans-serif !important;
+  font-size: 1.1em;
+}
+
+/* Animation hover pour le globe */
+.language-switcher:hover .language-icon-active i {
+  transform: scale(1.1) rotate(15deg);
+}
+
+/* Espacement entre les switchers */
+.d-flex.gap-2 .dropdown:not(:last-child) {
+  margin-right: 0.25rem;
 }

@@ -1,12 +1,16 @@
-<div class="container d-flex flex-column justify-content-center  py-5 pt-5 pb-5 my-5">
+<div class="container d-flex flex-column justify-content-center py-5 pt-5 pb-5 my-5">
   <div class="text-center">
     <img src="/assets/images/404error.svg" width="240" height="240" class="" alt="404error">
   </div>
   <div class="text-center pt-4 mt-lg-2">
     <h1 class="display-5 for-dax-font">
-      Page introuvable
+      {{ 'notFound.title' | translate }}
     </h1>
-    <p class="fs-lg pb-2 pb-md-0 mb-4 mb-md-5">La page que vous recherchez a été déplacée, supprimée ou n'a peut-être jamais existé.</p>
-    <a class="btn btn-lg btn-primary" [routerLink]="['/']">Aller à la page d'accueil</a>
+    <p class="fs-lg pb-2 pb-md-0 mb-4 mb-md-5">
+      {{ 'notFound.description' | translate }}
+    </p>
+    <a class="btn btn-lg btn-primary" [routerLink]="['/']">
+      {{ 'notFound.homeButton' | translate }}
+    </a>
   </div>
 </div>
