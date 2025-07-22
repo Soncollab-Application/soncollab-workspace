@@ -60,7 +60,7 @@ export class FooterComponent implements OnInit, OnDestroy {
   onLanguageChange(event: Event): void {
     const target = event.target as HTMLSelectElement;
     const newLanguage = target.value;
-
+    window.scroll(0,0);
     if (newLanguage && newLanguage !== this.currentLanguage) {
       this.languageService.setLanguage(newLanguage);
     }

@@ -131,7 +131,7 @@
 [data-bs-theme=dark] .step-number {
   width: 50px;
   height: 50px;
-  background: linear-gradient(135deg, #1c573a 0%, #80710f 100%);
+  background: #1c573a !important;
   color: white;
   border-radius: 50%;
   display: flex;

@@ -119,13 +119,7 @@
 
 
 
-
-
-
-
 /* ------------------------------ Light --------------------------------- */
-
-
 
 /* Pas de séparateur entre colonnes */
 
@@ -149,8 +143,8 @@
 [data-bs-theme=light] .nav-link.hover-effect-slide {
   position: relative !important;
   overflow: hidden !important;
-  background: rgba(68, 140, 116, 0.03) !important;
-  border: 1px solid rgba(68, 140, 116, 0.06) !important;
+  background: transparent !important;
+  border: 1px solid rgba(247, 250, 252, 1) !important;
   border-radius: 8px !important;
 }
 
@@ -170,7 +164,7 @@
 }
 
 [data-bs-theme=light] .nav-link.hover-effect-slide:hover {
-  background: rgba(68, 140, 116, 0.08) !important;
+  background: rgba(40, 81, 68, 0.08) !important;
   border-color: rgba(68, 140, 116, 0.15) !important;
   transform: translateY(-1px) !important;
   box-shadow: 0 4px 20px rgba(68, 140, 116, 0.1) !important;
@@ -205,8 +199,12 @@
 [data-bs-theme=light] .nav-link.active-feature small  {
   color: rgba(0, 0, 0, 0.94) !important;
   font-weight: 400 !important;
-
 }
+
+[data-bs-theme=light] .nav-link small  {
+  color: rgba(23, 21, 21, 0.73) !important;
+}
+
 
 /* Animation d'entrée pour le dropdown */
 [data-bs-theme=light] .dropdown-menu {
@@ -507,29 +505,3 @@
   contain: layout style paint;
   isolation: isolate;
 }
-
-/* ===================================
-   FALLBACKS ET COMPATIBILITÉ
-   =================================== */
-
-/* Fallback pour les navigateurs qui ne supportent pas mask */
-@supports not (mask-image: linear-gradient(to bottom, transparent, black)) {
-  [data-bs-theme=dark] .section-grid-pattern,
-  [data-bs-theme=light] .section-grid-pattern {
-    background: linear-gradient(to bottom,
-    transparent 0%,
-    rgba(0, 0, 0, 0.02) 15%,
-    rgba(0, 0, 0, 0.02) 85%,
-    transparent 100%);
-  }
-}
-
-/* Fallback pour très vieux navigateurs */
-@supports not (background-size: 80px 80px) {
-  [data-bs-theme=dark] .section-grid-pattern::before,
-  [data-bs-theme=light] .section-grid-pattern::before {
-    background-size: 80px;
-  }
-}
-
-

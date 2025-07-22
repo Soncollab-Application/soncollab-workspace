@@ -1,7 +1,6 @@
 <header class="navbar navbar-expand-lg bg-body  fixed-top px-0 "
         [ngClass]="{
           'shadow-sm': isScrolled,
-          'border-bottom': isScrolled,
           'bg-body-tertiary': !isScrolled,
         }"
 >
@@ -47,7 +46,7 @@
         <ul class="navbar-nav position-relative">
 
           <li class="nav-item dropdown position-static py-lg-2 me-lg-n1 me-xl-0">
-            <a class="nav-link dropdown-toggle d-flex align-items-center" [class.active]="isSectionActive('/features')"  href="#" role="button" data-bs-toggle="dropdown" data-bs-trigger="hover" [attr.aria-expanded]="isSectionActive('/features')">
+            <a class="nav-link fw-bolder fs-6 dropdown-toggle d-flex align-items-center" [class.active]="isSectionActive('/features')"  href="#" role="button" data-bs-toggle="dropdown" data-bs-trigger="hover" [attr.aria-expanded]="isSectionActive('/features')">
               {{ 'header.navigation.features' | translate }}
             </a>
 
@@ -166,7 +165,7 @@
           </li>
 
           <li class="nav-item dropdown py-lg-2 me-lg-n1 me-xl-0">
-            <a [class.active]="isSectionActive('/products')" [class.aria-expanded]="isSectionActive('/products')"  class="nav-link dropdown-toggle" data-bs-auto-close="outside" data-bs-toggle="dropdown" data-bs-trigger="hover"
+            <a [class.active]="isSectionActive('/products')" [class.aria-expanded]="isSectionActive('/products')"  class="nav-link fw-bolder fs-6 dropdown-toggle" data-bs-auto-close="outside" data-bs-toggle="dropdown" data-bs-trigger="hover"
                href="#" role="button">
               {{ 'header.navigation.products' | translate }}
             </a>
@@ -193,7 +192,7 @@
           </li>
 
           <li class="nav-item py-lg-2 me-lg-n2 me-xl-0">
-            <a class="nav-link" [routerLinkActiveOptions]="{ exact: true }" [routerLinkActive]="['active']"
+            <a class="nav-link fw-bolder fs-6" [routerLinkActiveOptions]="{ exact: true }" [routerLinkActive]="['active']"
                [routerLink]="['/pricing']"
                (click)="closeMenu()">
               {{ 'header.navigation.pricing' | translate }}
@@ -201,7 +200,7 @@
           </li>
 
           <li class="nav-item dropdown py-lg-2 me-lg-n1 me-xl-0">
-            <a [class.active]="isSectionActive('/resources')" [class.aria-expanded]="isSectionActive('/resources')"   class="nav-link dropdown-toggle" data-bs-auto-close="outside" data-bs-toggle="dropdown" data-bs-trigger="hover"
+            <a [class.active]="isSectionActive('/resources')" [class.aria-expanded]="isSectionActive('/resources')"   class="fw-bolder fs-6 nav-link dropdown-toggle" data-bs-auto-close="outside" data-bs-toggle="dropdown" data-bs-trigger="hover"
                href="#" role="button">
               {{ 'header.navigation.resources' | translate }}
             </a>

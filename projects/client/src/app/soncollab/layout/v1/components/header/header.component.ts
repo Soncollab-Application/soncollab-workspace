@@ -78,6 +78,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   setTheme(theme: Theme): void {
+    window.scroll(0,0);
     this.themeService.setTheme(theme);
     this.closeThemeDropdown();
   }
@@ -144,6 +145,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   setLanguage(languageCode: string): void {
     if (languageCode && languageCode !== this.currentLanguage) {
       this.languageService.setLanguage(languageCode);
+      window.scroll(0, 0);
       this.closeLanguageDropdown();
     }
   }

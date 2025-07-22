@@ -1,8 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
-import {LanguageService} from '../../../../../core/services/language.service';
 import {PricingPreview} from '../../partials/pricing-preview/pricing-preview';
 
 @Component({
@@ -11,16 +9,12 @@ import {PricingPreview} from '../../partials/pricing-preview/pricing-preview';
   templateUrl: './catalog.component.html',
   styleUrl: './catalog.component.css'
 })
-export class CatalogComponent implements OnInit, OnDestroy {
+export class CatalogComponent implements OnInit {
 
   constructor() {}
 
   ngOnInit(): void {
     window.scrollTo(0, 0);
-  }
-
-  ngOnDestroy(): void {
-
   }
 
 }
