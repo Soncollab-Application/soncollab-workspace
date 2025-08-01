@@ -8,7 +8,6 @@ import {IMAGE_CONFIG} from '@angular/common';
 import {provideAnimations, provideNoopAnimations} from '@angular/platform-browser/animations';
 import {FormsModule} from '@angular/forms';
 import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
-import {provideHotToastConfig} from '@ngneat/hot-toast';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -32,7 +31,6 @@ export const appConfig: ApplicationConfig = {
     provideNoopAnimations(),
     importProvidersFrom(FormsModule),
     provideAnimationsAsync(),
-    provideHotToastConfig(),
     provideHttpClient(),
     importProvidersFrom(
       TranslateModule.forRoot({
