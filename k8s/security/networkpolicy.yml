@@ -1,0 +1,61 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: soncollab-frontend-netpol
+  namespace: soncollab
+  labels:
+    app: soncollab-frontend
+spec:
+  podSelector:
+    matchLabels:
+      app: soncollab-frontend
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    # Allow traffic from nginx ingress controller
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: ingress-nginx
+      ports:
+        - protocol: TCP
+          port: 3030
+    # Allow traffic from monitoring systems
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: monitoring
+      ports:
+        - protocol: TCP
+          port: 9113
+    # Allow internal cluster communication
+    - from:
+        - podSelector: {}
+      ports:
+        - protocol: TCP
+          port: 3030
+    - from:
+        - podSelector: {}
+      ports:
+        - protocol: TCP
+          port: 80
+  egress:
+    # Allow DNS resolution
+    - to: []
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    # Allow HTTPS traffic to external APIs
+    - to: []
+      ports:
+        - protocol: TCP
+          port: 443
+    # Allow HTTP traffic (if needed)
+    - to: []
+      ports:
+        - protocol: TCP
+          port: 3030
+

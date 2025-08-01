@@ -1,0 +1,40 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: soncollab-frontend-monitor
+  namespace: soncollab
+  labels:
+    app: soncollab-frontend
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: soncollab-frontend
+  endpoints:
+    - port: http
+      interval: 30s
+      path: /metrics
+      honorLabels: true
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: soncollab-frontend-metrics
+  namespace: soncollab
+  labels:
+    app: soncollab-frontend
+    monitoring: "true"
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9113"
+    prometheus.io/path: "/metrics"
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9113
+      targetPort: 9113
+      protocol: TCP
+      name: metrics
+  selector:
+    app: soncollab-frontend

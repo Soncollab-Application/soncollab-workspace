@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: soncollab-frontend-sa
+  namespace: soncollab
+imagePullSecrets:
+  - name: harbor-registry-secret
