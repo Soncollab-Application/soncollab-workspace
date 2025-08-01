@@ -1,4 +1,4 @@
-name: Build and Deploy to Kubernetes
+name: Build and Deploy to staging
 
 on:
   push:
@@ -100,13 +100,13 @@ jobs:
         run: |
           # Update image tag in deployment
           kubectl config use-context kubernetes-admin@kubernetes
-
+          kubectl create namespace "${{ vars.KUBE_STG_NAMESPACE }}" --dry-run=client -o yaml | kubectl apply -f -
           kubectl create secret docker-registry harbor-registry-secret \
             --docker-server="${{ vars.HARBOR_REGISTRY }}" \
             --docker-username="${{ secrets.HARBOR_USERNAME }}" \
             --docker-password="${{ secrets.HARBOR_PASSWORD }}" \
             --docker-email="${{ secrets.HARBOR_EMAIL }}" \
-            --namespace="${{ vars.KUBE_NAMESPACE }}" \
+            --namespace="${{ vars.KUBE_STG_NAMESPACE }}" \
             --dry-run=client \
             --save-config \
             -o yaml | \
@@ -123,5 +123,5 @@ jobs:
           envsubst < k8s/staging/deployment.yml| kubectl apply -f -
 
           # Wait for rollout
-          kubectl rollout status deployment/soncollab-frontend -n ${{ vars.KUBE_NAMESPACE }} --timeout=300s
+          kubectl rollout status deployment/soncollab-frontend -n ${{ vars.KUBE_STG_NAMESPACE }} --timeout=300s
 

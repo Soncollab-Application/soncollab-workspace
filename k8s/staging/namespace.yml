@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: soncollab
+  name: soncollab-staging
   labels:
     # Pod Security Standards (Kubernetes 1.23+)
     pod-security.kubernetes.io/enforce: restricted

@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: soncollab-frontend
-  namespace: soncollab
+  namespace: soncollab-staging
   labels:
     app: soncollab-frontend
     environment: staging
