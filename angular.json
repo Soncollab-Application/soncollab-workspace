@@ -27,8 +27,6 @@
             "styles": [
               "projects/client/src/styles.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "node_modules/@sweetalert2/theme-bootstrap-4/bootstrap-4.css",
-              "node_modules/@ngneat/hot-toast/src/styles/styles.css",
               "node_modules/aos/dist/aos.css",
               "projects/client/public/assets/icons/finder-icons.min.css",
               "projects/client/public/assets/vendor/simplebar/simplebar.min.css",
@@ -40,7 +38,6 @@
               "projects/client/public/assets/css/custom.css"
             ],
             "scripts": [
-              "node_modules/sweetalert2/dist/sweetalert2.min.js",
               "node_modules/aos/dist/aos.js",
               "projects/client/public/assets/vendor/simplebar/simplebar.min.js",
               "projects/client/public/assets/vendor/nouislider/nouislider.min.js",
