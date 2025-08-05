@@ -17,6 +17,9 @@
             "polyfills": [
               "zone.js"
             ],
+            "allowedCommonJsDependencies": [
+              "lodash"
+            ],
             "tsConfig": "projects/client/tsconfig.app.json",
             "assets": [
               {
@@ -60,7 +63,13 @@
                   "maximumError": "100MB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "fileReplacements": [
+                {
+                  "replace": "projects/client/src/environments/environment.ts",
+                  "with": "projects/client/src/environments/environment.ts"
+                }
+              ]
             },
             "development": {
               "optimization": false,
@@ -70,6 +79,17 @@
                 {
                   "replace": "projects/client/src/environments/environment.ts",
                   "with": "projects/client/src/environments/environment.development.ts"
+                }
+              ]
+            },
+            "staging": {
+              "optimization": true,
+              "extractLicenses": true,
+              "sourceMap": false,
+              "fileReplacements": [
+                {
+                  "replace": "projects/client/src/environments/environment.ts",
+                  "with": "projects/client/src/environments/environment.staging.ts"
                 }
               ]
             }
@@ -84,6 +104,9 @@
             },
             "development": {
               "buildTarget": "client:build:development"
+            },
+            "staging": {
+              "buildTarget": "client:build:staging"
             }
           },
           "defaultConfiguration": "development"
