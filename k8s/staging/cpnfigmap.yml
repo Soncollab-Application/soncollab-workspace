@@ -3,7 +3,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: soncollab-frontend-config-staging
-  namespace: soncollab
+  namespace: soncollab-staging
   labels:
     app: soncollab-frontend
     environment: staging
