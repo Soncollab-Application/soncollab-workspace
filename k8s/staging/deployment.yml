@@ -11,7 +11,7 @@ spec:
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: 1
+      maxSurge: 2
       maxUnavailable: 0
   selector:
     matchLabels:
@@ -39,11 +39,11 @@ spec:
               value: "staging"
           resources:
             requests:
-              memory: "64Mi"
-              cpu: "50m"
+              memory: "2Gi"
+              cpu: "4000m"
             limits:
-              memory: "256Mi"
-              cpu: "250m"
+              memory: "1Gi"
+              cpu: "2000m"
           livenessProbe:
             httpGet:
               path: /health
