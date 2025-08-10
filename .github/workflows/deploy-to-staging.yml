@@ -5,15 +5,20 @@ on:
     branches: [ develop ]
   pull_request:
   workflow_dispatch:
+    inputs:
+      deploy-branch:
+        description: 'Branch to deploy'
+        default: 'develop'
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
     environment: staging
-    if: github.ref == 'refs/heads/develop'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.deploy-branch || github.ref }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -35,7 +40,6 @@ jobs:
   build-and-push-image:
     needs: build-and-test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/develop'
     outputs:
       image-tag: ${{ steps.meta.outputs.tags }}
       image-digest: ${{ steps.build.outputs.digest }}
