@@ -13,7 +13,7 @@
       <p class="fs-lg pb-3 mb-2 mb-sm-3 mb-lg-4 mx-auto fw-lighter" style="max-width: 640px;">
         {{ hero.subtitle }}
       </p>
-      <a class="btn btn-lg btn-primary" href="#">
+      <a class="btn btn-lg btn-primary" href="javascript:" (click)="openContactModal()">
         {{ hero.actionBtn }}
       </a>
     }
@@ -33,7 +33,7 @@
       <p class="fs-lg pb-3 mb-2 mb-sm-3 mb-lg-4 mx-auto fw-lighter" style="max-width: 640px;">
         {{ 'home.heroFallback.subtitle' | translate }}
       </p>
-      <a class="btn btn-lg btn-primary" href="#">
+      <a class="btn btn-lg btn-primary" href="javascript:" (click)="openContactModal()">
         {{ 'home.heroFallback.button' | translate }}
       </a>
     }
@@ -159,7 +159,7 @@
 
         <!-- Call-to-action simple -->
         <div class="d-flex gap-3">
-          <a href="#" class="btn btn-primary">
+          <a href="javascript:" (click)="openContactModal()" class="btn btn-primary">
             {{ 'home.whiteLabel.cta.demo' | translate }}
           </a>
         </div>
@@ -335,7 +335,7 @@
           {{ 'home.benefits.cta.subtitle' | translate }}
         </p>
         <div class="d-flex gap-3 justify-content-center flex-wrap">
-          <a href="#" class="btn btn-primary btn-lg">
+          <a href="javascript:" (click)="openContactModal()" class="btn btn-primary btn-lg">
             {{ 'home.benefits.cta.button' | translate }}
           </a>
         </div>

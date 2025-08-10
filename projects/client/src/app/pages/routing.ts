@@ -11,7 +11,6 @@ import {StudioComponent} from './components/v1/products/studio/studio.component'
 import {ConnectComponent} from './components/v1/products/connect/connect.component';
 import {AboutComponent} from './components/v1/company/about/about.component';
 import {AntiFraudPolicyComponent} from './components/v1/company/anti-fraud-policy/anti-fraud-policy.component';
-import {ContactComponent} from './components/v1/company/contact/contact.component';
 import {PrivacyPolicyComponent} from './components/v1/company/privacy-policy/privacy-policy.component';
 import {UseConditionComponent} from './components/v1/company/use-condition/use-condition.component';
 import {PricingComponent} from './components/v1/pricing/pricing.component';
@@ -33,7 +32,6 @@ const Routing: Routes = [
   //Company
   {path: 'company/about', component: AboutComponent},
   {path: 'company/anti-fraud-policy', component: AntiFraudPolicyComponent},
-  {path: 'company/contact', component: ContactComponent},
   {path: 'company/privacy-policy', component: PrivacyPolicyComponent},
   {path: 'company/use-condition', component: UseConditionComponent },
   //other

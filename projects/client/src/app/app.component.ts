@@ -5,6 +5,8 @@ import {AosService} from './core/services/aos.service';
 import {LanguageService} from './core/services/language.service';
 import { Subject, takeUntil } from 'rxjs';
 import {PageService} from './pages/services/page.service';
+import {ContactModal} from './pages/components/v1/partials/modals/contact-modal/contact-modal';
+import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-root',

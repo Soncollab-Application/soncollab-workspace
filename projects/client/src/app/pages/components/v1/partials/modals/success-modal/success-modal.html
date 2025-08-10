@@ -1,0 +1,19 @@
+<div class="modal-body text-center p-5">
+  <div class="text-success mb-4">
+    <i class="bi bi-check-circle display-4"></i>
+  </div>
+  <h4 class="fw-semibold mb-3">{{ 'contact.success.title' | translate }}</h4>
+  <p class="text-muted mb-4">{{ successMessage }}</p>
+  @if (responseData) {
+    <div class="alert alert-info">
+      <small>
+        {{ 'contact.success.responseTime' | translate:{ time: responseData?.estimated_response_time } }}
+      </small>
+    </div>
+  }
+
+  <!-- ✅ Bouton avec méthode explicite -->
+  <button type="button" class="btn btn-primary" (click)="closeModal()">
+    {{ 'contact.success.close' | translate }}
+  </button>
+</div>
