@@ -6,6 +6,7 @@ import { ThemeService, Theme } from '../../../../../core/services/theme.service'
 import { LanguageService } from '../../../../../core/services/language.service';
 import { Language } from '../../../../../core/models/language.model';
 import { Subject, takeUntil } from 'rxjs';
+import {ContactModalService} from '../../../../../core/services/contact-modal.service';
 
 @Component({
   selector: 'app-header',
@@ -37,6 +38,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private themeService: ThemeService,
+    private contactModalService: ContactModalService,
     private languageService: LanguageService
   ) {}
 
@@ -66,6 +68,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private updateCurrentTheme(): void {
     this.currentTheme = this.themeService.getCurrentTheme();
   }
+
+  openContactModal(): void {
+    this.closeMenu();
+    this.contactModalService.openContactModal().subscribe()
+  }
+
 
   private updateLogoBasedOnTheme(): void {
     this.isDarkTheme = this.themeService.isDarkTheme();

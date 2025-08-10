@@ -8,6 +8,8 @@ import {SwiperDirective} from '../../../../core/utils/directives/swiper.directiv
 import {SwiperOptions} from 'swiper/types';
 import {ThemeService} from '../../../../core/services/theme.service';
 import {NgClass, NgStyle} from '@angular/common';
+import {ContactModalService} from '../../../../core/services/contact-modal.service';
+import {ContactModal} from '../partials/modals/contact-modal/contact-modal';
 
 // Types
 type FeatureType = 'catalog' | 'distribution' | 'royalties' | 'payment' | 'analytics' | 'teams';
@@ -127,6 +129,7 @@ export class HomeComponent implements OnInit ,OnDestroy {
   constructor(
     private pageService: PageService,
     private themeService: ThemeService,
+    private contactModalService: ContactModalService,
     private languageService: LanguageService) {}
 
   ngOnInit(): void {
@@ -141,6 +144,10 @@ export class HomeComponent implements OnInit ,OnDestroy {
     this.isDarkTheme = this.themeService.isDarkTheme();
   }
 
+
+  openContactModal(): void {
+    this.contactModalService.openContactModal().subscribe()
+  }
 
 
   private setupLanguageListener(): void {

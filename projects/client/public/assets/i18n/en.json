@@ -1262,6 +1262,55 @@
     }
   },
 
+  "contact": {
+    "modal": {
+      "title": "Let’s Create Your Next Big Win"
+    },
+    "form": {
+      "firstName": "First Name",
+      "firstName.placeholder": "Your first name",
+      "firstName.required": "First name is required",
+      "lastName": "Last Name",
+      "lastName.placeholder": "Your last name",
+      "lastName.required": "Last name is required",
+      "email": "Email Address",
+      "email.placeholder": "your@email.com",
+      "email.required": "Email is required",
+      "email.invalid": "Invalid email format",
+      "email.checking": "Checking...",
+      "email.exists": "We already have {{count}} contact(s) with this email",
+      "phone": "Phone",
+      "phone.placeholder": "+1 234 567 8900",
+      "companyName": "Company Name",
+      "companyName.placeholder": "Your company",
+      "companyName.required": "Company name is required",
+      "companySize": "Company Size",
+      "companySize.placeholder": "Select",
+      "companyWebsite": "Website",
+      "companyWebsite.placeholder": "https://www.example.com",
+      "companyWebsite.invalid": "Invalid URL (must start with http:// or https://)",
+      "contactType": "Contact Type",
+      "contactType.placeholder": "Select a type",
+      "contactType.required": "Contact type is required",
+      "country": "Country",
+      "country.placeholder": "Select your country",
+      "country.required": "Country is required",
+      "message": "Message",
+      "message.placeholder": "Describe your request...",
+      "subject": "Auto-generated subject",
+      "cancel": "Cancel",
+      "submit": "Send",
+      "submitting": "Sending...",
+      "error": {
+        "submission": "Error sending. Please try again."
+      }
+    },
+    "success": {
+      "title": "Message sent successfully!",
+      "responseTime": "Estimated response time: {{time}}",
+      "close": "Close"
+    }
+  },
 
   "notFound": {
     "title": "Page Not Found",

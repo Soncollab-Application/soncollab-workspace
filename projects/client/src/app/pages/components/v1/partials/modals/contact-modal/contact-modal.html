@@ -1,0 +1,231 @@
+<!-- Modal Header -->
+<div class="modal-header border-0 pb-0 mb-3">
+  <h4 class="modal-title fw-semibold for-dax-font">
+    {{ 'contact.modal.title' | translate }}
+  </h4>
+  <button type="button" class="btn-close" aria-label="Close" (click)="closeModal()"></button>
+</div>
+
+<!-- Modal Body -->
+<div class="modal-body pt-2">
+  <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" novalidate>
+    <!-- Information personnelle -->
+    <div class="row mb-2">
+      <div class="col-md-6 mb-2">
+        <label for="firstName" class="form-label">
+          {{ 'contact.form.firstName' | translate }} <span class="text-danger">*</span>
+        </label>
+        <input
+          type="text"
+          class="form-control"
+          id="firstName"
+          formControlName="first_name"
+          [class.is-invalid]="isFieldInvalid('first_name')"
+          placeholder="{{ 'contact.form.firstName.placeholder' | translate }}">
+        @if (isFieldInvalid('first_name')) {
+          <div class="invalid-feedback">
+            {{ 'contact.form.firstName.required' | translate }}
+          </div>
+        }
+      </div>
+      <div class="col-md-6 mb-2">
+        <label for="lastName" class="form-label">
+          {{ 'contact.form.lastName' | translate }} <span class="text-danger">*</span>
+        </label>
+        <input
+          type="text"
+          class="form-control"
+          id="lastName"
+          formControlName="last_name"
+          [class.is-invalid]="isFieldInvalid('last_name')"
+          placeholder="{{ 'contact.form.lastName.placeholder' | translate }}">
+        @if (isFieldInvalid('last_name')) {
+          <div class="invalid-feedback">
+            {{ 'contact.form.lastName.required' | translate }}
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Email et Téléphone -->
+    <div class="row mb-2">
+      <div class="col-md-6 mb-2">
+        <label for="email" class="form-label">
+          {{ 'contact.form.email' | translate }} <span class="text-danger">*</span>
+        </label>
+        <div class="position-relative">
+          <input
+            type="email"
+            class="form-control"
+            id="email"
+            formControlName="email"
+            [class.is-invalid]="isFieldInvalid('email')"
+            [class.is-valid]="isEmailValid()"
+            placeholder="{{ 'contact.form.email.placeholder' | translate }}">
+
+          <!-- Spinner de vérification -->
+          @if (isCheckingEmail()) {
+            <div class="position-absolute top-50 end-0 translate-middle-y me-3">
+              <div class="spinner-border spinner-border-sm text-primary" role="status">
+                <span class="visually-hidden">{{ 'contact.form.email.checking' | translate }}</span>
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Messages de validation email -->
+        @if (isFieldInvalid('email')) {
+          <div class="invalid-feedback d-block">
+            @if (contactForm.get('email')?.errors?.['required']) {
+              <div>{{ 'contact.form.email.required' | translate }}</div>
+            }
+            @if (contactForm.get('email')?.errors?.['email']) {
+              <div>{{ 'contact.form.email.invalid' | translate }}</div>
+            }
+          </div>
+        }
+
+        <!-- Message contact existant -->
+        @if (emailCheckResult()?.exists) {
+          <div class="alert alert-info alert-sm mt-2 py-2">
+            <i class="bi bi-info-circle me-2"></i>
+            {{ 'contact.form.email.exists' | translate:{ count: emailCheckResult()?.contact_count } }}
+          </div>
+        }
+      </div>
+      <div class="col-md-6 mb-2">
+        <label for="phone" class="form-label">{{ 'contact.form.phone' | translate }}</label>
+        <input
+          type="tel"
+          class="form-control"
+          id="phone"
+          formControlName="phone"
+          placeholder="{{ 'contact.form.phone.placeholder' | translate }}">
+      </div>
+    </div>
+
+    <!-- Informations entreprise -->
+    <div class="row mb-2">
+      <div class="col-md-8 mb-2">
+        <label for="companyName" class="form-label">
+          {{ 'contact.form.companyName' | translate }} <span class="text-danger">*</span>
+        </label>
+        <input
+          type="text"
+          class="form-control"
+          id="companyName"
+          formControlName="company_name"
+          [class.is-invalid]="isFieldInvalid('company_name')"
+          placeholder="{{ 'contact.form.companyName.placeholder' | translate }}">
+        @if (isFieldInvalid('company_name')) {
+          <div class="invalid-feedback">
+            {{ 'contact.form.companyName.required' | translate }}
+          </div>
+        }
+      </div>
+      <div class="col-md-4 mb-2">
+        <label for="companySize" class="form-label">{{ 'contact.form.companySize' | translate }}</label>
+        <select
+          class="form-select"
+          id="companySize"
+          formControlName="company_size">
+          <option value="">{{ 'contact.form.companySize.placeholder' | translate }}</option>
+          @for (size of formOptions()?.company_sizes; track size.value) {
+            <option [value]="size.value">{{ size.label }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <!-- Site web entreprise -->
+    <div class="mb-3">
+      <label for="companyWebsite" class="form-label">{{ 'contact.form.companyWebsite' | translate }}</label>
+      <input
+        type="url"
+        class="form-control"
+        id="companyWebsite"
+        formControlName="company_website"
+        [class.is-invalid]="isFieldInvalid('company_website')"
+        placeholder="{{ 'contact.form.companyWebsite.placeholder' | translate }}">
+      @if (isFieldInvalid('company_website')) {
+        <div class="invalid-feedback">
+          {{ 'contact.form.companyWebsite.invalid' | translate }}
+        </div>
+      }
+    </div>
+
+    <!-- Type de contact et pays -->
+    <div class="row mb-2">
+      <div class="col-md-6 mb-2">
+        <label for="contactType" class="form-label">
+          {{ 'contact.form.contactType' | translate }} <span class="text-danger">*</span>
+        </label>
+        <select
+          class="form-select"
+          id="contactType"
+          formControlName="contact_type"
+          [class.is-invalid]="isFieldInvalid('contact_type')">
+          <option value="">{{ 'contact.form.contactType.placeholder' | translate }}</option>
+          @for (type of formOptions()?.contact_types; track type.value) {
+            <option [value]="type.value">{{ type.label }}</option>
+          }
+        </select>
+        @if (isFieldInvalid('contact_type')) {
+          <div class="invalid-feedback">
+            {{ 'contact.form.contactType.required' | translate }}
+          </div>
+        }
+      </div>
+      <div class="col-md-6 mb-2">
+        <label for="country" class="form-label">
+          {{ 'contact.form.country' | translate }} <span class="text-danger">*</span>
+        </label>
+        <select
+          class="form-select"
+          id="country"
+          formControlName="country"
+          [class.is-invalid]="isFieldInvalid('country')">
+          <option value="">{{ 'contact.form.country.placeholder' | translate }}</option>
+          @for (countryOption of formOptions()?.countries; track countryOption.value) {
+            <option [value]="countryOption.value">{{ countryOption.label }}</option>
+          }
+        </select>
+        @if (isFieldInvalid('country')) {
+          <div class="invalid-feedback">
+            {{ 'contact.form.country.required' | translate }}
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Message -->
+    <div class="mb-4">
+      <label for="message" class="form-label">{{ 'contact.form.message' | translate }}</label>
+      <textarea
+        class="form-control"
+        id="message"
+        rows="4"
+        formControlName="message"
+        placeholder="{{ 'contact.form.message.placeholder' | translate }}"></textarea>
+    </div>
+
+  </form>
+</div>
+
+<!-- Modal Footer -->
+<div class="modal-footer border-0 pt-0">
+  <button type="button" class="btn btn-outline-secondary" (click)="closeModal()">
+    {{ 'contact.form.cancel' | translate }}
+  </button>
+  <button
+    type="submit"
+    class="btn btn-primary"
+    (click)="onSubmit()"
+    [disabled]="!contactForm.valid || isSubmitting()"
+    [class.disabled]="isSubmitting()">
+    @if (isSubmitting()) {
+      <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+    }
+    {{ isSubmitting() ? ('contact.form.submitting' | translate) : ('contact.form.submit' | translate) }}
+  </button>
+</div>
