@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {ContactModalService} from '../../../../core/services/contact-modal.service';
 
 @Component({
   selector: 'app-pricing',
@@ -8,7 +9,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './pricing.component.css'
 })
 export class PricingComponent implements OnInit {
-
+  contactModalService = inject(ContactModalService);
   constructor() {}
 
   ngOnInit(): void {

@@ -11,11 +11,8 @@
             {{ 'catalog.hero.subtitle' | translate }}
           </p>
           <div class="d-flex gap-3 mb-4">
-            <a href="#features" class="btn btn-primary btn-lg">
+            <a href="javascript:" (click)="contactModalService.openContactModal()" class="btn btn-primary btn-lg">
               {{ 'catalog.hero.getStarted' | translate }}
-            </a>
-            <a href="#demo" class="btn btn-outline-dark btn-lg">
-              {{ 'catalog.hero.learnMore' | translate }}
             </a>
           </div>
         </div>
