@@ -1247,6 +1247,7 @@
       "companyName.required": "Le nom de l'entreprise est requis",
       "companySize": "Taille de l'entreprise",
       "companySize.placeholder": "Sélectionnez",
+      "companySize.required": "La taille de l'entreprise est requise",
       "companyWebsite": "Site web",
       "companyWebsite.placeholder": "https://www.example.com",
       "companyWebsite.invalid": "URL invalide (doit commencer par http:// ou https://)",
@@ -1262,8 +1263,17 @@
       "cancel": "Annuler",
       "submit": "Envoyer",
       "submitting": "Envoi en cours...",
+      "search": {
+        "placeholder": "Rechercher...",
+        "country": "Rechercher un pays...",
+        "noResults": "Aucun résultat trouvé",
+        "noChoices": "Aucun choix disponible"
+      },
+      "loading": "Chargement...",
       "error": {
-        "submission": "Erreur lors de l'envoi. Veuillez réessayer."
+        "title": "Erreur",
+        "submission": "Une erreur est survenue lors de l'envoi",
+        "emailCheck": "Impossible de vérifier l'email"
       }
     },
     "success": {

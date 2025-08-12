@@ -15,7 +15,8 @@
           "options": {
             "browser": "projects/client/src/main.ts",
             "polyfills": [
-              "zone.js"
+              "zone.js",
+              "@angular/localize/init"
             ],
             "allowedCommonJsDependencies": [
               "lodash"
@@ -36,6 +37,7 @@
               "projects/client/public/assets/css/style.css",
               "projects/client/public/assets/vendor/nouislider/nouislider.min.css",
               "projects/client/public/assets/vendor/swiper/swiper-bundle.min.css",
+              "projects/client/public/assets/vendor/choices.js/choices.min.css",
               "projects/client/public/assets/css/features-global.css",
               "projects/client/public/assets/css/theme.min.css",
               "projects/client/public/assets/css/custom.css"
@@ -46,6 +48,7 @@
               "projects/client/public/assets/vendor/nouislider/nouislider.min.js",
               "projects/client/public/assets/js/confetti.bundle.min.js",
               "projects/client/public/assets/vendor/swiper/swiper-bundle.min.js",
+              "projects/client/public/assets/vendor/choices.js/choices.min.js",
               "projects/client/public/assets/js/theme.min.js"
             ]
           },
@@ -119,7 +122,8 @@
           "options": {
             "polyfills": [
               "zone.js",
-              "zone.js/testing"
+              "zone.js/testing",
+              "@angular/localize/init"
             ],
             "tsConfig": "projects/client/tsconfig.spec.json",
             "assets": [

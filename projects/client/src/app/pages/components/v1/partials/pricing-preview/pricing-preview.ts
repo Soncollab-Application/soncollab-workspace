@@ -1,7 +1,8 @@
-import {Component, Input} from '@angular/core';
+import {Component, inject, Input} from '@angular/core';
 import {TranslatePipe} from '@ngx-translate/core';
 import {RouterLink} from '@angular/router';
 import {NgClass} from '@angular/common';
+import {ContactModalService} from '../../../../../core/services/contact-modal.service';
 
 @Component({
   selector: 'app-pricing-preview',
@@ -16,6 +17,7 @@ import {NgClass} from '@angular/common';
 export class PricingPreview {
   @Input() featureContext: string = 'catalog';
   @Input() backgroundClass: string = 'bg-semi-dark';
+  contactModalService = inject(ContactModalService);
   constructor() {}
 
   getTranslationKey(key: string): string {
