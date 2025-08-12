@@ -3,7 +3,6 @@ name: Build and Deploy to staging
 on:
   push:
     branches: [ develop ]
-  pull_request:
   workflow_dispatch:
     inputs:
       deploy-branch:
@@ -128,5 +127,5 @@ jobs:
           envsubst < k8s/staging/deployment.yml| kubectl apply -f -
 
           # Wait for rollout
-          kubectl rollout status deployment/soncollab-frontend -n ${{ vars.KUBE_STG_NAMESPACE }} --timeout=300s
+          kubectl rollout status deployment/soncollab-frontend -n ${{ vars.KUBE_STG_NAMESPACE }} --timeout=3000s
 
