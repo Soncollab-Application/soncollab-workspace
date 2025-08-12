@@ -1,7 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {RouterLink} from '@angular/router';
 import {TranslatePipe} from '@ngx-translate/core';
 import {PricingPreview} from '../../partials/pricing-preview/pricing-preview';
+import {ContactModalService} from '../../../../../core/services/contact-modal.service';
 
 @Component({
   selector: 'app-income-tracking',
@@ -14,7 +15,7 @@ import {PricingPreview} from '../../partials/pricing-preview/pricing-preview';
   styleUrl: './income-tracking.component.css'
 })
 export class IncomeTrackingComponent implements OnInit {
-
+  contactModalService = inject(ContactModalService);
   constructor() {}
 
   ngOnInit(): void {

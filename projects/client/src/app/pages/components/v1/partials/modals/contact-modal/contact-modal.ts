@@ -19,13 +19,17 @@ import {
 } from '../../../../../../core/services/contact-modal.service';
 import { LanguageService } from '../../../../../../core/services/language.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { ChoicesSelectComponent, SelectOption } from '../../../../../../core/modules/choices/choices-select.component';
+import { ChoicesConfig } from '../../../../../../core/modules/choices/choices.directive';
+import {ToastService} from '../../../../../../core/modules/toast/toast.service';
 
 @Component({
   selector: 'app-contact-modal',
   imports: [
     TranslatePipe,
     ReactiveFormsModule,
-    CommonModule
+    CommonModule,
+    ChoicesSelectComponent,
   ],
   standalone: true,
   templateUrl: './contact-modal.html',
@@ -33,6 +37,8 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class ContactModal implements OnInit, OnDestroy {
   activeModal = inject(NgbActiveModal);
+  private toastService = inject(ToastService);
+
 
   private fb = inject(FormBuilder);
   private contactModalService = inject(ContactModalService);
@@ -49,9 +55,53 @@ export class ContactModal implements OnInit, OnDestroy {
   isCheckingEmail = signal(false);
   emailCheckResult = signal<EmailCheckResponse | null>(null);
   generatedSubject = signal('');
+  optionsLoaded = signal(false);
 
   // Form réactif
   contactForm: FormGroup;
+
+  // Options pour les selects - Maintenant en propriétés normales
+  companySizeOptions: SelectOption[] = [];
+  contactTypeOptions: SelectOption[] = [];
+  countryOptions: SelectOption[] = [];
+
+  // Configuration pour les différents selects
+  get companySizeConfig(): ChoicesConfig {
+    return {
+      searchEnabled: true,
+      searchPlaceholderValue: this.translateService.instant('contact.form.search.placeholder'),
+      noResultsText: this.translateService.instant('contact.form.search.noResults'),
+      noChoicesText: this.translateService.instant('contact.form.search.noChoices'),
+      itemSelectText: "",
+      classNames: {
+        containerInner: "form-select"
+      }
+    };
+  }
+
+  get contactTypeConfig(): ChoicesConfig {
+    return {
+      searchEnabled: false,
+      noChoicesText: this.translateService.instant('contact.form.search.noChoices'),
+      itemSelectText: "",
+      classNames: {
+        containerInner: "form-select"
+      }
+    };
+  }
+
+  get countryConfig(): ChoicesConfig {
+    return {
+      searchEnabled: true,
+      searchPlaceholderValue: this.translateService.instant('contact.form.search.country'),
+      noResultsText: this.translateService.instant('contact.form.search.noResults'),
+      noChoicesText: this.translateService.instant('contact.form.search.noChoices'),
+      itemSelectText: "",
+      classNames: {
+        containerInner: "form-select"
+      }
+    };
+  }
 
   // Computed signals
   isEmailValid = computed(() => {
@@ -65,8 +115,8 @@ export class ContactModal implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.setupEmailValidation();
-    this.loadFormOptions();
     this.setupLanguageDetection();
+    this.loadFormOptions();
 
     if (this.initialData) {
       this.contactForm.patchValue(this.initialData);
@@ -87,7 +137,7 @@ export class ContactModal implements OnInit, OnDestroy {
       contact_type: ['', [Validators.required]],
       message: [''],
       company_name: ['', [Validators.required]],
-      company_size: [''],
+      company_size: ['', Validators.required],
       company_website: ['', [Validators.pattern(/^https?:\/\/.+/)]],
       country: ['', [Validators.required]],
       language: [''],
@@ -125,10 +175,18 @@ export class ContactModal implements OnInit, OnDestroy {
       .subscribe(lang => {
         this.contactForm.patchValue({ language: lang });
         this.loadFormOptions();
+
+        // Force la mise à jour des configurations de langue
+        setTimeout(() => {
+          // Les getters seront appelés avec les nouvelles traductions
+          this.optionsLoaded.set(false);
+          setTimeout(() => this.optionsLoaded.set(true), 100);
+        }, 200);
       });
   }
 
   private loadFormOptions(): void {
+    this.optionsLoaded.set(false); // Reset pour forcer le rechargement
     const currentLang = this.languageService.getCurrentLanguage();
 
     this.contactModalService.getContactFormOptions(currentLang)
@@ -136,10 +194,37 @@ export class ContactModal implements OnInit, OnDestroy {
       .subscribe({
         next: (options) => {
           this.formOptions.set(options);
+          this.updateSelectOptions(options);
+
+          // Attendre un peu pour que les options soient prêtes
+          setTimeout(() => {
+            this.optionsLoaded.set(true);
+          }, 100);
         },
         error: (error) => {
+          this.optionsLoaded.set(true); // Pour éviter le blocage
         }
       });
+  }
+
+  private updateSelectOptions(options: ContactFormOptions): void {
+    // Mise à jour des options de taille d'entreprise
+    this.companySizeOptions = [
+      { value: '', label: this.translateService.instant('contact.form.companySize.placeholder') },
+      ...options.company_sizes.map(option => ({ value: option.value, label: option.label }))
+    ];
+
+    // Mise à jour des options de type de contact
+    this.contactTypeOptions = [
+      { value: '', label: this.translateService.instant('contact.form.contactType.placeholder') },
+      ...options.contact_types.map(option => ({ value: option.value, label: option.label }))
+    ];
+
+    // Mise à jour des options de pays
+    this.countryOptions = [
+      { value: '', label: this.translateService.instant('contact.form.country.placeholder') },
+      ...options.countries.map(option => ({ value: option.value, label: option.label }))
+    ];
   }
 
   private checkEmail(email: string): void {
@@ -155,6 +240,10 @@ export class ContactModal implements OnInit, OnDestroy {
         error: (error) => {
           this.isCheckingEmail.set(false);
           this.emailCheckResult.set(null);
+          this.toastService.showWarning(
+            this.translateService.instant('contact.form.error.emailCheck'),
+            this.translateService.instant('contact.form.error.title')
+          );
         }
       });
   }
@@ -180,7 +269,6 @@ export class ContactModal implements OnInit, OnDestroy {
       .subscribe({
         next: (response) => {
           this.isSubmitting.set(false);
-
           this.activeModal.close('success');
 
           setTimeout(() => {
@@ -188,11 +276,14 @@ export class ContactModal implements OnInit, OnDestroy {
               response.message,
               response.data
             );
-          }, 300); // Délai pour laisser le modal se fermer complètement
+          }, 300);
         },
         error: (error) => {
           this.isSubmitting.set(false);
-          alert(this.translateService.instant('contact.form.error.submission'));
+          this.toastService.showError(
+            this.translateService.instant('contact.form.error.submission'),
+            this.translateService.instant('contact.form.error.title')
+          );
         }
       });
   }

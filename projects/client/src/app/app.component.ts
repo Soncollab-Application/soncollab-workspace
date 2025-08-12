@@ -7,10 +7,11 @@ import { Subject, takeUntil } from 'rxjs';
 import {PageService} from './pages/services/page.service';
 import {ContactModal} from './pages/components/v1/partials/modals/contact-modal/contact-modal';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {ToastContainerComponent} from './core/modules/toast/toast-container.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, ToastContainerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

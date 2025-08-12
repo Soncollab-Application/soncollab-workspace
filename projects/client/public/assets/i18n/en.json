@@ -1281,11 +1281,19 @@
       "email.exists": "We already have {{count}} contact(s) with this email",
       "phone": "Phone",
       "phone.placeholder": "+1 234 567 8900",
+      "search": {
+        "placeholder": "Search...",
+        "country": "Search for a country...",
+        "noResults": "No results found",
+        "noChoices": "No choices available"
+      },
+      "loading": "Loading...",
       "companyName": "Company Name",
       "companyName.placeholder": "Your company",
       "companyName.required": "Company name is required",
       "companySize": "Company Size",
       "companySize.placeholder": "Select",
+      "companySize.required": "Company size is required",
       "companyWebsite": "Website",
       "companyWebsite.placeholder": "https://www.example.com",
       "companyWebsite.invalid": "Invalid URL (must start with http:// or https://)",
@@ -1302,7 +1310,9 @@
       "submit": "Send",
       "submitting": "Sending...",
       "error": {
-        "submission": "Error sending. Please try again."
+        "title": "Error",
+        "submission": "An error occurred while sending",
+        "emailCheck": "Unable to verify email"
       }
     },
     "success": {
