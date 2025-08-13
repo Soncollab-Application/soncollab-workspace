@@ -260,6 +260,7 @@ export class ContactModal implements OnInit, OnDestroy {
     }
 
     this.generateSubject();
+    this.choiceSpecialValue();
     this.isSubmitting.set(true);
 
     const formData: ContactFormData = this.contactForm.value;
@@ -295,13 +296,39 @@ export class ContactModal implements OnInit, OnDestroy {
   }
 
   private generateSubject(): void {
-    const contactType = this.contactForm.get('contact_type')?.value;
+    const contactTypeValue = this.contactForm.get('contact_type')?.value;
     const companyName = this.contactForm.get('company_name')?.value;
+
+    // Extraire la vraie valeur si c'est un objet Choices.js
+    let contactType: string;
+    if (contactTypeValue && typeof contactTypeValue === 'object' && contactTypeValue.value) {
+      contactType = contactTypeValue.value;
+    } else if (typeof contactTypeValue === 'string') {
+      contactType = contactTypeValue;
+    } else {
+      contactType = '';
+    }
 
     if (contactType && companyName) {
       const subject = `${contactType} - ${companyName}`;
       this.generatedSubject.set(subject);
       this.contactForm.patchValue({ contact_subject: subject });
+    }
+  }
+
+  private choiceSpecialValue(){
+    let contactTypeValue = this.contactForm.get('contact_type')?.value;
+    let company_sizeValue = this.contactForm.get('company_size')?.value;
+    let countryValue = this.contactForm.get('country')?.value;
+
+    if (contactTypeValue && typeof contactTypeValue === 'object' && contactTypeValue.value) {
+      this.contactForm.patchValue({ contact_type: contactTypeValue.value });
+    }
+    if (company_sizeValue && typeof company_sizeValue === 'object' && company_sizeValue.value) {
+      this.contactForm.patchValue({ company_size: company_sizeValue.value });
+    }
+    if (countryValue && typeof countryValue === 'object' && countryValue.value) {
+      this.contactForm.patchValue({ country: countryValue.value });
     }
   }
 
