@@ -33,6 +33,7 @@
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/aos/dist/aos.css",
               "projects/client/public/assets/icons/finder-icons.min.css",
+              "projects/client/public/assets/icons/bootstrap-icons.min.css",
               "projects/client/public/assets/vendor/simplebar/simplebar.min.css",
               "projects/client/public/assets/css/style.css",
               "projects/client/public/assets/vendor/nouislider/nouislider.min.css",
