@@ -7,7 +7,7 @@ metadata:
     app: soncollab-frontend
     environment: staging
 spec:
-  replicas: 6
+  replicas: 2
   strategy:
     type: RollingUpdate
     rollingUpdate:
