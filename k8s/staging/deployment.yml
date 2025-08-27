@@ -24,6 +24,8 @@ spec:
         environment: staging
     spec:
       serviceAccountName: soncollab-frontend-sa
+      imagePullSecrets:
+        - name: harbor-registry-secret
       containers:
         - name: soncollab-frontend
           image: ${IMAGE_TAG}

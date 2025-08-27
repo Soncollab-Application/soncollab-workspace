@@ -17,7 +17,7 @@ RUN npm install -g @angular/cli
 COPY . .
 
 # Build the Angular application - Fix: specify the project name
-RUN ng build client --configuration production
+RUN ng build client --configuration staging
 
 # Production stage with Nginx
 FROM nginx:alpine

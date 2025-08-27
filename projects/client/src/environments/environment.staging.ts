@@ -2,10 +2,10 @@
 export const environment = {
   production: false,
   api: {
-    ip: 'stg.soncollab.com',
+    ip: 'stg-api.soncollab.com',
     protocol: 'https',
-    fullUrl: 'https://stg.soncollab.com/api',
-    baseUrl: 'https://stg.soncollab.com'
+    fullUrl: 'https://stg-api.soncollab.com/api',
+    baseUrl: 'https://stg-api.soncollab.com'
   },
 
   app: {
