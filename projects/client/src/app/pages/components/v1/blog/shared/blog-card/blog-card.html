@@ -1,0 +1,68 @@
+<article class="card h-100 hover-effect-scale hover-effect-opacity bg-body-tertiary border-0">
+  @if (article.featuredImage) {
+    <div class="bg-body-secondary rounded overflow-hidden">
+      <div class="ratio hover-effect-target" style="--fn-aspect-ratio: calc(250 / 416 * 100%)">
+        <img
+          [src]="article.featuredImage.url"
+          [alt]="article.featuredImage.alternativeText || article.title"
+          class="object-fit-cover">
+      </div>
+    </div>
+  }
+
+  <div class="card-body">
+    <div class="d-flex align-items-center fs-sm mb-2">
+      @if (article.category) {
+        <span
+          class="badge me-2"
+          [style.background-color]="getCategoryColor(article.category.name)">
+              {{ article.category.name }}
+            </span>
+      }
+      @if (article.publishedAt) {
+        <span class="text-muted">{{ formatDate(article.publishedAt) }}</span>
+      }
+      @if (article.readTime) {
+        <span class="text-muted ms-2">• {{ article.readTime }} {{ 'blog.readTime' | translate }}</span>
+      }
+    </div>
+
+    <h3 class="h5 pt-1 mb-2">
+      <a
+        class="hover-effect-underline stretched-link text-decoration-none"
+        [routerLink]="['/blog', article.slug]">
+        {{ article.title }}
+      </a>
+    </h3>
+
+    @if (article.excerpt) {
+      <p class="fs-sm text-muted mb-3">
+        {{ truncateText(article.excerpt, 120) }}
+      </p>
+    }
+
+    @if (article.author) {
+      <div class="d-flex align-items-center fs-sm">
+        @if (article.author.avatar) {
+          <img
+            [src]="article.author.avatar.url"
+            [alt]="article.author.name"
+            class="rounded-circle me-2"
+            width="24"
+            height="24">
+        }
+        <span>{{ article.author.name }}</span>
+      </div>
+    }
+
+    @if (article.tags && article.tags.length > 0 && showTags) {
+      <div class="mt-2">
+        @for (tag of article.tags.slice(0, maxTags); track tag.id) {
+          <span class="badge bg-light text-dark me-1">
+                #{{ tag.name }}
+              </span>
+        }
+      </div>
+    }
+  </div>
+</article>

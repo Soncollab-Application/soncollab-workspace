@@ -15,9 +15,13 @@ import {PrivacyPolicyComponent} from './components/v1/company/privacy-policy/pri
 import {UseConditionComponent} from './components/v1/company/use-condition/use-condition.component';
 import {PricingComponent} from './components/v1/pricing/pricing.component';
 import {NotFoundComponent} from './components/v1/errors/not-found/not-found.component';
+import {BlogList} from './components/v1/blog/blog-list/blog-list';
+import {BlogDetail} from './components/v1/blog/blog-detail/blog-detail';
+
 
 const Routing: Routes = [
   {path: '', component: HomeComponent},
+
   // Features
   {path: 'features/catalog', component: CatalogComponent},
   {path: 'features/rights', component: RightsComponent},
@@ -26,16 +30,24 @@ const Routing: Routes = [
   {path: 'features/royalties', component: RoyaltiesComponent},
   {path: 'features/payments', component: PaymentsComponent},
   {path: 'features/analytics', component: AnalyticsComponent},
-  //Products
+
+  // Products
   {path: 'products/studio', component: StudioComponent},
   {path: 'products/connect', component: ConnectComponent},
-  //Company
+
+  // Blog routes
+  {path: 'blog', component: BlogList},
+  {path: 'blog/:slug', component: BlogDetail},
+
+  // Company
   {path: 'company/about', component: AboutComponent},
   {path: 'company/anti-fraud-policy', component: AntiFraudPolicyComponent},
   {path: 'company/privacy-policy', component: PrivacyPolicyComponent},
   {path: 'company/use-condition', component: UseConditionComponent },
-  //other
+
+  // Other
   {path: 'pricing', component: PricingComponent },
+
   // Error
   {path: '**', component: NotFoundComponent},
 ]

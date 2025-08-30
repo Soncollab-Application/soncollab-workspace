@@ -8,6 +8,7 @@ import {PageService} from './pages/services/page.service';
 import {ContactModal} from './pages/components/v1/partials/modals/contact-modal/contact-modal';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToastContainerComponent} from './core/modules/toast/toast-container.component';
+import {BlogService} from './pages/services/blog.service';
 
 @Component({
   selector: 'app-root',
@@ -23,7 +24,8 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     private themeService: ThemeService,
     private aosService: AosService,
     private languageService: LanguageService,
-    private pageService: PageService,
+    private blogService: BlogService,
+
   ) {
     this.initializeServices();
   }
@@ -32,6 +34,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.aosService.initializeAOS();
     this.setupLanguageListener();
    // this.pageService.preloadHeroForAllLanguages();
+    this.preloadBlogData();
   }
 
   ngAfterViewInit(): void {
@@ -64,6 +67,17 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
         // Ici vous pouvez ajouter d'autres actions lors du changement de langue
         // Par exemple : recharger certaines données, mettre à jour l'URL, etc.
       });
+  }
+
+  /**
+   * Précharge les données du blog
+   */
+  private preloadBlogData(): void {
+    const supportedLanguages = this.languageService.getSupportedLanguages();
+
+    supportedLanguages.forEach(language => {
+      this.blogService.preloadDataForLanguage(language.code);
+    });
   }
 
 }

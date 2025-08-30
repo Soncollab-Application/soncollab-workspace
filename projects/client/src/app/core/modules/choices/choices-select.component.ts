@@ -17,6 +17,7 @@ export interface SelectOption {
   label: string;
   disabled?: boolean;
   selected?: boolean;
+  icon?: string; // Nouvelle propriété pour l'icône
 }
 
 @Component({
@@ -31,23 +32,38 @@ export interface SelectOption {
     }
   ],
   template: `
-    <select
-      class="form-select"
-      appChoices
-      [choicesConfig]="finalConfig"
-      [attr.aria-label]="ariaLabel"
-      [attr.data-bs-theme]="currentTheme"
-      (choicesChange)="onSelectionChange($event)">
+    <div class="position-relative">
+      <select
+        class="form-select"
+        [class.form-icon-start]="iconPosition === 'start'"
+        [class.form-icon-end]="iconPosition === 'end'"
+        [class.bg-transparent]="transparent"
+        appChoices
+        [choicesConfig]="finalConfig"
+        [attr.aria-label]="ariaLabel"
+        [attr.data-bs-theme]="currentTheme"
+        (choicesChange)="onSelectionChange($event)">
 
-      @for (option of options; track option.value) {
-        <option
-          [value]="option.value"
-          [disabled]="option.disabled"
-          [selected]="option.selected">
-          {{ option.label }}
-        </option>
+        @for (option of options; track option.value) {
+          <option
+            [value]="option.value"
+            [disabled]="option.disabled"
+            [selected]="option.selected">
+            {{ option.label }}
+          </option>
+        }
+      </select>
+
+      <!-- Icône positionnée après le select pour s'afficher au-dessus de Choices.js -->
+      @if (iconPosition && currentIcon) {
+        <i class="{{currentIcon}} position-absolute top-50 translate-middle-y"
+           [class.start-0]="iconPosition === 'start'"
+           [class.end-0]="iconPosition === 'end'"
+           [class.ms-3]="iconPosition === 'start'"
+           [class.me-3]="iconPosition === 'end'"
+           style="z-index: 10; pointer-events: none;"></i>
       }
-    </select>
+    </div>
   `
 })
 export class ChoicesSelectComponent implements OnInit, ControlValueAccessor {
@@ -58,6 +74,12 @@ export class ChoicesSelectComponent implements OnInit, ControlValueAccessor {
   @Input() theme: 'light' | 'dark' | 'auto' = 'auto';
   @Input() searchEnabled: boolean = false;
 
+  // Nouvelles propriétés pour les icônes
+  @Input() iconPosition: 'start' | 'end' | null = null;
+  @Input() staticIcon: string = '';
+  @Input() transparent: boolean = false;
+  @Input() dynamicIcon: boolean = false;
+
   @Output() selectionChange = new EventEmitter<any>();
 
   private themeService = inject(ThemeService);
@@ -67,10 +89,14 @@ export class ChoicesSelectComponent implements OnInit, ControlValueAccessor {
 
   finalConfig: ChoicesConfig = {};
   currentTheme: 'light' | 'dark' = 'light';
+  currentIcon: string = '';
 
   ngOnInit(): void {
     // Déterminer le thème actuel
     this.updateCurrentTheme();
+
+    // Initialiser l'icône
+    this.initializeIcon();
 
     this.finalConfig = {
       searchEnabled: this.searchEnabled,
@@ -91,8 +117,39 @@ export class ChoicesSelectComponent implements OnInit, ControlValueAccessor {
     }
   }
 
+  private initializeIcon(): void {
+    if (this.staticIcon) {
+      this.currentIcon = this.staticIcon;
+    } else if (this.dynamicIcon) {
+      this.updateDynamicIcon();
+    }
+  }
+
+  private updateDynamicIcon(): void {
+    if (!this.dynamicIcon) return;
+
+    // Trouver l'option sélectionnée
+    const selectedOption = this.options.find(option =>
+      option.value === this.currentValue || option.selected
+    );
+
+    if (selectedOption?.icon) {
+      this.currentIcon = selectedOption.icon;
+    } else {
+      // Icône par défaut ou première option avec icône
+      const firstOptionWithIcon = this.options.find(option => option.icon);
+      this.currentIcon = firstOptionWithIcon?.icon || '';
+    }
+  }
+
   onSelectionChange(value: any): void {
     this.currentValue = value;
+
+    // Mettre à jour l'icône dynamique si activée
+    if (this.dynamicIcon) {
+      this.updateDynamicIcon();
+    }
+
     this.onChange(value);
     this.onTouched();
     this.selectionChange.emit(value);
@@ -101,6 +158,11 @@ export class ChoicesSelectComponent implements OnInit, ControlValueAccessor {
   // ControlValueAccessor implementation
   writeValue(value: any): void {
     this.currentValue = value;
+
+    // Mettre à jour l'icône dynamique si activée
+    if (this.dynamicIcon) {
+      this.updateDynamicIcon();
+    }
   }
 
   registerOnChange(fn: any): void {

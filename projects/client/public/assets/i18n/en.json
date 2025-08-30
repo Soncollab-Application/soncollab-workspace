@@ -48,7 +48,8 @@
     },
     "resources": {
       "help": "Help Center",
-      "api": "API Documentation"
+      "api": "API Documentation",
+      "blog": "Blog"
     }
   },
   "home": {
@@ -1326,5 +1327,92 @@
     "title": "Page Not Found",
     "description": "The page you are looking for has been moved, deleted, or may have never existed.",
     "homeButton": "Go to Homepage"
+  },
+
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Discover our latest articles and news",
+    "categories": "Categories",
+    "tags": "Tags",
+    "searchPlaceholder": "Search articles...",
+    "showingResults": "{{count}} articles found",
+    "readTime": "min read",
+    "noArticlesFound": "No articles found",
+    "noArticlesMessage": "No articles match your search criteria. Try different keywords or remove filters.",
+    "clearFilter": "Clear filter",
+    "clearAllFilters": "Clear all filters",
+    "featuredArticles": "Featured articles",
+    "recentArticles": "Recent articles",
+    "relatedArticles": "Related articles",
+    "browseArticles": "Browse articles",
+    "articleNotFound": "Article not found",
+    "articleNotFoundMessage": "The article you're looking for doesn't exist or has been removed.",
+    "share": "Share",
+    "shareOnTwitter": "Share on Twitter",
+    "shareOnLinkedIn": "Share on LinkedIn",
+    "copyLink": "Copy link",
+    "author": "Author",
+    "publishedOn": "Published on",
+    "lastUpdated": "Last updated on",
+    "tableOfContents": "Table of contents",
+    "backToTop": "Back to top",
+    "viewAllInCategory": "View all articles in {{category}}",
+    "viewAllWithTag": "View all articles with #{{tag}}",
+    "estimatedReadTime": "Estimated read time",
+    "wordCount": "{{count}} words",
+    "loadingArticle": "Loading article...",
+    "loadingArticles": "Loading articles...",
+    "filterBy": "Filter by",
+    "sortBy": "Sort by",
+    "showing": "Showing",
+    "results": "results",
+    "result": "result",
+    "viewAll": "View all",
+    "showingResult": "Showing {{count}} result",
+    "sortOptions": {
+      "newest": "Newest",
+      "oldest": "Oldest",
+      "popular": "Popular",
+      "title": "Title A-Z"
+    },
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page {{number}}",
+      "of": "of {{total}}"
+    },
+    "meta": {
+      "description": "Discover our blog articles on the latest trends and news.",
+      "keywords": "blog, articles, news, trends"
+    }
+  },
+
+  "common": {
+    "home": "Home",
+    "back": "Back",
+    "previous": "Previous",
+    "next": "Next",
+    "loading": "Loading...",
+    "error": "Error",
+    "retry": "Retry",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "all": "All",
+    "category": "Category",
+    "tag": "Tag",
+    "date": "Date",
+    "author": "Author",
+    "readMore": "Read more",
+    "readLess": "Read less",
+    "share": "Share",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "close": "Close",
+    "open": "Open",
+    "viewAll": "View all",
+    "showing": "Showing",
+    "results": "results",
+    "result": "result"
   }
 }

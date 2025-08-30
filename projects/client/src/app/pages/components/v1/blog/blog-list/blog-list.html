@@ -1,0 +1,341 @@
+<br><br>
+<!-- Breadcrumb -->
+<nav class="container pt-5 pb-1 pb-sm-2" aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a [routerLink]="['/']">{{ 'common.home' | translate }}</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      {{ 'blog.title' | translate }}
+    </li>
+  </ol>
+</nav>
+
+<!-- Page title + Filters -->
+<section class="container mb-2">
+  <h1 class="mb-4 for-dax-font">{{ 'blog.title' | translate }}</h1>
+
+  <!-- Filters -->
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-2 g-md-3 g-lg-4 mb-4">
+    <!-- Categories Filter -->
+    <div class="col">
+      <app-choices-select
+        [options]="categoryOptions"
+        [choicesConfig]="categoryConfig"
+        [(ngModel)]="selectedCategorySlug"
+        (ngModelChange)="onCategoryChange($event)"
+        ariaLabel="{{ 'blog.categories' | translate }}"
+        theme="auto"
+        iconPosition="start"
+        staticIcon="fi-menu"
+        [transparent]="true">
+      </app-choices-select>
+    </div>
+
+    <!-- Search -->
+    <div class="col">
+      <div class="position-relative">
+        <i class="fi-search position-absolute top-50 start-0 translate-middle-y ms-3"></i>
+        <input type="text"
+               class="form-control form-icon-start bg-transparent"
+               placeholder="{{ 'blog.searchPlaceholder' | translate }}"
+               [(ngModel)]="searchQuery"
+               (input)="onSearchInput($event)">
+      </div>
+    </div>
+
+    <!-- Tags Filter -->
+    <div class="col">
+      <app-choices-select
+        [options]="tagOptions"
+        [choicesConfig]="tagConfig"
+        [(ngModel)]="selectedTagSlug"
+        (ngModelChange)="onTagChange($event)"
+        ariaLabel="{{ 'blog.tags' | translate }}"
+        theme="auto"
+        iconPosition="start"
+        staticIcon="fi-tag"
+        [transparent]="true">
+      </app-choices-select>
+    </div>
+
+    <!-- Sort -->
+    <div class="col">
+      <app-choices-select
+        [options]="sortOptions"
+        [choicesConfig]="sortConfig"
+        [(ngModel)]="sortBy"
+        (ngModelChange)="onSortChange()"
+        ariaLabel="{{ 'blog.sortBy' | translate }}"
+        theme="auto"
+        iconPosition="start"
+        staticIcon="fi-sort"
+        [transparent]="true">
+      </app-choices-select>
+    </div>
+  </div>
+
+  <!-- Active filters + Sort selector -->
+  <div class="d-flex align-items-center justify-content-between gap-3">
+    <div class="overflow-x-auto pb-3">
+      <ul class="nav nav-pills flex-nowrap gap-2 text-nowrap">
+        <li class="nav-item me-1">
+          <a class="nav-link"
+             [class.active]="!currentCategory && !currentTag && !searchQuery"
+             (click)="clearAllFilters()"
+             href="javascript:void(0)">
+            {{ 'common.all' | translate }}
+          </a>
+        </li>
+        @if (currentCategory) {
+          <li class="nav-item me-1">
+            <a class="nav-link active" aria-current="page" href="javascript:void(0)">
+              {{ currentCategory.name }}
+              <button type="button" class="btn-close ms-2" aria-label="Close" (click)="clearCategoryFilter()"></button>
+            </a>
+          </li>
+        }
+        @if (currentTag) {
+          <li class="nav-item me-1">
+            <a class="nav-link active" aria-current="page" href="javascript:void(0)">
+              #{{ currentTag.name }}
+              <button type="button" class="btn-close ms-2" aria-label="Close" (click)="clearTagFilter()"></button>
+            </a>
+          </li>
+        }
+        @if (searchQuery) {
+          <li class="nav-item me-1">
+            <a class="nav-link active" aria-current="page" href="javascript:void(0)">
+              "{{ searchQuery }}"
+              <button type="button" class="btn-close ms-2" aria-label="Close" (click)="clearSearchFilter()"></button>
+            </a>
+          </li>
+        }
+      </ul>
+    </div>
+    <div class="d-flex align-items-center gap-4 pb-3 me-n2">
+      <div class="fs-sm text-nowrap d-none d-md-inline">
+        <span class="d-none d-lg-inline">{{ 'blog.showing' | translate }}</span>
+        {{ totalArticles }} {{ 'blog.results' | translate }}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Articles Grid -->
+<section class="container pb-2 pb-sm-3 pb-md-4 pb-lg-5 mb-xxl-3">
+  @if (isLoading) {
+    <div class="row row-cols-1 row-cols-sm-1 row-cols-md-1 row-cols-lg-3 g-4">
+      @for (item of [1,2,3,4,5,6]; track item) {
+        <div class="col">
+          <div class="card h-100 hover-effect-scale hover-effect-opacity bg-body-tertiary border-0">
+            <div class="bg-body-secondary rounded overflow-hidden">
+              <div class="ratio placeholder-glow" style="--fn-aspect-ratio: calc(250 / 416 * 100%)">
+                <div class="placeholder w-100 h-100"></div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="placeholder-glow">
+                <div class="placeholder col-6 mb-2"></div>
+                <div class="placeholder col-8 mb-3"></div>
+                <div class="placeholder col-12 mb-2"></div>
+                <div class="placeholder col-4"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  } @else if (articles.length > 0) {
+    <div class="row row-cols-1 row-cols-sm-1 row-cols-lg-3 g-4">
+      @for (article of articles; track article.id) {
+        <div class="col">
+          <article class="card h-100 hover-effect-scale hover-effect-opacity bg-body-tertiary border-0">
+            <div class="position-absolute top-0 end-0 z-2 hover-effect-target opacity-0 pt-1 pt-sm-0 pe-1 pe-sm-0 mt-2 mt-sm-3 me-2 me-sm-3">
+              <button type="button"
+                      class="btn btn-sm btn-icon btn-light bg-light border-0 rounded-circle animate-pulse"
+                      aria-label="Add to wishlist">
+                <i class="fi-heart animate-target fs-sm"></i>
+              </button>
+            </div>
+
+            @if (article.featuredImage) {
+              <div class="bg-body-secondary rounded overflow-hidden">
+                <div class="ratio hover-effect-target" style="--fn-aspect-ratio: calc(250 / 416 * 100%)">
+                  <img [src]="article.featuredImage.url"
+                       [alt]="article.featuredImage.alternativeText || article.title"
+                       class="object-fit-cover">
+                </div>
+              </div>
+            }
+
+            <div class="card-body">
+              <ul class="list-unstyled flex-row flex-wrap align-items-center gap-2 fs-sm mb-2">
+                @if (article.publishedAt) {
+                  <li class="d-flex align-items-center">
+                    <i class="fi-calendar me-1"></i>
+                    {{ formatDate(article.publishedAt) }}
+                  </li>
+                }
+
+                @if (article.category) {
+                  <li class="d-flex mx-n1">
+                    <i class="fi-bullet fs-base"></i>
+                  </li>
+                  <li class="text-info">{{ article.category.name }}</li>
+                }
+              </ul>
+
+              <h3 class="h5 pt-1 mb-2">
+                <a class="hover-effect-underline stretched-link for-dax-font"
+                   [routerLink]="['/blog', article.slug]">
+                  {{ article.title }}
+                </a>
+              </h3>
+
+              @if (article.excerpt) {
+                <p class="fs-sm text-muted mb-3">{{ article.excerpt }}</p>
+              }
+            </div>
+
+            @if (article.tags && article.tags.length > 0) {
+              <div class="card-footer d-flex align-items-center justify-content-between gap-3 bg-transparent border-0 pt-0 pb-4">
+                @for (tag of article.tags.slice(0, 3); track tag.id) {
+                  <div>
+                    <span class="badge bg-light text-dark cursor-pointer"
+                          (click)="filterByTag(tag)">
+                      #{{ tag.name }}
+                    </span>
+                  </div>
+                }
+
+                @if (article.readTime) {
+                  <div>
+                    <p class="fs-sm">{{ article.readTime }} {{ 'blog.readTime' | translate }}</p>
+                  </div>
+                }
+              </div>
+            }
+          </article>
+        </div>
+      }
+    </div>
+
+    <!-- Pagination -->
+    @if (pagination && pagination.pageCount > 1) {
+      <nav class="pt-3 pb-5 mt-3" aria-label="Blog pagination">
+        <ul class="pagination pagination-lg">
+          <li class="page-item" [class.disabled]="pagination.page <= 1">
+            <button class="page-link"
+                    [disabled]="pagination.page <= 1"
+                    (click)="goToPage(pagination.page - 1)">
+              <i class="fi-chevron-left me-2"></i>
+              {{ 'common.previous' | translate }}
+            </button>
+          </li>
+
+          @for (pageNum of getVisiblePages(); track pageNum) {
+            <li class="page-item" [class.active]="pageNum === pagination.page">
+              <button class="page-link" (click)="goToPage(pageNum)">
+                {{ pageNum }}
+                @if (pageNum === pagination.page) {
+                  <span class="visually-hidden">(current)</span>
+                }
+              </button>
+            </li>
+          }
+
+          <li class="page-item" [class.disabled]="pagination.page >= pagination.pageCount">
+            <button class="page-link"
+                    [disabled]="pagination.page >= pagination.pageCount"
+                    (click)="goToPage(pagination.page + 1)">
+              {{ 'common.next' | translate }}
+              <i class="fi-chevron-right ms-2"></i>
+            </button>
+          </li>
+        </ul>
+      </nav>
+    }
+  } @else {
+    <!-- Empty State -->
+    <div class="text-center py-5">
+      <div class="mb-4">
+        <i class="fi-file-text display-1 text-muted"></i>
+      </div>
+      <h3 class="h4 mb-3">{{ 'blog.noArticlesFound' | translate }}</h3>
+      <p class="text-muted mb-4">{{ 'blog.noArticlesMessage' | translate }}</p>
+      @if (searchQuery || currentCategory || currentTag) {
+        <button class="btn btn-outline-primary" (click)="clearAllFilters()">
+          {{ 'blog.clearAllFilters' | translate }}
+        </button>
+      }
+    </div>
+  }
+</section>
+
+<!-- Featured Articles Section -->
+@if (featuredArticles.length > 0) {
+  <section class="container py-2 py-sm-3 py-md-4 py-lg-5 my-xxl-3">
+    <div class="d-flex align-items-start justify-content-between gap-4 pb-3 mb-2 mb-sm-3">
+      <h2 class="mb-0">{{ 'blog.featuredArticles' | translate }}</h2>
+      <div class="nav">
+        <a class="nav-link position-relative fs-base text-nowrap py-1 px-0"
+           [routerLink]="['/blog']"
+           [queryParams]="{featured: 'true'}">
+          <span class="hover-effect-underline stretched-link me-1">{{ 'common.viewAll' | translate }}</span>
+          <i class="fi-chevron-right fs-lg"></i>
+        </a>
+      </div>
+    </div>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
+      @for (article of featuredArticles.slice(0, 3); track article.id) {
+        <div class="col">
+          <article class="card hover-effect-scale hover-effect-opacity bg-transparent border-0">
+            <div class="position-absolute top-0 end-0 z-2 hover-effect-target opacity-0 pt-1 pt-sm-0 pe-1 pe-sm-0 mt-2 mt-sm-3 me-2 me-sm-3">
+              <button type="button"
+                      class="btn btn-sm btn-icon btn-light bg-light border-0 rounded-circle animate-pulse"
+                      aria-label="Add to wishlist">
+                <i class="fi-heart animate-target fs-sm"></i>
+              </button>
+            </div>
+
+            @if (article.featuredImage) {
+              <div class="bg-body-tertiary rounded overflow-hidden">
+                <div class="ratio hover-effect-target" style="--fn-aspect-ratio: calc(320 / 306 * 100%)">
+                  <img [src]="article.featuredImage.url"
+                       [alt]="article.title"
+                       class="object-fit-cover">
+                </div>
+              </div>
+            }
+
+            <div class="card-body pt-3 pt-sm-4 p-0">
+              <ul class="list-unstyled flex-row flex-wrap align-items-center gap-2 fs-sm pt-1 pt-sm-0 mb-2">
+                @if (article.publishedAt) {
+                  <li class="d-flex align-items-center me-2">
+                    <i class="fi-calendar me-1"></i>
+                    {{ formatDate(article.publishedAt) }}
+                  </li>
+                }
+                @if (article.category) {
+                  <li class="d-flex align-items-center me-2">
+                    <i class="fi-tag me-1"></i>
+                    {{ article.category.name }}
+                  </li>
+                }
+              </ul>
+
+              <h3 class="h5 mb-0">
+                <a class="hover-effect-underline stretched-link"
+                   [routerLink]="['/blog', article.slug]">
+                  {{ article.title }}
+                </a>
+              </h3>
+            </div>
+          </article>
+        </div>
+      }
+    </div>
+  </section>
+}
