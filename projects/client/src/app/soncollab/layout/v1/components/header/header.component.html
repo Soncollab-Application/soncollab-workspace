@@ -205,6 +205,17 @@
               {{ 'header.navigation.resources' | translate }}
             </a>
             <ul class="dropdown-menu border-1 shadow-sm p-3">
+
+              <li class="feature-item mb-2">
+                <a class="nav-link hover-effect-slide d-flex align-items-center gap-3 fw-normal p-2 transition-all"
+                   [routerLink]="['/']"
+                   (click)="closeMenu()">
+                  <span>
+                    {{ 'header.resources.api' | translate }}
+                  </span>
+                </a>
+              </li>
+
               <li class="feature-item mb-2">
                 <a class="nav-link hover-effect-slide d-flex align-items-center gap-3 fw-normal p-2 transition-all"
                    [routerLink]="['/']"
@@ -214,15 +225,17 @@
                   </span>
                 </a>
               </li>
+
               <li class="feature-item">
                 <a class="nav-link hover-effect-slide d-flex align-items-center gap-3 fw-normal p-2 transition-all"
-                   [routerLink]="['/']"
+                   [routerLink]="['/blog']"
                    (click)="closeMenu()">
                   <span>
-                    {{ 'header.resources.api' | translate }}
+                    {{ 'header.resources.blog' | translate }}
                   </span>
                 </a>
               </li>
+
             </ul>
           </li>
         </ul>
