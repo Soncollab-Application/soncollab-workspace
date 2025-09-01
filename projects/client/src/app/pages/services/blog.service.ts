@@ -11,9 +11,12 @@ import {
   SingleBlogResponse,
   BlogCategoriesResponse,
   BlogTagsResponse,
-  SearchResult,
-  FeaturedContent,
-  RecentContent
+  ApiCategoryResponse,
+  ApiTagResponse,
+  ApiSearchResponse,
+  ApiFeaturedResponse,
+  ApiRecentContentResponse,
+  RecentBlog
 } from '../models/blog.model';
 
 @Injectable({
@@ -22,238 +25,210 @@ import {
 export class BlogService {
   private readonly apiUrl = environment.api.fullUrl;
 
-  // State management for blog data
   private blogArticlesSubject = new BehaviorSubject<BlogArticle[]>([]);
-  private currentCategorySubject = new BehaviorSubject<BlogCategory | null>(null);
-  private currentTagSubject = new BehaviorSubject<BlogTag | null>(null);
-
-  // Public observables
   public blogArticles$ = this.blogArticlesSubject.asObservable();
+  private currentCategorySubject = new BehaviorSubject<BlogCategory | null>(null);
   public currentCategory$ = this.currentCategorySubject.asObservable();
+  private currentTagSubject = new BehaviorSubject<BlogTag | null>(null);
   public currentTag$ = this.currentTagSubject.asObservable();
 
   constructor(
-    private http: HttpClient,
+    private httpClient: HttpClient,
     private languageService: LanguageService
   ) {}
 
-  /**
-   * Récupère tous les articles de blog publiés
-   */
-  getAllArticles(page: number = 1, pageSize: number = 12): Observable<BlogResponse | null> {
+  public getAllArticles(page: number = 1, pageSize: number = 12): Observable<BlogResponse | null> {
     const locale = this.languageService.getCurrentLanguage();
-
-    let params = new HttpParams()
+    let parameters = new HttpParams()
       .set('locale', locale)
       .set('page', page.toString())
       .set('pageSize', pageSize.toString());
-
-    return this.http.get<BlogResponse>(`${this.apiUrl}/blog-articles`, { params }).pipe(
-      map((response: BlogResponse) => {
+    return this.httpClient.get<BlogResponse>(`${this.apiUrl}/blog-articles`, { params: parameters }).pipe(
+      map(response => {
         if (response.data) {
           this.blogArticlesSubject.next(response.data);
-          return response;
         }
-        return null;
+        return response;
       }),
-      catchError((error) => {
+      catchError(error => {
         console.error(`Erreur lors de la récupération des articles de blog (${locale}):`, error);
         return of(null);
       })
     );
   }
 
-  /**
-   * Récupère un article de blog par slug
-   */
-  getArticleBySlug(slug: string): Observable<BlogArticle | null> {
+  public getArticleBySlug(slug: string): Observable<BlogArticle | null> {
     const locale = this.languageService.getCurrentLanguage();
-
-    let params = new HttpParams().set('locale', locale);
-
-    return this.http.get<SingleBlogResponse>(`${this.apiUrl}/blog-articles/slug/${slug}`, { params }).pipe(
-      map((response: SingleBlogResponse) => response.data || null),
-      catchError((error) => {
+    let parameters = new HttpParams().set('locale', locale);
+    return this.httpClient.get<SingleBlogResponse>(`${this.apiUrl}/blog-articles/slug/${slug}`, { params: parameters }).pipe(
+      map(response => response.data || null),
+      catchError(error => {
         console.error(`Erreur lors de la récupération de l'article ${slug} (${locale}):`, error);
         return of(null);
       })
     );
   }
 
-  /**
-   * Récupère les articles d'une catégorie
-   */
-  getArticlesByCategory(categorySlug: string, page: number = 1, pageSize: number = 12): Observable<BlogResponse | null> {
+  public getArticlesByCategory(categorySlug: string, page: number = 1, pageSize: number = 12): Observable<BlogResponse | null> {
     const locale = this.languageService.getCurrentLanguage();
-
-    let params = new HttpParams()
-      .set('locale', locale)
-      .set('page', page.toString())
-      .set('pageSize', pageSize.toString());
-
-    return this.http.get<BlogResponse>(`${this.apiUrl}/blog-categories/slug/${categorySlug}`, { params }).pipe(
-      map((response: BlogResponse) => {
-        if (response.data) {
-          this.blogArticlesSubject.next(response.data);
-          return response;
+    return this.httpClient.get<ApiCategoryResponse>(`${this.apiUrl}/blog-categories/slug/${categorySlug}`, { params: { locale } }).pipe(
+      map(response => {
+        if (!response?.data?.articles) {
+          return null;
         }
-        return null;
+        const categoryDetails = response.data;
+        const totalArticles = categoryDetails.articles.length;
+        const pageCount = Math.ceil(totalArticles / pageSize);
+        const paginatedArticles = categoryDetails.articles.slice((page - 1) * pageSize, page * pageSize);
+
+        const articles: BlogArticle[] = paginatedArticles.map(article => ({
+          ...article,
+          category: { id: categoryDetails.id, name: categoryDetails.name, slug: categoryDetails.slug },
+          tags: []
+        }));
+
+        const pagination = { page: page, pageSize: pageSize, pageCount: pageCount, total: totalArticles };
+        const blogResponse: BlogResponse = { data: articles, meta: { pagination } };
+
+        this.blogArticlesSubject.next(articles);
+        return blogResponse;
       }),
-      catchError((error) => {
+      catchError(error => {
         console.error(`Erreur lors de la récupération des articles de la catégorie ${categorySlug} (${locale}):`, error);
         return of(null);
       })
     );
   }
 
-  /**
-   * Récupère les articles d'un tag
-   */
-  getArticlesByTag(tagSlug: string, page: number = 1, pageSize: number = 12): Observable<BlogResponse | null> {
+
+  public getArticlesByTag(tagSlug: string, page: number = 1, pageSize: number = 12): Observable<BlogResponse | null> {
     const locale = this.languageService.getCurrentLanguage();
-
-    let params = new HttpParams()
-      .set('locale', locale)
-      .set('page', page.toString())
-      .set('pageSize', pageSize.toString());
-
-    return this.http.get<BlogResponse>(`${this.apiUrl}/blog-tags/slug/${tagSlug}`, { params }).pipe(
-      map((response: BlogResponse) => {
-        if (response.data) {
-          this.blogArticlesSubject.next(response.data);
-          return response;
+    return this.httpClient.get<ApiTagResponse>(`${this.apiUrl}/blog-tags/slug/${tagSlug}`, { params: { locale } }).pipe(
+      map(response => {
+        if (!response?.data?.articles) {
+          return null;
         }
-        return null;
+        const tagDetails = response.data;
+        const totalArticles = tagDetails.articles.length;
+        const pageCount = Math.ceil(totalArticles / pageSize);
+        const paginatedArticles = tagDetails.articles.slice((page - 1) * pageSize, page * pageSize);
+
+        const articles: BlogArticle[] = paginatedArticles.map(article => ({
+          ...article,
+          tags: [{ id: tagDetails.id, name: tagDetails.name, slug: tagDetails.slug }]
+        }));
+
+        const pagination = { page: page, pageSize: pageSize, pageCount: pageCount, total: totalArticles };
+        const blogResponse: BlogResponse = { data: articles, meta: { pagination } };
+
+        this.blogArticlesSubject.next(articles);
+        return blogResponse;
       }),
-      catchError((error) => {
+      catchError(error => {
         console.error(`Erreur lors de la récupération des articles du tag ${tagSlug} (${locale}):`, error);
         return of(null);
       })
     );
   }
 
-  /**
-   * Récupère toutes les catégories de blog
-   */
-  getCategories(): Observable<BlogCategory[]> {
+  public getCategories(): Observable<BlogCategory[]> {
     const locale = this.languageService.getCurrentLanguage();
-
-    let params = new HttpParams().set('locale', locale);
-
-    return this.http.get<BlogCategoriesResponse>(`${this.apiUrl}/blog-categories`, { params }).pipe(
-      map((response: BlogCategoriesResponse) => response.data || []),
-      catchError((error) => {
+    return this.httpClient.get<BlogCategoriesResponse>(`${this.apiUrl}/blog-categories`, { params: { locale } }).pipe(
+      map(response => response.data || []),
+      catchError(error => {
         console.error(`Erreur lors de la récupération des catégories de blog (${locale}):`, error);
         return of([]);
       })
     );
   }
 
-  /**
-   * Récupère tous les tags de blog
-   */
-  getTags(): Observable<BlogTag[]> {
+  public getTags(): Observable<BlogTag[]> {
     const locale = this.languageService.getCurrentLanguage();
-
-    let params = new HttpParams().set('locale', locale);
-
-    return this.http.get<BlogTagsResponse>(`${this.apiUrl}/blog-tags`, { params }).pipe(
-      map((response: BlogTagsResponse) => response.data || []),
-      catchError((error) => {
+    return this.httpClient.get<BlogTagsResponse>(`${this.apiUrl}/blog-tags`, { params: { locale } }).pipe(
+      map(response => response.data || []),
+      catchError(error => {
         console.error(`Erreur lors de la récupération des tags de blog (${locale}):`, error);
         return of([]);
       })
     );
   }
 
-  /**
-   * Recherche globale dans le blog
-   */
-  searchArticles(query: string, limit: number = 10): Observable<SearchResult | null> {
+  public searchArticles(query: string, limit: number = 10): Observable<ApiSearchResponse | null> {
     const locale = this.languageService.getCurrentLanguage();
-
-    let params = new HttpParams()
-      .set('q', query)
-      .set('type', 'blog')
-      .set('limit', limit.toString())
-      .set('locale', locale);
-
-    return this.http.get<SearchResult>(`${this.apiUrl}/content/search`, { params }).pipe(
-      catchError((error) => {
+    const parameters = new HttpParams().set('q', query).set('type', 'blog').set('limit', limit.toString()).set('locale', locale);
+    return this.httpClient.get<ApiSearchResponse>(`${this.apiUrl}/content/search`, { params: parameters }).pipe(
+      catchError(error => {
         console.error(`Erreur lors de la recherche d'articles (${locale}):`, error);
         return of(null);
       })
     );
   }
 
-  /**
-   * Récupère les articles mis en avant
-   */
-  getFeaturedArticles(limit: number = 5): Observable<FeaturedContent | null> {
+  public getFeaturedArticles(limit: number = 5): Observable<{ data: BlogArticle[] } | null> {
     const locale = this.languageService.getCurrentLanguage();
-
-    let params = new HttpParams()
-      .set('type', 'blog')
-      .set('locale', locale)
-      .set('limit', limit.toString());
-
-    return this.http.get<FeaturedContent>(`${this.apiUrl}/content/featured`, { params }).pipe(
-      catchError((error) => {
+    const parameters = new HttpParams().set('locale', locale).set('limit', limit.toString());
+    return this.httpClient.get<ApiFeaturedResponse>(`${this.apiUrl}/content/featured`, { params: parameters }).pipe(
+      map(response => {
+        if (!response?.data?.blog) {
+          return null;
+        }
+        const articles: BlogArticle[] = response.data.blog.map(featuredArticle => ({
+          ...featuredArticle,
+          readTime: featuredArticle.reading_time,
+          publishedAt: featuredArticle.publishedAt || '',
+          isFeatured: true,
+        }));
+        return { data: articles };
+      }),
+      catchError(error => {
         console.error(`Erreur lors de la récupération des articles en avant (${locale}):`, error);
         return of(null);
       })
     );
   }
 
-  /**
-   * Récupère les articles récents
-   */
-  getRecentArticles(limit: number = 10): Observable<RecentContent | null> {
+  public getRecentArticles(limit: number = 10): Observable<{ data: BlogArticle[] } | null> {
     const locale = this.languageService.getCurrentLanguage();
-
-    let params = new HttpParams()
-      .set('type', 'blog')
-      .set('locale', locale)
-      .set('limit', limit.toString());
-
-    return this.http.get<RecentContent>(`${this.apiUrl}/content/recent`, { params }).pipe(
-      catchError((error) => {
+    const parameters = new HttpParams().set('type', 'blog').set('locale', locale).set('limit', limit.toString());
+    return this.httpClient.get<ApiRecentContentResponse>(`${this.apiUrl}/content/recent`, { params: parameters }).pipe(
+      map(response => {
+        if (!response?.data) {
+          return null;
+        }
+        const recentBlogItems = response.data.filter(
+          (item): item is RecentBlog => item.type === 'blog'
+        );
+        const articles: BlogArticle[] = recentBlogItems.map(recentArticle => ({
+          ...recentArticle,
+          content: recentArticle.excerpt,
+          isFeatured: false,
+        }));
+        return { data: articles };
+      }),
+      catchError(error => {
         console.error(`Erreur lors de la récupération des articles récents (${locale}):`, error);
         return of(null);
       })
     );
   }
 
-  /**
-   * Met à jour la catégorie actuelle
-   */
-  setCurrentCategory(category: BlogCategory | null): void {
+  public setCurrentCategory(category: BlogCategory | null): void {
     this.currentCategorySubject.next(category);
   }
 
-  /**
-   * Met à jour le tag actuel
-   */
-  setCurrentTag(tag: BlogTag | null): void {
+  public setCurrentTag(tag: BlogTag | null): void {
     this.currentTagSubject.next(tag);
   }
 
-  /**
-   * Calcule le temps de lecture estimé (basé sur ~200 mots par minute)
-   */
-  calculateReadTime(content: string): number {
+  public calculateReadTime(content: string): number {
     const wordsPerMinute = 200;
     const wordCount = content.split(/\s+/).length;
     return Math.ceil(wordCount / wordsPerMinute);
   }
 
-  /**
-   * Formate la date de publication
-   */
-  formatPublishedDate(publishedAt: string, locale?: string): string {
+  public formatPublishedDate(publishedAt: string, locale?: string): string {
     const currentLocale = locale || this.languageService.getCurrentLanguage();
     const date = new Date(publishedAt);
-
     return date.toLocaleDateString(currentLocale === 'fr' ? 'fr-FR' : 'en-US', {
       year: 'numeric',
       month: 'long',
@@ -261,33 +236,9 @@ export class BlogService {
     });
   }
 
-  /**
-   * Nettoie le state (utile lors des changements de route)
-   */
-  clearState(): void {
+  public clearState(): void {
     this.blogArticlesSubject.next([]);
     this.currentCategorySubject.next(null);
     this.currentTagSubject.next(null);
-  }
-
-  /**
-   * Pré-charge les données pour une langue spécifique
-   */
-  preloadDataForLanguage(language: string): void {
-    // Pré-chargement des catégories
-    this.http.get<BlogCategoriesResponse>(`${this.apiUrl}/blog-categories`, {
-      params: { locale: language }
-    }).subscribe({
-      next: () => {},
-      error: (error) => console.warn(`Impossible de pré-charger les catégories pour ${language}:`, error)
-    });
-
-    // Pré-chargement des articles récents
-    this.http.get<RecentContent>(`${this.apiUrl}/content/recent`, {
-      params: { type: 'blog', locale: language, limit: '5' }
-    }).subscribe({
-      next: () => {},
-      error: (error) => console.warn(`Impossible de pré-charger les articles récents pour ${language}:`, error)
-    });
   }
 }

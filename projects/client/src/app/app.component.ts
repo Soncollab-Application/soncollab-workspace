@@ -23,9 +23,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private themeService: ThemeService,
     private aosService: AosService,
-    private languageService: LanguageService,
-    private blogService: BlogService,
-
+    private languageService: LanguageService
   ) {
     this.initializeServices();
   }
@@ -33,8 +31,6 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     this.aosService.initializeAOS();
     this.setupLanguageListener();
-   // this.pageService.preloadHeroForAllLanguages();
-    this.preloadBlogData();
   }
 
   ngAfterViewInit(): void {
@@ -62,22 +58,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   private setupLanguageListener(): void {
     this.languageService.onLanguageChange()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((newLanguage: string) => {
-        //console.log(`🔄 Application: Langue changée vers ${newLanguage}`);
-        // Ici vous pouvez ajouter d'autres actions lors du changement de langue
-        // Par exemple : recharger certaines données, mettre à jour l'URL, etc.
-      });
-  }
-
-  /**
-   * Précharge les données du blog
-   */
-  private preloadBlogData(): void {
-    const supportedLanguages = this.languageService.getSupportedLanguages();
-
-    supportedLanguages.forEach(language => {
-      this.blogService.preloadDataForLanguage(language.code);
-    });
+      .subscribe((newLanguage: string) => {});
   }
 
 }

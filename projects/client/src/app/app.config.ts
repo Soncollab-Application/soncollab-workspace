@@ -9,6 +9,7 @@ import {provideAnimations, provideNoopAnimations} from '@angular/platform-browse
 import {FormsModule} from '@angular/forms';
 import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
+import {provideMarkdown} from 'ngx-markdown';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, '/assets/i18n/', '.json');
@@ -41,5 +42,6 @@ export const appConfig: ApplicationConfig = {
         }
       })
     ),
+    provideMarkdown(),
   ]
 };

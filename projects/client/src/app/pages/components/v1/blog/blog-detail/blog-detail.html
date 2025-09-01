@@ -1,5 +1,6 @@
+<br><br><br><br>
+
 @if (isLoading) {
-  <!-- Loading State -->
   <div class="container py-5">
     <div class="row justify-content-center">
       <div class="col-lg-8">
@@ -8,292 +9,137 @@
           <div class="placeholder col-10 mb-4" style="height: 3rem;"></div>
           <div class="placeholder w-100 mb-4" style="height: 300px;"></div>
           <div class="placeholder col-12 mb-2"></div>
-          <div class="placeholder col-11 mb-2"></div>
-          <div class="placeholder col-9 mb-2"></div>
         </div>
       </div>
     </div>
   </div>
 } @else if (article) {
-  <!-- Breadcrumb -->
   <nav class="container pt-4 pb-2 pb-md-3" aria-label="breadcrumb">
     <ol class="breadcrumb">
-      <li class="breadcrumb-item">
-        <a [routerLink]="['/']">{{ 'common.home' | translate }}</a>
-      </li>
-      <li class="breadcrumb-item">
-        <a [routerLink]="['/blog']">{{ 'blog.title' | translate }}</a>
-      </li>
+      <li class="breadcrumb-item"><a [routerLink]="['/']">{{ 'common.home' | translate }}</a></li>
+      <li class="breadcrumb-item"><a [routerLink]="['/blog']">{{ 'blog.title' | translate }}</a></li>
       @if (article.category) {
-        <li class="breadcrumb-item">
-          <a [routerLink]="['/blog']" [queryParams]="{category: article.category.slug}">
-            {{ article.category.name }}
-          </a>
-        </li>
+        <li class="breadcrumb-item"><a [routerLink]="['/blog']" [queryParams]="{category: article.category.slug}">{{ article.category.name }}</a></li>
       }
-      <li class="breadcrumb-item active" aria-current="page">
-        {{ article.title }}
-      </li>
+      <li class="breadcrumb-item active" aria-current="page">{{ article.title }}</li>
     </ol>
   </nav>
 
-  <!-- Article Header -->
-  <section class="container pb-3 pb-md-4">
-    <div class="row justify-content-center">
-      <div class="col-lg-8">
+  <section class="container pb-3 pb-md-4 pb-lg-5 mb-xxl-3">
+    <div class="row pb-5">
 
-        <!-- Article Meta -->
-        <div class="d-flex align-items-center gap-2 fs-sm mb-3">
-          @if (article.category) {
-            <span class="badge bg-primary">{{ article.category.name }}</span>
-          }
-          @if (article.publishedAt) {
-            <span class="text-muted">{{ formatDate(article.publishedAt) }}</span>
-          }
-          @if (article.readTime) {
-            <span class="text-muted">• {{ article.readTime }} {{ 'blog.readTime' | translate }}</span>
+      <div class="col-sm-9 col-md-5 col-lg-4 pb-3 pb-sm-0 mb-4 mb-sm-5 mb-md-0">
+        <div class="ratio bg-body-tertiary rounded overflow-hidden" style="--fn-aspect-ratio: calc(500 / 416 * 100%)">
+          @if (article.featured_image) {
+            <img [src]="environment.api.baseUrl + article.featured_image.url"
+                 [alt]="article.featured_image.alternativeText || article.title"
+                 class="w-100 h-100 object-fit-cover">
+          } @else {
+            <div class="d-flex align-items-center justify-content-center w-100 h-100 bg-body-secondary">
+              <i class="fi-image display-1 text-muted"></i>
+            </div>
           }
         </div>
-
-        <!-- Article Title -->
-        <h1 class="display-5 mb-4">{{ article.title }}</h1>
-
-        <!-- Article Excerpt -->
-        @if (article.excerpt) {
-          <p class="lead text-muted mb-4">{{ article.excerpt }}</p>
-        }
-
-        <!-- Author Info -->
-        @if (article.author) {
-          <div class="d-flex align-items-center gap-3 mb-4 p-3 bg-body-tertiary rounded">
-            @if (article.author.avatar) {
-              <img
-                [src]="article.author.avatar.url"
-                [alt]="article.author.name"
-                class="rounded-circle"
-                width="48"
-                height="48">
-            }
-            <div class="flex-grow-1">
-              <div class="fw-semibold">{{ article.author.name }}</div>
-              @if (article.author.bio) {
-                <div class="fs-sm text-muted">{{ article.author.bio }}</div>
-              }
-              @if (article.author.socialMedia) {
-                <div class="d-flex gap-2 mt-2">
-                  @if (article.author.socialMedia.twitter) {
-                    <a [href]="'https://twitter.com/' + article.author.socialMedia.twitter"
-                       target="_blank"
-                       class="btn btn-sm btn-outline-primary">
-                      <i class="fi-twitter"></i>
-                    </a>
-                  }
-                  @if (article.author.socialMedia.linkedin) {
-                    <a [href]="article.author.socialMedia.linkedin"
-                       target="_blank"
-                       class="btn btn-sm btn-outline-primary">
-                      <i class="fi-linkedin"></i>
-                    </a>
-                  }
-                  @if (article.author.socialMedia.github) {
-                    <a [href]="'https://github.com/' + article.author.socialMedia.github"
-                       target="_blank"
-                       class="btn btn-sm btn-outline-primary">
-                      <i class="fi-github"></i>
-                    </a>
-                  }
-                </div>
-              }
-            </div>
-          </div>
-        }
-
-        <!-- Share Buttons -->
-        <div class="d-flex align-items-center gap-2 mb-4">
-          <span class="text-muted me-2">{{ 'blog.share' | translate }}:</span>
-          <button
-            type="button"
-            class="btn btn-sm btn-outline-primary"
-            (click)="shareOnTwitter()">
-            <i class="fi-twitter me-1"></i>
-            Twitter
-          </button>
-          <button
-            type="button"
-            class="btn btn-sm btn-outline-primary"
-            (click)="shareOnLinkedIn()">
-            <i class="fi-linkedin me-1"></i>
-            LinkedIn
-          </button>
-          <button
-            type="button"
-            class="btn btn-sm btn-outline-secondary"
-            (click)="copyLink()">
-            <i class="fi-link me-1"></i>
-            {{ 'blog.copyLink' | translate }}
-          </button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Featured Image -->
-  @if (article.featuredImage) {
-    <section class="container mb-4 mb-md-5">
-      <div class="row justify-content-center">
-        <div class="col-lg-10">
-          <figure class="mb-0">
-            <div class="ratio bg-body-tertiary rounded overflow-hidden" style="--fn-aspect-ratio: calc(400 / 800 * 100%)">
-              <img
-                [src]="article.featuredImage.url"
-                [alt]="article.featuredImage.alternativeText || article.title"
-                class="object-fit-cover w-100 h-100">
-            </div>
-            @if (article.featuredImage.caption) {
-              <figcaption class="text-center text-muted fs-sm mt-2">
-                {{ article.featuredImage.caption }}
-              </figcaption>
-            }
-          </figure>
-        </div>
-      </div>
-    </section>
-  }
-
-  <!-- Article Content -->
-  <section class="container pb-4 pb-md-5">
-    <div class="row justify-content-center">
-      <div class="col-lg-8">
-        <article class="blog-content" [innerHTML]="sanitizeContent(article.content)"></article>
-
-        <!-- Article Tags -->
-        @if (article.tags && article.tags.length > 0) {
-          <div class="border-top pt-4 mt-4">
-            <h6 class="mb-3">{{ 'blog.tags' | translate }}:</h6>
-            <div class="d-flex flex-wrap gap-2">
-              @for (tag of article.tags; track tag.id) {
-                <a
-                  [routerLink]="['/blog']"
-                  [queryParams]="{tag: tag.slug}"
-                  class="badge bg-light text-dark text-decoration-none">
-                  #{{ tag.name }}
-                </a>
-              }
-            </div>
-          </div>
-        }
-
-        <!-- Article Actions -->
-        <div class="border-top pt-4 mt-4">
-          <div class="d-flex align-items-center justify-content-between">
-            <div class="d-flex gap-2">
-              <button
-                type="button"
-                class="btn btn-outline-primary"
-                (click)="shareOnTwitter()">
-                <i class="fi-twitter me-1"></i>
-                {{ 'blog.shareOnTwitter' | translate }}
+        <div class="vstack gap-1 pt-3 mt-2 mt-sm-3">
+          @if (article.readTime) { <div class="fs-xs text-muted">{{ article.readTime }} {{ 'blog.readTime' | translate }}</div> }
+          <div class="d-flex gap-3 pt-2 mt-1">
+            <div class="dropdown">
+              <button type="button" class="btn btn-icon btn-lg btn-outline-secondary animate-scale" data-bs-toggle="dropdown" aria-label="Share">
+                <i class="fi-share-2 fs-lg animate-target"></i>
               </button>
-              <button
-                type="button"
-                class="btn btn-outline-primary"
-                (click)="shareOnLinkedIn()">
-                <i class="fi-linkedin me-1"></i>
-                {{ 'blog.shareOnLinkedIn' | translate }}
-              </button>
+              <ul class="dropdown-menu dropdown-menu-end" style="--fn-dropdown-min-width: 9.5rem">
+                <li><a class="dropdown-item" (click)="shareOnTwitter()" style="cursor: pointer;"><i class="bi-twitter-x fs-base me-2"></i>Twitter</a></li>
+                <li><a class="dropdown-item" (click)="shareOnLinkedIn()" style="cursor: pointer;"><i class="fi-linkedin fs-base me-2"></i>LinkedIn</a></li>
+                <li><a class="dropdown-item" (click)="copyLink()" style="cursor: pointer;"><i class="fi-link fs-base me-2"></i>{{ 'blog.copyLink' | translate }}</a></li>
+              </ul>
             </div>
-            <button
-              type="button"
-              class="btn btn-outline-secondary"
-              (click)="goBack()">
-              <i class="fi-arrow-left me-1"></i>
-              {{ 'common.back' | translate }}
+            <button type="button" class="btn btn-icon btn-lg btn-outline-secondary animate-pulse" aria-label="Add to Wishlist">
+              <i class="fi-heart fs-lg animate-target"></i>
             </button>
           </div>
         </div>
       </div>
-    </div>
-  </section>
 
-  <!-- Related Articles -->
-  @if (relatedArticles && relatedArticles.length > 0) {
-    <section class="container py-2 py-sm-3 py-md-4 py-lg-5">
-      <div class="row justify-content-center">
-        <div class="col-lg-10">
-          <h2 class="h4 mb-4">{{ 'blog.relatedArticles' | translate }}</h2>
-          <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-            @for (relatedArticle of relatedArticles.slice(0, 3); track relatedArticle.id) {
-              <div class="col">
-                <article class="card h-100 border-0 bg-body-tertiary hover-effect-scale">
-                  @if (relatedArticle.featuredImage) {
-                    <div class="bg-body-secondary rounded overflow-hidden">
-                      <div class="ratio hover-effect-target" style="--fn-aspect-ratio: calc(200 / 300 * 100%)">
-                        <img
-                          [src]="relatedArticle.featuredImage.url"
-                          [alt]="relatedArticle.title"
-                          class="object-fit-cover">
-                      </div>
-                    </div>
-                  }
+      <div class="col-md-7 offset-lg-1">
+        <div class="ps-md-4 ps-lg-0">
+          @if (article.tags && article.tags.length > 0) {
+            <div class="d-flex align-items-center fs-sm pb-2 mb-1">
+              @for (tag of article.tags; track tag.id; let isLast = $last) {
+                <a [routerLink]="['/blog']" [queryParams]="{tag: tag.slug}" class="text-decoration-none">{{ tag.name }}</a>
+                @if (!isLast) { <i class="fi-bullet mx-2"></i> }
+              }
+            </div>
+          }
+          <h1 class="display-6 mb-4 for-dax-font">{{ article.title }}</h1>
+          <ul class="list-unstyled gap-3 fs-sm pb-3 pb-sm-0 mb-4 mb-sm-5">
+            <li class="d-flex align-items-center">
+              <i class="fi-calendar fs-base me-2" style="margin-top: 3px"></i>
+              {{ formatDate(article.publishedAt) }}
+            </li>
+          </ul>
 
-                  <div class="card-body">
-                    @if (relatedArticle.category) {
-                      <div class="mb-2">
-                        <span class="badge bg-primary">{{ relatedArticle.category.name }}</span>
-                      </div>
-                    }
-
-                    <h4 class="h6 mb-2">
-                      <a
-                        [routerLink]="['/blog', relatedArticle.slug]"
-                        class="text-decoration-none stretched-link">
-                        {{ relatedArticle.title }}
-                      </a>
-                    </h4>
-
-                    @if (relatedArticle.excerpt) {
-                      <p class="fs-sm text-muted mb-2">
-                        {{ relatedArticle.excerpt.substring(0, 80) }}...
-                      </p>
-                    }
-
-                    @if (relatedArticle.publishedAt) {
-                      <small class="text-muted">{{ formatDate(relatedArticle.publishedAt) }}</small>
-                    }
-                  </div>
-                </article>
+          @if (article.author) {
+            <div class="d-flex flex-column flex-sm-row flex-md-column flex-lg-row align-items-center justify-content-between gap-3 bg-body-tertiary rounded p-4 mb-5">
+              <div class="d-flex align-items-center gap-2">
+                <i class="fi-user fs-xl"></i>
+                <div class="d-flex align-items-center gap-1 ps-1">
+                  <div class="h6 mb-0">Par {{ article.author.username }}</div>
+                </div>
               </div>
-            }
+            </div>
+          }
+
+          <h2 class="h5">Description</h2>
+          <div class="fs-sm markdown-content">
+            <markdown [data]="article.content"></markdown>
           </div>
         </div>
       </div>
+    </div>
+  </section>
+
+  @if (filteredRelatedArticles.length > 0) {
+    <section class="container pb-5 my-xxl-3">
+      <h2 class="h4 mb-4">{{ 'blog.relatedArticles' | translate }}</h2>
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
+
+        @for (relatedArticle of filteredRelatedArticles; track relatedArticle.documentId) {
+
+          <div class="col">
+            <article class="card h-100 hover-effect-scale hover-effect-opacity bg-transparent border-0">
+              <div class="bg-body-tertiary rounded overflow-hidden">
+                <a [routerLink]="['/blog', relatedArticle.slug]" class="ratio hover-effect-target" style="--fn-aspect-ratio: calc(320 / 306 * 100%)">
+                  @if (relatedArticle.featured_image) {
+                    <img [src]="environment.api.baseUrl + relatedArticle.featured_image.url" [alt]="relatedArticle.title" class="object-fit-cover w-100 h-100">
+                  } @else {
+                    <div class="d-flex align-items-center justify-content-center w-100 h-100 bg-body-secondary">
+                      <i class="fi-image display-4 text-muted"></i>
+                    </div>
+                  }
+                </a>
+              </div>
+              <div class="card-body pt-3 pt-sm-4 p-0">
+                <ul class="list-unstyled flex-row flex-wrap align-items-center gap-2 fs-sm pt-1 pt-sm-0 mb-2">
+                  <li class="d-flex align-items-center me-2">
+                    <i class="fi-calendar me-1"></i>
+                    {{ formatDate(relatedArticle.publishedAt) }}
+                  </li>
+                </ul>
+                <h3 class="h5 mb-0">
+                  <a [routerLink]="['/blog', relatedArticle.slug]" class="hover-effect-underline stretched-link">{{ relatedArticle.title }}</a>
+                </h3>
+              </div>
+            </article>
+          </div>
+        }
+      </div>
     </section>
   }
+
 } @else if (notFound) {
-  <!-- Article Not Found -->
-  <div class="container py-5">
-    <div class="row justify-content-center">
-      <div class="col-lg-6 text-center">
-        <div class="mb-4">
-          <i class="fi-file-text display-1 text-muted"></i>
-        </div>
-        <h1 class="h3 mb-3">{{ 'blog.articleNotFound' | translate }}</h1>
-        <p class="text-muted mb-4">{{ 'blog.articleNotFoundMessage' | translate }}</p>
-        <div class="d-flex gap-2 justify-content-center">
-          <button
-            type="button"
-            class="btn btn-primary"
-            (click)="goBack()">
-            <i class="fi-arrow-left me-1"></i>
-            {{ 'common.back' | translate }}
-          </button>
-          <a
-            [routerLink]="['/blog']"
-            class="btn btn-outline-primary">
-            {{ 'blog.browseArticles' | translate }}
-          </a>
-        </div>
-      </div>
-    </div>
+  <div class="container py-5 text-center">
+    <h1 class="h3 mb-3">{{ 'blog.articleNotFound' | translate }}</h1>
+    <p class="text-muted mb-4">{{ 'blog.articleNotFoundMessage' | translate }}</p>
+    <a [routerLink]="['/blog']" class="btn btn-primary">{{ 'blog.browseArticles' | translate }}</a>
   </div>
 }

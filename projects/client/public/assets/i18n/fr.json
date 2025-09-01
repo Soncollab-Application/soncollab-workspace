@@ -1331,6 +1331,8 @@
     "result": "résultat",
     "viewAll": "Voir tout",
     "showingResult": "Affichage de {{count}} résultat",
+    "allCategories": "Toutes les catégories",
+    "allTags": "Tous les tags",
     "sortOptions": {
       "newest": "Plus récent",
       "oldest": "Plus ancien",

@@ -1,69 +1,53 @@
-export interface BlogArticle {
+// --- MODÈLES DE BASE DE L'APPLICATION ---
+
+export interface BlogAuthor {
   id: number;
-  documentId: string;
-  title: string;
-  slug: string;
-  excerpt: string;
-  content: string;
-  featuredImage?: {
-    url: string;
-    alternativeText?: string;
-    caption?: string;
-    width?: number;
-    height?: number;
-  };
-  publishedAt: string;
-  createdAt: string;
-  updatedAt: string;
-  locale: string;
-  author?: BlogAuthor;
-  category?: BlogCategory;
-  tags?: BlogTag[];
-  seo?: {
-    metaTitle?: string;
-    metaDescription?: string;
-    keywords?: string;
-    canonicalURL?: string;
-  };
-  isFeatured: boolean;
-  readTime?: number;
+  username?: string;
 }
 
 export interface BlogCategory {
   id: number;
-  documentId: string;
+  documentId?: string;
   name: string;
   slug: string;
   description?: string;
   color?: string;
-  locale: string;
+  icon?: string;
+  locale?: string;
   articlesCount?: number;
 }
 
 export interface BlogTag {
   id: number;
-  documentId: string;
+  documentId?: string;
   name: string;
   slug: string;
-  description?: string;
-  locale: string;
+  locale?: string;
   articlesCount?: number;
 }
 
-export interface BlogAuthor {
+export interface BlogArticle {
   id: number;
-  name: string;
-  bio?: string;
-  avatar?: {
-    url: string;
-    alternativeText?: string;
-  };
-  socialMedia?: {
-    twitter?: string;
-    linkedin?: string;
-    github?: string;
-  };
+  documentId?: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content?: string;
+  publishedAt: string;
+  isFeatured: boolean;
+  readTime?: number;
+  reading_time?: number;
+  category?: BlogCategory;
+  tags?: BlogTag[];
+  author?: BlogAuthor;
+  featured_image?: any | null;
+  seo_title?: string;
+  seo_description?: string;
+  seo_keywords?: string;
+  canonical_url?: string;
 }
+
+// --- STRUCTURES DE RÉPONSES GÉNÉRIQUES ---
 
 export interface BlogResponse {
   data: BlogArticle[];
@@ -89,27 +73,56 @@ export interface BlogTagsResponse {
   data: BlogTag[];
 }
 
-export interface SearchResult {
-  data: BlogArticle[];
+
+// Pour /api/blog-categories/slug/{slug}
+export interface ApiCategoryResponse {
+  data: {
+    id: number;
+    name: string;
+    slug: string;
+    articles: BlogArticle[];
+  };
+}
+
+// Pour /api/blog-tags/slug/{slug}
+export interface ApiTagResponse {
+  data: {
+    id: number;
+    name: string;
+    slug: string;
+    articles: BlogArticle[];
+  };
+}
+
+// Pour /api/content/search
+export interface SearchResultItem extends BlogArticle {
+  type: 'blog' | 'help';
+  score: number;
+}
+export interface ApiSearchResponse {
+  data: SearchResultItem[];
   meta: {
-    total: number;
     query: string;
-    type: string;
-  };
-}
-
-export interface FeaturedContent {
-  data: BlogArticle[];
-  meta: {
     total: number;
     type: string;
   };
 }
 
-export interface RecentContent {
-  data: BlogArticle[];
-  meta: {
-    total: number;
-    type: string;
+// Pour /api/content/featured
+export interface FeaturedBlog extends BlogArticle {
+  type: 'blog';
+}
+export interface ApiFeaturedResponse {
+  data: {
+    blog: FeaturedBlog[];
+    help: any[];
   };
+}
+
+// Pour /api/content/recent
+export interface RecentBlog extends BlogArticle {
+  type: 'blog';
+}
+export interface ApiRecentContentResponse {
+  data: (RecentBlog | any)[];
 }
