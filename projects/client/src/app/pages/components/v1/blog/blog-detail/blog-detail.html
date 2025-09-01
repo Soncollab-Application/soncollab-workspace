@@ -1,4 +1,4 @@
-<br><br><br><br>
+<br><br><br>
 
 @if (isLoading) {
   <div class="container py-5">
@@ -14,7 +14,22 @@
     </div>
   </div>
 } @else if (article) {
-  <nav class="container pt-4 pb-2 pb-md-3" aria-label="breadcrumb">
+
+  <div class="container pt-4 pb-2 py-5 pb-md-3 mb-3 d-block d-sm-none">
+    @if (article.category) {
+      <a [routerLink]="['/blog']" [queryParams]="{category: article.category.slug}" class="d-inline-flex align-items-center gap-2 text-decoration-none text-body fw-medium">
+        <i class="fi-chevron-left fs-lg"></i>
+        {{ 'common.backTo' | translate }} {{ article.category.name }}
+      </a>
+    } @else {
+      <a [routerLink]="['/blog']" class="d-inline-flex align-items-center gap-2 text-decoration-none text-body fw-medium">
+        <i class="fi-chevron-left fs-lg"></i>
+        {{ 'common.backTo' | translate }} {{ 'blog.title' | translate }}
+      </a>
+    }
+  </div>
+
+  <nav class="container pt-4 pb-2 pb-md-3 mb-3 d-none d-sm-block" aria-label="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a [routerLink]="['/']">{{ 'common.home' | translate }}</a></li>
       <li class="breadcrumb-item"><a [routerLink]="['/blog']">{{ 'blog.title' | translate }}</a></li>
@@ -24,6 +39,7 @@
       <li class="breadcrumb-item active" aria-current="page">{{ article.title }}</li>
     </ol>
   </nav>
+
 
   <section class="container pb-3 pb-md-4 pb-lg-5 mb-xxl-3">
     <div class="row pb-5">
@@ -36,16 +52,20 @@
                  class="w-100 h-100 object-fit-cover">
           } @else {
             <div class="d-flex align-items-center justify-content-center w-100 h-100 bg-body-secondary">
-              <i class="fi-image display-1 text-muted"></i>
+              <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" class="bi bi-card-image" viewBox="0 0 16 16">
+                <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
+                <path d="M1.5 2A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2zm13 1a.5.5 0 0 1 .5.5v6l-3.775-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12v.54L1 12.5v-9a.5.5 0 0 1 .5-.5z"/>
+              </svg>
             </div>
           }
         </div>
         <div class="vstack gap-1 pt-3 mt-2 mt-sm-3">
-          @if (article.readTime) { <div class="fs-xs text-muted">{{ article.readTime }} {{ 'blog.readTime' | translate }}</div> }
+          @if (article.reading_time) { <div class="fs-xs text-muted">{{ article.reading_time }} {{ 'blog.readTime' | translate }}</div> }
           <div class="d-flex gap-3 pt-2 mt-1">
             <div class="dropdown">
-              <button type="button" class="btn btn-icon btn-lg btn-outline-secondary animate-scale" data-bs-toggle="dropdown" aria-label="Share">
-                <i class="fi-share-2 fs-lg animate-target"></i>
+              <button type="button" class="btn btn-lg btn-outline-secondary animate-scale" data-bs-toggle="dropdown" aria-label="Share">
+                <i class="fi-share-2 fs-lg me-2 animate-target"></i>
+                <span>{{ 'blog.share' | translate }}</span>
               </button>
               <ul class="dropdown-menu dropdown-menu-end" style="--fn-dropdown-min-width: 9.5rem">
                 <li><a class="dropdown-item" (click)="shareOnTwitter()" style="cursor: pointer;"><i class="bi-twitter-x fs-base me-2"></i>Twitter</a></li>
@@ -53,9 +73,6 @@
                 <li><a class="dropdown-item" (click)="copyLink()" style="cursor: pointer;"><i class="fi-link fs-base me-2"></i>{{ 'blog.copyLink' | translate }}</a></li>
               </ul>
             </div>
-            <button type="button" class="btn btn-icon btn-lg btn-outline-secondary animate-pulse" aria-label="Add to Wishlist">
-              <i class="fi-heart fs-lg animate-target"></i>
-            </button>
           </div>
         </div>
       </div>
@@ -113,7 +130,10 @@
                     <img [src]="environment.api.baseUrl + relatedArticle.featured_image.url" [alt]="relatedArticle.title" class="object-fit-cover w-100 h-100">
                   } @else {
                     <div class="d-flex align-items-center justify-content-center w-100 h-100 bg-body-secondary">
-                      <i class="fi-image display-4 text-muted"></i>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" class="bi bi-card-image" viewBox="0 0 16 16">
+                        <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
+                        <path d="M1.5 2A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2zm13 1a.5.5 0 0 1 .5.5v6l-3.775-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12v.54L1 12.5v-9a.5.5 0 0 1 .5-.5z"/>
+                      </svg>
                     </div>
                   }
                 </a>
@@ -138,7 +158,11 @@
 
 } @else if (notFound) {
   <div class="container py-5 text-center">
-    <h1 class="h3 mb-3">{{ 'blog.articleNotFound' | translate }}</h1>
+    <svg xmlns="http://www.w3.org/2000/svg" width="70" height="70" fill="currentColor" class="bi bi-file-text mb-3" viewBox="0 0 16 16">
+      <path d="M5 4a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1zm-.5 2.5A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5M5 8a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1z"/>
+      <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1"/>
+    </svg>
+    <h1 class="h3 mb-3 for-dax-font">{{ 'blog.articleNotFound' | translate }}</h1>
     <p class="text-muted mb-4">{{ 'blog.articleNotFoundMessage' | translate }}</p>
     <a [routerLink]="['/blog']" class="btn btn-primary">{{ 'blog.browseArticles' | translate }}</a>
   </div>

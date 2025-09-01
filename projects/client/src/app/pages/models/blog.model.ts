@@ -35,7 +35,6 @@ export interface BlogArticle {
   content?: string;
   publishedAt: string;
   isFeatured: boolean;
-  readTime?: number;
   reading_time?: number;
   category?: BlogCategory;
   tags?: BlogTag[];

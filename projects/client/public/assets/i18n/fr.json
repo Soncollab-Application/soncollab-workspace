@@ -131,7 +131,8 @@
     "resources": {
       "title": "Ressources",
       "api": "Api Documentation",
-      "help": "Help Center"
+      "help": "Help Center",
+      "blog": "Blog"
     },
     "social": {
       "youtube": "Nous suivre sur YouTube",
@@ -1376,6 +1377,7 @@
     "viewAll": "Voir tout",
     "showing": "Affichage",
     "results": "résultats",
-    "result": "résultat"
+    "result": "résultat",
+    "backTo": "Retour à"
   }
 }

@@ -334,9 +334,15 @@ export class ContactModal implements OnInit, OnDestroy {
         error: (error) => {
           this.isCheckingEmail.set(false);
           this.emailCheckResult.set(null);
+
+          // Toast d'erreur pour la vérification email - Position en haut centre pour modal
           this.toastService.showWarning(
             this.getTranslation('contact.form.error.emailCheck', 'Impossible de vérifier l\'email'),
-            this.getTranslation('contact.form.error.title', 'Erreur')
+            {
+              header: this.getTranslation('contact.form.error.title', 'Erreur'),
+              position: 'top-center',
+              delay: 5000
+            }
           );
         }
       });
@@ -350,6 +356,17 @@ export class ContactModal implements OnInit, OnDestroy {
   onSubmit(): void {
     if (this.contactForm.invalid || this.isSubmitting()) {
       this.markAllFieldsAsTouched();
+
+      // Toast d'erreur pour formulaire invalide - Position en haut centre pour modal
+      this.toastService.showWarning(
+        this.getTranslation('contact.form.error.validation', 'Veuillez corriger les erreurs dans le formulaire'),
+        {
+          header: this.getTranslation('contact.form.error.title', 'Erreur de validation'),
+          position: 'top-center',
+          delay: 4000
+        }
+      );
+
       return;
     }
 
@@ -364,6 +381,17 @@ export class ContactModal implements OnInit, OnDestroy {
       .subscribe({
         next: (response) => {
           this.isSubmitting.set(false);
+
+          // Toast de succès - Position en haut centre pour être visible pendant la fermeture de modal
+          this.toastService.showSuccess(
+            this.getTranslation('contact.form.success.submitted', 'Votre message a été envoyé avec succès !'),
+            {
+              header: this.getTranslation('contact.form.success.title', 'Succès'),
+              position: 'top-center',
+              delay: 4000
+            }
+          );
+
           this.activeModal.close('success');
 
           setTimeout(() => {
@@ -375,9 +403,16 @@ export class ContactModal implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.isSubmitting.set(false);
+
+          // Toast d'erreur pour l'envoi - Position en haut centre pour modal
           this.toastService.showError(
             this.getTranslation('contact.form.error.submission', 'Une erreur est survenue lors de l\'envoi'),
-            this.getTranslation('contact.form.error.title', 'Erreur')
+            {
+              header: this.getTranslation('contact.form.error.title', 'Erreur'),
+              position: 'top-center',
+              autohide: true,
+              delay: 8000
+            }
           );
         }
       });
