@@ -1,3 +1,5 @@
+// Fichier : projects/client/src/app/pages/components/v1/partials/modals/contact-modal/contact-modal.ts
+
 import {
   Component,
   computed,
@@ -5,7 +7,10 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  signal
+  signal,
+  ViewChildren,
+  QueryList,
+  ChangeDetectorRef
 } from '@angular/core';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -21,7 +26,7 @@ import { LanguageService } from '../../../../../../core/services/language.servic
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ChoicesSelectComponent, SelectOption } from '../../../../../../core/modules/choices/choices-select.component';
 import { ChoicesConfig } from '../../../../../../core/modules/choices/choices.directive';
-import {ToastService} from '../../../../../../core/modules/toast/toast.service';
+import { ToastService } from '../../../../../../core/modules/toast/toast.service';
 
 @Component({
   selector: 'app-contact-modal',
@@ -36,14 +41,16 @@ import {ToastService} from '../../../../../../core/modules/toast/toast.service';
   styleUrl: './contact-modal.css'
 })
 export class ContactModal implements OnInit, OnDestroy {
+  // ViewChildren pour accéder aux composants choices-select
+  @ViewChildren(ChoicesSelectComponent) choicesSelects!: QueryList<ChoicesSelectComponent>;
+
   activeModal = inject(NgbActiveModal);
   private toastService = inject(ToastService);
-
-
   private fb = inject(FormBuilder);
   private contactModalService = inject(ContactModalService);
   private languageService = inject(LanguageService);
   private translateService = inject(TranslateService);
+  private cdr = inject(ChangeDetectorRef);
 
   @Input() initialData?: any;
 
@@ -65,43 +72,10 @@ export class ContactModal implements OnInit, OnDestroy {
   contactTypeOptions: SelectOption[] = [];
   countryOptions: SelectOption[] = [];
 
-  // Configuration pour les différents selects
-  get companySizeConfig(): ChoicesConfig {
-    return {
-      searchEnabled: true,
-      searchPlaceholderValue: this.translateService.instant('contact.form.search.placeholder'),
-      noResultsText: this.translateService.instant('contact.form.search.noResults'),
-      noChoicesText: this.translateService.instant('contact.form.search.noChoices'),
-      itemSelectText: "",
-      classNames: {
-        containerInner: "form-select"
-      }
-    };
-  }
-
-  get contactTypeConfig(): ChoicesConfig {
-    return {
-      searchEnabled: false,
-      noChoicesText: this.translateService.instant('contact.form.search.noChoices'),
-      itemSelectText: "",
-      classNames: {
-        containerInner: "form-select"
-      }
-    };
-  }
-
-  get countryConfig(): ChoicesConfig {
-    return {
-      searchEnabled: true,
-      searchPlaceholderValue: this.translateService.instant('contact.form.search.country'),
-      noResultsText: this.translateService.instant('contact.form.search.noResults'),
-      noChoicesText: this.translateService.instant('contact.form.search.noChoices'),
-      itemSelectText: "",
-      classNames: {
-        containerInner: "form-select"
-      }
-    };
-  }
+  // Configuration pour les différents selects - Maintenant en propriétés stables
+  companySizeConfig: ChoicesConfig = {};
+  contactTypeConfig: ChoicesConfig = {};
+  countryConfig: ChoicesConfig = {};
 
   // Computed signals
   isEmailValid = computed(() => {
@@ -114,6 +88,7 @@ export class ContactModal implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.initializeConfigurations();
     this.setupEmailValidation();
     this.setupLanguageDetection();
     this.loadFormOptions();
@@ -126,6 +101,103 @@ export class ContactModal implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  /**
+   * Initialise les configurations de base des dropdowns
+   */
+  private initializeConfigurations(): void {
+    this.companySizeConfig = {
+      searchEnabled: true,
+      allowHTML: true,
+      searchPlaceholderValue: this.getTranslation('contact.form.search.placeholder', 'Rechercher...'),
+      removeItemButton: false,
+      editItems: false,
+      shouldSort: false,
+      itemSelectText: "",
+      noResultsText: this.getTranslation('contact.form.search.noResults', 'Aucun résultat trouvé'),
+      noChoicesText: this.getTranslation('contact.form.search.noChoices', 'Aucun choix disponible'),
+      classNames: { containerInner: "form-select" },
+      placeholderValue: this.getTranslation('contact.form.companySize.placeholder', 'Sélectionnez')
+    };
+
+    this.contactTypeConfig = {
+      searchEnabled: false,
+      allowHTML: true,
+      removeItemButton: false,
+      editItems: false,
+      shouldSort: false,
+      itemSelectText: "",
+      noChoicesText: this.getTranslation('contact.form.search.noChoices', 'Aucun choix disponible'),
+      classNames: { containerInner: "form-select" },
+      placeholderValue: this.getTranslation('contact.form.contactType.placeholder', 'Sélectionnez un type')
+    };
+
+    this.countryConfig = {
+      searchEnabled: true,
+      allowHTML: true,
+      searchPlaceholderValue: this.getTranslation('contact.form.search.country', 'Rechercher un pays...'),
+      removeItemButton: false,
+      editItems: false,
+      shouldSort: false,
+      itemSelectText: "",
+      noResultsText: this.getTranslation('contact.form.search.noResults', 'Aucun résultat trouvé'),
+      noChoicesText: this.getTranslation('contact.form.search.noChoices', 'Aucun choix disponible'),
+      classNames: { containerInner: "form-select" },
+      placeholderValue: this.getTranslation('contact.form.country.placeholder', 'Sélectionnez votre pays')
+    };
+  }
+
+  /**
+   * Met à jour les configurations avec les nouvelles traductions
+   */
+  private updateConfigurations(): void {
+    this.companySizeConfig = {
+      ...this.companySizeConfig,
+      searchPlaceholderValue: this.getTranslation('contact.form.search.placeholder', 'Rechercher...'),
+      noResultsText: this.getTranslation('contact.form.search.noResults', 'Aucun résultat trouvé'),
+      noChoicesText: this.getTranslation('contact.form.search.noChoices', 'Aucun choix disponible'),
+      placeholderValue: this.getTranslation('contact.form.companySize.placeholder', 'Sélectionnez')
+    };
+
+    this.contactTypeConfig = {
+      ...this.contactTypeConfig,
+      noChoicesText: this.getTranslation('contact.form.search.noChoices', 'Aucun choix disponible'),
+      placeholderValue: this.getTranslation('contact.form.contactType.placeholder', 'Sélectionnez un type')
+    };
+
+    this.countryConfig = {
+      ...this.countryConfig,
+      searchPlaceholderValue: this.getTranslation('contact.form.search.country', 'Rechercher un pays...'),
+      noResultsText: this.getTranslation('contact.form.search.noResults', 'Aucun résultat trouvé'),
+      noChoicesText: this.getTranslation('contact.form.search.noChoices', 'Aucun choix disponible'),
+      placeholderValue: this.getTranslation('contact.form.country.placeholder', 'Sélectionnez votre pays')
+    };
+
+    // Déclencher la détection des changements
+    this.cdr.detectChanges();
+  }
+
+  /**
+   * Force la mise à jour de tous les composants choices-select
+   */
+  private forceUpdateChoicesSelects(): void {
+    // Attendre que les changements soient appliqués
+    setTimeout(() => {
+      this.choicesSelects?.forEach(select => {
+        if (select && typeof select.forceUpdate === 'function') {
+          select.forceUpdate();
+        }
+      });
+    }, 100);
+  }
+
+  /**
+   * Utilitaire pour récupérer une traduction avec fallback
+   */
+  private getTranslation(key: string, fallback?: string): string {
+    const translation = this.translateService.instant(key);
+    return translation !== key ? translation : (fallback || key);
   }
 
   private createForm(): FormGroup {
@@ -174,19 +246,17 @@ export class ContactModal implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(lang => {
         this.contactForm.patchValue({ language: lang });
-        this.loadFormOptions();
 
-        // Force la mise à jour des configurations de langue
-        setTimeout(() => {
-          // Les getters seront appelés avec les nouvelles traductions
-          this.optionsLoaded.set(false);
-          setTimeout(() => this.optionsLoaded.set(true), 100);
-        }, 200);
+        // Mettre à jour les configurations avec les nouvelles traductions
+        this.updateConfigurations();
+
+        // Recharger les options du formulaire
+        this.loadFormOptions();
       });
   }
 
   private loadFormOptions(): void {
-    this.optionsLoaded.set(false); // Reset pour forcer le rechargement
+    this.optionsLoaded.set(false);
     const currentLang = this.languageService.getCurrentLanguage();
 
     this.contactModalService.getContactFormOptions(currentLang)
@@ -199,9 +269,12 @@ export class ContactModal implements OnInit, OnDestroy {
           // Attendre un peu pour que les options soient prêtes
           setTimeout(() => {
             this.optionsLoaded.set(true);
-          }, 100);
+            // Forcer la mise à jour des composants choices-select
+            this.forceUpdateChoicesSelects();
+          }, 150);
         },
         error: (error) => {
+          console.error('Error loading form options:', error);
           this.optionsLoaded.set(true); // Pour éviter le blocage
         }
       });
@@ -210,21 +283,42 @@ export class ContactModal implements OnInit, OnDestroy {
   private updateSelectOptions(options: ContactFormOptions): void {
     // Mise à jour des options de taille d'entreprise
     this.companySizeOptions = [
-      { value: '', label: this.translateService.instant('contact.form.companySize.placeholder') },
-      ...options.company_sizes.map(option => ({ value: option.value, label: option.label }))
+      {
+        value: '',
+        label: this.getTranslation('contact.form.companySize.placeholder', 'Sélectionnez')
+      },
+      ...options.company_sizes.map(option => ({
+        value: option.value,
+        label: option.label
+      }))
     ];
 
     // Mise à jour des options de type de contact
     this.contactTypeOptions = [
-      { value: '', label: this.translateService.instant('contact.form.contactType.placeholder') },
-      ...options.contact_types.map(option => ({ value: option.value, label: option.label }))
+      {
+        value: '',
+        label: this.getTranslation('contact.form.contactType.placeholder', 'Sélectionnez un type')
+      },
+      ...options.contact_types.map(option => ({
+        value: option.value,
+        label: option.label
+      }))
     ];
 
     // Mise à jour des options de pays
     this.countryOptions = [
-      { value: '', label: this.translateService.instant('contact.form.country.placeholder') },
-      ...options.countries.map(option => ({ value: option.value, label: option.label }))
+      {
+        value: '',
+        label: this.getTranslation('contact.form.country.placeholder', 'Sélectionnez votre pays')
+      },
+      ...options.countries.map(option => ({
+        value: option.value,
+        label: option.label
+      }))
     ];
+
+    // Déclencher la détection des changements
+    this.cdr.detectChanges();
   }
 
   private checkEmail(email: string): void {
@@ -241,8 +335,8 @@ export class ContactModal implements OnInit, OnDestroy {
           this.isCheckingEmail.set(false);
           this.emailCheckResult.set(null);
           this.toastService.showWarning(
-            this.translateService.instant('contact.form.error.emailCheck'),
-            this.translateService.instant('contact.form.error.title')
+            this.getTranslation('contact.form.error.emailCheck', 'Impossible de vérifier l\'email'),
+            this.getTranslation('contact.form.error.title', 'Erreur')
           );
         }
       });
@@ -282,8 +376,8 @@ export class ContactModal implements OnInit, OnDestroy {
         error: (error) => {
           this.isSubmitting.set(false);
           this.toastService.showError(
-            this.translateService.instant('contact.form.error.submission'),
-            this.translateService.instant('contact.form.error.title')
+            this.getTranslation('contact.form.error.submission', 'Une erreur est survenue lors de l\'envoi'),
+            this.getTranslation('contact.form.error.title', 'Erreur')
           );
         }
       });
@@ -316,11 +410,12 @@ export class ContactModal implements OnInit, OnDestroy {
     }
   }
 
-  private choiceSpecialValue(){
+  private choiceSpecialValue(): void {
     let contactTypeValue = this.contactForm.get('contact_type')?.value;
     let company_sizeValue = this.contactForm.get('company_size')?.value;
     let countryValue = this.contactForm.get('country')?.value;
 
+    // Normaliser les valeurs des selects Choices.js
     if (contactTypeValue && typeof contactTypeValue === 'object' && contactTypeValue.value) {
       this.contactForm.patchValue({ contact_type: contactTypeValue.value });
     }
@@ -343,7 +438,7 @@ export class ContactModal implements OnInit, OnDestroy {
   private resetForm(): void {
     this.contactForm.reset({
       language: this.languageService.getCurrentLanguage(),
-      source: 'website_form'
+      source: 'website_modal'
     });
     this.emailCheckResult.set(null);
     this.generatedSubject.set('');
