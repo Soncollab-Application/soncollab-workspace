@@ -1,4 +1,4 @@
-<br><br>
+<br><br><br>
 <!-- Breadcrumb -->
 <nav class="container pt-5 pb-1 pb-sm-2" aria-label="breadcrumb">
   <ol class="breadcrumb">
@@ -32,7 +32,7 @@
       </app-choices-select>
     </div>
 
-    <!-- Search -->
+    <!-- Search - Gardé comme input normal car c'est un champ de saisie -->
     <div class="col">
       <div class="position-relative">
         <i class="fi-search position-absolute top-50 start-0 translate-middle-y ms-3"></i>
@@ -75,7 +75,7 @@
     </div>
   </div>
 
-  <!-- Active filters + Sort selector -->
+  <!-- Active filters + Results count -->
   <div class="d-flex align-items-center justify-content-between gap-3">
     <div class="overflow-x-auto pb-3">
       <ul class="nav nav-pills flex-nowrap gap-2 text-nowrap">
@@ -122,7 +122,7 @@
   </div>
 </section>
 
-<!-- Articles Grid -->
+<!-- Le reste du template reste identique -->
 <section class="container pb-2 pb-sm-3 pb-md-4 pb-lg-5 mb-xxl-3">
   @if (isLoading) {
     <div class="row row-cols-1 row-cols-sm-1 row-cols-md-1 row-cols-lg-3 g-4">
@@ -147,7 +147,7 @@
       }
     </div>
   } @else if (articles.length > 0) {
-    <div class="row row-cols-1 row-cols-sm-1 row-cols-lg-3 g-4">
+    <div class="row row-cols-1 row-cols-sm-1 row-cols-lg-3 g-4 content-fade-in">
       @for (article of articles; track article.id) {
         <div class="col">
           <article class="card h-100 hover-effect-scale hover-effect-opacity bg-body-tertiary border-0">
@@ -159,15 +159,19 @@
               </button>
             </div>
 
-            @if (article.featuredImage) {
-              <div class="bg-body-secondary rounded overflow-hidden">
-                <div class="ratio hover-effect-target" style="--fn-aspect-ratio: calc(250 / 416 * 100%)">
-                  <img [src]="article.featuredImage.url"
-                       [alt]="article.featuredImage.alternativeText || article.title"
+            <div class="bg-body-secondary rounded overflow-hidden">
+              <div class="ratio hover-effect-target" style="--fn-aspect-ratio: calc(250 / 416 * 100%)">
+                @if (article.featured_image) {
+                  <img [src]="environment.api.baseUrl + article.featured_image.url"
+                       [alt]="article.featured_image.alternativeText || article.title"
                        class="object-fit-cover">
-                </div>
+                }@else {
+                  <div class="d-flex align-items-center justify-content-center w-100 h-100 bg-body-secondary">
+                    <i class="fi-image display-1 text-muted"></i>
+                  </div>
+                }
               </div>
-            }
+            </div>
 
             <div class="card-body">
               <ul class="list-unstyled flex-row flex-wrap align-items-center gap-2 fs-sm mb-2">
@@ -204,8 +208,8 @@
                   <div>
                     <span class="badge bg-light text-dark cursor-pointer"
                           (click)="filterByTag(tag)">
-                      #{{ tag.name }}
-                    </span>
+                    #{{ tag.name }}
+                  </span>
                   </div>
                 }
 
@@ -220,7 +224,6 @@
         </div>
       }
     </div>
-
     <!-- Pagination -->
     @if (pagination && pagination.pageCount > 1) {
       <nav class="pt-3 pb-5 mt-3" aria-label="Blog pagination">
@@ -274,7 +277,7 @@
 </section>
 
 <!-- Featured Articles Section -->
-@if (featuredArticles.length > 0) {
+@if (featuredArticles.length > 5) {
   <section class="container py-2 py-sm-3 py-md-4 py-lg-5 my-xxl-3">
     <div class="d-flex align-items-start justify-content-between gap-4 pb-3 mb-2 mb-sm-3">
       <h2 class="mb-0">{{ 'blog.featuredArticles' | translate }}</h2>
@@ -300,13 +303,17 @@
               </button>
             </div>
 
-            @if (article.featuredImage) {
+            @if (article.featured_image) {
               <div class="bg-body-tertiary rounded overflow-hidden">
                 <div class="ratio hover-effect-target" style="--fn-aspect-ratio: calc(320 / 306 * 100%)">
-                  <img [src]="article.featuredImage.url"
+                  <img [src]="environment.api.baseUrl + article.featured_image.url"
                        [alt]="article.title"
                        class="object-fit-cover">
                 </div>
+              </div>
+            } @else {
+              <div class="d-flex align-items-center justify-content-center w-100 h-100 bg-body-secondary">
+                <i class="fi-image display-1 text-muted"></i>
               </div>
             }
 

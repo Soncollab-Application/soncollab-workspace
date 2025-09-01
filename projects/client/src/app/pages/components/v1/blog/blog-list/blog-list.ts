@@ -1,13 +1,15 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {BehaviorSubject, debounceTime, distinctUntilChanged, Observable, Subject, takeUntil} from 'rxjs';
-import {BlogArticle, BlogCategory, BlogResponse, BlogTag} from '../../../../models/blog.model';
-import {BlogService} from '../../../../services/blog.service';
-import {LanguageService} from '../../../../../core/services/language.service';
-import {ActivatedRoute, Router, RouterLink} from '@angular/router';
-import {TranslatePipe, TranslateService} from '@ngx-translate/core';
-import {FormsModule} from '@angular/forms';
-import {ChoicesSelectComponent, SelectOption} from '../../../../../core/modules/choices/choices-select.component';
-import {ChoicesConfig} from '../../../../../core/modules/choices/choices.directive';
+import { Component, OnDestroy, OnInit, ViewChildren, QueryList, ChangeDetectorRef } from '@angular/core';
+import { BehaviorSubject, forkJoin, Subject, Observable, timer, finalize } from 'rxjs';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { BlogArticle, BlogCategory, BlogResponse, BlogTag, ApiSearchResponse } from '../../../../models/blog.model';
+import { BlogService } from '../../../../services/blog.service';
+import { LanguageService } from '../../../../../core/services/language.service';
+import { ActivatedRoute, Router, RouterLink, Params } from '@angular/router';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { FormsModule } from '@angular/forms';
+import { ChoicesSelectComponent, SelectOption } from '../../../../../core/modules/choices/choices-select.component';
+import { ChoicesConfig } from '../../../../../core/modules/choices/choices.directive';
+import { environment } from '../../../../../../environments/environment';
 
 @Component({
   selector: 'app-blog-list',
@@ -21,147 +23,282 @@ import {ChoicesConfig} from '../../../../../core/modules/choices/choices.directi
   styleUrl: './blog-list.css'
 })
 export class BlogList implements OnInit, OnDestroy {
-  private destroy$ = new Subject<void>();
+  // ViewChildren pour accéder aux composants choices-select
+  @ViewChildren(ChoicesSelectComponent) choicesSelects!: QueryList<ChoicesSelectComponent>;
 
-  // State existant
-  articles: BlogArticle[] = [];
-  categories: BlogCategory[] = [];
-  featuredArticles: BlogArticle[] = [];
-  currentCategory: BlogCategory | null = null;
-  currentTag: BlogTag | null = null;
-  isLoading = false;
-  searchQuery = '';
-  totalArticles = 0;
-  pagination: {
+  // Subjects pour la gestion des subscriptions
+  private destroy$ = new Subject<void>();
+  private searchSubject = new BehaviorSubject<string>('');
+
+  // État du composant
+  private initialDataLoaded = false;
+  private pendingParams: Params | null = null;
+
+  // Données
+  public articles: BlogArticle[] = [];
+  public categories: BlogCategory[] = [];
+  public tags: BlogTag[] = [];
+  public featuredArticles: BlogArticle[] = [];
+
+  // État courant des filtres
+  public currentCategory: BlogCategory | null = null;
+  public currentTag: BlogTag | null = null;
+  public searchQuery = '';
+  public sortBy: 'newest' | 'oldest' | 'title' = 'newest';
+
+  // Valeurs pour les selects (ngModel)
+  public selectedCategorySlug: string = '';
+  public selectedTagSlug: string = '';
+
+  // État UI
+  public isLoading = false;
+  public totalArticles = 0;
+  public pagination: {
     page: number;
     pageSize: number;
     pageCount: number;
     total: number;
   } | null = null;
-  tags: BlogTag[] = [];
-  sortBy: 'newest' | 'oldest' | 'title' = 'newest';
-  private searchSubject = new BehaviorSubject<string>('');
-
-  // Propriétés pour les Choices Select
-  selectedCategorySlug: string = '';
-  selectedTagSlug: string = '';
 
   // Options pour les dropdowns
-  categoryOptions: SelectOption[] = [];
-  tagOptions: SelectOption[] = [];
-  sortOptions: SelectOption[] = [];
+  public categoryOptions: SelectOption[] = [];
+  public tagOptions: SelectOption[] = [];
+  public sortOptions: SelectOption[] = [];
 
   // Configurations Choices
-  categoryConfig: ChoicesConfig = {
-    searchEnabled: false,
-    placeholder: true,
-    placeholderValue: '',
-    allowHTML: false,
-    shouldSort: false,
-    removeItemButton: false
-  };
-
-  tagConfig: ChoicesConfig = {
-    searchEnabled: true,
-    placeholder: true,
-    placeholderValue: '',
-    allowHTML: false,
-    shouldSort: false,
-    removeItemButton: false
-  };
-
-  sortConfig: ChoicesConfig = {
-    searchEnabled: false,
-    placeholder: false,
-    allowHTML: false,
-    shouldSort: false,
-    removeItemButton: false
-  };
+  public categoryConfig: ChoicesConfig = {};
+  public tagConfig: ChoicesConfig = {};
+  public sortConfig: ChoicesConfig = {};
 
   constructor(
     private blogService: BlogService,
     private languageService: LanguageService,
-    private route: ActivatedRoute,
+    private translateService: TranslateService,
+    private activatedRoute: ActivatedRoute,
     private router: Router,
-    private translateService: TranslateService
+    private cdr: ChangeDetectorRef
   ) {}
 
-  ngOnInit(): void {
-    this.initializeSortOptions();
-    this.updatePlaceholders();
+  public ngOnInit(): void {
+    this.initializeConfigurations();
     this.setupLanguageListener();
-    this.setupRouteListener();
     this.setupSearchListener();
+    this.setupRouteListener();
     this.loadInitialData();
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
     this.blogService.clearState();
   }
 
-  // Initialisation des options de tri
-  private initializeSortOptions(): void {
-    this.sortOptions = [
-      {
-        value: 'newest',
-        label: this.translateService.instant('blog.sortOptions.newest')
-      },
-      {
-        value: 'oldest',
-        label: this.translateService.instant('blog.sortOptions.oldest')
-      },
-      {
-        value: 'title',
-        label: this.translateService.instant('blog.sortOptions.title')
-      }
-    ];
+  /**
+   * Initialise les configurations de base des dropdowns
+   */
+  private initializeConfigurations(): void {
+    this.categoryConfig = {
+      searchEnabled: false,
+      allowHTML: true,
+      searchPlaceholderValue: this.getTranslation('common.search.placeholder', 'Rechercher...'),
+      removeItemButton: false,
+      editItems: false,
+      shouldSort: false,
+      itemSelectText: "",
+      noResultsText: this.getTranslation('common.search.noResults', 'Aucun résultat trouvé'),
+      noChoicesText: this.getTranslation('common.search.noChoices', 'Aucun choix disponible'),
+      classNames: { containerInner: "form-select" },
+      placeholderValue: this.getTranslation('blog.allCategories', 'Toutes les catégories')
+    };
+
+    this.tagConfig = {
+      searchEnabled: true,
+      allowHTML: true,
+      searchPlaceholderValue: this.getTranslation('common.search.placeholder', 'Rechercher...'),
+      removeItemButton: false,
+      editItems: false,
+      shouldSort: false,
+      itemSelectText: "",
+      noResultsText: this.getTranslation('common.search.noResults', 'Aucun résultat trouvé'),
+      noChoicesText: this.getTranslation('common.search.noChoices', 'Aucun choix disponible'),
+      classNames: { containerInner: "form-select" },
+      placeholderValue: this.getTranslation('blog.allTags', 'Tous les tags')
+    };
+
+    this.sortConfig = {
+      searchEnabled: false,
+      allowHTML: true,
+      removeItemButton: false,
+      editItems: false,
+      shouldSort: false,
+      itemSelectText: "",
+      classNames: { containerInner: "form-select" }
+    };
+
+    this.buildSortOptions();
   }
 
+  /**
+   * Configure l'écoute des changements de langue
+   */
   private setupLanguageListener(): void {
-    this.languageService.languageChanged$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.loadInitialData();
-        this.updatePlaceholders();
-        this.initializeSortOptions();
-      });
+    this.languageService.languageChanged$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      // Sauvegarder les IDs actuels pour pouvoir les mapper après le changement de langue
+      const currentCategoryId = this.currentCategory?.id;
+      const currentTagId = this.currentTag?.id;
+
+      // Mettre à jour les configurations avec les nouvelles traductions
+      this.updateConfigurations();
+
+      // Recharger les données avec les nouvelles traductions
+      this.reloadDataForLanguageChange(currentCategoryId, currentTagId);
+    });
   }
 
-  // Mise à jour des placeholders lors du changement de langue
-  private updatePlaceholders(): void {
+  /**
+   * Met à jour les configurations avec les nouvelles traductions
+   */
+  private updateConfigurations(): void {
     this.categoryConfig = {
       ...this.categoryConfig,
-      placeholderValue: this.translateService.instant('blog.categories')
+      placeholderValue: this.getTranslation('blog.allCategories', 'Toutes les catégories'),
+      searchPlaceholderValue: this.getTranslation('common.search.placeholder', 'Rechercher...'),
+      noResultsText: this.getTranslation('common.search.noResults', 'Aucun résultat trouvé'),
+      noChoicesText: this.getTranslation('common.search.noChoices', 'Aucun choix disponible')
     };
+
     this.tagConfig = {
       ...this.tagConfig,
-      placeholderValue: this.translateService.instant('blog.tags')
+      placeholderValue: this.getTranslation('blog.allTags', 'Tous les tags'),
+      searchPlaceholderValue: this.getTranslation('common.search.placeholder', 'Rechercher...'),
+      noResultsText: this.getTranslation('common.search.noResults', 'Aucun résultat trouvé'),
+      noChoicesText: this.getTranslation('common.search.noChoices', 'Aucun choix disponible')
     };
+
+    // Reconstruire les options de tri avec les nouvelles traductions
+    this.buildSortOptions();
+
+    // Déclencher la détection des changements
+    this.cdr.detectChanges();
   }
 
-  private setupRouteListener(): void {
-    this.route.queryParams
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(params => {
-        const page = parseInt(params['page']) || 1;
-        const category = params['category'];
-        const tag = params['tag'];
-        const search = params['search'];
+  /**
+   * Recharge les données après un changement de langue
+   */
+  private reloadDataForLanguageChange(currentCategoryId?: number, currentTagId?: number): void {
+    forkJoin({
+      categories: this.blogService.getCategories(),
+      tags: this.blogService.getTags(),
+      featured: this.blogService.getFeaturedArticles(6)
+    }).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(({ categories, tags, featured }) => {
+      // Mettre à jour les données
+      this.categories = categories;
+      this.tags = tags;
+      if (featured?.data) {
+        this.featuredArticles = featured.data;
+      }
 
-        this.searchQuery = search || '';
-        this.selectedCategorySlug = category || '';
-        this.selectedTagSlug = tag || '';
+      // Reconstruire les options avec les nouvelles données
+      this.buildCategoryOptions();
+      this.buildTagOptions();
 
-        // Mettre à jour les références aux objets actuels
-        this.currentCategory = category ? this.categories.find(c => c.slug === category) || null : null;
-        this.currentTag = tag ? this.tags.find(t => t.slug === tag) || null : null;
+      // Forcer la mise à jour des composants choices-select
+      this.forceUpdateChoicesSelects();
 
-        this.loadArticles(page, category, tag, search);
+      // Gérer les paramètres URL après changement de langue
+      this.handleLanguageChangeUrlMapping(currentCategoryId, currentTagId);
+    });
+  }
+
+  /**
+   * Force la mise à jour de tous les composants choices-select
+   */
+  private forceUpdateChoicesSelects(): void {
+    // Attendre que les changements soient appliqués
+    setTimeout(() => {
+      this.choicesSelects?.forEach(select => {
+        if (select && typeof select.forceUpdate === 'function') {
+          select.forceUpdate();
+        }
       });
+    }, 100);
   }
 
+  /**
+   * Gère le mapping des URLs après changement de langue
+   */
+  private handleLanguageChangeUrlMapping(currentCategoryId?: number, currentTagId?: number): void {
+    const queryParamsToUpdate: { [key: string]: string | null } = {};
+    let needsNavigation = false;
+
+    // Mapper l'ancienne catégorie vers la nouvelle slug
+    if (currentCategoryId) {
+      const newCategory = this.categories.find(c => c.id === currentCategoryId);
+      if (newCategory && newCategory.slug !== this.selectedCategorySlug) {
+        queryParamsToUpdate['category'] = newCategory.slug;
+        this.selectedCategorySlug = newCategory.slug;
+        this.currentCategory = newCategory;
+        needsNavigation = true;
+      } else if (!newCategory) {
+        queryParamsToUpdate['category'] = null;
+        this.selectedCategorySlug = '';
+        this.currentCategory = null;
+        needsNavigation = true;
+      }
+    }
+
+    // Mapper l'ancien tag vers la nouvelle slug
+    if (currentTagId) {
+      const newTag = this.tags.find(t => t.id === currentTagId);
+      if (newTag && newTag.slug !== this.selectedTagSlug) {
+        queryParamsToUpdate['tag'] = newTag.slug;
+        this.selectedTagSlug = newTag.slug;
+        this.currentTag = newTag;
+        needsNavigation = true;
+      } else if (!newTag) {
+        queryParamsToUpdate['tag'] = null;
+        this.selectedTagSlug = '';
+        this.currentTag = null;
+        needsNavigation = true;
+      }
+    }
+
+    // Naviguer vers la nouvelle URL si nécessaire
+    if (needsNavigation) {
+      this.router.navigate([], {
+        relativeTo: this.activatedRoute,
+        queryParams: queryParamsToUpdate,
+        queryParamsHandling: 'merge',
+        replaceUrl: true // Éviter de créer une nouvelle entrée dans l'historique
+      });
+    } else {
+      // Sinon, traiter les paramètres actuels
+      this.processRouteParams(this.activatedRoute.snapshot.queryParams);
+    }
+  }
+
+  /**
+   * Configure l'écoute des paramètres de route
+   */
+  private setupRouteListener(): void {
+    this.activatedRoute.queryParams.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(params => {
+      if (this.initialDataLoaded) {
+        this.processRouteParams(params);
+      } else {
+        this.pendingParams = params;
+      }
+    });
+  }
+
+  /**
+   * Configure l'écoute des changements de recherche
+   */
   private setupSearchListener(): void {
     this.searchSubject.pipe(
       takeUntil(this.destroy$),
@@ -169,308 +306,363 @@ export class BlogList implements OnInit, OnDestroy {
       distinctUntilChanged()
     ).subscribe(query => {
       this.router.navigate([], {
-        relativeTo: this.route,
-        queryParams: { search: query || null, page: null },
+        relativeTo: this.activatedRoute,
+        queryParams: {
+          search: query || null,
+          page: query ? 1 : null, // Reset à la page 1 lors d'une recherche
+          category: null, // Reset les filtres lors d'une recherche
+          tag: null
+        },
         queryParamsHandling: 'merge'
       });
     });
   }
 
+  /**
+   * Charge les données initiales
+   */
   private loadInitialData(): void {
-    // Charger les catégories
-    this.blogService.getCategories()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(categories => {
-        this.categories = categories;
-        this.buildCategoryOptions();
-      });
+    forkJoin({
+      categories: this.blogService.getCategories(),
+      tags: this.blogService.getTags(),
+      featured: this.blogService.getFeaturedArticles(6)
+    }).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(({ categories, tags, featured }) => {
+      this.categories = categories;
+      this.tags = tags;
+      if (featured?.data) {
+        this.featuredArticles = featured.data;
+      }
 
-    // Charger les tags
-    this.blogService.getTags()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(tags => {
-        this.tags = tags;
-        this.buildTagOptions();
-      });
+      this.buildCategoryOptions();
+      this.buildTagOptions();
 
-    // Charger les articles en vedette
-    this.blogService.getFeaturedArticles(6)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(response => {
-        if (response?.data) {
-          this.featuredArticles = response.data;
-        }
-      });
+      this.initialDataLoaded = true;
+
+      // Traiter les paramètres en attente
+      if (this.pendingParams) {
+        this.processRouteParams(this.pendingParams);
+        this.pendingParams = null;
+      }
+    });
   }
 
-  // Construction des options pour les dropdowns
+  /**
+   * Traite les paramètres de route
+   */
+  private processRouteParams(params: Params): void {
+    const page = parseInt(params['page']) || 1;
+    const categorySlug = params['category'];
+    const tagSlug = params['tag'];
+    const search = params['search'];
+
+    // Mettre à jour l'état local
+    this.searchQuery = search || '';
+    this.selectedCategorySlug = categorySlug || '';
+    this.selectedTagSlug = tagSlug || '';
+
+    // Mettre à jour les objets courants
+    this.currentCategory = categorySlug ?
+      this.categories.find(c => c.slug === categorySlug) || null : null;
+    this.currentTag = tagSlug ?
+      this.tags.find(t => t.slug === tagSlug) || null : null;
+
+    // Charger les articles
+    this.loadArticles(page, categorySlug, tagSlug, search);
+  }
+
+  /**
+   * Charge les articles selon les filtres
+   */
+  private loadArticles(page: number = 1, categorySlug?: string, tagSlug?: string, searchQuery?: string): void {
+    this.isLoading = true;
+
+    let articlesObservable: Observable<BlogResponse | ApiSearchResponse | null>;
+
+    if (searchQuery) {
+      articlesObservable = this.blogService.searchArticles(searchQuery, 20);
+    } else if (categorySlug) {
+      articlesObservable = this.blogService.getArticlesByCategory(categorySlug, page);
+    } else if (tagSlug) {
+      articlesObservable = this.blogService.getArticlesByTag(tagSlug, page);
+    } else {
+      articlesObservable = this.blogService.getAllArticles(page);
+    }
+
+    const minimumWait$ = timer(400);
+
+    forkJoin({
+      response: articlesObservable,
+      wait: minimumWait$
+    }).pipe(
+      finalize(() => {
+        this.isLoading = false;
+      }),
+      takeUntil(this.destroy$)
+    ).subscribe(({ response }) => {
+      if (response && response.data) {
+        this.articles = this.sortArticles(response.data as BlogArticle[], this.sortBy);
+
+        // Gérer la pagination
+        if (response.meta && 'pagination' in response.meta) {
+          this.pagination = response.meta.pagination;
+          this.totalArticles = response.meta.pagination.total;
+        } else if (response.meta && 'total' in response.meta) {
+          this.pagination = null;
+          this.totalArticles = response.meta.total;
+        } else {
+          this.pagination = null;
+          this.totalArticles = (response.data as any[]).length;
+        }
+
+        // Ajouter le temps de lecture
+        this.articles = this.articles.map(article => ({
+          ...article,
+          readTime: article.reading_time ||
+            this.blogService.calculateReadTime(article.content || article.excerpt || '')
+        }));
+      } else {
+        this.resetArticlesList();
+      }
+    });
+  }
+
+  /**
+   * Remet à zéro la liste des articles
+   */
+  private resetArticlesList(): void {
+    this.articles = [];
+    this.totalArticles = 0;
+    this.pagination = null;
+  }
+
+  /**
+   * Construit les options pour le dropdown des catégories
+   */
   private buildCategoryOptions(): void {
     this.categoryOptions = [
       {
         value: '',
-        label: this.translateService.instant('blog.categories')
+        label: this.getTranslation('blog.allCategories', 'Toutes les catégories')
       },
       ...this.categories.map(category => ({
         value: category.slug,
         label: category.name
       }))
     ];
+
+    // Déclencher la détection des changements
+    this.cdr.detectChanges();
   }
 
+  /**
+   * Construit les options pour le dropdown des tags
+   */
   private buildTagOptions(): void {
     this.tagOptions = [
       {
         value: '',
-        label: this.translateService.instant('blog.tags')
+        label: this.getTranslation('blog.allTags', 'Tous les tags')
       },
       ...this.tags.map(tag => ({
         value: tag.slug,
         label: `#${tag.name}`
       }))
     ];
+
+    // Déclencher la détection des changements
+    this.cdr.detectChanges();
   }
 
-  // Méthodes pour gérer les changements de sélection
-  onCategoryChange(categorySlug: string): void {
-    if (categorySlug) {
-      const category = this.categories.find(c => c.slug === categorySlug);
-      if (category) {
-        this.filterByCategory(category);
+  /**
+   * Construit les options pour le dropdown de tri
+   */
+  private buildSortOptions(): void {
+    this.sortOptions = [
+      {
+        value: 'newest',
+        label: this.getTranslation('blog.sortOptions.newest', 'Plus récent')
+      },
+      {
+        value: 'oldest',
+        label: this.getTranslation('blog.sortOptions.oldest', 'Plus ancien')
+      },
+      {
+        value: 'title',
+        label: this.getTranslation('blog.sortOptions.title', 'Titre A-Z')
       }
-    } else {
-      this.clearCategoryFilter();
-    }
+    ];
+
+    // Déclencher la détection des changements
+    this.cdr.detectChanges();
   }
 
-  onTagChange(tagSlug: string): void {
-    if (tagSlug) {
-      const tag = this.tags.find(t => t.slug === tagSlug);
-      if (tag) {
-        this.filterByTag(tag);
-      }
-    } else {
-      this.clearTagFilter();
-    }
+  /**
+   * Utilitaire pour récupérer une traduction avec fallback
+   */
+  private getTranslation(key: string, fallback?: string): string {
+    const translation = this.translateService.instant(key);
+    return translation !== key ? translation : (fallback || key);
   }
 
-  onSortChange(): void {
-    // Re-trier les articles selon le nouveau critère
+  /**
+   * Gère le changement de catégorie
+   */
+  public onCategoryChange(categorySlug: string): void {
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: {
+        category: categorySlug || null,
+        tag: null, // Reset le tag lors du changement de catégorie
+        page: 1,
+        search: null // Reset la recherche
+      },
+      queryParamsHandling: 'merge'
+    });
+  }
+
+  /**
+   * Gère le changement de tag
+   */
+  public onTagChange(tagSlug: string): void {
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: {
+        tag: tagSlug || null,
+        category: null, // Reset la catégorie lors du changement de tag
+        page: 1,
+        search: null // Reset la recherche
+      },
+      queryParamsHandling: 'merge'
+    });
+  }
+
+  /**
+   * Gère le changement de tri
+   */
+  public onSortChange(): void {
     this.articles = this.sortArticles(this.articles, this.sortBy);
   }
 
+  /**
+   * Trie les articles selon le critère spécifié
+   */
   private sortArticles(articles: BlogArticle[], sortBy: string): BlogArticle[] {
-    const sorted = [...articles];
-
+    const sortedArticles = [...articles];
     switch (sortBy) {
       case 'newest':
-        return sorted.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+        return sortedArticles.sort((a, b) =>
+          new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+        );
       case 'oldest':
-        return sorted.sort((a, b) => new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime());
+        return sortedArticles.sort((a, b) =>
+          new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime()
+        );
       case 'title':
-        return sorted.sort((a, b) => a.title.localeCompare(b.title));
+        return sortedArticles.sort((a, b) => a.title.localeCompare(b.title));
       default:
-        return sorted;
+        return sortedArticles;
     }
   }
 
-  clearSearchFilter(): void {
-    this.searchQuery = '';
-    this.searchSubject.next('');
-  }
-
-  private loadArticles(page: number = 1, categorySlug?: string, tagSlug?: string, searchQuery?: string): void {
-    this.isLoading = true;
-
-    if (searchQuery) {
-      this.blogService.searchArticles(searchQuery, 20)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(response => {
-          this.isLoading = false;
-          if (response && response.data) {
-            this.articles = response.data;
-            this.totalArticles = response.meta?.total || response.data.length;
-            this.pagination = null;
-            this.articles = this.articles.map(article => ({
-              ...article,
-              readTime: article.readTime || this.blogService.calculateReadTime(article.content || article.excerpt || '')
-            }));
-          } else {
-            this.articles = [];
-            this.totalArticles = 0;
-            this.pagination = null;
-          }
-        });
-    } else {
-      let articlesObservable: Observable<BlogResponse | null>;
-
-      if (categorySlug) {
-        articlesObservable = this.blogService.getArticlesByCategory(categorySlug, page);
-      } else if (tagSlug) {
-        articlesObservable = this.blogService.getArticlesByTag(tagSlug, page);
-      } else {
-        articlesObservable = this.blogService.getAllArticles(page);
-      }
-
-      articlesObservable
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(response => {
-          this.isLoading = false;
-          if (response && response.data) {
-            this.articles = response.data;
-            if (response.meta && response.meta.pagination) {
-              this.pagination = response.meta.pagination;
-              this.totalArticles = response.meta.pagination.total;
-            } else {
-              this.pagination = null;
-              this.totalArticles = response.data.length;
-            }
-            this.articles = this.articles.map(article => ({
-              ...article,
-              readTime: article.readTime || this.blogService.calculateReadTime(article.content || article.excerpt || '')
-            }));
-          } else {
-            this.articles = [];
-            this.totalArticles = 0;
-            this.pagination = null;
-          }
-        });
-    }
-  }
-
-  onSearchInput(event: Event): void {
+  /**
+   * Gère la saisie dans le champ de recherche
+   */
+  public onSearchInput(event: Event): void {
     const target = event.target as HTMLInputElement;
     this.searchSubject.next(target.value);
   }
 
-  filterByCategory(category: BlogCategory): void {
-    this.currentCategory = category;
-    this.currentTag = null;
-    this.selectedTagSlug = '';
-    this.blogService.setCurrentCategory(category);
-
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: {
-        category: category.slug,
-        tag: null,
-        search: null,
-        page: null
-      },
-      queryParamsHandling: 'merge'
-    });
+  /**
+   * Filtre par tag (appelé depuis le template)
+   */
+  public filterByTag(tag: BlogTag): void {
+    this.onTagChange(tag.slug);
   }
 
-  filterByTag(tag: BlogTag): void {
-    this.currentTag = tag;
-    this.currentCategory = null;
-    this.selectedCategorySlug = '';
-    this.blogService.setCurrentTag(tag);
-
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: {
-        tag: tag.slug,
-        category: null,
-        search: null,
-        page: null
-      },
-      queryParamsHandling: 'merge'
-    });
+  /**
+   * Efface le filtre de catégorie
+   */
+  public clearCategoryFilter(): void {
+    this.onCategoryChange('');
   }
 
-  clearCategoryFilter(): void {
-    this.currentCategory = null;
-    this.selectedCategorySlug = '';
-    this.blogService.setCurrentCategory(null);
-
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: { category: null, page: null },
-      queryParamsHandling: 'merge'
-    });
+  /**
+   * Efface le filtre de tag
+   */
+  public clearTagFilter(): void {
+    this.onTagChange('');
   }
 
-  clearTagFilter(): void {
-    this.currentTag = null;
-    this.selectedTagSlug = '';
-    this.blogService.setCurrentTag(null);
-
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: { tag: null, page: null },
-      queryParamsHandling: 'merge'
-    });
-  }
-
-  clearAllFilters(): void {
-    this.currentCategory = null;
-    this.currentTag = null;
+  /**
+   * Efface le filtre de recherche
+   */
+  public clearSearchFilter(): void {
     this.searchQuery = '';
-    this.selectedCategorySlug = '';
-    this.selectedTagSlug = '';
-    this.blogService.setCurrentCategory(null);
-    this.blogService.setCurrentTag(null);
+    this.searchSubject.next('');
+  }
 
+  /**
+   * Efface tous les filtres
+   */
+  public clearAllFilters(): void {
     this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: { category: null, tag: null, search: null, page: null }
+      relativeTo: this.activatedRoute,
+      queryParams: {}
     });
   }
 
-  goToPage(page: number): void {
-    if (page < 1 || (this.pagination && page > this.pagination.pageCount)) {
-      return;
-    }
-
+  /**
+   * Navigue vers une page spécifique
+   */
+  public goToPage(page: number): void {
     this.router.navigate([], {
-      relativeTo: this.route,
+      relativeTo: this.activatedRoute,
       queryParams: { page: page },
       queryParamsHandling: 'merge'
     });
   }
 
-  getVisiblePages(): number[] {
-    if (!this.pagination) return [];
+  /**
+   * Calcule les pages visibles pour la pagination
+   */
+  public getVisiblePages(): number[] {
+    if (!this.pagination || this.pagination.pageCount <= 1) return [];
 
-    const current = this.pagination.page;
-    const total = this.pagination.pageCount;
-    const delta = 2;
-
+    const maxVisiblePages = 5;
+    const currentPage = this.pagination.page;
+    const totalPages = this.pagination.pageCount;
     const pages: number[] = [];
-    const rangeStart = Math.max(2, current - delta);
-    const rangeEnd = Math.min(total - 1, current + delta);
 
-    if (total <= 1) return [];
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+      let endPage = startPage + maxVisiblePages - 1;
 
-    // Always include first page
-    pages.push(1);
+      if (endPage > totalPages) {
+        endPage = totalPages;
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+      }
 
-    // Add ellipsis if needed
-    if (rangeStart > 2) {
-      pages.push(-1); // -1 represents ellipsis
-    }
-
-    // Add pages around current
-    for (let i = rangeStart; i <= rangeEnd; i++) {
-      if (i !== 1 && i !== total) {
+      for (let i = startPage; i <= endPage; i++) {
         pages.push(i);
       }
     }
 
-    // Add ellipsis if needed
-    if (rangeEnd < total - 1) {
-      pages.push(-1);
-    }
-
-    // Always include last page if more than 1 page
-    if (total > 1) {
-      pages.push(total);
-    }
-
-    return pages.filter(p => p !== -1); // Remove ellipsis for now
+    return pages;
   }
 
-  formatDate(date: string): string {
+  /**
+   * Formate une date pour l'affichage
+   */
+  public formatDate(date: string): string {
     return this.blogService.formatPublishedDate(date);
   }
+
+  // Exposition de l'environment pour le template
+  protected readonly environment = environment;
 }

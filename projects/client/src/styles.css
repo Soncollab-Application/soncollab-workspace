@@ -108,3 +108,6 @@ html, body {
   border: none!important;
 }
 
+app-choices-select[iconposition="start"] .choices__list--single .choices__item--selectable {
+  padding-left: 2.1rem !important;
+}
