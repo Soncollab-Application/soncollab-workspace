@@ -18,7 +18,6 @@ import {TranslatePipe} from '@ngx-translate/core';
 })
 export class FooterComponent implements OnInit, OnDestroy {
 
-  // ✅ Propriétés pour la gestion des langues
   supportedLanguages: Language[] = [];
   currentLanguage: string = 'fr';
   private destroy$ = new Subject<void>();

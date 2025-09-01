@@ -108,6 +108,111 @@ html, body {
   border: none!important;
 }
 
-app-choices-select[iconposition="start"] .choices__list--single .choices__item--selectable {
+/* Correctif pour les icônes des composants choices-select sur mobile */
+
+/* Gestion des icônes dans les selects fermés */
+app-choices-select[iconPosition="start"] .choices__list--single .choices__item--selectable {
   padding-left: 2.1rem !important;
+}
+
+app-choices-select[iconPosition="end"] .choices__list--single .choices__item--selectable {
+  padding-right: 2.1rem !important;
+}
+
+/* Masquer l'icône quand le dropdown est ouvert */
+app-choices-select .position-relative > i {
+  transition: opacity 0.2s ease;
+}
+
+/* Masquer l'icône quand choices.js est ouvert (classe is-open) */
+app-choices-select .choices.is-open ~ i,
+app-choices-select .choices[aria-expanded="true"] ~ i {
+  opacity: 0 !important;
+  pointer-events: none;
+}
+
+/* Alternative: masquer l'icône quand le dropdown est visible */
+app-choices-select .choices__list--dropdown.is-active ~ i {
+  opacity: 0 !important;
+}
+
+/* Correctifs spécifiques pour mobile */
+@media (max-width: 768px) {
+  /* Réduire le z-index de l'icône pour qu'elle passe derrière le dropdown */
+  app-choices-select .position-relative > i {
+    z-index: 1 !important;
+  }
+
+  /* S'assurer que le dropdown a un z-index plus élevé */
+  app-choices-select .choices__list--dropdown {
+    z-index: 1000 !important;
+    background: var(--fn-body-bg, #fff) !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+  }
+
+  /* Ajuster le padding pour les petits écrans */
+  app-choices-select[iconPosition="start"] .choices__list--single .choices__item--selectable {
+    padding-left: 1.8rem !important;
+  }
+
+  app-choices-select[iconPosition="start"] .position-relative > i {
+    margin-left: 0.5rem !important;
+  }
+
+  /* Masquer complètement l'icône sur très petits écrans si nécessaire */
+  @media (max-width: 480px) {
+    app-choices-select[iconPosition] .position-relative > i {
+      display: none !important;
+    }
+
+    app-choices-select[iconPosition="start"] .choices__list--single .choices__item--selectable,
+    app-choices-select[iconPosition="end"] .choices__list--single .choices__item--selectable {
+      padding-left: 0.75rem !important;
+      padding-right: 0.75rem !important;
+    }
+  }
+}
+
+/* Correctif pour les thèmes sombres */
+[data-bs-theme="dark"] app-choices-select .choices__list--dropdown {
+  background: var(--fn-body-bg, #212529) !important;
+  border-color: var(--fn-border-color, #495057) !important;
+}
+
+/* Amélioration de l'animation d'ouverture */
+app-choices-select .choices__list--dropdown {
+  animation: dropdownFadeIn 0.15s ease-out;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Correctif pour éviter le débordement sur mobile */
+@media (max-width: 768px) {
+  app-choices-select {
+    position: relative;
+    overflow: visible;
+  }
+
+  app-choices-select .position-relative {
+    overflow: visible;
+  }
+
+  /* S'assurer que le conteneur ne coupe pas le dropdown */
+  app-choices-select .choices {
+    position: relative;
+    z-index: auto;
+  }
+
+  app-choices-select .choices.is-open {
+    z-index: 1001 !important;
+  }
 }

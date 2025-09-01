@@ -130,7 +130,8 @@
     "resources": {
       "title": "Resources",
       "api": "API Documentation",
-      "help": "Help Center"
+      "help": "Help Center",
+      "blog": "Blog"
     },
     "social": {
       "youtube": "Follow us on YouTube",
@@ -1415,6 +1416,7 @@
     "viewAll": "View all",
     "showing": "Showing",
     "results": "results",
-    "result": "result"
+    "result": "result",
+    "backTo": "Back to"
   }
 }

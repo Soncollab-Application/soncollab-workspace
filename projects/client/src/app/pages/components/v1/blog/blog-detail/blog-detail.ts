@@ -9,6 +9,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import {MarkdownComponent} from 'ngx-markdown';
 import {environment} from '../../../../../../environments/environment';
+import {ToastService} from '../../../../../core/modules/toast/toast.service';
 
 @Component({
   selector: 'app-blog-detail',
@@ -37,6 +38,7 @@ export class BlogDetail implements OnInit, OnDestroy {
     private languageService: LanguageService,
     private route: ActivatedRoute,
     private router: Router,
+    private toast: ToastService,
     private seoService: SeoService
   ) {}
 
@@ -84,7 +86,7 @@ export class BlogDetail implements OnInit, OnDestroy {
         if (article) {
           this.article = {
             ...article,
-            readTime: article.reading_time || this.blogService.calculateReadTime(article.content || article.excerpt || '')
+            reading_time: article.reading_time || this.blogService.calculateReadTime(article.content || article.excerpt || '')
           };
 
           this.seoService.updateBlogArticleSEO(article);
@@ -123,19 +125,26 @@ export class BlogDetail implements OnInit, OnDestroy {
     if (!this.article) return;
     const text = `${this.article.title} - ${window.location.href}`;
     const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
-    window.open(url, '_blank', 'width=600,height=400');
+    window.open(url, '_blank');
   }
 
   public shareOnLinkedIn(): void {
     if (!this.article) return;
     const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`;
-    window.open(url, '_blank', 'width=600,height=400');
+    window.open(url, '_blank');
   }
 
   public async copyLink(): Promise<void> {
     try {
       await navigator.clipboard.writeText(window.location.href);
-      console.log('Lien copié dans le presse-papiers');
+      this.toast.showSuccess(
+        'Lien copié dans le presse-papiers',
+        {
+          position:'bottom-start',
+          delay:3000,
+          autohide: true,
+        }
+      );
     } catch (err) {
       console.error('Échec de la copie du lien:', err);
     }
