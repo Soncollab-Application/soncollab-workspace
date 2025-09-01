@@ -15,8 +15,8 @@ import {PrivacyPolicyComponent} from './components/v1/company/privacy-policy/pri
 import {UseConditionComponent} from './components/v1/company/use-condition/use-condition.component';
 import {PricingComponent} from './components/v1/pricing/pricing.component';
 import {NotFoundComponent} from './components/v1/errors/not-found/not-found.component';
-import {BlogList} from './components/v1/blog/blog-list/blog-list';
-import {BlogDetail} from './components/v1/blog/blog-detail/blog-detail';
+import {BlogList} from './components/v1/resources/blog/blog-list/blog-list';
+import {BlogDetail} from './components/v1/resources/blog/blog-detail/blog-detail';
 
 
 const Routing: Routes = [

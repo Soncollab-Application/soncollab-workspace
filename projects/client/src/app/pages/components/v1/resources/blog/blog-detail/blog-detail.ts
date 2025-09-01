@@ -1,15 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
-import { BlogArticle } from '../../../../models/blog.model';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { LanguageService } from '../../../../../core/services/language.service';
-import { BlogService } from '../../../../services/blog.service';
-import { SeoService } from '../../../../../core/services/seo.service';
 import { TranslatePipe } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import {MarkdownComponent} from 'ngx-markdown';
-import {environment} from '../../../../../../environments/environment';
-import {ToastService} from '../../../../../core/modules/toast/toast.service';
+import {ToastService} from '../../../../../../core/modules/toast/toast.service';
+import {BlogService} from '../../../../../services/blog.service';
+import {LanguageService} from '../../../../../../core/services/language.service';
+import {SeoService} from '../../../../../../core/services/seo.service';
+import {environment} from '../../../../../../../environments/environment';
+import {BlogArticle} from '../../../../../models/blog.model';
 
 @Component({
   selector: 'app-blog-detail',
@@ -59,6 +59,7 @@ export class BlogDetail implements OnInit, OnDestroy {
         this.slug = params['slug'];
         if (this.slug) {
           this.loadArticle();
+          this.blogService.trackArticleView(this.slug).subscribe();
         }
       });
   }

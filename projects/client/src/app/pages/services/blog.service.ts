@@ -212,6 +212,19 @@ export class BlogService {
     );
   }
 
+  public trackArticleView(slug: string): Observable<BlogArticle | null> {
+    const locale = this.languageService.getCurrentLanguage();
+    const parameters = new HttpParams().set('locale', locale);
+
+    return this.httpClient.get<SingleBlogResponse>(`${this.apiUrl}/blog-articles/slug/${slug}/view`, { params: parameters }).pipe(
+      map(response => response.data || null),
+      catchError(error => {
+        console.error(`Erreur lors de l'enregistrement de la vue pour l'article ${slug} (${locale}):`, error);
+        return of(null);
+      })
+    );
+  }
+
   public setCurrentCategory(category: BlogCategory | null): void {
     this.currentCategorySubject.next(category);
   }
