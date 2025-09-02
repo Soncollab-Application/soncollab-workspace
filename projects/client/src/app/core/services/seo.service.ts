@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { BlogArticle } from '../../pages/models/blog.model';
 import {environment} from '../../../environments/environment';
+import {HelpArticle} from '../../pages/models/help.model';
 
 @Injectable({
   providedIn: 'root'
@@ -50,7 +51,6 @@ export class SeoService {
       this.meta.updateTag({ property: 'article:section', content: article.category.name });
     }
 
-    // CORRECTION : Utilise le champ `canonical_url` directement depuis l'article
     const canonicalUrl = article.canonical_url || articleUrl;
     const existingCanonical = document.querySelector('link[rel="canonical"]');
     if (existingCanonical) {
@@ -83,6 +83,63 @@ export class SeoService {
     this.meta.updateTag({ property: 'og:description', content: description });
     this.meta.updateTag({ property: 'og:type', content: 'website' });
     this.meta.updateTag({ property: 'og:url', content: window.location.href });
+  }
+
+
+  public updateHelpArticleSEO(article: HelpArticle): void {
+    const pageTitle = article.seo_title || article.title;
+    const metaDescription = article.seo_description || article.excerpt;
+    const canonicalUrl = article.canonical_url || `${window.location.origin}/help/${article.slug}`;
+
+    this.title.setTitle(`${pageTitle} | Centre d'aide`);
+
+    this.meta.updateTag({ name: 'description', content: metaDescription });
+    this.meta.updateTag({ property: 'og:title', content: pageTitle });
+    this.meta.updateTag({ property: 'og:description', content: metaDescription });
+    this.meta.updateTag({ property: 'og:type', content: 'article' });
+    this.meta.updateTag({ property: 'og:url', content: canonicalUrl });
+    this.updateCanonicalUrl(canonicalUrl);
+
+    if (article.publishedAt) {
+      this.meta.updateTag({ property: 'article:published_time', content: new Date(article.publishedAt).toISOString() });
+    }
+    if (article.last_updated) {
+      this.meta.updateTag({ property: 'article:modified_time', content: new Date(article.last_updated).toISOString() });
+    }
+  }
+
+  public updateHelpListSEO(category?: string, searchQuery?: string): void {
+    let title = "Centre d'aide | Soncollab";
+    let description = "Trouvez des réponses à vos questions et consultez nos articles pour vous aider à utiliser notre plateforme.";
+    const url = window.location.href;
+
+    if (category) {
+      title = `Articles sur ${category} | Centre d'aide`;
+      description = `Parcourez tous nos articles d'aide pour la catégorie ${category}.`;
+    } else if (searchQuery) {
+      title = `Recherche : "${searchQuery}" | Centre d'aide`;
+      description = `Résultats de la recherche pour "${searchQuery}" dans notre centre d'aide.`;
+    }
+
+    this.title.setTitle(title);
+    this.meta.updateTag({ name: 'description', content: description });
+    this.meta.updateTag({ property: 'og:title', content: title });
+    this.meta.updateTag({ property: 'og:description', content: description });
+    this.meta.updateTag({ property: 'og:type', content: 'website' });
+    this.meta.updateTag({ property: 'og:url', content: url });
+    this.updateCanonicalUrl(url);
+  }
+
+  private updateCanonicalUrl(url: string): void {
+    let link: HTMLLinkElement | null = document.querySelector(`link[rel='canonical']`);
+    if (link) {
+      link.setAttribute('href', url);
+    } else {
+      link = document.createElement('link');
+      link.setAttribute('rel', 'canonical');
+      link.setAttribute('href', url);
+      document.head.appendChild(link);
+    }
   }
 
   public clearSEO(): void {

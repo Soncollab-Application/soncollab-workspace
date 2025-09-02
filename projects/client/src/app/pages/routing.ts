@@ -17,6 +17,8 @@ import {PricingComponent} from './components/v1/pricing/pricing.component';
 import {NotFoundComponent} from './components/v1/errors/not-found/not-found.component';
 import {BlogList} from './components/v1/resources/blog/blog-list/blog-list';
 import {BlogDetail} from './components/v1/resources/blog/blog-detail/blog-detail';
+import {HelpList} from './components/v1/resources/help-center/help-list/help-list';
+import {HelpDetail} from './components/v1/resources/help-center/help-detail/help-detail';
 
 
 const Routing: Routes = [
@@ -39,6 +41,9 @@ const Routing: Routes = [
   {path: 'blog', component: BlogList},
   {path: 'blog/:slug', component: BlogDetail},
 
+  // Help routes
+  {path: 'help', component: HelpList},
+  {path: 'help/:slug', component: HelpDetail},
   // Company
   {path: 'company/about', component: AboutComponent},
   {path: 'company/anti-fraud-policy', component: AntiFraudPolicyComponent},
