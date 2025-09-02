@@ -1,0 +1,286 @@
+<div class="container pt-4 pt-sm-5 pb-5 mt-lg-3 mb-xxl-3" style="margin-top: 5rem!important;">
+  <div class="row pt-3 pt-sm-0 pb-2 pb-sm-3 pb-md-4 pb-lg-5" style="margin-top: 5rem!important;">
+
+    <div class="col-lg-8 position-relative ">
+
+      @if (isLoading) {
+        <div class="text-center py-5">
+          <div class="spinner-border" role="status">
+            <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
+          </div>
+        </div>
+      } @else {
+
+        <h1 class="display-6 mb-4 for-dax-font">{{ 'help.howCanWeHelp' | translate }} </h1>
+
+        <div class="bg-body border rounded shadow p-2 mb-4">
+          <form class="d-flex flex-column flex-sm-row gap-2 gap-sm-0 p-1" (ngSubmit)="onSearchSubmit()">
+            <div class="d-flex align-items-center w-100 ms-2">
+              <i class="fi-search fs-lg text-body-emphasis"></i>
+              <input
+                type="search"
+                class="form-control form-control-lg border-0"
+                [placeholder]="'help.searchPlaceholder' | translate"
+                [(ngModel)]="searchQuery"
+                (input)="onSearchInput($event)"
+                name="searchQuery"
+                required>
+            </div>
+            <button type="submit" class="btn btn-lg btn-dark" [disabled]="isSearching">
+              @if (isSearching) {
+                <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+              }
+              {{ 'help.search' | translate }}
+            </button>
+          </form>
+        </div>
+
+        @if (popularSearches.length > 0 && !showSearchResults) {
+          <div class="nav gap-2 fs-sm">
+            <span class="text-body-secondary me-2">{{ 'help.popularSearches' | translate }}:</span>
+            @for (search of popularSearches; track search) {
+              <a class="nav-link hover-effect-underline p-0 me-2"
+                 (click)="onPopularSearch(search)"
+                 style="cursor: pointer">{{ search }}</a>
+            }
+          </div>
+        }
+
+        @if (showSearchResults) {
+          <div class="mt-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h2 class="h4 mb-0">
+                {{ 'help.searchResults' | translate }} "{{ searchQuery }}"
+                ({{ searchResults.length }})
+              </h2>
+              <button class="btn btn-outline-secondary btn-sm" (click)="clearSearchResults()">
+                {{ 'help.clearSearch' | translate }}
+              </button>
+            </div>
+
+            @if (searchResults.length > 0) {
+              <div class="row row-cols-1 g-3">
+                @for (article of searchResults; track article.id) {
+                  <div class="col">
+                    <div class="card h-100   p-3">
+                      <div class="card-body p-0">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                          <span class="badge bg-secondary rounded-pill"
+                                [ngClass]="getDifficultyClass(article.difficulty_level)">
+                            {{ getDifficultyLabel(article.difficulty_level) | translate }}
+                          </span>
+                          @if (article.category) {
+                            <small class="text-info">{{ article.category.name }}</small>
+                          }
+                        </div>
+                        <h3 class="h6 mb-2">
+                          <a class="hover-effect-underline stretched-link text-decoration-none"
+                             (click)="navigateToArticle(article)"
+                             style="cursor: pointer">
+                            {{ article.title }}
+                          </a>
+                        </h3>
+                        <p class="fs-sm text-muted mb-1">{{ article.excerpt }}</p>
+                        @if (article.estimated_reading_time) {
+                          <small class="text-muted">{{ article.estimated_reading_time }} {{ 'help.minRead' | translate }}</small>
+                        }
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            } @else {
+              <div class="text-center py-4">
+                <p class="text-muted">{{ 'help.noSearchResults' | translate }}</p>
+              </div>
+            }
+          </div>
+        }
+
+        @if (!showSearchResults) {
+          @if (categories.length > 0) {
+
+            @if (getCategoriesByGroup(0, 4).length > 0) {
+              <h2 class="h3 pt-5 pb-2 pb-md-3 mt-lg-3 for-dax-font">{{ getCategoriesByGroup(0, 1)[0].name || ('help.gettingStarted' | translate) }}</h2>
+              <div class="row row-cols-1 row-cols-sm-2 g-4 g-sm-3 g-md-4">
+                @for (category of getCategoriesByGroup(0, 4); track category.id) {
+                  <div class="col">
+                    <div class="card h-100 border-0 p-4" [ngClass]="getCategoryColorClass(category)">
+                      <div class="card-body p-0 p-md-2 p-lg-0 p-xl-2">
+                        <h3 class="h5">
+                          <a class="hover-effect-underline stretched-link text-decoration-none"
+                             (click)="navigateToCategory(category)"
+                             style="cursor: pointer">
+                            {{ category.name }}
+                          </a>
+                        </h3>
+                        <p class="mb-0">{{ category.description || ('help.defaultCategoryDescription' | translate) }}</p>
+                        @if (category.articlesCount) {
+                          <small class="text-muted d-block mt-2">
+                            {{ category.articlesCount }} {{ 'help.articles' | translate }}
+                          </small>
+                        }
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+
+            @if (getCategoriesByGroup(4, 4).length > 0) {
+              <h2 class="h3 pt-5 pb-2 pb-md-3 mt-lg-3 for-dax-font">{{ getCategoriesByGroup(4, 1)[0].name || ('help.advanced' | translate) }}</h2>
+              <div class="row row-cols-1 row-cols-sm-2 g-4 g-sm-3 g-md-4">
+                @for (category of getCategoriesByGroup(4, 4); track category.id) {
+                  <div class="col">
+                    <div class="card h-100 border-0 p-4" [ngClass]="getCategoryColorClass(category)">
+                      <div class="card-body p-0 p-md-2 p-lg-0 p-xl-2">
+                        <h3 class="h5">
+                          <a class="hover-effect-underline stretched-link text-decoration-none"
+                             (click)="navigateToCategory(category)"
+                             style="cursor: pointer">
+                            {{ category.name }}
+                          </a>
+                        </h3>
+                        <p class="mb-0">{{ category.description || ('help.defaultCategoryDescription' | translate) }}</p>
+                        @if (category.articlesCount) {
+                          <small class="text-muted d-block mt-2">
+                            {{ category.articlesCount }} {{ 'help.articles' | translate }}
+                          </small>
+                        }
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+
+            @if (getCategoriesByGroup(8, 4).length > 0) {
+              <h2 class="h3 pt-5 pb-2 pb-md-3 mt-lg-3 for-dax-font">{{ getCategoriesByGroup(8, 1)[0].name || ('help.troubleshooting' | translate) }}</h2>
+              <div class="row row-cols-1 row-cols-sm-2 g-4 g-sm-3 g-md-4">
+                @for (category of getCategoriesByGroup(8, 4); track category.id) {
+                  <div class="col">
+                    <div class="card h-100 border-0 p-4" [ngClass]="getCategoryColorClass(category)">
+                      <div class="card-body p-0 p-md-2 p-lg-0 p-xl-2">
+                        <h3 class="h5">
+                          <a class="hover-effect-underline stretched-link text-decoration-none"
+                             (click)="navigateToCategory(category)"
+                             style="cursor: pointer">
+                            {{ category.name }}
+                          </a>
+                        </h3>
+                        <p class="mb-0">{{ category.description || ('help.defaultCategoryDescription' | translate) }}</p>
+                        @if (category.articlesCount) {
+                          <small class="text-muted d-block mt-2">
+                            {{ category.articlesCount }} {{ 'help.articles' | translate }}
+                          </small>
+                        }
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          }
+
+          @if (faqArticles.length > 0) {
+            <h2 class="pt-5 pb-sm-1 pb-md-2 mt-2 mt-sm-3 mt-md-4 mt-lg-5 for-dax-font">{{ 'help.popularFAQs' | translate }} </h2>
+
+            <div class="accordion" id="faq">
+              @for (article of faqArticles; track article.id) {
+                <div class="accordion-item">
+                  <h3 class="accordion-header" [id]="'faqHeading-' + article.id">
+                    <button
+                      type="button"
+                      class="accordion-button hover-effect-underline"
+                      [class.collapsed]="!isFaqAccordionOpen(article.id.toString())"
+                      (click)="toggleFaqAccordion(article.id.toString())"
+                      [attr.aria-expanded]="isFaqAccordionOpen(article.id.toString())"
+                      [attr.aria-controls]="'faqCollapse-' + article.id">
+                      <span class="me-2">{{ article.title }}</span>
+                    </button>
+                  </h3>
+                  <div
+                    class="accordion-collapse collapse"
+                    [class.show]="isFaqAccordionOpen(article.id.toString())"
+                    [id]="'faqCollapse-' + article.id"
+                    [attr.aria-labelledby]="'faqHeading-' + article.id"
+                    data-bs-parent="#faq">
+                    <div class="accordion-body">
+                      {{ article.excerpt }}
+                      @if (article.content && article.excerpt !== article.content) {
+                        <div class="mt-2">
+                          <a class="btn btn-sm btn-outline-primary"
+                             (click)="navigateToArticle(article)"
+                             style="cursor: pointer">
+                            {{ 'help.readFullArticle' | translate }}
+                          </a>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+
+          <h2 class="fs-base fw-normal text-body lh-base pt-4 mt-3 mb-4">
+            {{ 'help.stillHaveQuestions' | translate }}
+          </h2>
+          <a class="btn btn-lg btn-primary" [routerLink]="['/contact']">
+            {{ 'help.contactUs' | translate }}
+          </a>
+
+        }
+
+      }
+
+    </div>
+
+    <aside class="col-lg-4 col-md-6 col-sm-12 d-none d-lg-block">
+      @if (featuredArticles.length > 0 && !showSearchResults && !isLoading) {
+        <div class="card  bg-transparent pt-lg-4">
+          <div class="card-header bg-transparent border-bottom py-3">
+            <h3 class="h5 mb-0 for-dax-font">{{ 'help.featuredArticles' | translate }}</h3>
+          </div>
+          <div class="card-body px-4">
+            @for (article of featuredArticles.slice(0, 5); track article.id) {
+              <div class="border-bottom pb-3 mb-3" [class.border-0]="$last" [class.mb-0]="$last" [class.pb-0]="$last">
+                <div class="d-flex gap-2 mb-4">
+                    <span class="badge bg-secondary rounded-pill badge-sm"
+                          [ngClass]="getDifficultyClass(article.difficulty_level)">
+                      {{ getDifficultyLabel(article.difficulty_level) | translate }}
+                    </span>
+                  @if (article.category) {
+                    <span class="badge bg-secondary rounded-pill badge-sm">{{ article.category.name }}</span>
+                  }
+                </div>
+                <h4 class="h6 mb-3">
+                  <a class="hover-effect-underline text-decoration-none text-info"
+                     (click)="navigateToArticle(article)"
+                     style="cursor: pointer">
+                    {{ article.title }}
+                  </a>
+                </h4>
+                <p class="fs-sm text-muted mb-3">{{ article.excerpt }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  @if (article.estimated_reading_time) {
+                    <small class="text-muted">
+                      <i class="fi-clock me-1"></i>
+                      {{ article.estimated_reading_time }} {{ 'help.minRead' | translate }}
+                    </small>
+                  }
+                  @if (article.helpfulness_score && article.helpfulness_score > 0) {
+                    <small class="text-muted">
+                      <i class="fi-star-filled text-warning me-1"></i>
+                      {{ article.helpfulness_score | number:'1.1-1' }}
+                    </small>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </aside>
+  </div>
+</div>
