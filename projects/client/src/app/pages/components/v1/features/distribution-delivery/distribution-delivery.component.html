@@ -1,23 +1,21 @@
 <!-- Hero Section -->
-<section class="feature-hero bg-semi-dark py-5 position-relative">
+<section class="bg-semi-dark py-5 pt-5 position-relative" style="margin-top: 3rem!important;">
   <div class="container py-5">
     <div class="row align-items-center">
-      <div class="col-lg-6">
-        <div class="hero-content">
-          <h1 class="display-4 fw-lighter for-dax-font mb-4">
-            {{ 'distribution.hero.title' | translate }}
-          </h1>
-          <p class="fs-5 text-muted mb-4 pe-lg-5">
-            {{ 'distribution.hero.subtitle' | translate }}
-          </p>
-          <div class="d-flex gap-3 mb-4">
-            <a href="javascript:" (click)="contactModalService.openContactModal()" class="btn btn-primary btn-lg">
-              {{ 'distribution.hero.getStarted' | translate }}
-            </a>
-          </div>
+      <div class="col-lg-6 col-md-12 col-12">
+        <h1 class="display-4 fw-lighter for-dax-font mb-4">
+          {{ 'distribution.hero.title' | translate }}
+        </h1>
+        <p class="fs-5 text-muted mb-4 pe-lg-5">
+          {{ 'distribution.hero.subtitle' | translate }}
+        </p>
+        <div class="mb-4">
+          <a href="javascript:" (click)="contactModalService.openContactModal()" class="btn btn-primary btn-lg">
+            {{ 'distribution.hero.getStarted' | translate }}
+          </a>
         </div>
       </div>
-      <div class="col-lg-6">
+      <div class="col-lg-6 col-md-12 col-12">
         <div class="hero-dashboard">
           <div class="dashboard-frame">
             <!--<img src="/assets/images/distribution/hero-dashboard.png"
