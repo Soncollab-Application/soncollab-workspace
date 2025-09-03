@@ -200,7 +200,7 @@
           </li>
 
           <li class="nav-item dropdown py-lg-2 me-lg-n1 me-xl-0">
-            <a [class.active]="isSectionActive('/resources')" [class.aria-expanded]="isSectionActive('/resources')"   class="fw-bolder fs-6 nav-link dropdown-toggle" data-bs-auto-close="outside" data-bs-toggle="dropdown" data-bs-trigger="hover"
+            <a [class.active]="isSectionActiveMany(['/help','/blog'])" [class.aria-expanded]="isSectionActiveMany(['/help','/blog'])"   class="fw-bolder fs-6 nav-link dropdown-toggle" data-bs-auto-close="outside" data-bs-toggle="dropdown" data-bs-trigger="hover"
                href="#" role="button">
               {{ 'header.navigation.resources' | translate }}
             </a>
@@ -218,7 +218,8 @@
 
               <li class="feature-item mb-2">
                 <a class="nav-link hover-effect-slide d-flex align-items-center gap-3 fw-normal p-2 transition-all"
-                   [routerLink]="['/']"
+                   [routerLink]="['/help']"
+                   [routerLinkActiveOptions]="{ exact: true }" [routerLinkActive]="['active-feature']"
                    (click)="closeMenu()">
                   <span>
                     {{ 'header.resources.help' | translate }}
@@ -229,6 +230,7 @@
               <li class="feature-item">
                 <a class="nav-link hover-effect-slide d-flex align-items-center gap-3 fw-normal p-2 transition-all"
                    [routerLink]="['/blog']"
+                   [routerLinkActiveOptions]="{ exact: true }" [routerLinkActive]="['active-feature']"
                    (click)="closeMenu()">
                   <span>
                     {{ 'header.resources.blog' | translate }}
@@ -245,7 +247,6 @@
     <!-- Button group -->
     <div class="d-flex gap-2 align-items-center">
 
-      <!-- ✅ Language switcher -->
       <div class="dropdown position-relative">
         <button type="button"
                 class="language-switcher btn btn-icon btn-outline-secondary fs-lg border-0 animate-scale"

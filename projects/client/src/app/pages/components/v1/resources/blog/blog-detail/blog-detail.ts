@@ -43,6 +43,7 @@ export class BlogDetail implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit(): void {
+    window.scrollTo(0, 0);
     this.setupRouteListener();
     this.setupLanguageListener();
   }

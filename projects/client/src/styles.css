@@ -112,11 +112,11 @@ html, body {
 
 /* Gestion des icônes dans les selects fermés */
 app-choices-select[iconPosition="start"] .choices__list--single .choices__item--selectable {
-  padding-left: 2.1rem !important;
+  padding-left: 1.5rem !important;
 }
 
 app-choices-select[iconPosition="end"] .choices__list--single .choices__item--selectable {
-  padding-right: 2.1rem !important;
+  padding-right: 2rem !important;
 }
 
 /* Masquer l'icône quand le dropdown est ouvert */
@@ -152,23 +152,23 @@ app-choices-select .choices__list--dropdown.is-active ~ i {
 
   /* Ajuster le padding pour les petits écrans */
   app-choices-select[iconPosition="start"] .choices__list--single .choices__item--selectable {
-    padding-left: 1.8rem !important;
+    padding-left: 2rem !important;
   }
 
   app-choices-select[iconPosition="start"] .position-relative > i {
-    margin-left: 0.5rem !important;
+    margin-left: 1rem !important;
   }
 
   /* Masquer complètement l'icône sur très petits écrans si nécessaire */
   @media (max-width: 480px) {
     app-choices-select[iconPosition] .position-relative > i {
-      display: none !important;
+      display: block !important;
     }
 
     app-choices-select[iconPosition="start"] .choices__list--single .choices__item--selectable,
     app-choices-select[iconPosition="end"] .choices__list--single .choices__item--selectable {
-      padding-left: 0.75rem !important;
-      padding-right: 0.75rem !important;
+      padding-left: 1.5rem !important;
+      padding-right: 1.5rem !important;
     }
   }
 }

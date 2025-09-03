@@ -79,6 +79,7 @@ export class BlogList implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit(): void {
+    window.scrollTo(0, 0);
     this.updateTranslatedContent();
     this.setupLanguageListener();
     this.setupSearchListener();

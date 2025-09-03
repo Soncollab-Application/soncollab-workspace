@@ -1389,6 +1389,7 @@
       "keywords": "blog, articles, news, trends"
     }
   },
+
   "help": {
     "title": "Help Center",
     "subtitle": "Find answers to your questions and learn how to use our platform",
@@ -1415,7 +1416,6 @@
     "allLevels": "All levels",
     "beginner": "Beginner",
     "intermediate": "Intermediate",
-    "advanced": "Advanced",
     "sortBy": "Sort by",
     "newest": "Newest",
     "oldest": "Oldest",
@@ -1428,7 +1428,6 @@
     "articlesFound": "articles found",
     "readMore": "Read more",
     "noArticlesFound": "No articles found",
-    "noSearchResults": "No results for your search",
     "noArticlesMessage": "There are currently no articles available in this category",
     "clearFilters": "Clear filters",
     "articleNotFound": "Article not found",
@@ -1453,10 +1452,41 @@
     "share": "Share",
     "urlCopied": "Link copied to clipboard",
     "copyError": "Error copying link",
-    "attachments": "Attachments"
+    "attachments": "Attachments",
+    "articlesInCategory": "Articles in {{categoryName}}",
+    "linkCopied": "Link copied to clipboard",
+    "thankYouForFeedback": "Thank you for your feedback!",
+    "feedbackPrompt": "Can you tell us what could be improved? (optional)",
+    "detailedRating": "Detailed Rating",
+    "rateThisArticle": "Rate this article",
+    "yourRating": "Your rating",
+    "whatCouldBeImproved": "What could be improved?",
+    "whatDidYouLike": "What did you like?",
+    "additionalComments": "Additional comments",
+    "optional": "optional",
+    "tellUsMore": "Tell us more...",
+    "submitRating": "Submit Rating",
+    "alreadyRated": "You have already rated this article",
+    "ratingLabels": {
+      "1": "Not helpful at all",
+      "2": "Slightly helpful",
+      "3": "Moderately helpful",
+      "4": "Helpful",
+      "5": "Very helpful"
+    },
+    "feedbackCategories": {
+      "unclear": "Unclear",
+      "incomplete": "Incomplete information",
+      "outdated": "Outdated information",
+      "wrong": "Incorrect information",
+      "couldBeImproved": "Could be improved",
+      "moreExamples": "Need more examples",
+      "betterExplanation": "Better explanation needed",
+      "veryHelpful": "Very helpful",
+      "wellExplained": "Well explained",
+      "goodExamples": "Good examples"
+    }
   },
-
-
 
   "common": {
     "home": "Home",
@@ -1485,6 +1515,9 @@
     "showing": "Showing",
     "results": "results",
     "result": "result",
-    "backTo": "Back to"
+    "backTo": "Back to",
+    "yes": "Yes",
+    "no": "No",
+    "cancel": "Cancel"
   }
 }

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import {forkJoin, Subject, switchMap} from 'rxjs';
+import {forkJoin, skip, Subject, switchMap} from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil, finalize } from 'rxjs/operators';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
@@ -48,6 +48,7 @@ export class HelpList implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit(): void {
+    window.scrollTo(0, 0);
     this.setupSearchListener();
     this.setupLanguageListener();
     this.loadInitialData();
@@ -61,13 +62,12 @@ export class HelpList implements OnInit, OnDestroy {
 
 
   private setupLanguageListener(): void {
-    this.languageService.languageChanged$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      const currentParams = this.activatedRoute.snapshot.queryParams;
-      if (currentParams['search'] || currentParams['category']) {
-        this.router.navigate(['/help']);
-      } else {
-        this.loadInitialData();
-      }
+    this.languageService.languageChanged$.pipe(
+      takeUntil(this.destroy$),
+      skip(1)
+    ).subscribe(() => {
+      this.router.navigate(['/help']);
+      this.loadInitialData();
     });
   }
 

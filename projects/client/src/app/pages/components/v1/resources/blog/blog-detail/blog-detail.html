@@ -13,7 +13,7 @@
   </div>
 } @else if (article) {
 
-  <div class="container pt-4 pb-2 py-5 pb-md-3 mb-3 d-block d-sm-none" style="margin-top: 5rem!important;">
+  <div class="container pt-4 pb-2 py-5 pb-md-3 mb-3 d-block d-md-none" style="margin-top: 5rem!important;">
     @if (article.category) {
       <a [routerLink]="['/blog']" [queryParams]="{category: article.category.slug}" class="d-inline-flex align-items-center gap-2 text-decoration-none text-body fw-medium">
         <i class="fi-chevron-left fs-lg"></i>
@@ -27,7 +27,7 @@
     }
   </div>
 
-  <nav class="container pt-4 pb-2 pb-md-3 mb-3 d-none d-sm-block" aria-label="breadcrumb">
+  <nav class="container pt-5 pb-2 pb-md-3 mb-3 d-none d-md-block" aria-label="breadcrumb" style="margin-top: 5rem!important;">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a [routerLink]="['/']">{{ 'common.home' | translate }}</a></li>
       <li class="breadcrumb-item"><a [routerLink]="['/blog']">{{ 'blog.title' | translate }}</a></li>
@@ -39,7 +39,7 @@
   </nav>
 
 
-  <section class="container pb-3 pb-md-4 pb-lg-5 mb-xxl-3">
+  <section class="container pb-3 pb-md-4 pb-lg-5 mb-xxl-3" >
     <div class="row pb-5">
 
       <div class="col-sm-9 col-md-5 col-lg-4 pb-3 pb-sm-0 mb-4 mb-sm-5 mb-md-0">

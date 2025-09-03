@@ -51,7 +51,6 @@ export class BlogService {
         return response;
       }),
       catchError(error => {
-        console.error(`Erreur lors de la récupération des articles de blog (${locale}):`, error);
         return of(null);
       })
     );
@@ -63,7 +62,6 @@ export class BlogService {
     return this.httpClient.get<SingleBlogResponse>(`${this.apiUrl}/blog-articles/slug/${slug}`, { params: parameters }).pipe(
       map(response => response.data || null),
       catchError(error => {
-        console.error(`Erreur lors de la récupération de l'article ${slug} (${locale}):`, error);
         return of(null);
       })
     );
@@ -94,7 +92,6 @@ export class BlogService {
         return blogResponse;
       }),
       catchError(error => {
-        console.error(`Erreur lors de la récupération des articles de la catégorie ${categorySlug} (${locale}):`, error);
         return of(null);
       })
     );
@@ -125,7 +122,6 @@ export class BlogService {
         return blogResponse;
       }),
       catchError(error => {
-        console.error(`Erreur lors de la récupération des articles du tag ${tagSlug} (${locale}):`, error);
         return of(null);
       })
     );
@@ -136,7 +132,6 @@ export class BlogService {
     return this.httpClient.get<BlogCategoriesResponse>(`${this.apiUrl}/blog-categories`, { params: { locale } }).pipe(
       map(response => response.data || []),
       catchError(error => {
-        console.error(`Erreur lors de la récupération des catégories de blog (${locale}):`, error);
         return of([]);
       })
     );
@@ -147,7 +142,6 @@ export class BlogService {
     return this.httpClient.get<BlogTagsResponse>(`${this.apiUrl}/blog-tags`, { params: { locale } }).pipe(
       map(response => response.data || []),
       catchError(error => {
-        console.error(`Erreur lors de la récupération des tags de blog (${locale}):`, error);
         return of([]);
       })
     );
@@ -158,7 +152,6 @@ export class BlogService {
     const parameters = new HttpParams().set('q', query).set('type', 'blog').set('limit', limit.toString()).set('locale', locale);
     return this.httpClient.get<ApiSearchResponse>(`${this.apiUrl}/content/search`, { params: parameters }).pipe(
       catchError(error => {
-        console.error(`Erreur lors de la recherche d'articles (${locale}):`, error);
         return of(null);
       })
     );
@@ -181,7 +174,6 @@ export class BlogService {
         return { data: articles };
       }),
       catchError(error => {
-        console.error(`Erreur lors de la récupération des articles en avant (${locale}):`, error);
         return of(null);
       })
     );
@@ -206,7 +198,6 @@ export class BlogService {
         return { data: articles };
       }),
       catchError(error => {
-        console.error(`Erreur lors de la récupération des articles récents (${locale}):`, error);
         return of(null);
       })
     );
@@ -219,7 +210,6 @@ export class BlogService {
     return this.httpClient.get<SingleBlogResponse>(`${this.apiUrl}/blog-articles/slug/${slug}/view`, { params: parameters }).pipe(
       map(response => response.data || null),
       catchError(error => {
-        console.error(`Erreur lors de l'enregistrement de la vue pour l'article ${slug} (${locale}):`, error);
         return of(null);
       })
     );
