@@ -55,7 +55,6 @@ export class HelpDetail implements OnInit, OnDestroy {
     window.scrollTo(0, 0);
     this.setupRouteListener();
     this.setupLanguageListener();
-    this.helpService.incrementViewCount(this.slug).subscribe();
   }
 
   public ngOnDestroy(): void {
@@ -69,6 +68,11 @@ export class HelpDetail implements OnInit, OnDestroy {
       this.slug = params['slug'];
       if (this.slug) {
         this.loadArticle();
+        const viewedKey = `help_viewed_${this.slug}`;
+        if (!sessionStorage.getItem(viewedKey)) {
+          sessionStorage.setItem(viewedKey, 'true');
+          this.helpService.incrementViewCount(this.slug).subscribe();
+        }
       }
     });
   }

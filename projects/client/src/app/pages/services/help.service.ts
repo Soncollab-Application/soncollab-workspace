@@ -166,7 +166,10 @@ export class HelpService {
   }
 
   public incrementViewCount(slug: string | undefined): Observable<any> {
-    return this.httpClient.get(`${this.apiUrl}/help-articles/slug/${slug}/view`, {}).pipe(
+    const locale = this.languageService.getCurrentLanguage();
+    let parameters = new HttpParams()
+      .set('locale', locale);
+    return this.httpClient.get(`${this.apiUrl}/help-articles/slug/${slug}/view`, { params: parameters }).pipe(
       catchError(error => {
         return of(null);
       })

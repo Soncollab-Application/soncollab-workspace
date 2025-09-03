@@ -60,7 +60,11 @@ export class BlogDetail implements OnInit, OnDestroy {
         this.slug = params['slug'];
         if (this.slug) {
           this.loadArticle();
-          this.blogService.trackArticleView(this.slug).subscribe();
+          const viewedKey = `blog_viewed_${this.slug}`;
+          if (!sessionStorage.getItem(viewedKey)) {
+            sessionStorage.setItem(viewedKey, 'true');
+            this.blogService.trackArticleView(this.slug).subscribe();
+          }
         }
       });
   }
