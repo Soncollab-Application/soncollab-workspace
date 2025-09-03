@@ -124,18 +124,4 @@ export class ThemeService {
     }
   }
 
-  /**
-   * Méthode pour déboguer le thème actuel
-   */
-  debugTheme(): void {
-    const htmlElement = this.document.documentElement;
-    const dataTheme = htmlElement.getAttribute('data-bs-theme');
-    const classes = Array.from(htmlElement.classList);
-
-    console.log('🔍 Debug Thème:');
-    console.log('- data-bs-theme:', dataTheme);
-    console.log('- Classes HTML:', classes);
-    console.log('- Thème stocké:', localStorage.getItem(this.THEME_KEY));
-    console.log('- Préférence système:', window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  }
 }

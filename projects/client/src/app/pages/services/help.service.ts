@@ -174,10 +174,18 @@ export class HelpService {
     );
   }
 
-  public rateArticle(articleId: number, rating: number): Observable<any> {
-    return this.httpClient.post(`${this.apiUrl}/help-articles/${articleId}/rate`, { rating }).pipe(
+  public rateArticle(documentId: string | undefined, rating: number, feedback?: string): Observable<any> {
+    const body: any = { rating };
+    if (feedback) {
+      body.feedback = feedback;
+    }
+
+    const locale = this.languageService.getCurrentLanguage();
+    let parameters = new HttpParams()
+      .set('locale', locale);
+    return this.httpClient.post(`${this.apiUrl}/help-articles/${documentId}/rate`, body ,   { params: parameters }).pipe(
       catchError(error => {
-        console.error(`Erreur lors de la notation de l'article ${articleId}:`, error);
+        console.error(`Erreur lors de la notation de l'article ${documentId}:`, error);
         return of(null);
       })
     );
@@ -246,5 +254,16 @@ export class HelpService {
         return of(null);
       })
     );
+  }
+
+
+  public formatPublishedDate(publishedAt: string, locale?: string): string {
+    const currentLocale = locale || this.languageService.getCurrentLanguage();
+    const date = new Date(publishedAt);
+    return date.toLocaleDateString(currentLocale === 'fr' ? 'fr-FR' : 'en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
   }
 }

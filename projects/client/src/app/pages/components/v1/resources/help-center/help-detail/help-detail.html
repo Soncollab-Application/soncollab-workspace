@@ -1,0 +1,350 @@
+@if (isLoading) {
+  <div class="container pt-5 mt-5" style="margin-top: 5rem!important;">
+    <div class="text-center py-5 my-5">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
+      </div>
+    </div>
+  </div>
+} @else if (notFound) {
+  <div class="container pt-5 mt-5" style="margin-top: 5rem!important;">
+    <div class="text-center py-5 my-5">
+      <h1 class="h2 mb-4">{{ 'help.articleNotFound' | translate }}</h1>
+      <p class="lead mb-4">{{ 'help.articleNotFoundMessage' | translate }}</p>
+      <button class="btn btn-primary" (click)="goBack()">
+        {{ 'help.backToHelp' | translate }}
+      </button>
+    </div>
+  </div>
+} @else if (article) {
+
+  <!-- Breadcrumb -->
+  <div class="container pt-5 pt-sm-5 mt-5" style="margin-top: 5rem!important;">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a [routerLink]="['/help']" class="text-decoration-none">
+            {{ 'help.title' | translate }}
+          </a>
+        </li>
+        @if (article.category) {
+          <li class="breadcrumb-item d-none d-md-block">
+            <a class="text-decoration-none" style="cursor: pointer" [routerLink]="['/help']" [queryParams]="{category: article.category.slug}">
+              {{ article.category.name }}
+            </a>
+          </li>
+        }
+        <li class="breadcrumb-item active text-truncate" style="max-width: 200px;">{{ article.title }}</li>
+      </ol>
+    </nav>
+  </div>
+
+  <!-- Article Header -->
+  <section class="container pb-4 mt-5" >
+    <div class="row">
+      <div class="col-lg-8 mx-auto">
+
+        <!-- Article Meta -->
+        <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
+          @if (article.category) {
+            <span class="badge bg-primary-subtle text-primary-emphasis fs-sm">
+              {{ article.category.name }}
+            </span>
+          }
+          <span class="badge fs-sm" [ngClass]="getDifficultyClass(article.difficulty_level)">
+            {{ getDifficultyLabel(article.difficulty_level) }}
+          </span>
+          @if (article.estimated_reading_time) {
+            <span class="text-muted fs-sm">
+              <i class="fi-clock me-1"></i>
+              {{ article.estimated_reading_time }} {{ 'help.minRead' | translate }}
+            </span>
+          }
+          @if (article.view_count) {
+            <span class="text-muted fs-sm">
+              <i class="fi-eye me-1"></i>
+              {{ article.view_count }} {{ 'help.views' | translate }}
+            </span>
+          }
+        </div>
+
+        <!-- Title -->
+        <h1 class="display-6 mb-4 for-dax-font">{{ article.title }}</h1>
+
+        <!-- Article Info -->
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 py-3 border-top border-bottom mb-4">
+          <div class="d-flex flex-wrap align-items-center gap-3 fs-sm text-muted">
+            @if (article.publishedAt) {
+              <span>
+                <i class="fi-calendar me-1"></i>
+                {{ 'help.published' | translate }}: {{ formatDate(article.publishedAt) }}
+              </span>
+            }
+            @if (article.last_updated) {
+              <span>
+                <i class="fi-refresh me-1"></i>
+                {{ 'help.lastUpdated' | translate }}: {{ formatDate(article.last_updated) }}
+              </span>
+            }
+            @if (article.author?.username) {
+              <span>
+                <i class="fi-user me-1"></i>
+                {{ 'help.author' | translate }}: {{ article.author?.username }}
+              </span>
+            }
+          </div>
+
+          <!-- Share Button -->
+          <div class="dropdown">
+            <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="dropdown">
+              <i class="fi-share me-2"></i>
+              {{ 'common.share' | translate }}
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li>
+                <a class="dropdown-item" (click)="copyLink()" style="cursor: pointer;">
+                  <i class="fi-link me-2"></i>{{ 'help.copyLink' | translate }}
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Article Content -->
+  <section class="container pb-5">
+    <div class="row">
+      <div class="col-lg-8 mx-auto">
+
+        @if (article.excerpt) {
+          <div class="lead mb-4 text-muted border-start border-3 border-primary ps-3">
+            {{ article.excerpt }}
+          </div>
+        }
+
+        @if (article.content) {
+          <div class="markdown-content">
+            <markdown [data]="article.content"></markdown>
+          </div>
+        }
+
+        <!-- Helpfulness Section -->
+        <div class="mt-5 p-4 bg-body-tertiary rounded">
+          <h3 class="h5 mb-3">{{ 'help.wasThisHelpful' | translate }}</h3>
+          <p class="text-muted mb-3">{{ 'help.rateArticle' | translate }}</p>
+
+          @if (!helpfulnessRated) {
+            <div class="d-flex gap-2">
+              <button class="btn btn-success btn-sm" (click)="rateHelpful(true)">
+                <i class="fi-thumbs-up me-2"></i>
+                {{ 'common.yes' | translate }}
+              </button>
+              <button class="btn btn-outline-secondary btn-sm" (click)="rateHelpful(false)">
+                <i class="fi-thumbs-down me-2"></i>
+                {{ 'common.no' | translate }}
+              </button>
+              <button class="btn btn-primary btn-sm ms-2" (click)="showRatingModal()">
+                <i class="fi-star me-2"></i>
+                {{ 'help.detailedRating' | translate }}
+              </button>
+            </div>
+          } @else {
+            <div class="text-success d-flex align-items-center">
+              <i class="fi-check-circle me-2"></i>
+              <div>
+                <div class="fw-semibold">{{ 'help.thankYouForRating' | translate }}</div>
+                <small class="text-muted">{{ 'help.alreadyRated' | translate }}</small>
+              </div>
+            </div>
+          }
+
+          @if (article.helpfulness_score) {
+            <div class="mt-3 pt-3 border-top">
+              <small class="text-muted">
+                {{ 'help.helpfulness' | translate }}: {{ article.helpfulness_score }}/10
+              </small>
+            </div>
+          }
+        </div>
+
+        <!-- Rating Modal -->
+        @if (showRatingModalFlag) {
+          <div class="modal d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">{{ 'help.rateThisArticle' | translate }}</h5>
+                  <button type="button" class="btn-close" (click)="closeRatingModal()"></button>
+                </div>
+                <div class="modal-body">
+
+                  <!-- Star Rating -->
+                  <div class="mb-4">
+                    <label class="form-label fw-semibold">{{ 'help.yourRating' | translate }}</label>
+                    <div class="d-flex gap-1 mb-2">
+                      @for (star of ratingStars; track star) {
+                        <button
+                          type="button"
+                          class="btn btn-link p-0 border-0"
+                          (click)="setRating(star)"
+                          [class.text-warning]="star <= selectedRating"
+                          [class.text-muted]="star > selectedRating"
+                          style="font-size: 1.5rem; line-height: 1;">
+                          <i class="fi-star-filled"></i>
+                        </button>
+                      }
+                    </div>
+                    @if (selectedRating > 0) {
+                      <small class="text-muted">
+                        {{ selectedRating }}/5 - {{ 'help.ratingLabels.' + selectedRating | translate }}
+                      </small>
+                    }
+                  </div>
+
+                  <!-- Feedback Categories -->
+                  @if (selectedRating > 0 && feedbackCategories.length > 0) {
+                    <div class="mb-4">
+                      <label class="form-label fw-semibold">
+                        @if (selectedRating <= 3) {
+                          {{ 'help.whatCouldBeImproved' | translate }}
+                        } @else {
+                          {{ 'help.whatDidYouLike' | translate }}
+                        }
+                      </label>
+                      <div class="d-flex flex-wrap gap-2">
+                        @for (category of feedbackCategories; track category) {
+                          <button
+                            type="button"
+                            class="btn btn-sm"
+                            [class.btn-primary]="selectedFeedbackCategories.includes(category)"
+                            [class.btn-outline-secondary]="!selectedFeedbackCategories.includes(category)"
+                            (click)="toggleFeedbackCategory(category)">
+                            {{ category }}
+                          </button>
+                        }
+                      </div>
+                    </div>
+                  }
+
+                  <!-- Feedback Text -->
+                  @if (selectedRating > 0) {
+                    <div class="mb-3">
+                      <label for="feedbackText" class="form-label fw-semibold">
+                        {{ 'help.additionalComments' | translate }}
+                        <small class="text-muted">({{ 'help.optional' | translate }})</small>
+                      </label>
+                      <textarea
+                        id="feedbackText"
+                        class="form-control"
+                        rows="3"
+                        [(ngModel)]="feedbackText"
+                        [placeholder]="'help.tellUsMore' | translate">
+                      </textarea>
+                    </div>
+                  }
+
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" (click)="closeRatingModal()">
+                    {{ 'common.cancel' | translate }}
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    [disabled]="selectedRating === 0"
+                    (click)="submitRating()">
+                    {{ 'help.submitRating' | translate }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Articles -->
+  @if (filteredRelatedArticles.length > 0) {
+    <section class="container pb-5 my-xl-3">
+      <div class="row">
+        <div class="col-lg-8 mx-auto">
+          <h2 class="h4 mb-4">
+            @if (article.category) {
+              {{ 'help.moreInCategory' | translate }} {{ article.category.name }}
+            } @else {
+              {{ 'help.relatedArticles' | translate }}
+            }
+          </h2>
+
+          <div class="row g-4">
+            @for (relatedArticle of filteredRelatedArticles; track relatedArticle.id) {
+              <div class="col-md-6">
+                <div class="card h-100 border-0 bg-body-tertiary">
+                  <div class="card-body">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                      @if (relatedArticle.category) {
+                        <span class="badge bg-primary-subtle text-primary-emphasis fs-sm">
+                          {{ relatedArticle.category.name }}
+                        </span>
+                      }
+                      <span class="badge fs-sm" [ngClass]="getDifficultyClass(relatedArticle.difficulty_level)">
+                        {{ getDifficultyLabel(relatedArticle.difficulty_level) }}
+                      </span>
+                    </div>
+
+                    <h3 class="h6 mb-2">
+                      <a class="text-decoration-none stretched-link"
+                         style="cursor: pointer"
+                         (click)="navigateToRelated(relatedArticle)">
+                        {{ relatedArticle.title }}
+                      </a>
+                    </h3>
+
+                    @if (relatedArticle.excerpt) {
+                      <p class="text-muted fs-sm mb-2">{{ relatedArticle.excerpt }}</p>
+                    }
+
+                    <div class="d-flex align-items-center gap-3 fs-sm text-muted">
+                      @if (relatedArticle.estimated_reading_time) {
+                        <span>
+                          <i class="fi-clock me-1"></i>
+                          {{ relatedArticle.estimated_reading_time }} {{ 'help.minRead' | translate }}
+                        </span>
+                      }
+                      @if (relatedArticle.view_count) {
+                        <span>
+                          <i class="fi-eye me-1"></i>
+                          {{ relatedArticle.view_count }} {{ 'help.views' | translate }}
+                        </span>
+                      }
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+  }
+
+  <!-- Contact Section -->
+  <section class="container pb-5">
+    <div class="row">
+      <div class="col-lg-8 mx-auto">
+        <div class="text-center p-4 bg-primary-subtle rounded">
+          <h3 class="h5 mb-3">{{ 'help.stillHaveQuestions' | translate }}</h3>
+          <button class="btn btn-primary">
+            {{ 'help.contactUs' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+}

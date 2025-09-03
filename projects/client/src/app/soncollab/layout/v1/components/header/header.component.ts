@@ -209,6 +209,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   public closeMenu(): void {
+    // Fermer le menu offcanvas mobile (votre code existant)
     if (window.innerWidth < 992) {
       const offcanvasElement = document.getElementById('navbarNav');
       if (offcanvasElement) {
@@ -217,6 +218,37 @@ export class HeaderComponent implements OnInit, OnDestroy {
           (closeButton as HTMLElement).click();
         }
       }
+    }
+
+    this.closeAllDropdowns();
+  }
+
+  private closeAllDropdowns(): void {
+    try {
+      // Méthode 1: Utiliser Bootstrap pour fermer tous les dropdowns
+      const dropdownElements = document.querySelectorAll('[data-bs-toggle="dropdown"]');
+      dropdownElements.forEach((element) => {
+        const bsDropdown = (window as any).bootstrap?.Dropdown?.getInstance(element);
+        if (bsDropdown) {
+          bsDropdown.hide();
+        }
+        (element as HTMLElement).blur();
+      });
+
+      // Méthode 2: Fallback - supprimer les classes 'show' manuellement
+      const openDropdowns = document.querySelectorAll('.dropdown-menu.show');
+      openDropdowns.forEach(dropdown => {
+        dropdown.classList.remove('show');
+      });
+
+      const activeToggles = document.querySelectorAll('[aria-expanded="true"]');
+      activeToggles.forEach(toggle => {
+        toggle.setAttribute('aria-expanded', 'false');
+      });
+
+    } catch (error) {
+      console.warn('Erreur lors de la fermeture des dropdowns:', error);
+      document.body.click();
     }
   }
 
@@ -227,5 +259,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   isSectionActive(baseRoute: string): boolean {
     return this.router.url.startsWith(baseRoute);
+  }
+
+  isSectionActiveMany(baseRoutes: string[]): boolean {
+    return baseRoutes.some(route => this.router.url.startsWith(route));
   }
 }

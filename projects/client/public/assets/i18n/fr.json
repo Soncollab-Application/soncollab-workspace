@@ -1163,12 +1163,14 @@
       "viewPricing": "Voir les Tarifs"
     }
   },
+
+
   "connect": {
     "hero": {
-      "title": "Créez Votre App Avec Une API Puissante",
-      "subtitle": "Conçue pour les développeurs et adaptée aux entreprises musicales, elle vous permet d'automatiser les opérations, les workflows, de vous intégrer facilement avec votre stack technique existant et de faire évoluer votre plateforme musicale en toute confiance.",
-      "getStarted": "Commencer",
-      "learnMore": "Documentation API"
+      "title": "Créez Votre Application avec une API Puissante",
+      "subtitle": "Conçue pour les développeurs et adaptée aux entreprises de la musique, elle vous permet d'automatiser les opérations, les flux de travail, de vous intégrer de manière transparente à votre stack technique existante et de faire évoluer votre plateforme musicale en toute confiance.",
+      "getStarted": "Démarrer",
+      "learnMore": "Documentation de l'API"
     },
     "benefits": {
       "api": {
@@ -1176,54 +1178,89 @@
         "description": "Une seule API pour toutes vos opérations musicales"
       },
       "automation": {
-        "title": "Automatisation Workflow",
+        "title": "Automatisation des Flux de Travail",
         "description": "Automatisez les processus complexes de l'industrie musicale"
       },
       "integration": {
         "title": "Intégration Transparente",
-        "description": "Intégrez avec votre stack technique existant"
+        "description": "Intégrez-vous à votre stack technique existante"
       },
       "scale": {
-        "title": "Évoluez en Confiance",
-        "description": "Conçue pour grandir avec votre plateforme musicale"
+        "title": "Évoluez en Toute Confiance",
+        "description": "Conçue pour évoluer avec votre plateforme musicale"
       }
     },
-    "demo": {
-      "title": "Documentation API",
-      "subtitle": "Explorez notre référence API complète avec des exemples interactifs et des échantillons de code."
+    "features": {
+      "title": "Suite API Complète",
+      "subtitle": "Tout ce dont vous avez besoin pour créer et faire évoluer votre plateforme musicale avec notre API complète.",
+      "delivery": {
+        "title": "Livraison & Distribution",
+        "description": "Optimisez et gérez vos flux de travail de sortie de bout en bout avec une seule API puissante",
+        "feature1": "Créez et gérez les sorties, les morceaux, les métadonnées et les droits",
+        "feature2": "Automatisez la planification des sorties et le contrôle des versions",
+        "feature3": "Livrez aux plateformes de streaming (DSP) avec vos propres accords ou ceux de Soncollab",
+        "feature4": "Suivez l'état de la livraison et l'ingestion par les DSP avec le support des webhooks",
+        "cta": "Démarrer"
+      },
+      "catalog": {
+        "title": "Gestion de Catalogue",
+        "description": "Contrôle total du catalogue via des points de terminaison API pour une gestion efficace de la bibliothèque musicale",
+        "feature1": "Opérations CRUD complètes sur les éléments du catalogue",
+        "feature2": "Capacités d'importation et d'exportation en masse",
+        "feature3": "Recherche et filtrage avancés",
+        "feature4": "Validation et enrichissement des métadonnées",
+        "cta": "Démarrer"
+      },
+      "analytics": {
+        "title": "Rapports & Analyses",
+        "description": "Accédez à des données de performance structurées via l'API et intégrez des informations en temps réel dans vos flux de travail",
+        "feature1": "Interrogez les données de streaming et de revenus par morceau, sortie, région ou DSP",
+        "feature2": "Surveillez les tendances du comportement et de l'engagement de l'audience",
+        "feature3": "Exportez des données structurées ou intégrez-les directement dans des outils d'analyse",
+        "feature4": "Supporte l'exportation CSV et la synchronisation des données brutes",
+        "cta": "Démarrer"
+      },
+      "royalties": {
+        "title": "Droits, Redevances & Paiements",
+        "description": "Automatisez les calculs et optimisez les rapports de redevances avec une API puissante",
+        "feature1": "Définissez des contrats avec des termes configurables : partages, frais récupérables, logique de paiement",
+        "feature2": "Importez et rapprochez les relevés des DSP avec les données des contrats",
+        "feature3": "Générez des relevés, des factures et des résumés de paiement prêts pour l'audit",
+        "feature4": "Accès API complet aux lignes de redevances, aux rapports et à l'état des paiements",
+        "cta": "Démarrer"
+      }
     },
     "resources": {
-      "title": "Ressources Développeur",
-      "subtitle": "Tout ce dont vous avez besoin pour commencer avec l'API Soncollab.",
+      "title": "Ressources pour Développeurs",
+      "subtitle": "Tout ce dont vous avez besoin pour démarrer avec l'API Soncollab.",
       "documentation": {
-        "title": "Référence API",
-        "description": "Documentation complète avec exemples et cas d'usage",
-        "cta": "Voir la Doc"
+        "title": "Référence de l'API",
+        "description": "Documentation complète avec des exemples et des cas d'utilisation",
+        "cta": "Voir la documentation"
       },
       "authentication": {
         "title": "Authentification",
         "description": "Accès API sécurisé et gestion des clés",
-        "cta": "En Savoir Plus"
+        "cta": "En savoir plus"
       },
       "processing": {
-        "title": "Traitement Royautés",
-        "description": "Workflows avancés de calcul et traitement des royautés",
+        "title": "Traitement des Redevances",
+        "description": "Flux de travail avancés de calcul et de traitement des redevances",
         "cta": "Explorer"
       },
       "webhooks": {
         "title": "Webhooks",
-        "description": "Notifications temps réel et gestion d'événements",
-        "cta": "Guide Config"
+        "description": "Notifications en temps réel et gestion des événements",
+        "cta": "Guide de configuration"
       }
     },
     "cta": {
-      "title": "Prêt à Alimenter Votre Plateforme Musicale ?",
-      "subtitle": "Rejoignez des centaines de développeurs et entreprises musicales qui construisent l'avenir avec l'API Soncollab Connect.",
-      "getStarted": "Commencer à Construire",
-      "viewPricing": "Voir Tarifs API"
+      "title": "Prêt à Propulser Votre Plateforme Musicale ?",
+      "subtitle": "Rejoignez des centaines de développeurs et d'entreprises de la musique qui construisent l'avenir avec l'API Soncollab Connect.",
+      "getStarted": "Commencer à Développer",
+      "viewPricing": "Voir les Tarifs de l'API"
     }
   },
-
 
   "contact": {
     "modal": {
@@ -1362,7 +1399,6 @@
     "searchResults": "Résultats de recherche pour",
     "clearSearch": "Effacer la recherche",
     "gettingStarted": "Premiers pas",
-    "advanced": "Avancé",
     "troubleshooting": "Dépannage",
     "defaultCategoryDescription": "Articles et guides pour cette catégorie",
     "articles": "articles",
@@ -1371,7 +1407,6 @@
     "stillHaveQuestions": "Vous avez encore des questions sans réponse et devez nous contacter ?",
     "contactUs": "Nous contacter",
     "featuredArticles": "Articles en vedette",
-    "noSearchResults": "Aucun résultat trouvé pour votre recherche",
     "categories": "Catégories",
     "allCategories": "Toutes les catégories",
     "difficulty": "Niveau de difficulté",
@@ -1416,7 +1451,40 @@
     "share": "Partager",
     "urlCopied": "Lien copié dans le presse-papier",
     "copyError": "Erreur lors de la copie du lien",
-    "attachments": "Pièces jointes"
+    "attachments": "Pièces jointes",
+    "articlesInCategory": "Articles dans {{categoryName}}",
+    "linkCopied": "Lien copié dans le presse-papiers",
+    "thankYouForFeedback": "Merci pour votre retour !",
+    "feedbackPrompt": "Pouvez-vous nous dire ce qui pourrait être amélioré ? (optionnel)",
+    "detailedRating": "Évaluation détaillée",
+    "rateThisArticle": "Évaluer cet article",
+    "yourRating": "Votre note",
+    "whatCouldBeImproved": "Que pourrait-on améliorer ?",
+    "whatDidYouLike": "Qu'avez-vous aimé ?",
+    "additionalComments": "Commentaires supplémentaires",
+    "optional": "optionnel",
+    "tellUsMore": "Dites-nous en plus...",
+    "submitRating": "Envoyer l'évaluation",
+    "alreadyRated": "Vous avez déjà évalué cet article",
+    "ratingLabels": {
+      "1": "Pas utile du tout",
+      "2": "Peu utile",
+      "3": "Moyennement utile",
+      "4": "Utile",
+      "5": "Très utile"
+    },
+    "feedbackCategories": {
+      "unclear": "Pas assez clair",
+      "incomplete": "Information incomplète",
+      "outdated": "Information obsolète",
+      "wrong": "Information incorrecte",
+      "couldBeImproved": "Pourrait être amélioré",
+      "moreExamples": "Plus d'exemples nécessaires",
+      "betterExplanation": "Explication à améliorer",
+      "veryHelpful": "Très utile",
+      "wellExplained": "Bien expliqué",
+      "goodExamples": "Bons exemples"
+    }
   },
 
   "common": {
@@ -1446,6 +1514,9 @@
     "showing": "Affichage",
     "results": "résultats",
     "result": "résultat",
-    "backTo": "Retour à"
+    "backTo": "Retour à",
+    "yes": "Oui",
+    "no": "Non",
+    "cancel": "Annuler"
   }
 }
