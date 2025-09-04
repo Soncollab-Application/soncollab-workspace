@@ -6,6 +6,7 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { SuccessModal } from '../../pages/components/v1/partials/modals/success-modal/success-modal';
 import { environment } from '../../../environments/environment';
 import {NewsletterModal} from '../../pages/components/v1/partials/modals/newsletter-modal/newsletter-modal';
+import {LanguageService} from './language.service';
 
 export interface NewsletterSubscriptionData {
   email: string;
@@ -32,6 +33,8 @@ export class NewsletterModalService {
   private readonly apiUrl = environment.api.fullUrl;
   private http = inject(HttpClient);
   private ngbModal = inject(NgbModal);
+  private languageService = inject(LanguageService);
+
 
   /**
    * Ouvre le modal newsletter
@@ -77,8 +80,10 @@ export class NewsletterModalService {
    */
   subscribeToNewsletter(subscriptionData: NewsletterSubscriptionData): Observable<NewsletterResponse> {
     // Ajouter les données par défaut
+    const locale = this.languageService.getCurrentLanguage();
     const formData = {
       ...subscriptionData,
+      locale: locale,
       subscribed_at: new Date().toISOString(),
       ip_address: this.getClientIP(),
       user_agent: navigator.userAgent
@@ -96,7 +101,8 @@ export class NewsletterModalService {
    * Se désabonner de la newsletter
    */
   unsubscribeFromNewsletter(email: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/newsletter/unsubscribe`, { email })
+    const locale = this.languageService.getCurrentLanguage();
+    return this.http.post(`${this.apiUrl}/newsletter/unsubscribe`, { email ,  locale })
       .pipe(
         catchError(error => {
           return throwError(() => error);
@@ -108,7 +114,7 @@ export class NewsletterModalService {
    * Récupère l'IP du client (simplifiée)
    */
   private getClientIP(): string {
-    // En production, vous pourriez utiliser un service tiers ou récupérer l'IP côté serveur
+    //TODO
     return '';
   }
 }
