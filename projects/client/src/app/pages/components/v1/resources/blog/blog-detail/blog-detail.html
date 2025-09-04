@@ -61,10 +61,11 @@
           @if (article.reading_time) { <div class="fs-xs text-muted">{{ article.reading_time }} {{ 'blog.readTime' | translate }}</div> }
           <div class="d-flex gap-3 pt-2 mt-1">
             <div class="dropdown">
-              <button type="button" class="btn btn-lg btn-outline-secondary animate-scale" data-bs-toggle="dropdown" aria-label="Share">
+              <button type="button" class="btn btn-lg btn-outline-secondary animate-scale mb-4" data-bs-toggle="dropdown" aria-label="Share">
                 <i class="fi-share-2 fs-lg me-2 animate-target"></i>
                 <span>{{ 'blog.share' | translate }}</span>
               </button>
+
               <ul class="dropdown-menu dropdown-menu-end" style="--fn-dropdown-min-width: 9.5rem">
                 <li><a class="dropdown-item" (click)="shareOnTwitter()" style="cursor: pointer;"><i class="bi-twitter-x fs-base me-2"></i>Twitter</a></li>
                 <li><a class="dropdown-item" (click)="shareOnLinkedIn()" style="cursor: pointer;"><i class="fi-linkedin fs-base me-2"></i>LinkedIn</a></li>
@@ -72,6 +73,14 @@
               </ul>
             </div>
           </div>
+
+          <button
+            type="button"
+            class="btn btn-primary btn-lg px-4"
+            (click)="openBlogNewsletter()">
+            <i class="fi-mail me-2"></i>
+            {{ 'newsletter.blog.subscribe' | translate }}
+          </button>
         </div>
       </div>
 
@@ -165,3 +174,5 @@
     <a [routerLink]="['/blog']" class="btn btn-primary">{{ 'blog.browseArticles' | translate }}</a>
   </div>
 }
+
+

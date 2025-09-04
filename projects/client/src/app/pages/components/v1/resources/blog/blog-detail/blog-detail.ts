@@ -10,6 +10,7 @@ import {LanguageService} from '../../../../../../core/services/language.service'
 import {SeoService} from '../../../../../../core/services/seo.service';
 import {environment} from '../../../../../../../environments/environment';
 import {BlogArticle} from '../../../../../models/blog.model';
+import {NewsletterModalService} from '../../../../../../core/services/newsletter-modal.service';
 
 @Component({
   selector: 'app-blog-detail',
@@ -39,7 +40,8 @@ export class BlogDetail implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private toast: ToastService,
-    private seoService: SeoService
+    private seoService: SeoService,
+    private newsletterService: NewsletterModalService
   ) {}
 
   public ngOnInit(): void {
@@ -65,6 +67,20 @@ export class BlogDetail implements OnInit, OnDestroy {
             sessionStorage.setItem(viewedKey, 'true');
             this.blogService.trackArticleView(this.slug).subscribe();
           }
+        }
+      });
+  }
+
+  openBlogNewsletter(): void {
+    const source = `blog_article_${this.slug}`;
+    this.newsletterService.openNewsletterModal('blog', source)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (result) => {
+          if (!result.cancelled) {}
+        },
+        error: (error) => {
+          console.error('Newsletter modal error:', error);
         }
       });
   }

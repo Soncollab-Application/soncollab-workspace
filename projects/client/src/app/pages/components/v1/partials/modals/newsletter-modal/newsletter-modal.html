@@ -1,0 +1,113 @@
+<!-- Fichier : projects/client/src/app/pages/components/v1/partials/modals/newsletter-modal/newsletter-modal.html -->
+
+<div class="modal-header border-0 pb-0">
+  <button
+    type="button"
+    class="btn-close  top-0 end-0 mt-3 me-3"
+    (click)="close()"
+    aria-label="Close">
+  </button>
+
+</div>
+
+<div class="modal-body px-4 py-5 text-center">
+  <!-- Icône Newsletter -->
+  <div class="mb-4">
+    <div class="newsletter-icon-wrapper d-inline-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 mb-3">
+      <i class="fi-mail fs-1 text-primary"></i>
+    </div>
+  </div>
+
+  <!-- Titre et Description -->
+  <div class="mb-4">
+    <h4 class="fw-bold mb-3 for-dax-font">
+      {{ getTitleKey() | translate }}
+    </h4>
+    <p class="text-muted mb-0 mx-auto" style="max-width: 300px;">
+      {{ getDescriptionKey() | translate }}
+    </p>
+  </div>
+
+  <!-- Formulaire -->
+  <form [formGroup]="newsletterForm" (ngSubmit)="onSubmit()" novalidate>
+
+    <!-- Champ Prénom (optionnel) -->
+    <div class="mb-3">
+      <div class="position-relative">
+        <input
+          type="text"
+          class="form-control form-control-lg text-center border-0 bg-body-secondary"
+          [class.is-invalid]="hasFieldError('first_name')"
+          formControlName="first_name"
+          [placeholder]="'newsletter.form.firstName' | translate"
+          autocomplete="given-name">
+        <div class="invalid-feedback text-center">
+          {{ getFieldError('first_name') }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Champ Email -->
+    <div class="mb-4">
+      <div class="position-relative">
+        <input
+          type="email"
+          class="form-control form-control-lg text-center border-0 bg-body-secondary"
+          [class.is-invalid]="hasFieldError('email')"
+          formControlName="email"
+          [placeholder]="'newsletter.form.email' | translate"
+          autocomplete="email"
+          required>
+        <div class="invalid-feedback text-center">
+          {{ getFieldError('email') }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Type d'abonnement (caché, prérempli) -->
+    <input type="hidden" formControlName="subscription_type">
+
+    <!-- Bouton de soumission -->
+    <button
+      type="submit"
+      class="btn btn-primary btn-lg w-100 mb-3"
+      [disabled]="isSubmitting()">
+
+      @if (isSubmitting()) {
+        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+        {{ 'newsletter.form.subscribing' | translate }}
+      } @else {
+        <i class="fi-mail me-2"></i>
+        {{ 'newsletter.form.subscribe' | translate }}
+      }
+    </button>
+
+    <!-- Texte de confidentialité -->
+    <p class="small text-muted mb-0">
+      {{ 'newsletter.privacy.text' | translate }}
+      <a href="/company/privacy-policy" class="text-decoration-none" target="_blank">
+        {{ 'newsletter.privacy.link' | translate }}
+      </a>
+    </p>
+  </form>
+</div>
+
+<div class="modal-footer border-0 pt-0">
+  <!-- Badge de confiance -->
+  <div class="w-100 text-center">
+    <div class="d-flex align-items-center justify-content-center gap-3 text-muted small">
+      <div class="d-flex align-items-center">
+        <i class="fi-shield me-1"></i>
+        {{ 'newsletter.trust.secure' | translate }}
+      </div>
+      <div class="d-flex align-items-center">
+        <i class="bi-x me-1"></i>
+        {{ 'newsletter.trust.noSpam' | translate }}
+      </div>
+      <div class="d-flex align-items-center">
+        <i class="fi-check me-1"></i>
+        {{ 'newsletter.trust.unsubscribe' | translate }}
+      </div>
+    </div>
+  </div>
+</div>

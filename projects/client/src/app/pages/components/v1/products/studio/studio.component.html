@@ -10,11 +10,8 @@
           {{ 'studio.hero.subtitle' | translate }}
         </p>
         <div class="mb-4">
-          <a href="#features" class="btn btn-primary btn-lg me-3">
+          <a href="javascript:" (click)="contactModalService.openContactModal()" class="btn btn-primary btn-lg me-3">
             {{ 'studio.hero.getStarted' | translate }}
-          </a>
-          <a href="#demo" class="btn btn-outline-dark btn-lg">
-            {{ 'studio.hero.learnMore' | translate }}
           </a>
         </div>
       </div>

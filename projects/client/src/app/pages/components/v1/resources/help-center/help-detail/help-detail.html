@@ -343,9 +343,46 @@
       <div class="col-lg-8 mx-auto">
         <div class="text-center p-4 bg-primary-subtle rounded">
           <h3 class="h5 mb-3">{{ 'help.stillHaveQuestions' | translate }}</h3>
-          <button class="btn btn-primary">
+          <a href="javascript:" (click)="contactModalService.openContactModal()" class="btn btn-primary">
             {{ 'help.contactUs' | translate }}
-          </button>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="py-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="text-center p-4 p-lg-5 rounded-3 bg-gradient border-0">
+
+            <!-- Icône Help + Newsletter -->
+            <div class="mb-3">
+              <div class=" d-inline-flex align-items-center justify-content-center rounded-circle bg-white shadow">
+                <i class="fi-life-buoy fs-2 text-primary"></i>
+              </div>
+            </div>
+
+            <!-- Titre et Description -->
+            <h3 class="h4 fw-bold mb-3 text-white for-dax-font">
+              {{ 'newsletter.help.title' | translate }}
+            </h3>
+            <p class="text-white-50 mb-4">
+              {{ 'newsletter.help.description' | translate }}
+            </p>
+
+            <!-- Bouton d'abonnement -->
+            <button
+              type="button"
+              class="btn btn-light btn-lg px-4 mb-3"
+              (click)="openHelpNewsletter()">
+              <i class="fi-bell me-2"></i>
+              {{ 'newsletter.help.subscribe' | translate }}
+            </button>
+
+          </div>
         </div>
       </div>
     </div>
