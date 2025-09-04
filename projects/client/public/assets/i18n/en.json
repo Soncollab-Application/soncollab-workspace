@@ -1519,5 +1519,75 @@
     "yes": "Yes",
     "no": "No",
     "cancel": "Cancel"
+  },
+
+  "newsletter": {
+    "titles": {
+      "general": "Stay Updated",
+      "blog": "Subscribe to our Blog",
+      "help": "Get Help Guides",
+      "product": "Product Updates"
+    },
+    "descriptions": {
+      "general": "Get our latest news and tips delivered directly to your inbox.",
+      "blog": "Don't miss any of our blog articles and practical guides.",
+      "help": "Receive our tutorials and tips to get the most out of our tools.",
+      "product": "Be the first to know about our new features."
+    },
+    "form": {
+      "firstName": "First name (optional)",
+      "email": "Your email address",
+      "subscribe": "Subscribe",
+      "subscribing": "Subscribing..."
+    },
+    "success": {
+      "title": "Subscription successful!",
+      "general": "Thank you! You're now subscribed to our newsletter.",
+      "blog": "Perfect! You'll receive our new blog articles.",
+      "help": "Excellent! You'll receive our help guides and tutorials.",
+      "product": "Great! You'll be notified of our new features first."
+    },
+    "errors": {
+      "title": "Subscription error",
+      "generic": "An error occurred. Please try again.",
+      "invalidData": "The entered data is not valid.",
+      "alreadySubscribed": "This email address is already subscribed.",
+      "serverError": "Server error. Please try again later."
+    },
+    "validation": {
+      "required": "This field is required",
+      "invalidEmail": "Please enter a valid email address",
+      "maxLength": "This field is too long"
+    },
+    "privacy": {
+      "text": "By subscribing, you agree to our",
+      "link": "privacy policy"
+    },
+    "trust": {
+      "secure": "100% secure",
+      "noSpam": "No spam",
+      "unsubscribe": "Easy unsubscribe"
+    },
+    "blog": {
+      "title": "Don't miss any article!",
+      "description": "Subscribe to our newsletter to receive our latest blog articles, practical guides and tips delivered directly to your inbox.",
+      "subscribe": "Subscribe to blog"
+    },
+    "help": {
+      "title": "Get our help guides",
+      "description": "Subscribe to receive our tutorials, expert tips and help updates that will help you maximize your use of our tools.",
+      "subscribe": "Get guides",
+      "benefit1": "Detailed tutorials",
+      "benefit2": "Explainer videos",
+      "benefit3": "Optimization tips"
+    },
+    "subscription": {
+      "type": {
+        "general": "General Newsletter",
+        "blog": "Blog Updates",
+        "help": "Help & Tutorials",
+        "product_updates": "Product News"
+      }
+    }
   }
 }

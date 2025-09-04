@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -10,6 +10,8 @@ import { HelpService } from '../../../../../services/help.service';
 import { LanguageService } from '../../../../../../core/services/language.service';
 import { SeoService } from '../../../../../../core/services/seo.service';
 import { HelpArticle } from '../../../../../models/help.model';
+import {NewsletterModalService} from '../../../../../../core/services/newsletter-modal.service';
+import {ContactModalService} from '../../../../../../core/services/contact-modal.service';
 
 @Component({
   selector: 'app-help-detail',
@@ -41,6 +43,8 @@ export class HelpDetail implements OnInit, OnDestroy {
   public feedbackText = '';
   public selectedFeedbackCategories: string[] = [];
 
+  contactModalService = inject(ContactModalService);
+
   constructor(
     private helpService: HelpService,
     private languageService: LanguageService,
@@ -48,7 +52,8 @@ export class HelpDetail implements OnInit, OnDestroy {
     private router: Router,
     private toast: ToastService,
     private seoService: SeoService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private newsletterService: NewsletterModalService
   ) {}
 
   public ngOnInit(): void {
@@ -84,6 +89,25 @@ export class HelpDetail implements OnInit, OnDestroy {
       }
     });
   }
+
+  openHelpNewsletter(): void {
+    const source = `help_article_${this.slug}`;
+    this.newsletterService.openNewsletterModal('help', source)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (result) => {
+          if (!result.cancelled) {
+            // Abonnement réussi
+            console.log('Newsletter subscription successful:', result);
+          }
+        },
+        error: (error) => {
+          console.error('Newsletter modal error:', error);
+        }
+      });
+  }
+
+
 
   private loadArticle(): void {
     this.isLoading = true;

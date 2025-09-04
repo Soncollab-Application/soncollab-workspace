@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 import {forkJoin, skip, Subject, switchMap} from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil, finalize } from 'rxjs/operators';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -8,11 +8,11 @@ import { CommonModule } from '@angular/common';
 import { HelpArticle, HelpCategory } from '../../../../../models/help.model';
 import { HelpService } from '../../../../../services/help.service';
 import { LanguageService } from '../../../../../../core/services/language.service';
+import {ContactModalService} from '../../../../../../core/services/contact-modal.service';
 
 @Component({
   selector: 'app-help-list',
   imports: [
-    RouterLink,
     TranslatePipe,
     FormsModule,
     CommonModule
@@ -39,12 +39,14 @@ export class HelpList implements OnInit, OnDestroy {
   // État pour l'accordéon FAQ
   public faqAccordionStates: { [key: string]: boolean } = {};
 
+  contactModalService = inject(ContactModalService);
+
   constructor(
     private helpService: HelpService,
     private languageService: LanguageService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private translateService: TranslateService
+    private translateService: TranslateService,
   ) {}
 
   public ngOnInit(): void {
@@ -94,6 +96,9 @@ export class HelpList implements OnInit, OnDestroy {
       }
     });
   }
+
+
+
 
   private setupSearchListener(): void {
     this.searchSubject.pipe(

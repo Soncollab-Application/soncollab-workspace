@@ -4,7 +4,7 @@
   </div>
   <h4 class="fw-semibold mb-3">{{ 'contact.success.title' | translate }}</h4>
   <p class="text-muted mb-4">{{ successMessage }}</p>
-  @if (responseData) {
+  @if (responseData !== null) {
     <div class="alert alert-info">
       <small>
         {{ 'contact.success.responseTime' | translate:{ time: responseData?.estimated_response_time } }}
