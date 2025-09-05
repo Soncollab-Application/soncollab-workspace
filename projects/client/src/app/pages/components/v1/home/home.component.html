@@ -91,7 +91,7 @@
                           <h2 class="fw-lighter for-dax-font  mb-0">{{ feature.titleKey | translate }}</h2>
                         </div>
                         <p class="mb-4 fw-light">{{ feature.descriptionKey | translate }}</p>
-                        <a class="btn" [class]="getButtonClass()" href="#!">
+                        <a class="btn" [class]="getButtonClass()" [routerLink]="[feature.link]">
                           Découvrir <i class="bi bi-arrow-right ms-2"></i>
                         </a>
                       </div>
@@ -107,7 +107,7 @@
                           <h2 class="fw-lighter for-dax-font  mb-0">{{ feature.titleKey | translate }}</h2>
                         </div>
                         <p class="mb-4 fw-light">{{ feature.descriptionKey | translate }}</p>
-                        <a class="btn"  [class]="getButtonClass()" href="#!">
+                        <a class="btn"  [class]="getButtonClass()" [routerLink]="[feature.link]">
                           Découvrir <i class="bi bi-arrow-right ms-2"></i>
                         </a>
                       </div>
