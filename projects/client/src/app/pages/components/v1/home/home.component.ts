@@ -9,7 +9,7 @@ import {SwiperOptions} from 'swiper/types';
 import {ThemeService} from '../../../../core/services/theme.service';
 import {NgClass, NgStyle} from '@angular/common';
 import {ContactModalService} from '../../../../core/services/contact-modal.service';
-import {ContactModal} from '../partials/modals/contact-modal/contact-modal';
+import {RouterLink} from '@angular/router';
 
 // Types
 type FeatureType = 'catalog' | 'distribution' | 'royalties' | 'payment' | 'analytics' | 'teams';
@@ -30,6 +30,7 @@ interface FeatureData {
   descriptionKey: string;
   imageSrc: string;
   imageAlt: string;
+  link: string;
   reversed: boolean; // Pour alterner la disposition
 }
 
@@ -43,6 +44,7 @@ type ButtonGradients = Record<FeatureType, ButtonGradientStyle>;
     NgStyle,
     NgClass,
     TranslatePipe,
+    RouterLink,
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
@@ -85,6 +87,7 @@ export class HomeComponent implements OnInit ,OnDestroy {
       descriptionKey: 'home.features.catalog.description',
       imageSrc: '/assets/images/features/catalog.png',
       imageAlt: 'Catalog',
+      link: '/features/catalog',
       reversed: false
     },
     {
@@ -93,6 +96,7 @@ export class HomeComponent implements OnInit ,OnDestroy {
       descriptionKey: 'home.features.distribution.description',
       imageSrc: '/assets/images/features/distribution.png',
       imageAlt: 'Distribution',
+      link: '/features/distribution',
       reversed: true
     },
     {
@@ -101,6 +105,7 @@ export class HomeComponent implements OnInit ,OnDestroy {
       descriptionKey: 'home.features.royalties.description',
       imageSrc: '/assets/images/features/royalties.png',
       imageAlt: 'Royalties',
+      link: '/features/royalties',
       reversed: false
     },
     {
@@ -109,6 +114,7 @@ export class HomeComponent implements OnInit ,OnDestroy {
       descriptionKey: 'home.features.payment.description',
       imageSrc: '/assets/images/features/payment.png',
       imageAlt: 'Payment',
+      link: '/features/payment',
       reversed: true
     },
     {
@@ -117,6 +123,7 @@ export class HomeComponent implements OnInit ,OnDestroy {
       descriptionKey: 'home.features.analytics.description',
       imageSrc: '/assets/images/features/analytics.png',
       imageAlt: 'Analytics',
+      link: '/features/analytics',
       reversed: false
     },
   ];
