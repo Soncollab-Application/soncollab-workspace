@@ -1314,7 +1314,9 @@
       "error": {
         "title": "Error",
         "submission": "An error occurred while sending",
-        "emailCheck": "Unable to verify email"
+        "emailCheck": "Unable to verify email",
+        "security": "Security verification failed. Please try again.",
+        "security.network": "Security verification error. Check your connection and try again."
       }
     },
     "success": {

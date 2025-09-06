@@ -62,11 +62,6 @@ export class BlogDetail implements OnInit, OnDestroy {
         this.slug = params['slug'];
         if (this.slug) {
           this.loadArticle();
-          const viewedKey = `blog_viewed_${this.slug}`;
-          if (!sessionStorage.getItem(viewedKey)) {
-            sessionStorage.setItem(viewedKey, 'true');
-            this.blogService.trackArticleView(this.slug).subscribe();
-          }
         }
       });
   }
@@ -100,7 +95,11 @@ export class BlogDetail implements OnInit, OnDestroy {
     this.notFound = false;
     this.article = null;
 
-    this.blogService.getArticleBySlug(this.slug)
+    // Session storage pour éviter double comptage
+    const viewedKey = `blog_viewed_${this.slug}`;
+    const incrementView = !sessionStorage.getItem(viewedKey);
+
+    this.blogService.getArticleBySlug(this.slug, incrementView)
       .pipe(takeUntil(this.destroy$))
       .subscribe(article => {
         this.isLoading = false;
@@ -113,6 +112,11 @@ export class BlogDetail implements OnInit, OnDestroy {
 
           this.seoService.updateBlogArticleSEO(article);
           this.loadRelatedArticles();
+
+          // Marquer comme vu après succès
+          if (incrementView) {
+            sessionStorage.setItem(viewedKey, 'true');
+          }
         } else {
           this.notFound = true;
         }
@@ -162,7 +166,7 @@ export class BlogDetail implements OnInit, OnDestroy {
       this.toast.showSuccess(
         'Lien copié dans le presse-papiers',
         {
-          position:'bottom-start',
+          position:'top-end',
           delay:3000,
           autohide: true,
         }

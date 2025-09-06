@@ -96,7 +96,7 @@ export class HomeComponent implements OnInit ,OnDestroy {
       descriptionKey: 'home.features.distribution.description',
       imageSrc: '/assets/images/features/distribution.png',
       imageAlt: 'Distribution',
-      link: '/features/distribution',
+      link: '/features/distribution-delivery',
       reversed: true
     },
     {
@@ -114,7 +114,7 @@ export class HomeComponent implements OnInit ,OnDestroy {
       descriptionKey: 'home.features.payment.description',
       imageSrc: '/assets/images/features/payment.png',
       imageAlt: 'Payment',
-      link: '/features/payment',
+      link: '/features/payments',
       reversed: true
     },
     {

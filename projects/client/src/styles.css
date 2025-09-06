@@ -291,3 +291,21 @@ app-choices-select .choices__list--dropdown {
   margin-top: 1rem !important;
   margin-bottom: 1rem !important;
 }
+
+
+
+.grecaptcha-badge {
+  visibility: hidden !important;
+}
+
+
+.grecaptcha-badge {
+  position: fixed !important;
+  top: -9999px !important;
+  left: -9999px !important;
+}
+
+.grecaptcha-badge {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}

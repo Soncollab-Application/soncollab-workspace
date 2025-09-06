@@ -1312,7 +1312,9 @@
       "error": {
         "title": "Erreur",
         "submission": "Une erreur est survenue lors de l'envoi",
-        "emailCheck": "Impossible de vérifier l'email"
+        "emailCheck": "Impossible de vérifier l'email",
+        "security": "Vérification de sécurité échouée. Veuillez réessayer.",
+        "security.network": "Erreur de vérification de sécurité. Vérifiez votre connexion et réessayez."
       }
     },
     "success": {
