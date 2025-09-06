@@ -73,11 +73,6 @@ export class HelpDetail implements OnInit, OnDestroy {
       this.slug = params['slug'];
       if (this.slug) {
         this.loadArticle();
-        const viewedKey = `help_viewed_${this.slug}`;
-        if (!sessionStorage.getItem(viewedKey)) {
-          sessionStorage.setItem(viewedKey, 'true');
-          this.helpService.incrementViewCount(this.slug).subscribe();
-        }
       }
     });
   }
@@ -113,16 +108,22 @@ export class HelpDetail implements OnInit, OnDestroy {
     this.isLoading = true;
     this.notFound = false;
 
-    this.helpService.getArticleBySlug(this.slug).pipe(takeUntil(this.destroy$)).subscribe(article => {
+    // Session storage pour éviter double comptage
+    const viewedKey = `help_viewed_${this.slug}`;
+    const incrementView = !sessionStorage.getItem(viewedKey);
+
+    this.helpService.getArticleBySlug(this.slug, incrementView).pipe(takeUntil(this.destroy$)).subscribe(article => {
       this.isLoading = false;
       if (article) {
         this.article = article;
         this.seoService.updateHelpArticleSEO(article);
-
-        // Vérifier si l'article a déjà été noté
         this.helpfulnessRated = this.isArticleRated(article.slug);
-
         this.loadRelatedArticles();
+
+        // Marquer comme vu après succès
+        if (incrementView) {
+          sessionStorage.setItem(viewedKey, 'true');
+        }
       } else {
         this.notFound = true;
         this.article = null;
@@ -194,7 +195,7 @@ export class HelpDetail implements OnInit, OnDestroy {
     }
   }
 
-  public submitRating(): void {
+  public async submitRating(): Promise<void> {
     if (!this.article?.documentId || !this.selectedRating || this.helpfulnessRated) return;
 
     let feedback = '';
@@ -206,42 +207,36 @@ export class HelpDetail implements OnInit, OnDestroy {
       feedback = feedback ? `${categories}: ${feedback}` : categories;
     }
 
-    this.helpService.rateArticle(
-      this.article.documentId,
-      this.selectedRating,
-      feedback || undefined
-    ).pipe(takeUntil(this.destroy$)).subscribe({
-      next: (response) => {
-        this.helpfulnessRated = true;
-        this.showRatingModalFlag = false;
+    try {
+      await this.helpService.rateArticle(
+        this.article.documentId,
+        this.selectedRating,
+        feedback || undefined
+      );
 
-        // Sauvegarder localement que l'utilisateur a noté cet article
-        if (this.article?.slug) {
-          this.saveRatedArticleToStorage(this.article.slug);
-        }
+      this.helpfulnessRated = true;
+      this.showRatingModalFlag = false;
 
-        const message = this.translateService.instant('help.thankYouForRating');
-        this.toast.showSuccess(message, {
-          position: 'top-end',
-          delay: 3000,
-          autohide: true,
-        });
-
-        // Mettre à jour le score local si retourné
-        if (response?.data?.newScore && this.article) {
-          this.article.helpfulness_score = response.data.newScore;
-        }
-      },
-      error: (error) => {
-        console.error('Erreur lors de la notation:', error);
-        const message = this.translateService.instant('help.ratingError');
-        this.toast.showError(message, {
-          position: 'top-end',
-          delay: 3000,
-          autohide: true,
-        });
+      if (this.article?.slug) {
+        this.saveRatedArticleToStorage(this.article.slug);
       }
-    });
+
+      const message = this.translateService.instant('help.thankYouForRating');
+      this.toast.showSuccess(message, {
+        position: 'top-end',
+        delay: 3000,
+        autohide: true,
+      });
+
+    } catch (error) {
+      console.error('Erreur lors de la notation:', error);
+      const message = this.translateService.instant('help.ratingError');
+      this.toast.showError(message, {
+        position: 'top-end',
+        delay: 3000,
+        autohide: true,
+      });
+    }
   }
 
   public closeRatingModal(): void {

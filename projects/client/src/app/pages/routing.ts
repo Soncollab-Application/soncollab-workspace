@@ -19,6 +19,7 @@ import {BlogList} from './components/v1/resources/blog/blog-list/blog-list';
 import {BlogDetail} from './components/v1/resources/blog/blog-detail/blog-detail';
 import {HelpList} from './components/v1/resources/help-center/help-list/help-list';
 import {HelpDetail} from './components/v1/resources/help-center/help-detail/help-detail';
+import {RecaptchaGuard} from '../core/guards/recaptcha.guard';
 
 
 const Routing: Routes = [
@@ -31,11 +32,11 @@ const Routing: Routes = [
   {path: 'features/income-tracking', component: IncomeTrackingComponent},
   {path: 'features/royalties', component: RoyaltiesComponent},
   {path: 'features/payments', component: PaymentsComponent},
-  {path: 'features/analytics', component: AnalyticsComponent},
+  {path: 'features/analytics', component: AnalyticsComponent, canActivate: [RecaptchaGuard]},
 
   // Products
-  {path: 'products/studio', component: StudioComponent},
-  {path: 'products/connect', component: ConnectComponent},
+  {path: 'products/studio', component: StudioComponent, canActivate: [RecaptchaGuard]},
+  {path: 'products/connect', component: ConnectComponent, canActivate: [RecaptchaGuard]},
 
   // Blog routes
   {path: 'blog', component: BlogList},
@@ -51,7 +52,7 @@ const Routing: Routes = [
   {path: 'company/use-condition', component: UseConditionComponent },
 
   // Other
-  {path: 'pricing', component: PricingComponent },
+  {path: 'pricing', component: PricingComponent, canActivate: [RecaptchaGuard]},
 
   // Error
   {path: '**', component: NotFoundComponent},
