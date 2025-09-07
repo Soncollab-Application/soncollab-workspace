@@ -59,11 +59,30 @@ export class BlogService {
     );
   }
 
-  public getArticleBySlug(slug: string, incrementView: boolean = true): Observable<BlogArticle | null> {
+  public async trackArticleView(slug: string, type: 'blog'): Promise<void> {
+    try {
+      const token = await this.recaptchaService.getBlogViewToken();
+      const body = {
+        recaptcha_token: token,
+        data: {
+          article_slug: slug,
+          article_type: type
+        }
+      }
+
+      this.httpClient.post(`${this.apiUrl}/article-views`, body).subscribe({
+        error: (error) => console.warn('Failed to track view:', error)
+      })
+    }catch (e) {
+      console.warn('reCAPTCHA failed for tracking view:', e);
+    }
+
+  }
+
+  public getArticleBySlug(slug: string): Observable<BlogArticle | null> {
     const locale = this.languageService.getCurrentLanguage();
     const params = {
-      locale,
-      increment_view: incrementView.toString()
+      locale
     };
 
     return this.httpClient.get<SingleBlogResponse>(`${this.apiUrl}/blog-articles/slug/${slug}`, { params }).pipe(

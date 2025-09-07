@@ -7,10 +7,17 @@ import { RecaptchaService } from '../services/recaptcha.service';
 })
 export class RecaptchaGuard implements CanActivate {
   constructor(private recaptchaService: RecaptchaService) {}
+
   async canActivate(route: ActivatedRouteSnapshot): Promise<boolean> {
     try {
+      const isReady = await this.recaptchaService.isRecaptchaReady();
+
+      if (!isReady) {
+        console.warn(`⚠️ reCAPTCHA non disponible pour: ${route.routeConfig?.path}`);
+        return true;
+      }
+
       await this.recaptchaService.getPageViewToken();
-      console.log(`✅ reCAPTCHA ready for: ${route.routeConfig?.path}`);
     } catch (error) {
       console.warn(`⚠️ reCAPTCHA preload failed for: ${route.routeConfig?.path}`, error);
     }

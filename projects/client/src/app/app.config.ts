@@ -10,6 +10,8 @@ import {FormsModule} from '@angular/forms';
 import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {provideMarkdown} from 'ngx-markdown';
+import {RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module} from 'ng-recaptcha-2';
+import {environment} from '../environments/environment';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, '/assets/i18n/', '.json');
@@ -28,6 +30,10 @@ export const appConfig: ApplicationConfig = {
         disableImageSizeWarning: true
       }
     },
+    {
+      provide: RECAPTCHA_V3_SITE_KEY,
+      useValue: environment.recaptcha.siteKey
+    },
     provideAnimations(),
     provideNoopAnimations(),
     importProvidersFrom(FormsModule),
@@ -40,7 +46,8 @@ export const appConfig: ApplicationConfig = {
           useFactory: HttpLoaderFactory,
           deps: [HttpClient]
         }
-      })
+      }),
+      RecaptchaV3Module
     ),
     provideMarkdown(),
   ]

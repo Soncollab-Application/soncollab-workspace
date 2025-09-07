@@ -1,5 +1,5 @@
 import {Component, inject, OnDestroy, OnInit} from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
+import {skip, Subject, takeUntil} from 'rxjs';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
@@ -12,6 +12,8 @@ import { SeoService } from '../../../../../../core/services/seo.service';
 import { HelpArticle } from '../../../../../models/help.model';
 import {NewsletterModalService} from '../../../../../../core/services/newsletter-modal.service';
 import {ContactModalService} from '../../../../../../core/services/contact-modal.service';
+import {distinctUntilChanged} from 'rxjs/operators';
+import {LanguageOrchestratorService} from '../../../../../../core/services/language-orchestrator.service';
 
 @Component({
   selector: 'app-help-detail',
@@ -29,6 +31,7 @@ import {ContactModalService} from '../../../../../../core/services/contact-modal
 export class HelpDetail implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
+  private componentId = 'help-detail';
 
   public article: HelpArticle | null = null;
   public relatedArticles: HelpArticle[] = [];
@@ -36,6 +39,8 @@ export class HelpDetail implements OnInit, OnDestroy {
   public notFound = false;
   public helpfulnessRated = false;
   private slug = '';
+  private hasInitialLoad = false;
+
 
   // Propriétés pour le modal de rating
   public showRatingModalFlag = false;
@@ -47,6 +52,7 @@ export class HelpDetail implements OnInit, OnDestroy {
 
   constructor(
     private helpService: HelpService,
+    private languageOrchestrator: LanguageOrchestratorService,
     private languageService: LanguageService,
     private route: ActivatedRoute,
     private router: Router,
@@ -58,31 +64,47 @@ export class HelpDetail implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     window.scrollTo(0, 0);
+
+    // S'enregistrer pour les changements de langue
+    this.languageOrchestrator.registerComponent(
+      this.componentId,
+      () => this.onLanguageChange()
+    );
+
+    // Écouter les changements de route
     this.setupRouteListener();
-    this.setupLanguageListener();
   }
 
   public ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.languageOrchestrator.unregisterComponent(this.componentId);
     this.seoService.clearSEO();
   }
 
   private setupRouteListener(): void {
-    this.route.params.pipe(takeUntil(this.destroy$)).subscribe(params => {
-      this.slug = params['slug'];
-      if (this.slug) {
-        this.loadArticle();
-      }
-    });
+    this.route.params
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(params => {
+        const newSlug = params['slug'];
+
+        if (newSlug && newSlug !== this.slug) {
+          this.slug = newSlug;
+          this.loadArticle();
+        } else if (newSlug) {
+          this.slug = newSlug;
+          // Ne charger que si c'est la première fois
+          if (!this.hasInitialLoad) {
+            this.loadArticle();
+          }
+        }
+      });
   }
 
-  private setupLanguageListener(): void {
-    this.languageService.currentLanguage$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      if (this.slug) {
-        this.loadArticle();
-      }
-    });
+  private onLanguageChange(): void {
+    if (this.slug && this.hasInitialLoad) {
+      this.loadArticle();
+    }
   }
 
   openHelpNewsletter(): void {
@@ -93,7 +115,6 @@ export class HelpDetail implements OnInit, OnDestroy {
         next: (result) => {
           if (!result.cancelled) {
             // Abonnement réussi
-            console.log('Newsletter subscription successful:', result);
           }
         },
         error: (error) => {
@@ -103,32 +124,47 @@ export class HelpDetail implements OnInit, OnDestroy {
   }
 
 
-
-  private loadArticle(): void {
+  private async loadArticle(): Promise<void> {
     this.isLoading = true;
     this.notFound = false;
 
-    // Session storage pour éviter double comptage
     const viewedKey = `help_viewed_${this.slug}`;
-    const incrementView = !sessionStorage.getItem(viewedKey);
+    const alreadyViewed = sessionStorage.getItem(viewedKey);
+    const shouldTrackView = !alreadyViewed;
 
-    this.helpService.getArticleBySlug(this.slug, incrementView).pipe(takeUntil(this.destroy$)).subscribe(article => {
-      this.isLoading = false;
-      if (article) {
-        this.article = article;
-        this.seoService.updateHelpArticleSEO(article);
-        this.helpfulnessRated = this.isArticleRated(article.slug);
-        this.loadRelatedArticles();
+    if (shouldTrackView) {
+      sessionStorage.setItem(viewedKey, 'true');
+    }
 
-        // Marquer comme vu après succès
-        if (incrementView) {
-          sessionStorage.setItem(viewedKey, 'true');
+    this.helpService.getArticleBySlug(this.slug)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: article => {
+          this.isLoading = false;
+          this.hasInitialLoad = true;
+          if (article) {
+            this.article = article;
+            this.seoService.updateHelpArticleSEO(article);
+            this.helpfulnessRated = this.isArticleRated(article.slug);
+            this.loadRelatedArticles();
+
+            if (shouldTrackView) {
+              this.helpService.trackArticleView(this.slug, 'help');
+            }
+          } else {
+            this.notFound = true;
+            this.article = null;
+          }
+        },
+        error: error => {
+          this.isLoading = false;
+          this.hasInitialLoad = true;
+          console.error('Error loading article:', error);
+          if (shouldTrackView) {
+            sessionStorage.removeItem(viewedKey);
+          }
         }
-      } else {
-        this.notFound = true;
-        this.article = null;
-      }
-    });
+      });
   }
 
   private loadRelatedArticles(): void {

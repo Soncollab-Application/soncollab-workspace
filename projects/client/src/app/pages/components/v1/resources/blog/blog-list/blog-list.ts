@@ -10,6 +10,7 @@ import {ChoicesConfig} from '../../../../../../core/modules/choices/choices.dire
 import {BlogService} from '../../../../../services/blog.service';
 import {LanguageService} from '../../../../../../core/services/language.service';
 import {environment} from '../../../../../../../environments/environment';
+import {LanguageOrchestratorService} from '../../../../../../core/services/language-orchestrator.service';
 
 
 
@@ -25,32 +26,29 @@ import {environment} from '../../../../../../../environments/environment';
   styleUrl: './blog-list.css'
 })
 export class BlogList implements OnInit, OnDestroy {
-  // Subjects pour la gestion des subscriptions
   private destroy$ = new Subject<void>();
-  // Utiliser un Subject simple pour éviter l'émission initiale non désirée
   private searchSubject = new Subject<string>();
+  private componentId = 'blog-list';
 
-  // État du composant
   private initialDataLoaded = false;
   private pendingParams: Params | null = null;
 
-  // Données
+
   public articles: BlogArticle[] = [];
   public categories: BlogCategory[] = [];
   public tags: BlogTag[] = [];
   public featuredArticles: BlogArticle[] = [];
 
-  // État courant des filtres
+
   public currentCategory: BlogCategory | null = null;
   public currentTag: BlogTag | null = null;
   public searchQuery = '';
   public sortBy: 'newest' | 'oldest' | 'title' = 'newest';
 
-  // Valeurs pour les selects (ngModel)
+
   public selectedCategorySlug: string = '';
   public selectedTagSlug: string = '';
 
-  // État UI
   public isLoading = false;
   public totalArticles = 0;
   public pagination: {
@@ -69,10 +67,11 @@ export class BlogList implements OnInit, OnDestroy {
   public categoryConfig: ChoicesConfig = {};
   public tagConfig: ChoicesConfig = {};
   public sortConfig: ChoicesConfig = {};
+  private hasInitialLoad = false;
 
   constructor(
     private blogService: BlogService,
-    private languageService: LanguageService,
+    private languageOrchestrator: LanguageOrchestratorService,
     private translateService: TranslateService,
     private activatedRoute: ActivatedRoute,
     private router: Router
@@ -80,27 +79,81 @@ export class BlogList implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     window.scrollTo(0, 0);
+
+    // S'enregistrer pour les changements de langue
+    this.languageOrchestrator.registerComponent(
+      this.componentId,
+      () => this.onLanguageChange()
+    );
+
     this.updateTranslatedContent();
-    this.setupLanguageListener();
     this.setupSearchListener();
     this.setupRouteListener();
     this.loadInitialData();
   }
 
+
+
   public ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.languageOrchestrator.unregisterComponent(this.componentId);
     this.blogService.clearState();
   }
 
-  private updateTranslatedContent(): void {
-    this.categoryConfig = { ...this.categoryConfig, placeholderValue: this.translateService.instant('blog.categories') };
-    this.tagConfig = { ...this.tagConfig, searchEnabled: true, placeholderValue: this.translateService.instant('blog.tags') };
-    this.sortConfig = { ...this.sortConfig, placeholderValue: this.translateService.instant('blog.sortBy') };
+  private onLanguageChange(): void {
+    if (this.hasInitialLoad) {
+      this.updateTranslatedContent();
+      this.reloadDataForLanguageChange();
+    }
+  }
 
+  private reloadDataForLanguageChange(): void {
+    const currentCategoryId = this.currentCategory?.id;
+    const currentTagId = this.currentTag?.id;
+
+    forkJoin({
+      categories: this.blogService.getCategories(),
+      tags: this.blogService.getTags(),
+      featured: this.blogService.getFeaturedArticles(6)
+    }).pipe(takeUntil(this.destroy$)).subscribe(({ categories, tags, featured }) => {
+      this.categories = categories;
+      this.tags = tags;
+      if (featured?.data) this.featuredArticles = featured.data;
+
+      this.buildCategoryOptions();
+      this.buildTagOptions();
+
+      // Gérer la navigation après changement de langue
+      const queryParamsToUpdate: { [key: string]: string | undefined } = {};
+      let needsNavigation = false;
+
+      if (currentCategoryId) {
+        const newCategory = this.categories.find(c => c.id === currentCategoryId);
+        queryParamsToUpdate['category'] = newCategory ? newCategory.slug : undefined;
+        needsNavigation = true;
+      }
+      if (currentTagId) {
+        const newTag = this.tags.find(t => t.id === currentTagId);
+        queryParamsToUpdate['tag'] = newTag ? newTag.slug : undefined;
+        needsNavigation = true;
+      }
+
+      if (needsNavigation) {
+        this.router.navigate([], {
+          relativeTo: this.activatedRoute,
+          queryParams: queryParamsToUpdate,
+          queryParamsHandling: 'merge',
+          replaceUrl: true
+        });
+      } else {
+        this.processRouteParams(this.activatedRoute.snapshot.queryParams);
+      }
+    });
+  }
+
+  private updateTranslatedContent(): void {
     this.buildSortOptions();
-    this.buildCategoryOptions();
-    this.buildTagOptions();
   }
 
   private setupRouteListener(): void {
@@ -113,46 +166,6 @@ export class BlogList implements OnInit, OnDestroy {
     });
   }
 
-  private setupLanguageListener(): void {
-    this.languageService.languageChanged$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.updateTranslatedContent();
-      const currentCategoryId = this.currentCategory?.id;
-      const currentTagId = this.currentTag?.id;
-
-      forkJoin({
-        categories: this.blogService.getCategories(),
-        tags: this.blogService.getTags(),
-        featured: this.blogService.getFeaturedArticles(6)
-      }).subscribe(({ categories, tags, featured }) => {
-        this.categories = categories;
-        this.tags = tags;
-        if (featured?.data) this.featuredArticles = featured.data;
-
-        this.buildCategoryOptions();
-        this.buildTagOptions();
-
-        const queryParamsToUpdate: { [key: string]: string | undefined } = {};
-        let needsNavigation = false;
-
-        if (currentCategoryId) {
-          const newCategory = this.categories.find(c => c.id === currentCategoryId);
-          queryParamsToUpdate['category'] = newCategory ? newCategory.slug : undefined;
-          needsNavigation = true;
-        }
-        if (currentTagId) {
-          const newTag = this.tags.find(t => t.id === currentTagId);
-          queryParamsToUpdate['tag'] = newTag ? newTag.slug : undefined;
-          needsNavigation = true;
-        }
-
-        if (needsNavigation) {
-          this.router.navigate([], { relativeTo: this.activatedRoute, queryParams: queryParamsToUpdate, queryParamsHandling: 'merge', replaceUrl: true });
-        } else {
-          this.processRouteParams(this.activatedRoute.snapshot.queryParams);
-        }
-      });
-    });
-  }
 
   private loadInitialData(): void {
     forkJoin({
@@ -167,6 +180,7 @@ export class BlogList implements OnInit, OnDestroy {
       this.buildCategoryOptions();
       this.buildTagOptions();
       this.initialDataLoaded = true;
+      this.hasInitialLoad = true;
 
       if (this.pendingParams) {
         this.processRouteParams(this.pendingParams);
@@ -191,6 +205,7 @@ export class BlogList implements OnInit, OnDestroy {
     this.loadArticles(page, categorySlug, tagSlug, search);
   }
 
+  
   private loadArticles(page: number = 1, categorySlug?: string, tagSlug?: string, searchQuery?: string): void {
     this.isLoading = true;
     let articlesObservable: Observable<BlogResponse | ApiSearchResponse | null>;

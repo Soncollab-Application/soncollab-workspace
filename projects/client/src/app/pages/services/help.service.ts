@@ -16,6 +16,7 @@ import {
   RecentHelp
 } from '../models/help.model';
 import {RecaptchaService} from '../../core/services/recaptcha.service';
+import {query} from '@angular/animations';
 
 @Injectable({
   providedIn: 'root'
@@ -55,11 +56,30 @@ export class HelpService {
     );
   }
 
-  public getArticleBySlug(slug: string, incrementView: boolean = true): Observable<HelpArticle | null> {
+  public async trackArticleView(slug: string, type: 'help'): Promise<void> {
+    try {
+      const token = await this.recaptchaService.getHelpViewToken();
+      const body = {
+        recaptcha_token: token,
+        data: {
+          article_slug: slug,
+          article_type: type
+        }
+      }
+
+      this.httpClient.post(`${this.apiUrl}/article-views`, body).subscribe({
+        error: (error) => console.warn('Failed to track view:', error)
+      })
+    }catch (e) {
+      console.warn('reCAPTCHA failed for tracking view:', e);
+    }
+
+  }
+
+  public getArticleBySlug(slug: string): Observable<HelpArticle | null> {
     const locale = this.languageService.getCurrentLanguage();
     const params = {
-      locale,
-      increment_view: incrementView.toString()
+      locale
     };
 
     return this.httpClient.get<SingleHelpResponse>(`${this.apiUrl}/help-articles/slug/${slug}`, { params }).pipe(
@@ -99,7 +119,6 @@ export class HelpService {
       })
     );
   }
-
   public getCategories(): Observable<HelpCategory[]> {
     const locale = this.languageService.getCurrentLanguage();
     return this.httpClient.get<HelpCategoriesResponse>(`${this.apiUrl}/help-categories`, { params: { locale } }).pipe(
@@ -110,7 +129,6 @@ export class HelpService {
       })
     );
   }
-
   public searchArticles(query: string, limit: number = 20): Observable<ApiHelpSearchResponse | null> {
     const locale = this.languageService.getCurrentLanguage();
     let parameters = new HttpParams()
@@ -126,8 +144,6 @@ export class HelpService {
       })
     );
   }
-
-
   public getPopularSearches(limit: number = 5): Observable<string[]> {
     const locale = this.languageService.getCurrentLanguage();
     let parameters = new HttpParams()
@@ -141,7 +157,6 @@ export class HelpService {
       })
     );
   }
-
   public getFeaturedArticles(limit: number = 6): Observable<ApiHelpFeaturedResponse | null> {
     const locale = this.languageService.getCurrentLanguage();
     let parameters = new HttpParams()
@@ -155,7 +170,6 @@ export class HelpService {
       })
     );
   }
-
   public getRecentArticles(limit: number = 10): Observable<ApiHelpRecentContentResponse | null> {
     const locale = this.languageService.getCurrentLanguage();
     let parameters = new HttpParams()
@@ -170,8 +184,6 @@ export class HelpService {
       })
     );
   }
-
-
   public async rateArticle(documentId: string, rating: number, feedback?: string): Promise<void> {
     if (!documentId) return;
 
