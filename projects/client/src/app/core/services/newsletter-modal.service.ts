@@ -2,17 +2,18 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, throwError, from, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { SuccessModal } from '../../pages/components/v1/partials/modals/success-modal/success-modal';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { environment } from '../../../environments/environment';
 import {NewsletterModal} from '../../pages/components/v1/partials/modals/newsletter-modal/newsletter-modal';
 import {LanguageService} from './language.service';
+import {RecaptchaService} from './recaptcha.service';
 
 export interface NewsletterSubscriptionData {
   email: string;
   first_name?: string;
   subscription_type: 'blog' | 'product_updates' | 'general' | 'help';
   source?: string;
+  recaptcha_token?: string;
 }
 
 export interface NewsletterResponse {
@@ -79,7 +80,6 @@ export class NewsletterModalService {
    * Soumet l'abonnement newsletter
    */
   subscribeToNewsletter(subscriptionData: NewsletterSubscriptionData): Observable<NewsletterResponse> {
-    // Ajouter les données par défaut
     const locale = this.languageService.getCurrentLanguage();
     const formData = {
       ...subscriptionData,

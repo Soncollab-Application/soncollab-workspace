@@ -9,6 +9,7 @@ import { HelpArticle, HelpCategory } from '../../../../../models/help.model';
 import { HelpService } from '../../../../../services/help.service';
 import { LanguageService } from '../../../../../../core/services/language.service';
 import {ContactModalService} from '../../../../../../core/services/contact-modal.service';
+import {LanguageOrchestratorService} from '../../../../../../core/services/language-orchestrator.service';
 
 @Component({
   selector: 'app-help-list',
@@ -36,6 +37,9 @@ export class HelpList implements OnInit, OnDestroy {
   public searchQuery = '';
   public resultTitle = '';
 
+  private componentId = 'help-list';
+  private hasInitialLoad = false;
+
   // État pour l'accordéon FAQ
   public faqAccordionStates: { [key: string]: boolean } = {};
 
@@ -44,6 +48,7 @@ export class HelpList implements OnInit, OnDestroy {
   constructor(
     private helpService: HelpService,
     private languageService: LanguageService,
+    private languageOrchestrator: LanguageOrchestratorService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private translateService: TranslateService,
@@ -51,8 +56,10 @@ export class HelpList implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     window.scrollTo(0, 0);
+
+    this.languageOrchestrator.registerComponent(this.componentId, () => this.onLanguageChange());
+
     this.setupSearchListener();
-    this.setupLanguageListener();
     this.loadInitialData();
     this.checkUrlParams();
   }
@@ -63,14 +70,11 @@ export class HelpList implements OnInit, OnDestroy {
   }
 
 
-  private setupLanguageListener(): void {
-    this.languageService.languageChanged$.pipe(
-      takeUntil(this.destroy$),
-      skip(1)
-    ).subscribe(() => {
+  private onLanguageChange(): void {
+    if (this.hasInitialLoad) {
       this.router.navigate(['/help']);
       this.loadInitialData();
-    });
+    }
   }
 
   private loadInitialData(): void {
@@ -87,6 +91,7 @@ export class HelpList implements OnInit, OnDestroy {
     ).subscribe(({ categories, featured, faq, popularSearches }) => {
       this.categories = categories;
       this.popularSearches = popularSearches;
+      this.hasInitialLoad = true;
 
       if (featured?.data) {
         this.featuredArticles = featured.data.help;

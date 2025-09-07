@@ -1,5 +1,5 @@
 import {Component, inject, OnDestroy, OnInit} from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
+import {skip, Subject, takeUntil} from 'rxjs';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
@@ -12,6 +12,8 @@ import { SeoService } from '../../../../../../core/services/seo.service';
 import { HelpArticle } from '../../../../../models/help.model';
 import {NewsletterModalService} from '../../../../../../core/services/newsletter-modal.service';
 import {ContactModalService} from '../../../../../../core/services/contact-modal.service';
+import {distinctUntilChanged} from 'rxjs/operators';
+import {LanguageOrchestratorService} from '../../../../../../core/services/language-orchestrator.service';
 
 @Component({
   selector: 'app-help-detail',
@@ -29,6 +31,7 @@ import {ContactModalService} from '../../../../../../core/services/contact-modal
 export class HelpDetail implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
+  private componentId = 'help-detail';
 
   public article: HelpArticle | null = null;
   public relatedArticles: HelpArticle[] = [];
@@ -36,6 +39,8 @@ export class HelpDetail implements OnInit, OnDestroy {
   public notFound = false;
   public helpfulnessRated = false;
   private slug = '';
+  private hasInitialLoad = false;
+
 
   // Propriétés pour le modal de rating
   public showRatingModalFlag = false;
@@ -47,6 +52,7 @@ export class HelpDetail implements OnInit, OnDestroy {
 
   constructor(
     private helpService: HelpService,
+    private languageOrchestrator: LanguageOrchestratorService,
     private languageService: LanguageService,
     private route: ActivatedRoute,
     private router: Router,
@@ -58,36 +64,47 @@ export class HelpDetail implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     window.scrollTo(0, 0);
+
+    // S'enregistrer pour les changements de langue
+    this.languageOrchestrator.registerComponent(
+      this.componentId,
+      () => this.onLanguageChange()
+    );
+
+    // Écouter les changements de route
     this.setupRouteListener();
-    this.setupLanguageListener();
   }
 
   public ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.languageOrchestrator.unregisterComponent(this.componentId);
     this.seoService.clearSEO();
   }
 
   private setupRouteListener(): void {
-    this.route.params.pipe(takeUntil(this.destroy$)).subscribe(params => {
-      this.slug = params['slug'];
-      if (this.slug) {
-        this.loadArticle();
-        const viewedKey = `help_viewed_${this.slug}`;
-        if (!sessionStorage.getItem(viewedKey)) {
-          sessionStorage.setItem(viewedKey, 'true');
-          this.helpService.incrementViewCount(this.slug).subscribe();
+    this.route.params
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(params => {
+        const newSlug = params['slug'];
+
+        if (newSlug && newSlug !== this.slug) {
+          this.slug = newSlug;
+          this.loadArticle();
+        } else if (newSlug) {
+          this.slug = newSlug;
+          // Ne charger que si c'est la première fois
+          if (!this.hasInitialLoad) {
+            this.loadArticle();
+          }
         }
-      }
-    });
+      });
   }
 
-  private setupLanguageListener(): void {
-    this.languageService.currentLanguage$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      if (this.slug) {
-        this.loadArticle();
-      }
-    });
+  private onLanguageChange(): void {
+    if (this.slug && this.hasInitialLoad) {
+      this.loadArticle();
+    }
   }
 
   openHelpNewsletter(): void {
@@ -98,7 +115,6 @@ export class HelpDetail implements OnInit, OnDestroy {
         next: (result) => {
           if (!result.cancelled) {
             // Abonnement réussi
-            console.log('Newsletter subscription successful:', result);
           }
         },
         error: (error) => {
@@ -108,26 +124,47 @@ export class HelpDetail implements OnInit, OnDestroy {
   }
 
 
-
-  private loadArticle(): void {
+  private async loadArticle(): Promise<void> {
     this.isLoading = true;
     this.notFound = false;
 
-    this.helpService.getArticleBySlug(this.slug).pipe(takeUntil(this.destroy$)).subscribe(article => {
-      this.isLoading = false;
-      if (article) {
-        this.article = article;
-        this.seoService.updateHelpArticleSEO(article);
+    const viewedKey = `help_viewed_${this.slug}`;
+    const alreadyViewed = sessionStorage.getItem(viewedKey);
+    const shouldTrackView = !alreadyViewed;
 
-        // Vérifier si l'article a déjà été noté
-        this.helpfulnessRated = this.isArticleRated(article.slug);
+    if (shouldTrackView) {
+      sessionStorage.setItem(viewedKey, 'true');
+    }
 
-        this.loadRelatedArticles();
-      } else {
-        this.notFound = true;
-        this.article = null;
-      }
-    });
+    this.helpService.getArticleBySlug(this.slug)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: article => {
+          this.isLoading = false;
+          this.hasInitialLoad = true;
+          if (article) {
+            this.article = article;
+            this.seoService.updateHelpArticleSEO(article);
+            this.helpfulnessRated = this.isArticleRated(article.slug);
+            this.loadRelatedArticles();
+
+            if (shouldTrackView) {
+              this.helpService.trackArticleView(this.slug, 'help');
+            }
+          } else {
+            this.notFound = true;
+            this.article = null;
+          }
+        },
+        error: error => {
+          this.isLoading = false;
+          this.hasInitialLoad = true;
+          console.error('Error loading article:', error);
+          if (shouldTrackView) {
+            sessionStorage.removeItem(viewedKey);
+          }
+        }
+      });
   }
 
   private loadRelatedArticles(): void {
@@ -194,7 +231,7 @@ export class HelpDetail implements OnInit, OnDestroy {
     }
   }
 
-  public submitRating(): void {
+  public async submitRating(): Promise<void> {
     if (!this.article?.documentId || !this.selectedRating || this.helpfulnessRated) return;
 
     let feedback = '';
@@ -206,42 +243,36 @@ export class HelpDetail implements OnInit, OnDestroy {
       feedback = feedback ? `${categories}: ${feedback}` : categories;
     }
 
-    this.helpService.rateArticle(
-      this.article.documentId,
-      this.selectedRating,
-      feedback || undefined
-    ).pipe(takeUntil(this.destroy$)).subscribe({
-      next: (response) => {
-        this.helpfulnessRated = true;
-        this.showRatingModalFlag = false;
+    try {
+      await this.helpService.rateArticle(
+        this.article.documentId,
+        this.selectedRating,
+        feedback || undefined
+      );
 
-        // Sauvegarder localement que l'utilisateur a noté cet article
-        if (this.article?.slug) {
-          this.saveRatedArticleToStorage(this.article.slug);
-        }
+      this.helpfulnessRated = true;
+      this.showRatingModalFlag = false;
 
-        const message = this.translateService.instant('help.thankYouForRating');
-        this.toast.showSuccess(message, {
-          position: 'top-end',
-          delay: 3000,
-          autohide: true,
-        });
-
-        // Mettre à jour le score local si retourné
-        if (response?.data?.newScore && this.article) {
-          this.article.helpfulness_score = response.data.newScore;
-        }
-      },
-      error: (error) => {
-        console.error('Erreur lors de la notation:', error);
-        const message = this.translateService.instant('help.ratingError');
-        this.toast.showError(message, {
-          position: 'top-end',
-          delay: 3000,
-          autohide: true,
-        });
+      if (this.article?.slug) {
+        this.saveRatedArticleToStorage(this.article.slug);
       }
-    });
+
+      const message = this.translateService.instant('help.thankYouForRating');
+      this.toast.showSuccess(message, {
+        position: 'top-end',
+        delay: 3000,
+        autohide: true,
+      });
+
+    } catch (error) {
+      console.error('Erreur lors de la notation:', error);
+      const message = this.translateService.instant('help.ratingError');
+      this.toast.showError(message, {
+        position: 'top-end',
+        delay: 3000,
+        autohide: true,
+      });
+    }
   }
 
   public closeRatingModal(): void {

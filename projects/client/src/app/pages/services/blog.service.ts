@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import {inject, Injectable} from '@angular/core';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import { Observable, map, catchError, of, BehaviorSubject } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { LanguageService } from '../../core/services/language.service';
@@ -18,6 +18,7 @@ import {
   ApiRecentContentResponse,
   RecentBlog
 } from '../models/blog.model';
+import {RecaptchaService} from '../../core/services/recaptcha.service';
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +32,8 @@ export class BlogService {
   public currentCategory$ = this.currentCategorySubject.asObservable();
   private currentTagSubject = new BehaviorSubject<BlogTag | null>(null);
   public currentTag$ = this.currentTagSubject.asObservable();
+
+  recaptchaService = inject(RecaptchaService);
 
   constructor(
     private httpClient: HttpClient,
@@ -56,10 +59,33 @@ export class BlogService {
     );
   }
 
+  public async trackArticleView(slug: string, type: 'blog'): Promise<void> {
+    try {
+      const token = await this.recaptchaService.getBlogViewToken();
+      const body = {
+        recaptcha_token: token,
+        data: {
+          article_slug: slug,
+          article_type: type
+        }
+      }
+
+      this.httpClient.post(`${this.apiUrl}/article-views`, body).subscribe({
+        error: (error) => console.warn('Failed to track view:', error)
+      })
+    }catch (e) {
+      console.warn('reCAPTCHA failed for tracking view:', e);
+    }
+
+  }
+
   public getArticleBySlug(slug: string): Observable<BlogArticle | null> {
     const locale = this.languageService.getCurrentLanguage();
-    let parameters = new HttpParams().set('locale', locale);
-    return this.httpClient.get<SingleBlogResponse>(`${this.apiUrl}/blog-articles/slug/${slug}`, { params: parameters }).pipe(
+    const params = {
+      locale
+    };
+
+    return this.httpClient.get<SingleBlogResponse>(`${this.apiUrl}/blog-articles/slug/${slug}`, { params }).pipe(
       map(response => response.data || null),
       catchError(error => {
         return of(null);
@@ -203,17 +229,6 @@ export class BlogService {
     );
   }
 
-  public trackArticleView(slug: string): Observable<BlogArticle | null> {
-    const locale = this.languageService.getCurrentLanguage();
-    const parameters = new HttpParams().set('locale', locale);
-
-    return this.httpClient.get<SingleBlogResponse>(`${this.apiUrl}/blog-articles/slug/${slug}/view`, { params: parameters }).pipe(
-      map(response => response.data || null),
-      catchError(error => {
-        return of(null);
-      })
-    );
-  }
 
   public setCurrentCategory(category: BlogCategory | null): void {
     this.currentCategorySubject.next(category);

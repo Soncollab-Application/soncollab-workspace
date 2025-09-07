@@ -27,6 +27,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ChoicesSelectComponent, SelectOption } from '../../../../../../core/modules/choices/choices-select.component';
 import { ChoicesConfig } from '../../../../../../core/modules/choices/choices.directive';
 import { ToastService } from '../../../../../../core/modules/toast/toast.service';
+import {RecaptchaService} from '../../../../../../core/services/recaptcha.service';
 
 @Component({
   selector: 'app-contact-modal',
@@ -50,6 +51,7 @@ export class ContactModal implements OnInit, OnDestroy {
   private contactModalService = inject(ContactModalService);
   private languageService = inject(LanguageService);
   private translateService = inject(TranslateService);
+  private recaptchaService = inject(RecaptchaService);
   private cdr = inject(ChangeDetectorRef);
 
   @Input() initialData?: any;
@@ -353,7 +355,7 @@ export class ContactModal implements OnInit, OnDestroy {
     return !!(field && field.invalid && (field.dirty || field.touched));
   }
 
-  onSubmit(): void {
+  async onSubmit(): Promise<void> {
     if (this.contactForm.invalid || this.isSubmitting()) {
       this.markAllFieldsAsTouched();
 
@@ -374,48 +376,79 @@ export class ContactModal implements OnInit, OnDestroy {
     this.choiceSpecialValue();
     this.isSubmitting.set(true);
 
-    const formData: ContactFormData = this.contactForm.value;
+    try {
+      // Obtenir le token reCAPTCHA
+      const recaptchaToken = await this.recaptchaService.getContactFormToken();
 
-    this.contactModalService.submitContactForm(formData)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (response) => {
-          this.isSubmitting.set(false);
+      const formData: ContactFormData = {
+        ...this.contactForm.value,
+        language: this.languageService.getCurrentLanguage(),
+        recaptcha_token: recaptchaToken // Ajouter le token reCAPTCHA
+      };
 
-          // Toast de succès - Position en haut centre pour être visible pendant la fermeture de modal
-          this.toastService.showSuccess(
-            this.getTranslation('contact.form.success.submitted', 'Votre message a été envoyé avec succès !'),
-            {
-              header: this.getTranslation('contact.form.success.title', 'Succès'),
-              position: 'top-center',
-              delay: 4000
-            }
-          );
+      this.contactModalService.submitContactForm(formData)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (response) => {
+            this.isSubmitting.set(false);
 
-          this.activeModal.close('success');
-
-          setTimeout(() => {
-            this.contactModalService.openSuccessModal(
-              response.message,
-              response.data
+            // Toast de succès - Position en haut centre pour être visible pendant la fermeture de modal
+            this.toastService.showSuccess(
+              this.getTranslation('contact.form.success.submitted', 'Votre message a été envoyé avec succès !'),
+              {
+                header: this.getTranslation('contact.form.success.title', 'Succès'),
+                position: 'top-center',
+                delay: 4000
+              }
             );
-          }, 300);
-        },
-        error: (error) => {
-          this.isSubmitting.set(false);
 
-          // Toast d'erreur pour l'envoi - Position en haut centre pour modal
-          this.toastService.showError(
-            this.getTranslation('contact.form.error.submission', 'Une erreur est survenue lors de l\'envoi'),
-            {
-              header: this.getTranslation('contact.form.error.title', 'Erreur'),
-              position: 'top-center',
-              autohide: true,
-              delay: 8000
+            this.activeModal.close('success');
+
+            setTimeout(() => {
+              this.contactModalService.openSuccessModal(
+                response.message,
+                response.data
+              );
+            }, 300);
+          },
+          error: (error) => {
+            this.isSubmitting.set(false);
+
+            // Gestion d'erreurs spécifiques reCAPTCHA
+            let errorMessage = this.getTranslation('contact.form.error.submission', 'Une erreur est survenue lors de l\'envoi');
+
+            if (error.status === 400 && error.error?.message?.includes('reCAPTCHA')) {
+              errorMessage = this.getTranslation('contact.form.error.security', 'Vérification de sécurité échouée. Veuillez réessayer.');
             }
-          );
+
+            // Toast d'erreur pour l'envoi - Position en haut centre pour modal
+            this.toastService.showError(
+              errorMessage,
+              {
+                header: this.getTranslation('contact.form.error.title', 'Erreur'),
+                position: 'top-center',
+                autohide: true,
+                delay: 8000
+              }
+            );
+          }
+        });
+
+    } catch (recaptchaError) {
+      this.isSubmitting.set(false);
+
+      // Erreur spécifique reCAPTCHA (réseau, configuration, etc.)
+      this.toastService.showError(
+        this.getTranslation('contact.form.error.security.network', 'Erreur de vérification de sécurité. Vérifiez votre connexion et réessayez.'),
+        {
+          header: this.getTranslation('contact.form.error.title', 'Erreur'),
+          position: 'top-center',
+          delay: 6000
         }
-      });
+      );
+
+      console.error('reCAPTCHA error:', recaptchaError);
+    }
   }
 
   private markAllFieldsAsTouched(): void {

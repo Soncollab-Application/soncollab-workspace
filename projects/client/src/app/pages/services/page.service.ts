@@ -14,11 +14,11 @@ export class PageService {
 
   constructor(
     private http: HttpClient,
-    private languageService: LanguageService // ✅ Injection du service de langue
+    private languageService: LanguageService
   ) {}
 
   /**
-   * ✅ Récupère les données du hero selon la langue actuelle
+   * Récupère les données du hero selon la langue actuelle
    */
   getHero(): Observable<Hero | null> {
     const locale = this.languageService.getCurrentLanguage();
@@ -35,7 +35,7 @@ export class PageService {
   }
 
   /**
-   * ✅ Récupère les données du hero pour une langue spécifique
+   * Récupère les données du hero pour une langue spécifique
    */
   getHeroForLanguage(language: string): Observable<Hero | null> {
     return this.http.get<HeroResponse>(`${this.apiUrl}/hero`, {

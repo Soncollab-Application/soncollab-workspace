@@ -10,6 +10,7 @@ import {
 } from '../../../../../../core/services/newsletter-modal.service';
 import {ToastService} from '../../../../../../core/modules/toast/toast.service';
 import {LanguageService} from '../../../../../../core/services/language.service';
+import {RecaptchaService} from '../../../../../../core/services/recaptcha.service';
 
 @Component({
   selector: 'app-newsletter-modal',
@@ -27,6 +28,7 @@ export class NewsletterModal implements OnInit, OnDestroy {
   private newsletterService = inject(NewsletterModalService);
   private languageService = inject(LanguageService);
   private translateService = inject(TranslateService);
+  recaptchaService = inject(RecaptchaService);
 
   @Input() subscriptionType: 'blog' | 'help' | 'general' = 'general';
   @Input() source?: string;
@@ -78,31 +80,38 @@ export class NewsletterModal implements OnInit, OnDestroy {
   /**
    * Soumission du formulaire
    */
-  onSubmit(): void {
+  async onSubmit(): Promise<void> {
     if (this.newsletterForm.valid && !this.isSubmitting()) {
       this.isSubmitting.set(true);
 
-      const formValue = this.newsletterForm.value;
-      const subscriptionData: NewsletterSubscriptionData = {
-        email: formValue.email,
-        first_name: formValue.first_name || undefined,
-        subscription_type: formValue.subscription_type,
-        source: this.source || this.getSourceFromType()
-      };
+      try {
+        const token = await this.recaptchaService.getNewsletterToken();
 
-      this.newsletterService.subscribeToNewsletter(subscriptionData)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: (response: NewsletterResponse) => {
-            this.isSubmitting.set(false);
-            this.handleSuccess(response);
-          },
-          error: (error) => {
-            this.isSubmitting.set(false);
-            console.log(error)
-            this.handleError(error);
-          }
-        });
+        const formValue = this.newsletterForm.value;
+        const subscriptionData: NewsletterSubscriptionData = {
+          email: formValue.email,
+          first_name: formValue.first_name || undefined,
+          subscription_type: formValue.subscription_type,
+          source: this.source || this.getSourceFromType(),
+          recaptcha_token: token
+        };
+
+        this.newsletterService.subscribeToNewsletter(subscriptionData)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe({
+            next: (response: NewsletterResponse) => {
+              this.isSubmitting.set(false);
+              this.handleSuccess(response);
+            },
+            error: (error) => {
+              this.isSubmitting.set(false);
+              this.handleError(error);
+            }
+          });
+      } catch (error) {
+        this.isSubmitting.set(false);
+        this.handleError(error);
+      }
     } else {
       this.markFormGroupTouched();
     }
