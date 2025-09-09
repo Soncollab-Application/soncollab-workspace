@@ -20,7 +20,7 @@
 
 <!-- Page title + Filters -->
 <section class="container mb-2">
-  <h1 class="mb-4 for-dax-font">{{ 'blog.title' | translate }}</h1>
+  <h1 class="mb-4 for-inter-font">{{ 'blog.title' | translate }}</h1>
 
   <!-- Filters -->
   <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-2 g-md-3 g-lg-4 mb-4">
@@ -193,7 +193,7 @@
               </ul>
 
               <h3 class="h5 pt-1 mb-3">
-                <a class="hover-effect-underline stretched-link for-dax-font"
+                <a class="hover-effect-underline stretched-link for-inter-font"
                    [routerLink]="['/blog', article.slug]">
                   {{ article.title }}
                 </a>
@@ -289,7 +289,7 @@
           <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1"/>
         </svg>
       </div>
-      <h3 class="h4 mb-3 for-dax-font">{{ 'blog.noArticlesFound' | translate }}</h3>
+      <h3 class="h4 mb-3 for-inter-font">{{ 'blog.noArticlesFound' | translate }}</h3>
       <p class="text-muted mb-4">{{ 'blog.noArticlesMessage' | translate }}</p>
       @if (searchQuery || currentCategory || currentTag) {
         <button class="btn btn-outline-primary" (click)="clearAllFilters()">

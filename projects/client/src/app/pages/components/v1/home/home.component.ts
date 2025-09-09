@@ -10,6 +10,7 @@ import {ThemeService} from '../../../../core/services/theme.service';
 import {NgClass, NgStyle} from '@angular/common';
 import {ContactModalService} from '../../../../core/services/contact-modal.service';
 import {RouterLink} from '@angular/router';
+import {LanguageOrchestratorService} from '../../../../core/services/language-orchestrator.service';
 
 // Types
 type FeatureType = 'catalog' | 'distribution' | 'royalties' | 'payment' | 'analytics' | 'teams';
@@ -54,6 +55,7 @@ export class HomeComponent implements OnInit ,OnDestroy {
   hero: Hero | null = null;
   isLoading = true;
   private destroy$ = new Subject<void>();
+  private componentId = 'home';
 
   eventsConfig: SwiperOptions = {
     slidesPerView: 1,
@@ -132,16 +134,22 @@ export class HomeComponent implements OnInit ,OnDestroy {
 
   private themeSubscription!: Subscription;
   isDarkTheme = false;
+  private hasInitialLoad = false;
 
   constructor(
     private pageService: PageService,
     private themeService: ThemeService,
     private contactModalService: ContactModalService,
-    private languageService: LanguageService) {}
+    private languageOrchestrator: LanguageOrchestratorService) {}
 
   ngOnInit(): void {
     window.scrollTo(0, 0);
-    this.setupLanguageListener();
+
+    this.languageOrchestrator.registerComponent(
+      this.componentId,
+      () => this.onLanguageChange()
+    );
+
     this.loadHeroData();
 
     this.themeSubscription = this.themeService.theme$.subscribe(() => {
@@ -152,18 +160,18 @@ export class HomeComponent implements OnInit ,OnDestroy {
   }
 
 
+  private onLanguageChange(): void {
+    if (this.hasInitialLoad) {
+      this.loadHeroData();
+    }
+  }
+
+
   openContactModal(): void {
     this.contactModalService.openContactModal().subscribe()
   }
 
 
-  private setupLanguageListener(): void {
-    this.languageService.onLanguageChange()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((newLanguage: string) => {
-        this.loadHeroData(); // Recharger les données du hero
-      });
-  }
 
   private loadHeroData(): void {
     this.isLoading = true;
@@ -172,12 +180,14 @@ export class HomeComponent implements OnInit ,OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (hero) => {
+          this.hasInitialLoad = true;
           this.hero = hero;
           this.isLoading = false;
         },
         error: (error) => {
           console.error('Erreur lors du chargement du hero:', error);
           this.isLoading = false;
+          this.hasInitialLoad = true;
         }
       });
   }
@@ -185,7 +195,7 @@ export class HomeComponent implements OnInit ,OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-
+    this.languageOrchestrator.unregisterComponent(this.componentId);
     if (this.themeSubscription) {
       this.themeSubscription.unsubscribe();
     }

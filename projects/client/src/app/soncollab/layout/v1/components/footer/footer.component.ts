@@ -65,10 +65,4 @@ export class FooterComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Obtient le nom de la langue actuelle
-   */
-  getCurrentLanguageName(): string {
-    return this.languageService.getCurrentLanguageName();
-  }
 }
