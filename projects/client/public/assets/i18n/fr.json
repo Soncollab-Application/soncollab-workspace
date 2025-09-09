@@ -55,64 +55,64 @@
   },
   "home": {
     "heroFallback": {
-      "title": "Permettre à la musique indépendante de prospérer",
-      "subtitle": "Une plateforme conçue pour faire évoluer, protéger et monétiser la musique indépendante, à l'échelle mondiale.",
+      "title": "La musique indépendante à son meilleur",
+      "subtitle": "Distribuez, protégez et monétisez votre musique dans le monde entier.",
       "button": "Commencer"
     },
-    "tagline": "Une nouvelle façon de distribuer, protéger et monétiser la musique",
-    "forLabelsTitle": "Pour les labels et les distributeurs de musique",
+    "tagline": "Distribuez, protégez et monétisez votre musique",
+    "forLabelsTitle": "Pour les labels et distributeurs",
     "features": {
       "catalog": {
-        "title": "Centralisez les catalogues",
-        "description": "Gérez les releases de vos artistes facilement : import, organisation et livraison à grande échelle sans erreurs ni doublons."
+        "title": "Centralisez vos catalogues",
+        "description": "Importez, organisez et livrez vos releases à grande échelle. Sans erreurs, sans doublons."
       },
       "distribution": {
-        "title": "Une infrastructure de distribution mondiale",
-        "description": "Gérez vos livraisons vers toutes les plateformes DSP comme Spotify, Apple Music, Boomplay, Deezer, TikTok, YouTube, etc. — sans friction, sans limite."
+        "title": "Distribution mondiale",
+        "description": "Livrez sur Spotify, Apple Music, Deezer, TikTok, YouTube et plus — sans limite."
       },
       "royalties": {
-        "title": "Suivi & partages automatisés (Splits)",
-        "description": "Analysez les royalties artistes et gérez les parts en un clic."
+        "title": "Suivi automatisé des revenus",
+        "description": "Analysez les royalties et gérez les parts en un clic."
       },
       "payment": {
-        "title": "Des revenus et paiements transparents.",
-        "description": "Visualisez, segmentez, et payez automatiquement vos ayants droit."
+        "title": "Paiements transparents",
+        "description": "Visualisez et payez automatiquement vos ayants droit."
       },
       "analytics": {
-        "title": "Analysez vos performances",
-        "description": "Accédez aux statistiques clés de vos artistes : revenus, streams, plateformes, territoires, et bien plus — le tout en temps réel."
+        "title": "Analytics en temps réel",
+        "description": "Revenus, streams, plateformes, territoires — toutes vos données clés instantanément."
       }
     },
     "benefits": {
-      "title": "Pourquoi plus de 10 000+ artistes nous font confiance ?",
-      "subtitle": "Découvrez les résultats concrets obtenus par nos utilisateurs",
+      "title": "Pourquoi 10 000+ artistes nous choisissent",
+      "subtitle": "Les résultats concrets de nos utilisateurs",
       "stats": {
         "timeSaved": {
           "title": "Temps économisé",
-          "description": "Automatisation complète de la distribution et des royalties"
+          "description": "Distribution et royalties entièrement automatisées"
         },
         "platforms": {
           "title": "Plateformes",
-          "description": "Distribuer sur toutes les plateformes majeures en un clic"
+          "description": "Toutes les plateformes majeures en un clic"
         },
         "processing": {
           "title": "Délai de traitement",
-          "description": "Paiements automatiques et réconciliation instantanée"
+          "description": "Paiements automatiques instantanés"
         },
         "accuracy": {
           "title": "Précision",
-          "description": "Analytics et reporting avec une précision maximale"
+          "description": "Analytics et reporting ultra-précis"
         }
       },
       "cta": {
-        "title": "Prêt à rejoindre la révolution musicale ?",
-        "subtitle": "Découvrez comment Soncollab peut transformer votre activité musicale dès aujourd'hui.",
+        "title": "Prêt pour la révolution musicale ?",
+        "subtitle": "Transformez votre activité musicale dès aujourd'hui.",
         "button": "Voir une démo"
       }
     },
     "whiteLabel": {
       "title": "Votre marque, notre technologie",
-      "subtitle": "Créez votre propre plateforme musicale avec notre solution white label complètement personnalisable. Domaine, couleurs, logo - tout peut être adapté à votre identité.",
+      "subtitle": "Créez votre plateforme musicale personnalisée. Domaine, couleurs, logo — tout s'adapte à votre identité.",
       "cta": {
         "demo": "Voir une démo"
       }

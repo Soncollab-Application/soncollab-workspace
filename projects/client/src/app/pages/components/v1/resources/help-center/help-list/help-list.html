@@ -11,7 +11,7 @@
         </div>
       } @else {
 
-        <h1 class="display-6 mb-4 for-dax-font">{{ 'help.howCanWeHelp' | translate }} </h1>
+        <h1 class="display-6 mb-4 for-inter-font">{{ 'help.howCanWeHelp' | translate }} </h1>
 
         <div class="bg-body border rounded shadow p-2 mb-4">
           <form class="d-flex flex-column flex-sm-row gap-2 gap-sm-0 p-1" (ngSubmit)="onSearchSubmit()">
@@ -101,7 +101,7 @@
           @if (categories.length > 0) {
 
             @if (getCategoriesByGroup(0, 4).length > 0) {
-              <h2 class="h3 pt-5 pb-2 pb-md-3 mt-lg-3 for-dax-font">{{ getCategoriesByGroup(0, 1)[0].name || ('help.gettingStarted' | translate) }}</h2>
+              <h2 class="h3 pt-5 pb-2 pb-md-3 mt-lg-3 for-inter-font">{{ getCategoriesByGroup(0, 1)[0].name || ('help.gettingStarted' | translate) }}</h2>
               <div class="row row-cols-1 row-cols-sm-2 g-4 g-sm-3 g-md-4">
                 @for (category of getCategoriesByGroup(0, 4); track category.id) {
                   <div class="col">
@@ -128,7 +128,7 @@
             }
 
             @if (getCategoriesByGroup(4, 4).length > 0) {
-              <h2 class="h3 pt-5 pb-2 pb-md-3 mt-lg-3 for-dax-font">{{ getCategoriesByGroup(4, 1)[0].name || ('help.advanced' | translate) }}</h2>
+              <h2 class="h3 pt-5 pb-2 pb-md-3 mt-lg-3 for-inter-font">{{ getCategoriesByGroup(4, 1)[0].name || ('help.advanced' | translate) }}</h2>
               <div class="row row-cols-1 row-cols-sm-2 g-4 g-sm-3 g-md-4">
                 @for (category of getCategoriesByGroup(4, 4); track category.id) {
                   <div class="col">
@@ -155,7 +155,7 @@
             }
 
             @if (getCategoriesByGroup(8, 4).length > 0) {
-              <h2 class="h3 pt-5 pb-2 pb-md-3 mt-lg-3 for-dax-font">{{ getCategoriesByGroup(8, 1)[0].name || ('help.troubleshooting' | translate) }}</h2>
+              <h2 class="h3 pt-5 pb-2 pb-md-3 mt-lg-3 for-inter-font">{{ getCategoriesByGroup(8, 1)[0].name || ('help.troubleshooting' | translate) }}</h2>
               <div class="row row-cols-1 row-cols-sm-2 g-4 g-sm-3 g-md-4">
                 @for (category of getCategoriesByGroup(8, 4); track category.id) {
                   <div class="col">
@@ -183,7 +183,7 @@
           }
 
           @if (faqArticles.length > 0) {
-            <h2 class="pt-5 pb-sm-1 pb-md-2 mt-2 mt-sm-3 mt-md-4 mt-lg-5 for-dax-font">{{ 'help.popularFAQs' | translate }} </h2>
+            <h2 class="pt-5 pb-sm-1 pb-md-2 mt-2 mt-sm-3 mt-md-4 mt-lg-5 for-inter-font">{{ 'help.popularFAQs' | translate }} </h2>
 
             <div class="accordion" id="faq">
               @for (article of faqArticles; track article.id) {
@@ -240,7 +240,7 @@
       @if (featuredArticles.length > 0 && !showSearchResults && !isLoading) {
         <div class="card  bg-transparent pt-lg-4">
           <div class="card-header bg-transparent border-bottom py-3">
-            <h3 class="h5 mb-0 for-dax-font">{{ 'help.featuredArticles' | translate }}</h3>
+            <h3 class="h5 mb-0 for-inter-font">{{ 'help.featuredArticles' | translate }}</h3>
           </div>
           <div class="card-body px-4">
             @for (article of featuredArticles.slice(0, 5); track article.id) {

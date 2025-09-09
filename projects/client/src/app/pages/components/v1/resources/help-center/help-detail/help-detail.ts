@@ -12,7 +12,6 @@ import { SeoService } from '../../../../../../core/services/seo.service';
 import { HelpArticle } from '../../../../../models/help.model';
 import {NewsletterModalService} from '../../../../../../core/services/newsletter-modal.service';
 import {ContactModalService} from '../../../../../../core/services/contact-modal.service';
-import {distinctUntilChanged} from 'rxjs/operators';
 import {LanguageOrchestratorService} from '../../../../../../core/services/language-orchestrator.service';
 
 @Component({
