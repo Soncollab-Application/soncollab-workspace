@@ -1,5 +1,3 @@
-// Fichier : projects/client/src/app/pages/components/v1/partials/modals/contact-modal/contact-modal.ts
-
 import {
   Component,
   computed,
@@ -28,6 +26,7 @@ import { ChoicesSelectComponent, SelectOption } from '../../../../../../core/mod
 import { ChoicesConfig } from '../../../../../../core/modules/choices/choices.directive';
 import { ToastService } from '../../../../../../core/modules/toast/toast.service';
 import {RecaptchaService} from '../../../../../../core/services/recaptcha.service';
+import {LanguageOrchestratorService} from '../../../../../../core/services/language-orchestrator.service';
 
 @Component({
   selector: 'app-contact-modal',
@@ -53,10 +52,13 @@ export class ContactModal implements OnInit, OnDestroy {
   private translateService = inject(TranslateService);
   private recaptchaService = inject(RecaptchaService);
   private cdr = inject(ChangeDetectorRef);
+  private languageOrchestrator= inject(LanguageOrchestratorService);
 
   @Input() initialData?: any;
 
+  private componentId = 'blog-detail';
   private destroy$ = new Subject<void>();
+  private hasInitialLoad = false;
 
   // Signals pour l'état réactif
   formOptions = signal<ContactFormOptions | null>(null);
@@ -92,7 +94,12 @@ export class ContactModal implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.initializeConfigurations();
     this.setupEmailValidation();
-    this.setupLanguageDetection();
+
+    this.languageOrchestrator.registerComponent(
+      this.componentId,
+      () => this.onLanguageChange()
+    );
+
     this.loadFormOptions();
 
     if (this.initialData) {
@@ -103,6 +110,7 @@ export class ContactModal implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.languageOrchestrator.unregisterComponent(this.componentId);
   }
 
   /**
@@ -240,22 +248,16 @@ export class ContactModal implements OnInit, OnDestroy {
     }
   }
 
-  private setupLanguageDetection(): void {
-    const currentLang = this.languageService.getCurrentLanguage();
-    this.contactForm.patchValue({ language: currentLang });
-
-    this.languageService.onLanguageChange()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(lang => {
-        this.contactForm.patchValue({ language: lang });
-
-        // Mettre à jour les configurations avec les nouvelles traductions
-        this.updateConfigurations();
-
-        // Recharger les options du formulaire
-        this.loadFormOptions();
-      });
+  onLanguageChange(){
+    if (this.hasInitialLoad) {
+      const currentLang = this.languageService.getCurrentLanguage();
+      this.contactForm.patchValue({ language: currentLang });
+      this.updateConfigurations();
+      this.loadFormOptions();
+    }
   }
+
+
 
   private loadFormOptions(): void {
     this.optionsLoaded.set(false);
@@ -267,6 +269,7 @@ export class ContactModal implements OnInit, OnDestroy {
         next: (options) => {
           this.formOptions.set(options);
           this.updateSelectOptions(options);
+          this.hasInitialLoad = true;
 
           // Attendre un peu pour que les options soient prêtes
           setTimeout(() => {
@@ -277,7 +280,8 @@ export class ContactModal implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Error loading form options:', error);
-          this.optionsLoaded.set(true); // Pour éviter le blocage
+          this.optionsLoaded.set(true);
+          this.hasInitialLoad = true;
         }
       });
   }

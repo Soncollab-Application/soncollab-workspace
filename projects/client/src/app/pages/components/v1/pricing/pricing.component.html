@@ -1,19 +1,321 @@
-<br>
-<section class="py-5 position-relative">
-  <div class="container py-5">
-    <div class="row justify-content-center text-center">
-      <div class="col-lg-8">
-        <h1 class="display-4 fw-lighter for-inter-font mb-4">
-          Choose Your Music Business Plan
-        </h1>
-        <p class="fs-5 text-muted mb-4">
-          Join thousands of artists and labels who trust Soncollab to power their music operations.
-        </p>
-        <div class="d-flex gap-3 justify-content-center flex-wrap">
-          <button class="btn btn-outline-dark btn-lg px-5">Talk to Sales</button>
+<div class="container pt-5 pt-md-5 pb-5"  style="margin-top: 5rem!important;">
+
+  <!-- Header -->
+  <div class="text-center mb-5 py-3">
+    <h1 class="display-5 fw-light mb-3">{{ 'pricing.title' | translate }}</h1>
+    <p class="fs-4 text-muted">{{ 'pricing.description' | translate }}</p>
+  </div>
+
+  <!-- Controls -->
+  <div class="row justify-content-center mb-5">
+    <div class="col-lg-8">
+      <div class="card border shadow-sm">
+        <div class="card-body p-4">
+          <div class="row align-items-center g-3">
+
+            <!-- Product Type Filter -->
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">{{ 'pricing.productType' | translate }}</label>
+              <select
+                class="form-select"
+                [value]="selectedProductType"
+                (change)="onProductTypeChange($event)"
+              >
+                <option value="all">{{ 'pricing.allProducts' | translate }}</option>
+                @for (type of productTypes; track type) {
+                  <option [value]="type">{{ type }}</option>
+                }
+              </select>
+            </div>
+
+            <!-- Currency Selector -->
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">{{ 'pricing.currency' | translate }}</label>
+              <select
+                class="form-select"
+                [value]="selectedCurrency"
+                (change)="onCurrencyChange($event)"
+              >
+                @for (currency of currencies; track currency.code) {
+                  <option [value]="currency.code">
+                    {{ currency.code }} ({{ currency.symbol }})
+                  </option>
+                }
+              </select>
+            </div>
+
+            <!-- Billing Period -->
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">{{ 'pricing.billingPeriod' | translate }}</label>
+              <div class="d-flex align-items-center gap-3 mt-2">
+                <span [class]="billingPeriod === 'monthly' ? 'fw-semibold text-primary' : 'text-muted'">
+                  {{ 'pricing.monthly' | translate }}
+                </span>
+                <div class="form-check form-switch">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="billingToggle"
+                    [checked]="billingPeriod === 'yearly'"
+                    (change)="onBillingPeriodChange($event)"
+                  >
+                </div>
+                <span [class]="billingPeriod === 'yearly' ? 'fw-semibold text-primary' : 'text-muted'">
+                  {{ 'pricing.yearly' | translate }}
+                  <small class="badge bg-success ms-1">-17%</small>
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</section>
 
+  <!-- Loading State -->
+  @if (isLoading) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary mb-3" role="status"></div>
+      <p class="text-muted">{{ 'common.loading' | translate }}</p>
+    </div>
+  }
+
+  <!-- Error State -->
+  @if (error && !isLoading) {
+    <div class="alert alert-danger text-center mx-auto" style="max-width: 500px;" role="alert">
+      <i class="fi-alert-triangle fs-2 text-danger mb-3"></i>
+      <h4 class="alert-heading">{{ 'pricing.error.title' | translate }}</h4>
+      <p class="mb-3">{{ error }}</p>
+      <button class="btn btn-outline-danger" (click)="retryLoading()">
+        <i class="fi-refresh-cw me-2"></i>
+        {{ 'pricing.error.retry' | translate }}
+      </button>
+    </div>
+  }
+
+  <!-- Plans Display -->
+  @if (filteredPlans.length > 0 && !isLoading && !error) {
+
+    <!-- Current Filter Info -->
+    <div class="text-center mb-4">
+      <p class="text-muted">
+        {{ 'pricing.showing' | translate }}
+        <strong>{{ filteredPlans.length }}</strong>
+        {{ 'pricing.plans' | translate }}
+        @if (selectedProductType !== 'all') {
+          {{ 'pricing.for' | translate }} <strong>{{ selectedProductType }}</strong>
+        }
+      </p>
+    </div>
+
+    <!-- Plans Grid -->
+    <div class="row g-4 mb-5">
+      @for (plan of filteredPlans; track plan.documentId; let index = $index) {
+        <div class="col-lg-4 col-md-6">
+          <div class="card h-100 border-1 shadow-sm position-relative pricing-plan-card"
+               [class.border-primary]="index === 1"
+               [class.shadow]="index === 1">
+
+            <!-- Popular Badge -->
+            @if (index === 1) {
+              <div class="position-absolute top-0 start-50 translate-middle">
+                <span class="badge bg-primary px-3 py-2 rounded-pill">
+                  {{ 'pricing.mostPopular' | translate }}
+                </span>
+              </div>
+            }
+
+            <div class="card-body p-4 text-center">
+
+              <!-- Plan Icon -->
+              <div class="mb-3">
+                @if (plan.productType === 'Studio') {
+                  <i class="fi-layers fs-1 text-primary"></i>
+                } @else {
+                  <i class="fi-code fs-1 text-info"></i>
+                }
+              </div>
+
+              <!-- Plan Name -->
+              <h3 class="h4 mb-3">{{ plan.name }}</h3>
+
+              <!-- Plan Price -->
+              <div class="mb-4">
+                <div class="h1 text-primary mb-1">
+                  {{ currentCurrencySymbol }}{{ getPlanPrice(plan) | number:'1.0-0' }}
+                </div>
+                <small class="text-muted">
+                  {{ billingPeriod === 'monthly' ? ('pricing.perMonth' | translate) : ('pricing.perYear' | translate) }}
+                </small>
+
+                <!-- Yearly Savings -->
+                @if (billingPeriod === 'yearly' && getYearlySavings(plan) > 0) {
+                  <div class="small text-success mt-1">
+                    {{ 'pricing.save' | translate }} {{ currentCurrencySymbol }}{{ getYearlySavings(plan) | number:'1.0-0' }}
+                  </div>
+                }
+              </div>
+
+              <!-- Plan Details -->
+              <div class="mb-4 text-start">
+                <div class="row g-2 small">
+                  <div class="col-6">
+                    <strong>{{ 'pricing.assetLimit' | translate }}:</strong>
+                  </div>
+                  <div class="col-6 text-end">
+                    {{ plan.assetLimit | number }}
+                  </div>
+                  <div class="col-6">
+                    <strong>{{ 'pricing.royaltyCap' | translate }}:</strong>
+                  </div>
+                  <div class="col-6 text-end">
+                    {{ currentCurrencySymbol }}{{ convertPrice(plan.royaltyCap) | number }}
+                  </div>
+                  <div class="col-6">
+                    <strong>{{ 'pricing.support' | translate }}:</strong>
+                  </div>
+                  <div class="col-6 text-end">
+                    <span [class]="getSupportLevelClass(plan.supportLevel)">
+                      {{ ('pricing.supportLevel.' + plan.supportLevel) | translate }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Select Button -->
+              <button
+                type="button"
+                class="btn btn-lg w-100 mb-4"
+                [class]="index === 1 ? 'btn-primary' : 'btn-outline-primary'"
+                (click)="selectPlan(plan)"
+              >
+                @if (selectedAddons.length > 0) {
+                  {{ 'pricing.selectFor' | translate }} {{ currentCurrencySymbol }}{{ getTotalPrice(plan) | number:'1.0-0' }}
+                } @else {
+                  {{ 'pricing.selectPlan' | translate }}
+                }
+              </button>
+
+              <!-- Features List -->
+              <div class="text-start">
+                <h6 class="text-muted mb-3">{{ 'pricing.featuresIncluded' | translate }}</h6>
+                <ul class="list-unstyled">
+                  @for (feature of plan.features; track feature.name) {
+                    <li class="d-flex align-items-start mb-2">
+                      <i class="fi-check text-success me-2 mt-1 flex-shrink-0"></i>
+                      <span class="small">{{ feature.name }}</span>
+                    </li>
+                  }
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- No Plans Found -->
+  @if (filteredPlans.length === 0 && !isLoading && !error) {
+    <div class="text-center py-5">
+      <i class="fi-search fs-1 text-muted mb-3"></i>
+      <h4>{{ 'pricing.noPlans.title' | translate }}</h4>
+      <p class="text-muted">{{ 'pricing.noPlans.description' | translate }}</p>
+      <button class="btn btn-primary" (click)="selectedProductType = 'all'">
+        {{ 'pricing.noPlans.showAll' | translate }}
+      </button>
+    </div>
+  }
+
+  <!-- Add-ons Section -->
+  @if (addons.length > 0 && !isLoading && !error) {
+    <div class="mb-5">
+      <div class="text-center mb-4">
+        <h2 class="h3 mb-3">{{ 'pricing.addons.title' | translate }}</h2>
+        <p class="text-muted">{{ 'pricing.addons.description' | translate }}</p>
+      </div>
+
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="card border-0 shadow-sm">
+            <div class="card-body p-0">
+              @for (addon of addons; track addon.documentId; let isLast = $last) {
+                <div class="p-4" [class.border-bottom]="!isLast"
+                     [class.bg-body-tertiary]="isAddonSelected(addon.documentId)">
+                  <div class="row align-items-center">
+                    <div class="col-md-6">
+                      <div class="form-check">
+                        <input
+                          type="checkbox"
+                          class="form-check-input"
+                          [id]="'addon-' + addon.documentId"
+                          [checked]="isAddonSelected(addon.documentId)"
+                          (change)="toggleAddon(addon.documentId)"
+                        >
+                        <label
+                          [for]="'addon-' + addon.documentId"
+                          class="form-check-label fw-semibold"
+                        >
+                          {{ addon.name }}
+                        </label>
+                      </div>
+                      <p class="text-muted small mb-0 mt-1">{{ addon.description }}</p>
+                    </div>
+                    <div class="col-md-6 text-md-end mt-2 mt-md-0">
+                      <div class="fw-bold">
+                        {{ currentCurrencySymbol }}{{ getAddonPrice(addon) | number:'1.0-0' }}
+                        <small class="text-muted">
+                          /{{ billingPeriod === 'monthly' ? ('pricing.month' | translate) : ('pricing.year' | translate) }}
+                        </small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Add-ons Summary -->
+          @if (selectedAddons.length > 0) {
+            <div class="card border-0 bg-primary bg-opacity-10 mt-3">
+              <div class="card-body p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="fw-semibold">
+                    {{ selectedAddons.length }} {{ 'pricing.addonsSelected' | translate }}
+                  </span>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-primary"
+                    (click)="clearAddons()"
+                  >
+                    {{ 'pricing.clearSelection' | translate }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Contact Section -->
+  <div class="text-center py-5">
+    <div class="card border-0 bg-gradient" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+      <div class="card-body p-5">
+        <i class="fi-headphones fs-1 text-primary mb-3"></i>
+        <h3 class="mb-3">{{ 'pricing.contact.title' | translate }}</h3>
+        <p class="text-muted mb-4">{{ 'pricing.contact.description' | translate }}</p>
+        <button
+          type="button"
+          class="btn btn-primary btn-lg"
+          (click)="openContactModal()"
+        >
+          <i class="fi-mail me-2"></i>
+          {{ 'pricing.contact.button' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

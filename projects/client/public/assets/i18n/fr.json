@@ -150,183 +150,60 @@
   },
 
   "pricing": {
-    "catalog": {
-      "title": "Gérez Votre Catalogue Efficacement",
-      "description": "Nos plans s'adaptent à la taille de votre catalogue et à vos besoins de distribution.",
-      "viewPlans": "Voir les tarifs",
-      "contactSales": "Nous contacter",
-      "highlight1": "Stockage illimité",
-      "highlight2": "Support dédié",
-      "highlight3": "Évolutivité garantie"
-    },
-    "rights": {
-      "title": "Protégez Vos Droits Musicaux",
-      "description": "Sécurisez et gérez tous vos droits d'auteur avec nos solutions juridiques intégrées.",
-      "viewPlans": "Voir les tarifs",
-      "contactSales": "Nous contacter",
-      "highlight1": "Protection juridique",
-      "highlight2": "Conseils d'experts",
-      "highlight3": "Couverture mondiale"
-    },
-    "distribution": {
-      "title": "Diffusez Partout dans le Monde",
-      "description": "Atteignez toutes les plateformes musicales avec notre réseau de distribution global.",
-      "viewPlans": "Voir les tarifs",
-      "contactSales": "Nous contacter",
-      "highlight1": "200+ plateformes",
-      "highlight2": "Distribution rapide",
-      "highlight3": "Reporting détaillé"
-    },
-    "analytics": {
-      "title": "Analysez Vos Performances",
-      "description": "Prenez des décisions éclairées grâce à nos outils d'analyse avancés.",
-      "viewPlans": "Voir les tarifs",
-      "contactSales": "Nous contacter",
-      "highlight1": "Données temps réel",
-      "highlight2": "Rapports personnalisés",
-      "highlight3": "Insights actionables"
-    },
-    "royalties": {
-      "title": "Optimisez Vos Revenus",
-      "description": "Maximisez et suivez tous vos revenus musicaux avec précision.",
-      "viewPlans": "Voir les tarifs",
-      "contactSales": "Nous contacter",
-      "highlight1": "Calculs précis",
-      "highlight2": "Paiements rapides",
-      "highlight3": "Transparence totale"
-    },
-    "payments": {
-      "title": "Recevez Vos Paiements Rapidement",
-      "description": "Solutions de paiement flexibles et sécurisées pour tous vos revenus musicaux.",
-      "viewPlans": "Voir les tarifs",
-      "contactSales": "Nous contacter",
-      "highlight1": "Paiements sécurisés",
-      "highlight2": "Frais réduits",
-      "highlight3": "Support multidevise"
-    },
-    "income-tracking": {
-      "title": "Suivez Vos Revenus en Détail",
-      "description": "Contrôlez chaque source de revenus avec nos outils de suivi avancés.",
-      "viewPlans": "Voir les tarifs",
-      "contactSales": "Nous contacter",
-      "highlight1": "Suivi multi-sources",
-      "highlight2": "Alertes automatiques",
-      "highlight3": "Prévisions précises"
+    "title": "Tarifs et abonnements",
+    "description": "Choisissez le plan parfait pour votre activité musicale. Tous nos plans incluent un support dédié et des mises à jour gratuites.",
+    "productType": "Type de produit",
+    "allProducts": "Tous les produits",
+    "currency": "Devise",
+    "billingPeriod": "Période de facturation",
+    "monthly": "Mensuel",
+    "yearly": "Annuel",
+    "perMonth": "par mois",
+    "perYear": "par an",
+    "month": "mois",
+    "year": "an",
+    "mostPopular": "Le plus populaire",
+    "selectPlan": "Choisir ce plan",
+    "selectFor": "Choisir pour",
+    "assetLimit": "Limite d'assets",
+    "royaltyCap": "Plafond royalties",
+    "support": "Support",
+    "save": "Économisez",
+    "featuresIncluded": "Fonctionnalités incluses",
+    "showing": "Affichage de",
+    "plans": "plans",
+    "for": "pour",
+
+    "supportLevel": {
+      "basic": "Basique",
+      "priority": "Prioritaire",
+      "premium": "Premium"
     },
 
+    "addons": {
+      "title": "Services supplémentaires",
+      "description": "Améliorez votre plan avec ces options additionnelles"
+    },
 
-    "hero": {
-      "title": "Choisissez Votre Plan",
-      "subtitle": "Tarification flexible pour les labels et distributeurs de musique de toutes tailles. Évoluez en toute confiance."
+    "addonsSelected": "add-ons sélectionnés",
+    "clearSelection": "Effacer la sélection",
+
+    "noPlans": {
+      "title": "Aucun plan trouvé",
+      "description": "Aucun plan ne correspond aux filtres sélectionnés.",
+      "showAll": "Afficher tous les plans"
     },
-    "tabs": {
-      "portal": "Portail",
-      "api": "API"
-    },
-    "portal": {
-      "title": "Soncollab Portal",
-      "subtitle": "Interface utilisateur complète avec branding et fonctionnalités d'administration"
-    },
-    "api": {
-      "title": "Soncollab API",
-      "subtitle": "Accès complet headless pour développeurs et intégrations personnalisées"
-    },
-    "popular": "Le Plus Populaire",
-    "recommended": "Recommandé",
-    "selectPlan": "Choisir",
-    "features": {
-      "assets": "assets max",
-      "royalties": "royalties max/mois",
-      "support": "Support",
-      "whiteLabel": "Marque Blanche"
-    },
-    "plans": {
-      "portal": {
-        "start": {
-          "name": "Start",
-          "description": "Idéal pour débuter votre activité musicale"
-        },
-        "growth": {
-          "name": "Growth",
-          "description": "Parfait pour faire grandir votre label"
-        },
-        "pro": {
-          "name": "Pro Label",
-          "description": "Pour les labels professionnels"
-        },
-        "enterprise": {
-          "name": "Enterprise",
-          "description": "Solution complète pour les grandes structures"
-        }
-      },
-      "api": {
-        "delivery": {
-          "name": "Delivery & Analytics",
-          "description": "API pour la distribution et l'analyse"
-        },
-        "rights": {
-          "name": "Rights & Royalties",
-          "description": "API complète pour les droits et royalties"
-        },
-        "full": {
-          "name": "Full API Suite",
-          "description": "Accès complet à toutes nos APIs"
-        }
-      }
-    },
-    "modules": {
-      "catalog": "Catalogue",
-      "distribution": "Distribution",
-      "analytics": "Analytics",
-      "rights": "Droits",
-      "payments": "Paiements",
-      "royaltyReporting": "Reporting Royalties",
-      "publishing": "Publishing",
-      "syncLicensing": "Sync Licensing",
-      "teamCollaboration": "Collaboration Équipe",
-      "apiAccess": "Accès API",
-      "prioritySLA": "SLA Prioritaire",
-      "legalModule": "Module Légal",
-      "aiAnomalies": "IA/Anomalies",
-      "revenue": "Revenus",
-      "legal": "Légal",
-      "allModules": "Tous les modules",
-      "sandbox": "Sandbox"
-    },
-    "faq": {
-      "title": "Questions Fréquentes",
-      "subtitle": "Vous avez des questions ? Nous avons les réponses.",
-      "q1": {
-        "question": "Puis-je changer de plan ?",
-        "answer": "Oui, vous pouvez changer de plan à tout moment. Les modifications seront calculées au prorata et reflétées dans votre prochain cycle de facturation."
-      },
-      "q2": {
-        "question": "Qu'est-ce qui est inclus dans la marque blanche ?",
-        "answer": "La marque blanche inclut un domaine personnalisé, la personnalisation du branding et la suppression de la marque Soncollab de l'interface."
-      },
-      "q3": {
-        "question": "Quels moyens de paiement acceptez-vous ?",
-        "answer": "Nous acceptons toutes les cartes de crédit principales, les virements bancaires, et pouvons mettre en place des conditions de paiement personnalisées pour les clients Enterprise."
-      },
-      "q4": {
-        "question": "Y a-t-il un essai gratuit disponible ?",
-        "answer": "Oui, nous offrons un essai gratuit de 14 jours pour tous les plans Portal. Contactez-nous pour configurer votre compte d'essai."
-      }
-    },
+
     "contact": {
-      "title": "Besoin d'un Plan Personnalisé ?",
-      "subtitle": "Contactez notre équipe commerciale pour des solutions entreprise et une tarification sur mesure.",
-      "email": {
-        "title": "Nous Écrire"
-      },
-      "phone": {
-        "title": "Nous Appeler"
-      },
-      "cta": "Contacter les Ventes"
+      "title": "Besoin d'aide ou d'une solution sur mesure ?",
+      "description": "Notre équipe commerciale est là pour vous accompagner et répondre à toutes vos questions.",
+      "button": "Contacter notre équipe"
     },
-    "currency": "€",
-    "period": "/mois",
-    "priority": "Prioritaire"
+
+    "error": {
+      "title": "Erreur de chargement",
+      "retry": "Réessayer"
+    }
   },
 
   "catalog": {

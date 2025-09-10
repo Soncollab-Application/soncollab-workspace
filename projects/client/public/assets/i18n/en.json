@@ -149,182 +149,54 @@
   },
 
   "pricing": {
-    "catalog": {
-      "title": "Manage Your Catalog Efficiently",
-      "description": "Our plans adapt to your catalog size and distribution needs.",
-      "viewPlans": "View Pricing",
-      "contactSales": "Contact Us",
-      "highlight1": "Unlimited storage",
-      "highlight2": "Dedicated support",
-      "highlight3": "Guaranteed scalability"
+    "title": "Pricing and subscriptions",
+    "description": "Choose the perfect plan for your music business. All our plans include dedicated support and free updates.",
+    "productType": "Product type",
+    "allProducts": "All products",
+    "currency": "Currency",
+    "billingPeriod": "Billing period",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "perMonth": "per month",
+    "perYear": "per year",
+    "month": "month",
+    "year": "year",
+    "mostPopular": "Most popular",
+    "selectPlan": "Select this plan",
+    "selectFor": "Select for",
+    "assetLimit": "Asset limit",
+    "royaltyCap": "Royalty cap",
+    "support": "Support",
+    "save": "Save",
+    "featuresIncluded": "Features included",
+    "showing": "Showing",
+    "plans": "plans",
+    "for": "for",
+    "supportLevel": {
+      "basic": "Basic",
+      "priority": "Priority",
+      "premium": "Premium"
     },
-    "rights": {
-      "title": "Protect Your Music Rights",
-      "description": "Secure and manage all your copyrights with our integrated legal solutions.",
-      "viewPlans": "View Pricing",
-      "contactSales": "Contact Us",
-      "highlight1": "Legal protection",
-      "highlight2": "Expert advice",
-      "highlight3": "Global coverage"
+    "addons": {
+      "title": "Additional services",
+      "description": "Enhance your plan with these additional options"
     },
-    "distribution": {
-      "title": "Distribute Worldwide",
-      "description": "Reach all music platforms with our global distribution network.",
-      "viewPlans": "View Pricing",
-      "contactSales": "Contact Us",
-      "highlight1": "200+ platforms",
-      "highlight2": "Fast distribution",
-      "highlight3": "Detailed reporting"
-    },
-    "analytics": {
-      "title": "Analyze Your Performance",
-      "description": "Make informed decisions with our advanced analytics tools.",
-      "viewPlans": "View Pricing",
-      "contactSales": "Contact Us",
-      "highlight1": "Real-time data",
-      "highlight2": "Custom reports",
-      "highlight3": "Actionable insights"
-    },
-    "royalties": {
-      "title": "Optimize Your Revenue",
-      "description": "Maximize and track all your music revenue with precision.",
-      "viewPlans": "View Pricing",
-      "contactSales": "Contact Us",
-      "highlight1": "Accurate calculations",
-      "highlight2": "Fast payments",
-      "highlight3": "Complete transparency"
-    },
-    "payments": {
-      "title": "Receive Payments Quickly",
-      "description": "Flexible and secure payment solutions for all your music revenue.",
-      "viewPlans": "View Pricing",
-      "contactSales": "Contact Us",
-      "highlight1": "Secure payments",
-      "highlight2": "Low fees",
-      "highlight3": "Multi-currency support"
-    },
-    "income-tracking": {
-      "title": "Track Your Income in Detail",
-      "description": "Control every revenue source with our advanced tracking tools.",
-      "viewPlans": "View Pricing",
-      "contactSales": "Contact Us",
-      "highlight1": "Multi-source tracking",
-      "highlight2": "Automatic alerts",
-      "highlight3": "Accurate forecasts"
-    },
-
-    "hero": {
-      "title": "Choose Your Plan",
-      "subtitle": "Flexible pricing for music labels and distributors of all sizes. Scale with confidence."
-    },
-    "tabs": {
-      "portal": "Portal",
-      "api": "API"
-    },
-    "portal": {
-      "title": "Soncollab Portal",
-      "subtitle": "Complete user interface with branding and admin features"
-    },
-    "api": {
-      "title": "Soncollab API",
-      "subtitle": "Headless full access for developers and custom integrations"
-    },
-    "popular": "Most Popular",
-    "recommended": "Recommended",
-    "selectPlan": "Select",
-    "features": {
-      "assets": "assets max",
-      "royalties": "royalties max/month",
-      "support": "Support",
-      "whiteLabel": "White Label"
-    },
-    "plans": {
-      "portal": {
-        "start": {
-          "name": "Start",
-          "description": "Perfect for getting started with your music business"
-        },
-        "growth": {
-          "name": "Growth",
-          "description": "Perfect for growing your label"
-        },
-        "pro": {
-          "name": "Pro Label",
-          "description": "For professional labels"
-        },
-        "enterprise": {
-          "name": "Enterprise",
-          "description": "Complete solution for large organizations"
-        }
-      },
-      "api": {
-        "delivery": {
-          "name": "Delivery & Analytics",
-          "description": "API for distribution and analytics"
-        },
-        "rights": {
-          "name": "Rights & Royalties",
-          "description": "Complete API for rights and royalties"
-        },
-        "full": {
-          "name": "Full API Suite",
-          "description": "Complete access to all our APIs"
-        }
-      }
-    },
-    "modules": {
-      "catalog": "Catalog",
-      "distribution": "Distribution",
-      "analytics": "Analytics",
-      "rights": "Rights",
-      "payments": "Payments",
-      "royaltyReporting": "Royalty Reporting",
-      "publishing": "Publishing",
-      "syncLicensing": "Sync Licensing",
-      "teamCollaboration": "Team Collaboration",
-      "apiAccess": "API Access",
-      "prioritySLA": "Priority SLA",
-      "legalModule": "Legal Module",
-      "aiAnomalies": "AI/Anomalies",
-      "revenue": "Revenue",
-      "legal": "Legal",
-      "allModules": "All modules",
-      "sandbox": "Sandbox"
-    },
-    "faq": {
-      "title": "Frequently Asked Questions",
-      "subtitle": "Have questions? We have answers.",
-      "q1": {
-        "question": "Can I upgrade or downgrade my plan?",
-        "answer": "Yes, you can change your plan at any time. Changes will be prorated and reflected in your next billing cycle."
-      },
-      "q2": {
-        "question": "What's included in white label?",
-        "answer": "White label includes custom domain, branding customization, and removal of Soncollab branding from the interface."
-      },
-      "q3": {
-        "question": "What payment methods do you accept?",
-        "answer": "We accept all major credit cards, bank transfers, and can set up custom payment terms for Enterprise customers."
-      },
-      "q4": {
-        "question": "Is there a free trial available?",
-        "answer": "Yes, we offer a 14-day free trial for all Portal plans. Contact us to set up your trial account."
-      }
+    "addonsSelected": "add-ons selected",
+    "clearSelection": "Clear selection",
+    "noPlans": {
+      "title": "No plans found",
+      "description": "No plans match the selected filters.",
+      "showAll": "Show all plans"
     },
     "contact": {
-      "title": "Need a Custom Plan?",
-      "subtitle": "Contact our sales team for enterprise solutions and custom pricing.",
-      "email": {
-        "title": "Email Us"
-      },
-      "phone": {
-        "title": "Call Us"
-      },
-      "cta": "Contact Sales"
+      "title": "Need help or a custom solution?",
+      "description": "Our sales team is here to assist you and answer all your questions.",
+      "button": "Contact our team"
     },
-    "currency": "€",
-    "period": "/month",
-    "priority": "Priority"
+    "error": {
+      "title": "Loading error",
+      "retry": "Retry"
+    }
   },
 
   "catalog": {
