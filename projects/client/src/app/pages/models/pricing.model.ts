@@ -32,6 +32,7 @@ export interface PricingCurrency {
   documentId: string;
   code: string;
   symbol: string;
+  symbol_position: 'left' | 'right';
   conversionRate: number;
 }
 
