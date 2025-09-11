@@ -1,47 +1,42 @@
-<div class="container pt-5 pt-md-5 pb-5"  style="margin-top: 5rem!important;">
+<div class="container pt-5 pt-md-5 pb-5" style="margin-top: 5rem!important;">
 
   <!-- Header -->
   <div class="text-center mb-5 py-3">
     <h1 class="display-5 fw-light mb-3">{{ 'pricing.title' | translate }}</h1>
-    <p class="fs-4 text-muted">{{ 'pricing.description' | translate }}</p>
+    <p class="fs-5  text-muted">{{ 'pricing.description' | translate }}</p>
   </div>
 
   <!-- Controls -->
   <div class="row justify-content-center mb-5">
     <div class="col-lg-8">
-      <div class="card border shadow-sm">
+      <div class="card border bg-body-tertiary shadow-sm">
         <div class="card-body p-4">
           <div class="row align-items-center g-3">
 
-            <!-- Product Type Filter -->
+            <!-- Product Type Filter avec app-choices-select -->
             <div class="col-md-4">
               <label class="form-label fw-semibold">{{ 'pricing.productType' | translate }}</label>
-              <select
-                class="form-select"
-                [value]="selectedProductType"
-                (change)="onProductTypeChange($event)"
-              >
-                <option value="all">{{ 'pricing.allProducts' | translate }}</option>
-                @for (type of productTypes; track type) {
-                  <option [value]="type">{{ type }}</option>
-                }
-              </select>
+              <app-choices-select
+                [options]="productTypeOptions"
+                [choicesConfig]="productTypeConfig"
+                [(ngModel)]="selectedProductType"
+                (ngModelChange)="onProductTypeChange($event)"
+                [ariaLabel]="'pricing.productType' | translate"
+                [transparent]="false">
+              </app-choices-select>
             </div>
 
-            <!-- Currency Selector -->
+            <!-- Currency Selector avec app-choices-select -->
             <div class="col-md-4">
               <label class="form-label fw-semibold">{{ 'pricing.currency' | translate }}</label>
-              <select
-                class="form-select"
-                [value]="selectedCurrency"
-                (change)="onCurrencyChange($event)"
-              >
-                @for (currency of currencies; track currency.code) {
-                  <option [value]="currency.code">
-                    {{ currency.code }} ({{ currency.symbol }})
-                  </option>
-                }
-              </select>
+              <app-choices-select
+                [options]="currencyOptions"
+                [choicesConfig]="currencyConfig"
+                [(ngModel)]="selectedCurrency"
+                (ngModelChange)="onCurrencyChange($event)"
+                [ariaLabel]="'pricing.currency' | translate"
+                [transparent]="false">
+              </app-choices-select>
             </div>
 
             <!-- Billing Period -->
@@ -102,14 +97,12 @@
         {{ 'pricing.showing' | translate }}
         <strong>{{ filteredPlans.length }}</strong>
         {{ 'pricing.plans' | translate }}
-        @if (selectedProductType !== 'all') {
-          {{ 'pricing.for' | translate }} <strong>{{ selectedProductType }}</strong>
-        }
+        {{ 'pricing.for' | translate }} <strong>{{ selectedProductType }}</strong>
       </p>
     </div>
 
     <!-- Plans Grid -->
-    <div class="row g-4 mb-5">
+    <div class="row g-4 mb-5 d-flex justify-content-center">
       @for (plan of filteredPlans; track plan.documentId; let index = $index) {
         <div class="col-lg-4 col-md-6">
           <div class="card h-100 border-1 shadow-sm position-relative pricing-plan-card"
@@ -141,8 +134,8 @@
 
               <!-- Plan Price -->
               <div class="mb-4">
-                <div class="h1 text-primary mb-1">
-                  {{ currentCurrencySymbol }}{{ getPlanPrice(plan) | number:'1.0-0' }}
+                <div class="h2 text-primary mb-1">
+                  {{ formatConvertedPriceWithSymbol(getPlanPrice(plan)) }}
                 </div>
                 <small class="text-muted">
                   {{ billingPeriod === 'monthly' ? ('pricing.perMonth' | translate) : ('pricing.perYear' | translate) }}
@@ -151,7 +144,7 @@
                 <!-- Yearly Savings -->
                 @if (billingPeriod === 'yearly' && getYearlySavings(plan) > 0) {
                   <div class="small text-success mt-1">
-                    {{ 'pricing.save' | translate }} {{ currentCurrencySymbol }}{{ getYearlySavings(plan) | number:'1.0-0' }}
+                    {{ 'pricing.save' | translate }} {{ formatConvertedPriceWithSymbol(getYearlySavings(plan)) }}
                   </div>
                 }
               </div>
@@ -169,7 +162,7 @@
                     <strong>{{ 'pricing.royaltyCap' | translate }}:</strong>
                   </div>
                   <div class="col-6 text-end">
-                    {{ currentCurrencySymbol }}{{ convertPrice(plan.royaltyCap) | number }}
+                    {{ formatPriceWithSymbol(plan.royaltyCap) }}
                   </div>
                   <div class="col-6">
                     <strong>{{ 'pricing.support' | translate }}:</strong>
@@ -190,7 +183,7 @@
                 (click)="selectPlan(plan)"
               >
                 @if (selectedAddons.length > 0) {
-                  {{ 'pricing.selectFor' | translate }} {{ currentCurrencySymbol }}{{ getTotalPrice(plan) | number:'1.0-0' }}
+                  {{ 'pricing.selectFor' | translate }} {{ formatConvertedPriceWithSymbol(getTotalPrice(plan)) }}
                 } @else {
                   {{ 'pricing.selectPlan' | translate }}
                 }
@@ -216,14 +209,11 @@
   }
 
   <!-- No Plans Found -->
-  @if (filteredPlans.length === 0 && !isLoading && !error) {
+  @if (filteredPlans.length === 0 && !isLoading && !error && initialDataLoaded) {
     <div class="text-center py-5">
       <i class="fi-search fs-1 text-muted mb-3"></i>
       <h4>{{ 'pricing.noPlans.title' | translate }}</h4>
       <p class="text-muted">{{ 'pricing.noPlans.description' | translate }}</p>
-      <button class="btn btn-primary" (click)="selectedProductType = 'all'">
-        {{ 'pricing.noPlans.showAll' | translate }}
-      </button>
     </div>
   }
 
@@ -237,7 +227,7 @@
 
       <div class="row justify-content-center">
         <div class="col-lg-8">
-          <div class="card border-0 shadow-sm">
+          <div class="card">
             <div class="card-body p-0">
               @for (addon of addons; track addon.documentId; let isLast = $last) {
                 <div class="p-4" [class.border-bottom]="!isLast"
@@ -263,7 +253,7 @@
                     </div>
                     <div class="col-md-6 text-md-end mt-2 mt-md-0">
                       <div class="fw-bold">
-                        {{ currentCurrencySymbol }}{{ getAddonPrice(addon) | number:'1.0-0' }}
+                        {{ formatConvertedPriceWithSymbol(getAddonPrice(addon)) }}
                         <small class="text-muted">
                           /{{ billingPeriod === 'monthly' ? ('pricing.month' | translate) : ('pricing.year' | translate) }}
                         </small>
