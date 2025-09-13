@@ -7,7 +7,8 @@
     "build": "ng build client",
     "build:prod": "ng build client --configuration production",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "e2e": "ng e2e"
   },
   "prettier": {
     "overrides": [

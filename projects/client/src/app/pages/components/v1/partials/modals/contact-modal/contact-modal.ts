@@ -87,6 +87,8 @@ export class ContactModal implements OnInit, OnDestroy {
     return emailControl?.valid && emailControl?.dirty && !this.emailCheckResult()?.exists;
   });
 
+  public isPricingInquiry = false;
+
   constructor() {
     this.contactForm = this.createForm();
   }
@@ -103,7 +105,11 @@ export class ContactModal implements OnInit, OnDestroy {
     this.loadFormOptions();
 
     if (this.initialData) {
+      this.isPricingInquiry = this.initialData.isPricingInquiry || false;
       this.contactForm.patchValue(this.initialData);
+      if (this.isPricingInquiry) {
+        this.contactForm.get('contact_type')?.disable();
+      }
     }
   }
 
@@ -390,23 +396,24 @@ export class ContactModal implements OnInit, OnDestroy {
         recaptcha_token: recaptchaToken // Ajouter le token reCAPTCHA
       };
 
+      if (this.isPricingInquiry) {
+        formData.contact_type = 'pricing_inquiry';
+      }
+
       this.contactModalService.submitContactForm(formData)
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: (response) => {
             this.isSubmitting.set(false);
 
-            // Toast de succès - Position en haut centre pour être visible pendant la fermeture de modal
-            this.toastService.showSuccess(
-              this.getTranslation('contact.form.success.submitted', 'Votre message a été envoyé avec succès !'),
-              {
-                header: this.getTranslation('contact.form.success.title', 'Succès'),
-                position: 'top-center',
-                delay: 4000
-              }
-            );
 
-            this.activeModal.close('success');
+
+            this.activeModal.close({
+              success: true,
+              data: response.data,
+              message: response.message,
+              isPricingInquiry: this.isPricingInquiry
+            });
 
             setTimeout(() => {
               this.contactModalService.openSuccessModal(
