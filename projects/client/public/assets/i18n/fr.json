@@ -57,7 +57,8 @@
     "heroFallback": {
       "title": "La musique indépendante à son meilleur",
       "subtitle": "Distribuez, protégez et monétisez votre musique dans le monde entier.",
-      "button": "Commencer"
+      "button": "Commencer",
+      "button2": "Voir les fonctionnalités"
     },
     "tagline": "Distribuez, protégez et monétisez votre musique",
     "forLabelsTitle": "Pour les labels et distributeurs",
