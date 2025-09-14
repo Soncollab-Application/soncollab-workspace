@@ -80,9 +80,9 @@
                             {{ article.title }}
                           </a>
                         </h3>
-                        <p class="fs-sm text-muted mb-1">{{ article.excerpt }}</p>
+                        <p class="fs-sm text-muted-custom mb-1">{{ article.excerpt }}</p>
                         @if (article.estimated_reading_time) {
-                          <small class="text-muted">{{ article.estimated_reading_time }} {{ 'help.minRead' | translate }}</small>
+                          <small class="text-muted-custom">{{ article.estimated_reading_time }} {{ 'help.minRead' | translate }}</small>
                         }
                       </div>
                     </div>
@@ -91,7 +91,7 @@
               </div>
             } @else {
               <div class="text-center py-4">
-                <p class="text-muted">{{ 'help.noSearchResults' | translate }}</p>
+                <p class="text-muted-custom">{{ 'help.noSearchResults' | translate }}</p>
               </div>
             }
           </div>
@@ -116,7 +116,7 @@
                         </h3>
                         <p class="mb-0">{{ category.description || ('help.defaultCategoryDescription' | translate) }}</p>
                         @if (category.articlesCount) {
-                          <small class="text-muted d-block mt-2">
+                          <small class="text-muted-custom d-block mt-2">
                             {{ category.articlesCount }} {{ 'help.articles' | translate }}
                           </small>
                         }
@@ -143,7 +143,7 @@
                         </h3>
                         <p class="mb-0">{{ category.description || ('help.defaultCategoryDescription' | translate) }}</p>
                         @if (category.articlesCount) {
-                          <small class="text-muted d-block mt-2">
+                          <small class="text-muted-custom d-block mt-2">
                             {{ category.articlesCount }} {{ 'help.articles' | translate }}
                           </small>
                         }
@@ -170,7 +170,7 @@
                         </h3>
                         <p class="mb-0">{{ category.description || ('help.defaultCategoryDescription' | translate) }}</p>
                         @if (category.articlesCount) {
-                          <small class="text-muted d-block mt-2">
+                          <small class="text-muted-custom d-block mt-2">
                             {{ category.articlesCount }} {{ 'help.articles' | translate }}
                           </small>
                         }
@@ -261,16 +261,16 @@
                     {{ article.title }}
                   </a>
                 </h4>
-                <p class="fs-sm text-muted mb-3">{{ article.excerpt }}</p>
+                <p class="fs-sm text-muted-custom mb-3">{{ article.excerpt }}</p>
                 <div class="d-flex justify-content-between align-items-center">
                   @if (article.estimated_reading_time) {
-                    <small class="text-muted">
+                    <small class="text-muted-custom">
                       <i class="fi-clock me-1"></i>
                       {{ article.estimated_reading_time }} {{ 'help.minRead' | translate }}
                     </small>
                   }
                   @if (article.helpfulness_score && article.helpfulness_score > 0) {
-                    <small class="text-muted">
+                    <small class="text-muted-custom">
                       <i class="fi-star-filled text-warning me-1"></i>
                       {{ article.helpfulness_score | number:'1.1-1' }}
                     </small>

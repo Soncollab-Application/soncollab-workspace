@@ -747,6 +747,13 @@
         "feature2": "Jusqu'à 1000 lignes disponibles",
         "feature3": "Intégration dans des rapports externes"
       },
+      "playlist": {
+        "title": "Débloquez les informations sur vos playlists",
+        "description": "Recevez des alertes en temps réel lorsque votre musique est ajoutée à des playlists et évaluez leur impact sur vos performances de streaming.",
+        "feature1": "Alertes d’ajout aux playlists en temps réel",
+        "feature2": "Analyse des types de playlists",
+        "feature3": "Impact sur les performances de streaming"
+      },
       "audience": {
         "title": "Comprenez Votre Audience",
         "description": "Suivez la croissance quotidienne des auditeurs et découvrez qui ils sont, d'où ils viennent et comment ils interagissent.",
