@@ -1,22 +1,25 @@
-<footer class="footer bg-deep-teal pt-0 my-0">
-  <div class="d-flex w-100 justify-content-center overflow-hidden text-warning opacity-75">
-    <svg class="flex-shrink-0" width="3000" height="18" xmlns="http://www.w3.org/2000/svg">
-      <polygon fill="currentColor" points="3000,0 3000,12.3 2751,7.2 2460,18 2239,7.2 2017,10.7 1911.5,7.2 1368,18 831,7.2 540,18 319,7.2 97,10.7 0,7.5 0,0 "></polygon>
-    </svg>
-  </div>
-  <div class="container pb-md-2">
+<footer class="py-5 mt-auto border-top">
+  <div class="container-xxl">
+    <!-- Logo, Description et Langue - Première colonne élargie -->
+    <div class="row mb-5">
+      <div class="col-lg-5 mb-4">
+        <img
+          alt="Soncollab Logo"
+          [src]="getCurrentLogo()"
+          class="img-fluid mb-3"
+          style="max-width: 200px;">
 
-    <div class="accordion row pt-4 pt-sm-5 mt-3 mt-sm-0" id="footerLinks">
-      <div class="col-md-12 col-lg-5 mb-5 mb-sm-5 mb-md-5">
-        <a class="d-inline-flex align-items-center text-dark-emphasis text-decoration-none mb-3" [routerLink]="['/']" >
-          <img alt="Soncollab Logo" class="d-block" src="/assets/images/logo/soncollablightlogo.svg" width="160">
-        </a>
 
-        <div class="mb-3">
+        <p class="fs-4 footer-subtitle text-muted-custom mb-4 lh-base">
+          {{ 'footer.tagline' | translate }}
+        </p>
+
+        <!-- Language Selector -->
+        <div class="mb-4">
           <select
             id="languageSelect"
             [attr.aria-label]="'footer.language.select' | translate"
-            class="form-select form-select-lg w-auto d-inline-block"
+            class="form-select form-select-lg w-auto"
             [value]="currentLanguage"
             (change)="onLanguageChange($event)">
             @for (language of supportedLanguages; track language.code) {
@@ -27,131 +30,106 @@
               </option>
             }
           </select>
-
         </div>
 
-        <div class="d-flex flex-wrap gap-3 pt-2 pt-md-3">
-          <a [attr.aria-label]="'footer.social.youtube' | translate" class="btn btn-icon btn-lg btn-secondary rounded-circle" href="https://www.youtube.com/@Soncollab">
-            <i class="fi-youtube fs-xl"></i>
+        <!-- Social Links -->
+        <div class="d-flex flex-wrap gap-3">
+          <a [attr.aria-label]="'footer.social.youtube' | translate"
+             class="btn btn-outline-secondary rounded-circle p-2"
+             href="https://www.youtube.com/@Soncollab">
+            <i class="fi-youtube fs-5"></i>
           </a>
-
-          <a [attr.aria-label]="'footer.social.instagram' | translate" class="btn btn-icon btn-lg btn-secondary rounded-circle" href="https://www.instagram.com/soncollab_officiel/">
-            <i class="fi-instagram fs-xl"></i>
+          <a [attr.aria-label]="'footer.social.instagram' | translate"
+             class="btn btn-outline-secondary rounded-circle p-2"
+             href="https://www.instagram.com/soncollab_officiel/">
+            <i class="fi-instagram fs-5"></i>
           </a>
-          <a [attr.aria-label]="'footer.social.facebook' | translate" class="btn btn-icon btn-lg btn-secondary rounded-circle" href="https://www.facebook.com/soncollab">
-            <i class="fi-facebook fs-xl"></i>
+          <a [attr.aria-label]="'footer.social.facebook' | translate"
+             class="btn btn-outline-secondary rounded-circle p-2"
+             href="https://www.facebook.com/soncollab">
+            <i class="fi-facebook fs-5"></i>
           </a>
-          <a [attr.aria-label]="'footer.social.twitter' | translate" class="btn btn-icon btn-lg btn-secondary rounded-circle" href="https://x.com/soncollab">
-            <i class="fi-x fs-xl"></i>
+          <a [attr.aria-label]="'footer.social.twitter' | translate"
+             class="btn btn-outline-secondary rounded-circle p-2"
+             href="https://x.com/soncollab">
+            <i class="fi-x fs-5"></i>
           </a>
-
-          <a [attr.aria-label]="'footer.social.tiktok' | translate" class="btn btn-icon btn-lg btn-secondary rounded-circle" href="https://www.tiktok.com/@soncollab">
-            <i class="fi-tiktok fs-xl"></i>
+          <a [attr.aria-label]="'footer.social.tiktok' | translate"
+             class="btn btn-outline-secondary rounded-circle p-2"
+             href="https://www.tiktok.com/@soncollab">
+            <i class="fi-tiktok fs-5"></i>
           </a>
-
-          <a [attr.aria-label]="'footer.social.threads' | translate" class="btn btn-icon btn-lg btn-secondary rounded-circle" href="https://www.threads.com/@soncollab_officiel">
-            <i class="bi bi-threads fs-xl"></i>
+          <a [attr.aria-label]="'footer.social.threads' | translate"
+             class="btn btn-outline-secondary rounded-circle p-2"
+             href="https://www.threads.com/@soncollab_officiel">
+            <i class="bi bi-threads fs-5"></i>
           </a>
-
-          <a [attr.aria-label]="'footer.social.linkedin' | translate" class="btn btn-icon btn-lg btn-secondary rounded-circle" href="https://www.linkedin.com/company/soncollab">
-            <i class="fi-linkedin fs-xl"></i>
+          <a [attr.aria-label]="'footer.social.linkedin' | translate"
+             class="btn btn-outline-secondary rounded-circle p-2"
+             href="https://www.linkedin.com/company/soncollab">
+            <i class="fi-linkedin fs-5"></i>
           </a>
-
-        </div>
-      </div>
-      <div class="col-sm-12 col-md-6 col-lg-3 mb-md-4 mb-sm-2">
-        <div class="accordion-item border-0">
-          <h6 class="accordion-header mb-2" id="companyLinksHeading">
-            <span class="h5 d-none d-sm-block for-inter-font text-white">
-              {{ 'footer.company.title' | translate }}
-            </span>
-            <button aria-controls="companyLinks" aria-expanded="false"
-                    class="accordion-button collapsed py-3 d-sm-none for-inter-font text-white" data-bs-target="#companyLinks" data-bs-toggle="collapse"
-                    type="button">
-              {{ 'footer.company.title' | translate }}
-            </button>
-          </h6>
-          <div aria-labelledby="companyLinksHeading" class="accordion-collapse collapse d-sm-block mb-sm-3"
-               data-bs-parent="#footerLinks" id="companyLinks">
-            <ul class="nav flex-column gap-2 pt-sm-1 pt-lg-2 pb-3 pb-sm-0 mt-n1 mb-1 mb-sm-0">
-              <li class="pt-1">
-                <a class="nav-link hover-effect-underline d-inline text-white fw-normal p-0" [routerLink]="['/company/about']">
-                  {{ 'footer.company.about' | translate }}
-                </a>
-              </li>
-              <li class="pt-1">
-                <a class="nav-link hover-effect-underline d-inline text-white fw-normal p-0" href="#!">
-                  {{ 'footer.company.careers' | translate }}
-                </a>
-              </li>
-              <li class="pt-1">
-                <a class="nav-link hover-effect-underline d-inline text-white fw-normal p-0" [routerLink]="['/company/privacy-policy']">
-                  {{ 'footer.company.privacy' | translate }}
-                </a>
-              </li>
-              <li class="pt-1">
-                <a class="nav-link hover-effect-underline d-inline text-white fw-normal p-0" [routerLink]="['/company/use-condition']">
-                  {{ 'footer.company.terms' | translate }}
-                </a>
-              </li>
-              <li class="pt-1">
-                <a class="nav-link hover-effect-underline d-inline text-white fw-normal p-0" [routerLink]="['/company/anti-fraud-policy']" >{{ 'footer.company.antiFraud' | translate }}</a>
-              </li>
-            </ul>
-          </div>
-          <hr class="d-sm-none my-0">
         </div>
       </div>
-      <div class="col-sm-12 col-md-6 col-lg-4 mb-2">
-        <div class="accordion-item border-0">
-          <h6 class="accordion-header" id="resourcesLinksHeading">
-            <span class="h5 d-none for-inter-font d-sm-block text-white">
-              {{ 'footer.resources.title' | translate }}
-            </span>
-            <button aria-controls="resourcesLinks" aria-expanded="false"
-                    class="accordion-button collapsed for-inter-font py-3 d-sm-none text-white" data-bs-target="#resourcesLinks" data-bs-toggle="collapse"
-                    type="button">
-              {{ 'footer.resources.title' | translate }}
-            </button>
-          </h6>
-          <div aria-labelledby="resourcesLinksHeading" class="accordion-collapse collapse d-sm-block"
-               data-bs-parent="#footerLinks" id="resourcesLinks">
-            <div class="row row-cols-2">
-              <div class="col">
-                <ul class="nav flex-column gap-2 pt-sm-1 pt-lg-2 pb-3 pb-sm-0 mt-n1 mb-1 mb-sm-0">
 
-                  <li class="pt-1">
-                    <a class="nav-link hover-effect-underline d-inline text-white fw-normal p-0" href="#!">
-                      {{ 'footer.resources.api' | translate }}
-                    </a>
-                  </li>
-
-                  <li class="pt-1">
-                    <a class="nav-link hover-effect-underline d-inline text-white fw-normal p-0" [routerLink]="['/help']">
-                      {{ 'footer.resources.help' | translate }}
-                    </a>
-                  </li>
-
-                  <li class="pt-1">
-                    <a class="nav-link hover-effect-underline d-inline text-white fw-normal p-0" [routerLink]="['/blog']">
-                      {{ 'footer.resources.blog' | translate }}
-                    </a>
-                  </li>
-
-                </ul>
-              </div>
+      <!-- Colonnes de liens -->
+      <div class="col-lg-7">
+        <div class="row">
+          <div class="col-md-4 mb-4">
+            <div class="d-flex flex-column gap-3">
+              <a [routerLink]="['/company/privacy-policy']"
+                 class="text-decoration-none footer-subtitle fs-4 text-muted-custom">
+                {{ 'footer.company.privacy' | translate }}
+              </a>
+              <a [routerLink]="['/company/use-condition']"
+                 class="text-decoration-none footer-subtitle fs-4 text-muted-custom">
+                {{ 'footer.company.terms' | translate }}
+              </a>
             </div>
           </div>
-          <hr class="d-sm-none my-0">
+
+          <div class="col-md-4 mb-4">
+            <div class="d-flex flex-column gap-3">
+              <a [routerLink]="['/company/about']"
+                 class="text-decoration-none footer-subtitle fs-4 text-muted-custom">
+                {{ 'footer.company.about' | translate }}
+              </a>
+              <a href="#!"
+                 class="text-decoration-none footer-subtitle fs-4 text-muted-custom">
+                {{ 'footer.company.careers' | translate }}
+              </a>
+              <a href="#!"
+                 class="text-decoration-none footer-subtitle fs-4 text-muted-custom">
+                {{ 'footer.resources.api' | translate }}
+              </a>
+              <a [routerLink]="['/company/anti-fraud-policy']"
+                 class="text-decoration-none footer-subtitle fs-4 text-muted-custom">
+                {{ 'footer.company.antiFraud' | translate }}
+              </a>
+            </div>
+          </div>
+
+          <div class="col-md-4 mb-4">
+            <div class="d-flex flex-column gap-3">
+              <a [routerLink]="['/help']"
+                 class="text-decoration-none footer-subtitle fs-4 text-muted-custom">
+                {{ 'footer.resources.help' | translate }}
+              </a>
+              <a [routerLink]="['/blog']"
+                 class="text-decoration-none footer-subtitle fs-4 text-muted-custom">
+                {{ 'footer.resources.blog' | translate }}
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="d-md-flex align-items-center py-4 pt-sm-5 mt-3 mt-sm-0">
-      <p class="text-white-50 fs-sm text-center text-md-start mb-0 me-md-4 order-md-1">
+    <!-- Copyright -->
+    <div class="text-center">
+      <p class="text-muted-custom mb-0">
         {{ 'footer.copyright' | translate }}
       </p>
     </div>
-
   </div>
 </footer>

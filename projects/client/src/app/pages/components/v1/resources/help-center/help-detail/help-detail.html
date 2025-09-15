@@ -356,7 +356,7 @@
     <div class="container">
       <div class="row justify-content-center">
         <div class="col-lg-8">
-          <div class="text-center p-4 p-lg-5 rounded-3 bg-gradient border-0">
+          <div class="text-center  p-4 p-lg-5 rounded-3  border">
 
             <!-- Icône Help + Newsletter -->
             <div class="mb-3">
@@ -366,17 +366,17 @@
             </div>
 
             <!-- Titre et Description -->
-            <h3 class="h4 fw-bold mb-3 text-white for-inter-font">
+            <h3 class="h4 fw-bold mb-3  for-inter-font">
               {{ 'newsletter.help.title' | translate }}
             </h3>
-            <p class="text-white-50 mb-4">
+            <p class="mb-4  text-muted-custom">
               {{ 'newsletter.help.description' | translate }}
             </p>
 
             <!-- Bouton d'abonnement -->
             <button
               type="button"
-              class="btn btn-light btn-lg px-4 mb-3"
+              class="btn btn-outline-dark btn-lg px-4 mb-3"
               (click)="openHelpNewsletter()">
               <i class="fi-bell me-2"></i>
               {{ 'newsletter.help.subscribe' | translate }}

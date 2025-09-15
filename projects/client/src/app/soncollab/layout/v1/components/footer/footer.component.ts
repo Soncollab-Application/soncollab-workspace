@@ -65,4 +65,11 @@ export class FooterComponent implements OnInit, OnDestroy {
     }
   }
 
+  getCurrentLogo(): string {
+    const currentTheme = document.documentElement.getAttribute('data-bs-theme');
+    return currentTheme === 'dark'
+      ? '/assets/images/logo/soncollablightlogo.svg'
+      : '/assets/images/logo/soncollabdarklogo.svg';
+  }
+
 }

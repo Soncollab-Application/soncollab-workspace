@@ -505,3 +505,106 @@
   contain: layout style paint;
   isolation: isolate;
 }
+
+
+/* -------------------------------------------- */
+
+/* Theme variables for light and dark modes */
+[data-bs-theme="light"] {
+  --bs-body-bg: #ffffff;
+  --bs-body-color: #212529;
+  --custom-card-bg: rgba(248, 249, 250, 0.8);
+  --custom-border: #dee2e6;
+  --custom-text-muted: #6c757d;
+  --custom-btn-bg: #f8f9fa;
+  --custom-btn-border: #dee2e6;
+  --custom-code-bg: #f8f9fa;
+}
+
+[data-bs-theme="dark"] {
+  --bs-body-bg: #191919;
+  --bs-body-color: #d4d4d4;
+  --custom-card-bg: rgba(31, 31, 31, 0.6);
+  --custom-border: #2a2a2a;
+  --custom-text-muted: #8c8c8c;
+  --custom-btn-bg: #323232;
+  --custom-btn-border: #3e3e3e;
+  --custom-code-bg: #1f1f1f;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+.hero-subtitle, .section-title, .footer-title , .footer-subtitle {
+  font-family: 'Inter Tight', sans-serif;
+  font-weight: 300;
+}
+
+.card-custom {
+  background: var(--custom-card-bg);
+  border-color: var(--custom-border);
+  transition: background 0.2s;
+}
+
+.card-custom:hover {
+  background: var(--custom-border);
+}
+
+.btn-custom {
+  background: transparent;
+  border-color: var(--custom-btn-border);
+  color: var(--bs-body-color);
+  transition: background 0.2s;
+}
+
+.btn-custom:hover {
+  background: var(--custom-border);
+  color: var(--bs-body-color);
+}
+
+.btn-custom-small {
+  background: var(--custom-btn-bg);
+  border-color: var(--custom-btn-border);
+  color: var(--bs-body-color);
+  opacity: 0.9;
+}
+
+.btn-custom-small:hover {
+  opacity: 1;
+  filter: brightness(1.1);
+}
+
+.code-block {
+  background: var(--custom-code-bg);
+  border-color: var(--custom-border);
+}
+
+.nav-tabs-custom .nav-link {
+  background: none;
+  border: none;
+  color: var(--custom-text-muted);
+  border-bottom: 3px solid transparent;
+}
+
+.nav-tabs-custom .nav-link.active {
+  color: var(--bs-body-color);
+  border-bottom-color: var(--bs-body-color);
+}
+
+.text-muted-custom {
+  color: var(--custom-text-muted) !important;
+}
+
+.border-custom {
+  border-color: var(--custom-border) !important;
+}
+
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1050;
+}
+
+

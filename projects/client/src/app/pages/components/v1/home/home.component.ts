@@ -33,6 +33,7 @@ interface FeatureData {
   imageAlt: string;
   link: string;
   reversed: boolean; // Pour alterner la disposition
+  icon: string;
 }
 
 type BackgroundGradients = Record<FeatureType, GradientStyle>;
@@ -41,11 +42,8 @@ type ButtonGradients = Record<FeatureType, ButtonGradientStyle>;
 @Component({
   selector: 'app-home',
   imports: [
-    SwiperDirective,
-    NgStyle,
     NgClass,
     TranslatePipe,
-    RouterLink,
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
@@ -90,6 +88,7 @@ export class HomeComponent implements OnInit ,OnDestroy {
       imageSrc: '/assets/images/features/catalog.png',
       imageAlt: 'Catalog',
       link: '/features/catalog',
+      icon: "bi-collection",
       reversed: false
     },
     {
@@ -99,7 +98,8 @@ export class HomeComponent implements OnInit ,OnDestroy {
       imageSrc: '/assets/images/features/distribution.png',
       imageAlt: 'Distribution',
       link: '/features/distribution-delivery',
-      reversed: true
+      reversed: true,
+      icon: "bi-broadcast",
     },
     {
       key: 'royalties',
@@ -108,7 +108,8 @@ export class HomeComponent implements OnInit ,OnDestroy {
       imageSrc: '/assets/images/features/royalties.png',
       imageAlt: 'Royalties',
       link: '/features/royalties',
-      reversed: false
+      reversed: false,
+      icon: "bi-currency-dollar",
     },
     {
       key: 'payment',
@@ -117,7 +118,8 @@ export class HomeComponent implements OnInit ,OnDestroy {
       imageSrc: '/assets/images/features/payment.png',
       imageAlt: 'Payment',
       link: '/features/payments',
-      reversed: true
+      reversed: true,
+      icon: "bi-credit-card",
     },
     {
       key: 'analytics',
@@ -126,7 +128,8 @@ export class HomeComponent implements OnInit ,OnDestroy {
       imageSrc: '/assets/images/features/analytics.png',
       imageAlt: 'Analytics',
       link: '/features/analytics',
-      reversed: false
+      reversed: false,
+      icon: "bi-bar-chart-line",
     },
   ];
 

@@ -7,6 +7,7 @@ import { ActivatedRoute, Router, Params } from '@angular/router';
 import { ContactModalService } from '../../../../core/services/contact-modal.service';
 import { LanguageOrchestratorService } from '../../../../core/services/language-orchestrator.service';
 import { PricingService } from '../../../services/pricing.service';
+import { ToastService } from '../../../../core/modules/toast/toast.service';
 import { ChoicesSelectComponent, SelectOption } from '../../../../core/modules/choices/choices-select.component';
 import { ChoicesConfig } from '../../../../core/modules/choices/choices.directive';
 import {
@@ -36,6 +37,7 @@ export class PricingComponent implements OnInit, OnDestroy {
   private translateService = inject(TranslateService);
   private activatedRoute = inject(ActivatedRoute);
   private router = inject(Router);
+  private toastService = inject(ToastService);
 
   // State
   public isLoading = false;
@@ -150,7 +152,6 @@ export class PricingComponent implements OnInit, OnDestroy {
     if (params['productType'] && this.isValidProductType(params['productType'])) {
       this.selectedProductType = params['productType'];
     } else if (!this.selectedProductType && this.productTypeOptions.length > 0) {
-      // Si aucun productType en URL et qu'on n'en a pas encore, prendre Studio par défaut
       this.selectedProductType = 'Studio';
     }
 
@@ -240,7 +241,7 @@ export class PricingComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Erreur lors du chargement des données pricing:', error);
-          this.error = 'Erreur lors du chargement des données';
+          this.error = this.translateService.instant('pricing.error.description') ;
           this.isLoading = false;
           this.hasInitialLoad = true;
         }
@@ -270,10 +271,10 @@ export class PricingComponent implements OnInit, OnDestroy {
    */
   private setDefaultValues(): void {
     if (!this.selectedProductType && this.productTypeOptions.length > 0) {
-      this.selectedProductType = 'Studio'; // Valeur par défaut
+      this.selectedProductType = 'Studio';
     }
     if (!this.selectedCurrency) {
-      this.selectedCurrency = 'USD'; // Valeur par défaut
+      this.selectedCurrency = 'USD';
     }
   }
 
@@ -348,7 +349,7 @@ export class PricingComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Méthodes de calcul de prix (inchangées)
+   * Méthodes de calcul de prix
    */
   public convertPrice(price: number): number {
     const convertedPrice = Math.round(price * this.currentConversionRate);
@@ -435,15 +436,92 @@ export class PricingComponent implements OnInit, OnDestroy {
     this.loadPricingData();
   }
 
+  /**
+   * Ouvre le modal de contact général
+   */
   public openContactModal(): void {
-    this.contactModalService.openContactModal().subscribe();
+    this.contactModalService.openContactModal()
+      .subscribe({
+        next: (result) => {
+          if (!result.cancelled) {
+            this.toastService.showSuccess(
+              this.translateService.instant('contact.form.success'),
+              {
+                header: this.translateService.instant('contact.form.success.title'),
+                delay: 5000
+              }
+            );
+          }
+        },
+        error: (error) => {
+          console.error('Erreur lors de l\'envoi:', error);
+        }
+      });
   }
 
+  /**
+   * Ouvre le modal de contact avec données pricing pré-remplies
+   */
+  public contactForPricing(plan?: PricingPlan): void {
+    // Préparer le message pré-rempli
+    let prefilledMessage = '';
+
+    if (plan) {
+      prefilledMessage = this.translateService.instant('pricing.contact.interested', {
+        plan: plan.name
+      });
+
+      prefilledMessage += `\n\n--- ${this.translateService.instant('pricing.contact.planDetails')} ---\n`;
+      prefilledMessage += `${this.translateService.instant('pricing.plan')}: ${plan.name}\n`;
+
+      const billingPeriodLabel = this.billingPeriod === 'monthly'
+        ? this.translateService.instant('pricing.monthly')
+        : this.translateService.instant('pricing.yearly');
+
+      prefilledMessage += `${this.translateService.instant('pricing.billingPeriod')}: ${billingPeriodLabel}\n`;
+
+      if (this.selectedAddons.length > 0) {
+        const addonNames = this.selectedAddons.map(id => {
+          const addon = this.addons.find(a => a.documentId === id);
+          return addon?.name || id;
+        });
+        prefilledMessage += `${this.translateService.instant('pricing.addons.selected')}: ${addonNames.join(', ')}\n`;
+      }
+
+      const estimatedPrice = this.getTotalPrice(plan);
+      prefilledMessage += `${this.translateService.instant('pricing.estimatedPrice')}: ${this.formatConvertedPriceWithSymbol(estimatedPrice)}\n`;
+    } else {
+      prefilledMessage = this.translateService.instant('pricing.contact.general');
+    }
+
+    // Données initiales pour le modal - AVEC VERROUILLAGE
+    const initialData = {
+      contact_type: 'pricing_inquiry',
+      message: prefilledMessage,
+      contact_subject: plan
+        ? this.translateService.instant('pricing.contact.subject.plan', { plan: plan.name })
+        : this.translateService.instant('pricing.contact.subject.general'),
+      source: 'pricing_page',
+      isPricingInquiry: true
+    };
+
+    // Ouvrir le modal de contact
+    this.contactModalService.openContactModal(initialData)
+      .subscribe({
+        next: (result) => {
+
+        },
+        error: (error) => {
+          console.error('Erreur lors de l\'envoi:', error);
+        }
+      });
+  }
+
+  /**
+   * Sélectionne un plan (pour futur checkout)
+   */
   public selectPlan(plan: PricingPlan): void {
-    console.log('Plan sélectionné:', plan);
-    console.log('Addons sélectionnés:', this.selectedAddons);
-    console.log('Prix total:', this.getTotalPrice(plan));
-    console.log('URL actuelle:', this.router.url);
-    // Ici vous pourriez rediriger vers une page de checkout
+    // Pour l'instant, ouvre le modal pricing
+    this.contactForPricing(plan);
   }
 }
