@@ -536,7 +536,7 @@ body {
   font-family: 'Inter', sans-serif;
 }
 
-.hero-subtitle, .section-title {
+.hero-subtitle, .section-title, .footer-title , .footer-subtitle {
   font-family: 'Inter Tight', sans-serif;
   font-weight: 300;
 }
