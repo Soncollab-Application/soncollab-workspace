@@ -57,7 +57,8 @@
     "heroFallback": {
       "title": "La musique indépendante à son meilleur",
       "subtitle": "Distribuez, protégez et monétisez votre musique dans le monde entier.",
-      "button": "Commencer"
+      "button": "Commencer",
+      "button2": "Voir les fonctionnalités"
     },
     "tagline": "Distribuez, protégez et monétisez votre musique",
     "forLabelsTitle": "Pour les labels et distributeurs",
@@ -173,6 +174,9 @@
     "showing": "Affichage de",
     "plans": "plans",
     "for": "pour",
+    "plan": "Plan",
+    "estimatedPrice": "Prix estimé",
+    "totalPrice": "Prix total",
 
     "supportLevel": {
       "basic": "Basique",
@@ -182,6 +186,7 @@
 
     "addons": {
       "title": "Services supplémentaires",
+      "selected": "Add-ons sélectionnés",
       "description": "Améliorez votre plan avec ces options additionnelles"
     },
 
@@ -195,9 +200,18 @@
     },
 
     "contact": {
-      "title": "Besoin d'aide ou d'une solution sur mesure ?",
-      "description": "Notre équipe commerciale est là pour vous accompagner et répondre à toutes vos questions.",
-      "button": "Contacter notre équipe"
+      "title": "Besoin d'aide pour choisir ?",
+      "description": "Notre équipe commerciale est là pour vous conseiller et vous proposer une solution adaptée à vos besoins.",
+      "button": "Demander un devis",
+      "interested": "Je suis intéressé par le plan {{plan}}",
+      "success": "Demande de pricing reçue ! Un commercial vous contactera sous 2h.",
+      "success.title": "Demande envoyée !",
+      "general": "J'aimerais en savoir plus sur vos tarifs et plans disponibles.",
+      "planDetails": "Détails du plan",
+      "subject": {
+        "plan": "Demande pricing - {{plan}}",
+        "general": "Demande de pricing"
+      }
     },
 
     "catalog": {
@@ -267,6 +281,7 @@
 
     "error": {
       "title": "Erreur de chargement",
+      "description": "Une erreur est survenue lors du chargement des plans tarifaires. Veuillez réessayer plus tard.",
       "retry": "Réessayer"
     }
   },
@@ -731,6 +746,13 @@
         "feature1": "Export en formats CSV et PDF",
         "feature2": "Jusqu'à 1000 lignes disponibles",
         "feature3": "Intégration dans des rapports externes"
+      },
+      "playlist": {
+        "title": "Débloquez les informations sur vos playlists",
+        "description": "Recevez des alertes en temps réel lorsque votre musique est ajoutée à des playlists et évaluez leur impact sur vos performances de streaming.",
+        "feature1": "Alertes d’ajout aux playlists en temps réel",
+        "feature2": "Analyse des types de playlists",
+        "feature3": "Impact sur les performances de streaming"
       },
       "audience": {
         "title": "Comprenez Votre Audience",
@@ -1232,7 +1254,6 @@
       "companyWebsite": "Site web",
       "companyWebsite.placeholder": "https://www.example.com",
       "companyWebsite.invalid": "URL invalide (doit commencer par http:// ou https://)",
-      "contactType": "Type de contact",
       "contactType.placeholder": "Sélectionnez un type",
       "contactType.required": "Le type de contact est requis",
       "country": "Pays",
@@ -1251,6 +1272,12 @@
         "noChoices": "Aucun choix disponible"
       },
       "loading": "Chargement...",
+      "contactType": {
+        "name": "Type de contact",
+        "pricing_inquiry": "Demande de pricing"
+      },
+      "success": "Votre message a été envoyé avec succès !",
+      "success.title": "Message envoyé !",
       "error": {
         "title": "Erreur",
         "submission": "Une erreur est survenue lors de l'envoi",

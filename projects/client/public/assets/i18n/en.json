@@ -56,7 +56,8 @@
     "heroFallback": {
       "title": "Empowering independent music to thrive",
       "subtitle": "A platform designed to scale, protect and monetize independent music, globally.",
-      "button": "Get Started"
+      "button": "Get Started",
+      "button2": "See features"
     },
     "tagline": "A new way to distribute, protect and monetize music",
     "forLabelsTitle": "For music labels and distributors",
@@ -172,6 +173,9 @@
     "showing": "Showing",
     "plans": "plans",
     "for": "for",
+    "plan": "Plan",
+    "estimatedPrice": "Estimated price",
+    "totalPrice": "Total price",
     "supportLevel": {
       "basic": "Basic",
       "priority": "Priority",
@@ -179,6 +183,7 @@
     },
     "addons": {
       "title": "Additional services",
+      "selected": "Selected add-ons",
       "description": "Enhance your plan with these additional options"
     },
     "addonsSelected": "add-ons selected",
@@ -189,9 +194,18 @@
       "showAll": "Show all plans"
     },
     "contact": {
-      "title": "Need help or a custom solution?",
-      "description": "Our sales team is here to assist you and answer all your questions.",
-      "button": "Contact our team"
+      "title": "Need help choosing?",
+      "description": "Our sales team is here to advise you and offer a solution tailored to your needs.",
+      "button": "Request quote",
+      "interested": "I'm interested in the {{plan}} plan",
+      "success": "Pricing inquiry received! A sales rep will contact you within 2h.",
+      "success.title": "Request sent!",
+      "general": "I would like to learn more about your pricing and available plans.",
+      "planDetails": "Plan details",
+      "subject": {
+        "plan": "Pricing inquiry - {{plan}}",
+        "general": "Pricing inquiry"
+      }
     },
 
     "catalog": {
@@ -260,6 +274,7 @@
 
     "error": {
       "title": "Loading error",
+      "description": "An error occurred while loading the pricing plans. Please try again later or contact support if the problem persists.",
       "retry": "Retry"
     }
   },
@@ -1236,7 +1251,6 @@
       "companyWebsite": "Website",
       "companyWebsite.placeholder": "https://www.example.com",
       "companyWebsite.invalid": "Invalid URL (must start with http:// or https://)",
-      "contactType": "Contact Type",
       "contactType.placeholder": "Select a type",
       "contactType.required": "Contact type is required",
       "country": "Country",
@@ -1248,6 +1262,12 @@
       "cancel": "Cancel",
       "submit": "Send",
       "submitting": "Sending...",
+      "contactType": {
+        "name": "Contact Type",
+        "pricing_inquiry": "Pricing inquiry"
+      },
+      "success": "Your message has been sent successfully!",
+      "success.title": "Message sent!",
       "error": {
         "title": "Error",
         "submission": "An error occurred while sending",

@@ -172,22 +172,29 @@
     <div class="row mb-2">
       <div class="col-md-6 mb-2">
         <label for="contactType" class="form-label">
-          {{ 'contact.form.contactType' | translate }} <span class="text-danger">*</span>
+          {{ 'contact.form.contactType.name' | translate }} <span class="text-danger">*</span>
         </label>
 
         <!-- Contact Type Select -->
-        @if (optionsLoaded() && contactTypeOptions.length > 1) {
-          <app-choices-select
-            formControlName="contact_type"
-            [options]="contactTypeOptions"
-            [choicesConfig]="contactTypeConfig"
-            ariaLabel="{{ 'contact.form.contactType' | translate }}"
-            theme="auto">
-          </app-choices-select>
+        @if (isPricingInquiry) {
+          <div class="form-control  d-flex align-items-center">
+            <strong>{{ 'contact.form.contactType.pricing_inquiry' | translate }}</strong>
+          </div>
         } @else {
-          <select class="form-select" disabled>
-            <option>{{ 'contact.form.loading' | translate }}</option>
-          </select>
+          <!-- Contact Type Select normal -->
+          @if (optionsLoaded() && contactTypeOptions.length > 1) {
+            <app-choices-select
+              formControlName="contact_type"
+              [options]="contactTypeOptions"
+              [choicesConfig]="contactTypeConfig"
+              ariaLabel="{{ 'contact.form.contactType' | translate }}"
+              theme="auto">
+            </app-choices-select>
+          } @else {
+            <select class="form-select" disabled>
+              <option>{{ 'contact.form.loading' | translate }}</option>
+            </select>
+          }
         }
 
         @if (isFieldInvalid('contact_type')) {
