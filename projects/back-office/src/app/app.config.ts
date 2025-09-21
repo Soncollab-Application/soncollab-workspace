@@ -1,23 +1,23 @@
-import {TranslateHttpLoader} from '@ngx-translate/http-loader';
-import {ApplicationConfig, importProvidersFrom, provideZoneChangeDetection} from '@angular/core';
-import {provideRouter} from '@angular/router';
+import {
+  ApplicationConfig, importProvidersFrom, provideBrowserGlobalErrorListeners,
+  provideZoneChangeDetection, provideZonelessChangeDetection
+} from '@angular/core';
+import { provideRouter } from '@angular/router';
 
-import {routes} from './app.routes';
+import { routes } from './app.routes';
 import {HttpClient, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {IMAGE_CONFIG} from '@angular/common';
+import {RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module} from 'ng-recaptcha-2';
+import {environment} from '../../../client/src/environments/environment';
 import {FormsModule} from '@angular/forms';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {provideMarkdown} from 'ngx-markdown';
-import {RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module} from 'ng-recaptcha-2';
-import {environment} from '../environments/environment';
-
-export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http, '/assets/i18n/', '.json');
-}
+import {HttpLoaderFactory} from '../../../client/src/app/app.config';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({eventCoalescing: true}),
+    provideBrowserGlobalErrorListeners(),
+    provideZonelessChangeDetection(),
     provideRouter(routes),
     provideHttpClient(
       withInterceptorsFromDi(),

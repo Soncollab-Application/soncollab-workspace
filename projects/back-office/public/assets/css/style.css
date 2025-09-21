@@ -1,8 +1,8 @@
+
 @font-face {
   font-family: 'Dax';
   src: url('/assets/fonts/dax-regular.ttf') format('opentype');
 }
-
 
 .for-dax-font {
   font-family: "Dax", sans-serif !important;

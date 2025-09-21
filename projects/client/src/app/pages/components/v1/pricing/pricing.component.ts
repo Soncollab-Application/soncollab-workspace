@@ -2,7 +2,7 @@ import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { Subject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { ContactModalService } from '../../../../core/services/contact-modal.service';
 import { LanguageOrchestratorService } from '../../../../core/services/language-orchestrator.service';
