@@ -29,6 +29,12 @@
     },
     {
       "path": "./projects/client/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/back-office/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/back-office/tsconfig.spec.json"
     }
   ]
 }

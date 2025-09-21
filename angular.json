@@ -139,6 +139,128 @@
           }
         }
       }
+    },
+    "back-office": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "projects/back-office",
+      "sourceRoot": "projects/back-office/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "browser": "projects/back-office/src/main.ts",
+            "tsConfig": "projects/back-office/tsconfig.app.json",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/back-office/public"
+              }
+            ],
+            "styles": [
+              "projects/back-office/src/styles.css",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/aos/dist/aos.css",
+              "projects/back-office/public/assets/icons/finder-icons.min.css",
+              "projects/back-office/public/assets/icons/bootstrap-icons.min.css",
+              "projects/back-office/public/assets/vendor/simplebar/simplebar.min.css",
+              "projects/back-office/public/assets/css/style.css",
+              "projects/back-office/public/assets/vendor/nouislider/nouislider.min.css",
+              "projects/back-office/public/assets/vendor/swiper/swiper-bundle.min.css",
+              "projects/back-office/public/assets/vendor/choices.js/choices.min.css",
+              "projects/back-office/public/assets/css/theme.min.css"
+            ],
+            "scripts": [
+              "node_modules/aos/dist/aos.js",
+              "projects/back-office/public/assets/vendor/simplebar/simplebar.min.js",
+              "projects/back-office/public/assets/vendor/nouislider/nouislider.min.js",
+              "projects/back-office/public/assets/js/confetti.bundle.min.js",
+              "projects/back-office/public/assets/vendor/swiper/swiper-bundle.min.js",
+              "projects/back-office/public/assets/vendor/choices.js/choices.min.js",
+              "projects/back-office/public/assets/js/theme.min.js"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "1MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "projects/back-office/src/environments/environment.ts",
+                  "with": "projects/back-office/src/environments/environment.development.ts"
+                }
+              ]
+            },
+            "staging": {
+              "optimization": true,
+              "extractLicenses": true,
+              "sourceMap": false,
+              "fileReplacements": [
+                {
+                  "replace": "projects/back-office/src/environments/environment.ts",
+                  "with": "projects/back-office/src/environments/environment.staging.ts"
+                }
+              ]
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "back-office:build:production"
+            },
+            "development": {
+              "buildTarget": "back-office:build:development"
+            },
+            "staging": {
+              "buildTarget": "back-office:build:staging"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular/build:extract-i18n"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing",
+              "@angular/localize/init"
+            ],
+            "tsConfig": "projects/back-office/tsconfig.spec.json",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/back-office/public"
+              }
+            ],
+            "styles": [
+              "projects/back-office/src/styles.css"
+            ]
+          }
+        }
+      }
     }
   },
   "cli": {
