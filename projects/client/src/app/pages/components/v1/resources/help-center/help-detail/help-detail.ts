@@ -1,18 +1,19 @@
 import {Component, inject, OnDestroy, OnInit} from '@angular/core';
-import {skip, Subject, takeUntil} from 'rxjs';
+import { Subject, takeUntil} from 'rxjs';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MarkdownComponent } from 'ngx-markdown';
-import { ToastService } from '../../../../../../core/modules/toast/toast.service';
 import { HelpService } from '../../../../../services/help.service';
-import { LanguageService } from '../../../../../../core/services/language.service';
 import { SeoService } from '../../../../../../core/services/seo.service';
 import { HelpArticle } from '../../../../../models/help.model';
 import {NewsletterModalService} from '../../../../../../core/services/newsletter-modal.service';
 import {ContactModalService} from '../../../../../../core/services/contact-modal.service';
-import {LanguageOrchestratorService} from '../../../../../../core/services/language-orchestrator.service';
+import {
+  LanguageOrchestratorService,
+  LanguageService,ToastService
+} from 'shared-lib';
 
 @Component({
   selector: 'app-help-detail',

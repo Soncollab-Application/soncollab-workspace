@@ -1,12 +1,14 @@
-import { Injectable } from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot } from '@angular/router';
-import { RecaptchaService } from '../services/recaptcha.service';
+import {RecaptchaActionService} from '../../pages/services/recaptcha-action.service';
+import {RecaptchaService} from 'shared-lib';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RecaptchaGuard implements CanActivate {
-  constructor(private recaptchaService: RecaptchaService) {}
+  constructor(private recaptchaActionService: RecaptchaActionService) {}
+  private recaptchaService = inject(RecaptchaService);
 
   async canActivate(route: ActivatedRouteSnapshot): Promise<boolean> {
     try {
@@ -17,7 +19,7 @@ export class RecaptchaGuard implements CanActivate {
         return true;
       }
 
-      await this.recaptchaService.getPageViewToken();
+      await this.recaptchaActionService.getPageViewToken();
     } catch (error) {
       console.warn(`⚠️ reCAPTCHA preload failed for: ${route.routeConfig?.path}`, error);
     }

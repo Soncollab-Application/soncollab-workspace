@@ -4,13 +4,12 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import {MarkdownComponent} from 'ngx-markdown';
-import {ToastService} from '../../../../../../core/modules/toast/toast.service';
 import {BlogService} from '../../../../../services/blog.service';
 import {SeoService} from '../../../../../../core/services/seo.service';
 import {environment} from '../../../../../../../environments/environment';
 import {BlogArticle} from '../../../../../models/blog.model';
 import {NewsletterModalService} from '../../../../../../core/services/newsletter-modal.service';
-import {LanguageOrchestratorService} from '../../../../../../core/services/language-orchestrator.service';
+import {LanguageOrchestratorService, ToastService} from 'shared-lib';
 
 @Component({
   selector: 'app-blog-detail',

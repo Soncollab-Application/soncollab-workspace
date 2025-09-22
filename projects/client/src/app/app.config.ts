@@ -10,10 +10,16 @@ import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {provideMarkdown} from 'ngx-markdown';
 import {RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module} from 'ng-recaptcha-2';
 import {environment} from '../environments/environment';
+import {RECAPTCHA_CONFIG, RecaptchaConfig , SharedLibModule} from 'shared-lib';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, '/assets/i18n/', '.json');
 }
+
+const recaptchaConfig: RecaptchaConfig = {
+  siteKey: environment.recaptcha.siteKey,
+  enabled: true
+};
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -32,6 +38,10 @@ export const appConfig: ApplicationConfig = {
       provide: RECAPTCHA_V3_SITE_KEY,
       useValue: environment.recaptcha.siteKey
     },
+    {
+      provide: RECAPTCHA_CONFIG,
+      useValue: recaptchaConfig
+    },
     importProvidersFrom(FormsModule),
     provideHttpClient(),
     importProvidersFrom(
@@ -42,7 +52,8 @@ export const appConfig: ApplicationConfig = {
           deps: [HttpClient]
         }
       }),
-      RecaptchaV3Module
+      RecaptchaV3Module,
+      SharedLibModule
     ),
     provideMarkdown(),
   ]

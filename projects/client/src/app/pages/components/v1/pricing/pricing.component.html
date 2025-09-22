@@ -13,30 +13,28 @@
         <div class="card-body p-4">
           <div class="row align-items-center g-3">
 
-            <!-- Product Type Filter avec app-choices-select -->
             <div class="col-md-4">
               <label class="form-label fw-semibold">{{ 'pricing.productType' | translate }}</label>
-              <app-choices-select
+              <shared-choices-select
                 [options]="productTypeOptions"
                 [choicesConfig]="productTypeConfig"
                 [(ngModel)]="selectedProductType"
                 (ngModelChange)="onProductTypeChange($event)"
                 [ariaLabel]="'pricing.productType' | translate"
                 [transparent]="false">
-              </app-choices-select>
+              </shared-choices-select>
             </div>
 
-            <!-- Currency Selector avec app-choices-select -->
             <div class="col-md-4">
               <label class="form-label fw-semibold">{{ 'pricing.currency' | translate }}</label>
-              <app-choices-select
+              <shared-choices-select
                 [options]="currencyOptions"
                 [choicesConfig]="currencyConfig"
                 [(ngModel)]="selectedCurrency"
                 (ngModelChange)="onCurrencyChange($event)"
                 [ariaLabel]="'pricing.currency' | translate"
                 [transparent]="false">
-              </app-choices-select>
+              </shared-choices-select>
             </div>
 
             <!-- Billing Period -->

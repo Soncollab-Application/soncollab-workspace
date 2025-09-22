@@ -5,8 +5,7 @@ import { catchError } from 'rxjs/operators';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { environment } from '../../../environments/environment';
 import {NewsletterModal} from '../../pages/components/v1/partials/modals/newsletter-modal/newsletter-modal';
-import {LanguageService} from './language.service';
-import {RecaptchaService} from './recaptcha.service';
+import {LanguageService} from 'shared-lib';
 
 export interface NewsletterSubscriptionData {
   email: string;

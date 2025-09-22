@@ -130,13 +130,13 @@
 
         <!-- Company Size Select -->
         @if (optionsLoaded() && companySizeOptions.length > 1) {
-          <app-choices-select
+          <shared-choices-select
             formControlName="company_size"
             [options]="companySizeOptions"
             [choicesConfig]="companySizeConfig"
             ariaLabel="{{ 'contact.form.companySize' | translate }}"
             theme="auto">
-          </app-choices-select>
+          </shared-choices-select>
         } @else {
           <select class="form-select" disabled>
             <option>{{ 'contact.form.loading' | translate }}</option>
@@ -183,13 +183,13 @@
         } @else {
           <!-- Contact Type Select normal -->
           @if (optionsLoaded() && contactTypeOptions.length > 1) {
-            <app-choices-select
+            <shared-choices-select
               formControlName="contact_type"
               [options]="contactTypeOptions"
               [choicesConfig]="contactTypeConfig"
               ariaLabel="{{ 'contact.form.contactType' | translate }}"
               theme="auto">
-            </app-choices-select>
+            </shared-choices-select>
           } @else {
             <select class="form-select" disabled>
               <option>{{ 'contact.form.loading' | translate }}</option>
@@ -210,13 +210,13 @@
 
         <!-- Country Select avec Choices.js -->
         @if (optionsLoaded() && countryOptions.length > 1) {
-          <app-choices-select
+          <shared-choices-select
             formControlName="country"
             [options]="countryOptions"
             [choicesConfig]="countryConfig"
             ariaLabel="{{ 'contact.form.country' | translate }}"
             theme="auto">
-          </app-choices-select>
+          </shared-choices-select>
         } @else {
           <select class="form-select" disabled>
             <option>{{ 'contact.form.loading' | translate }}</option>

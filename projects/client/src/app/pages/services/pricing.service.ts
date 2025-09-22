@@ -5,7 +5,6 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { map, catchError, finalize } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { LanguageService } from '../../core/services/language.service';
 import {
   PricingResponse,
   PricingPlan,
@@ -13,6 +12,7 @@ import {
   PricingState,
   BillingPeriod
 } from '../models/pricing.model';
+import {LanguageService} from 'shared-lib';
 
 @Injectable({
   providedIn: 'root'

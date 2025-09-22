@@ -1,16 +1,11 @@
-import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subject, Subscription, takeUntil} from 'rxjs';
 import {PageService} from '../../../services/page.service';
 import {Hero} from '../../../models/hero.model';
-import {LanguageService} from '../../../../core/services/language.service';
 import {TranslatePipe} from '@ngx-translate/core';
-import {SwiperDirective} from '../../../../core/utils/directives/swiper.directive';
-import {SwiperOptions} from 'swiper/types';
-import {ThemeService} from '../../../../core/services/theme.service';
-import {NgClass, NgStyle} from '@angular/common';
+import {NgClass} from '@angular/common';
 import {ContactModalService} from '../../../../core/services/contact-modal.service';
-import {RouterLink} from '@angular/router';
-import {LanguageOrchestratorService} from '../../../../core/services/language-orchestrator.service';
+import {LanguageOrchestratorService, ThemeService} from 'shared-lib';
 
 // Types
 type FeatureType = 'catalog' | 'distribution' | 'royalties' | 'payment' | 'analytics' | 'teams';
@@ -54,31 +49,6 @@ export class HomeComponent implements OnInit ,OnDestroy {
   isLoading = true;
   private destroy$ = new Subject<void>();
   private componentId = 'home';
-
-  eventsConfig: SwiperOptions = {
-    slidesPerView: 1,
-    spaceBetween: 24,
-    loop: true,
-    autoplay: {
-      delay: 5000,
-      disableOnInteraction: false
-    },
-    navigation: {
-      prevEl: '#events-prev',
-      nextEl: '#events-next'
-    },
-    breakpoints: {
-      500: {
-        slidesPerView: 1
-      },
-      992: {
-        slidesPerView: 2
-      },
-      1200: {
-        slidesPerView: 'auto'
-      }
-    }
-  };
 
   features: FeatureData[] = [
     {

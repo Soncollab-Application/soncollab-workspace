@@ -2,7 +2,6 @@ import {inject, Injectable} from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map, catchError, of, BehaviorSubject } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { LanguageService } from '../../core/services/language.service';
 import {
   HelpArticle,
   HelpCategory,
@@ -13,10 +12,9 @@ import {
   ApiHelpSearchResponse,
   ApiHelpFeaturedResponse,
   ApiHelpRecentContentResponse,
-  RecentHelp
 } from '../models/help.model';
-import {RecaptchaService} from '../../core/services/recaptcha.service';
-import {query} from '@angular/animations';
+import {RecaptchaActionService} from './recaptcha-action.service';
+import {LanguageService} from 'shared-lib';
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +27,7 @@ export class HelpService {
   private currentCategorySubject = new BehaviorSubject<HelpCategory | null>(null);
   public currentCategory$ = this.currentCategorySubject.asObservable();
 
-  recaptchaService = inject(RecaptchaService);
+  recaptchActionService = inject(RecaptchaActionService);
 
   constructor(
     private httpClient: HttpClient,
@@ -58,7 +56,7 @@ export class HelpService {
 
   public async trackArticleView(slug: string, type: 'help'): Promise<void> {
     try {
-      const token = await this.recaptchaService.getHelpViewToken();
+      const token = await this.recaptchActionService.getHelpViewToken();
       const body = {
         recaptcha_token: token,
         data: {
@@ -188,7 +186,7 @@ export class HelpService {
     if (!documentId) return;
 
     try {
-      const token = await this.recaptchaService.getRatingToken();
+      const token = await this.recaptchActionService.getRatingToken();
       const locale = this.languageService.getCurrentLanguage();
 
       const body = {

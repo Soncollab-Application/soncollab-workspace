@@ -1,5 +1,3 @@
-// Fichier : projects/client/src/app/core/modules/choices/choices-select.component.ts
-
 import {
   Component,
   Input,
@@ -17,8 +15,8 @@ import {
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ChoicesConfig, ChoicesDirective } from './choices.directive';
-import { ThemeService } from '../../services/theme.service';
 import { Subject, takeUntil } from 'rxjs';
+import {ThemeService} from '../../services';
 
 export interface SelectOption {
   value: string | number;
@@ -29,7 +27,7 @@ export interface SelectOption {
 }
 
 @Component({
-  selector: 'app-choices-select',
+  selector: 'shared-choices-select',
   standalone: true,
   imports: [CommonModule, ChoicesDirective],
   providers: [
