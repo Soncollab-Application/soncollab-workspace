@@ -5,7 +5,7 @@ import { ToastService, Toast, ToastPosition } from './toast.service';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
-  selector: 'app-toast-container',
+  selector: 'shared-toast-container',
   standalone: true,
   imports: [CommonModule, NgbToastModule],
   template: `

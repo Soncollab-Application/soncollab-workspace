@@ -1,7 +1,7 @@
 // core/mixins/language-aware.mixin.ts
 import { Injectable, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
-import { LanguageOrchestratorService } from '../services/language-orchestrator.service';
+import {LanguageOrchestratorService} from '../services';
 
 /**
  * Mixin pour les composants qui doivent réagir aux changements de langue

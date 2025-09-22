@@ -2,9 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { FormsModule } from '@angular/forms';
-import { LanguageService } from '../../../../../core/services/language.service';
-import { Language } from '../../../../../core/models/language.model';
 import {TranslatePipe} from '@ngx-translate/core';
+import {Language, LanguageService} from 'shared-lib';
 
 @Component({
   selector: 'app-footer',

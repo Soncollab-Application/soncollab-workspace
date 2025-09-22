@@ -2,11 +2,9 @@ import {Component, HostListener, OnInit, OnDestroy} from '@angular/core';
 import { Router, RouterLink, RouterLinkActive} from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import {NgClass} from '@angular/common';
-import { ThemeService, Theme } from '../../../../../core/services/theme.service';
-import { LanguageService } from '../../../../../core/services/language.service';
-import { Language } from '../../../../../core/models/language.model';
 import { Subject, takeUntil } from 'rxjs';
 import {ContactModalService} from '../../../../../core/services/contact-modal.service';
+import {Language, LanguageService, Theme, ThemeService} from 'shared-lib';
 
 @Component({
   selector: 'app-header',
