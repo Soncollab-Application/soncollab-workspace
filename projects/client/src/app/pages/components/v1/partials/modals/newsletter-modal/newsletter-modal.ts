@@ -8,9 +8,8 @@ import {
   NewsletterResponse,
   NewsletterSubscriptionData
 } from '../../../../../../core/services/newsletter-modal.service';
-import {ToastService} from '../../../../../../core/modules/toast/toast.service';
-import {LanguageService} from '../../../../../../core/services/language.service';
-import {RecaptchaService} from '../../../../../../core/services/recaptcha.service';
+import {ToastService, LanguageService} from 'shared-lib';
+import {RecaptchaActionService} from '../../../../../services/recaptcha-action.service';
 
 @Component({
   selector: 'app-newsletter-modal',
@@ -28,7 +27,7 @@ export class NewsletterModal implements OnInit, OnDestroy {
   private newsletterService = inject(NewsletterModalService);
   private languageService = inject(LanguageService);
   private translateService = inject(TranslateService);
-  recaptchaService = inject(RecaptchaService);
+  recaptchaActionService = inject(RecaptchaActionService);
 
   @Input() subscriptionType: 'blog' | 'help' | 'general' = 'general';
   @Input() source?: string;
@@ -85,7 +84,7 @@ export class NewsletterModal implements OnInit, OnDestroy {
       this.isSubmitting.set(true);
 
       try {
-        const token = await this.recaptchaService.getNewsletterToken();
+        const token = await this.recaptchaActionService.getNewsletterToken();
 
         const formValue = this.newsletterForm.value;
         const subscriptionData: NewsletterSubscriptionData = {

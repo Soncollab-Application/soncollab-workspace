@@ -2,20 +2,19 @@ import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { Subject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { ContactModalService } from '../../../../core/services/contact-modal.service';
-import { LanguageOrchestratorService } from '../../../../core/services/language-orchestrator.service';
 import { PricingService } from '../../../services/pricing.service';
-import { ToastService } from '../../../../core/modules/toast/toast.service';
-import { ChoicesSelectComponent, SelectOption } from '../../../../core/modules/choices/choices-select.component';
-import { ChoicesConfig } from '../../../../core/modules/choices/choices.directive';
 import {
   PricingPlan,
   PricingAddon,
   PricingCurrency,
   BillingPeriod
 } from '../../../models/pricing.model';
+import {
+  ToastService, ChoicesSelectComponent,
+  LanguageOrchestratorService,SelectOption, ChoicesConfig } from 'shared-lib';
 
 @Component({
   selector: 'app-pricing',

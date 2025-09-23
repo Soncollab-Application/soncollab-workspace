@@ -1,15 +1,15 @@
 import {Component, inject, OnDestroy, OnInit} from '@angular/core';
-import {forkJoin, skip, Subject, switchMap} from 'rxjs';
+import {forkJoin, Subject} from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil, finalize } from 'rxjs/operators';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HelpArticle, HelpCategory } from '../../../../../models/help.model';
 import { HelpService } from '../../../../../services/help.service';
-import { LanguageService } from '../../../../../../core/services/language.service';
 import {ContactModalService} from '../../../../../../core/services/contact-modal.service';
-import {LanguageOrchestratorService} from '../../../../../../core/services/language-orchestrator.service';
+import {LanguageOrchestratorService, LanguageService} from 'shared-lib';
+
 
 @Component({
   selector: 'app-help-list',

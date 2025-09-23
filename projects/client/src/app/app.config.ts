@@ -5,17 +5,21 @@ import {provideRouter} from '@angular/router';
 import {routes} from './app.routes';
 import {HttpClient, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {IMAGE_CONFIG} from '@angular/common';
-import {provideAnimations, provideNoopAnimations} from '@angular/platform-browser/animations';
 import {FormsModule} from '@angular/forms';
-import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {provideMarkdown} from 'ngx-markdown';
 import {RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module} from 'ng-recaptcha-2';
 import {environment} from '../environments/environment';
+import {RECAPTCHA_CONFIG, RecaptchaConfig , SharedLibModule} from 'shared-lib';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, '/assets/i18n/', '.json');
 }
+
+const recaptchaConfig: RecaptchaConfig = {
+  siteKey: environment.recaptcha.siteKey,
+  enabled: true
+};
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -34,10 +38,11 @@ export const appConfig: ApplicationConfig = {
       provide: RECAPTCHA_V3_SITE_KEY,
       useValue: environment.recaptcha.siteKey
     },
-    provideAnimations(),
-    provideNoopAnimations(),
+    {
+      provide: RECAPTCHA_CONFIG,
+      useValue: recaptchaConfig
+    },
     importProvidersFrom(FormsModule),
-    provideAnimationsAsync(),
     provideHttpClient(),
     importProvidersFrom(
       TranslateModule.forRoot({
@@ -47,7 +52,8 @@ export const appConfig: ApplicationConfig = {
           deps: [HttpClient]
         }
       }),
-      RecaptchaV3Module
+      RecaptchaV3Module,
+      SharedLibModule
     ),
     provideMarkdown(),
   ]

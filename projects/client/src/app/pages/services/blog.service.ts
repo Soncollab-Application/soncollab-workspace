@@ -2,7 +2,6 @@ import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import { Observable, map, catchError, of, BehaviorSubject } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { LanguageService } from '../../core/services/language.service';
 import {
   BlogArticle,
   BlogCategory,
@@ -18,7 +17,8 @@ import {
   ApiRecentContentResponse,
   RecentBlog
 } from '../models/blog.model';
-import {RecaptchaService} from '../../core/services/recaptcha.service';
+import {LanguageService} from 'shared-lib';
+import {RecaptchaActionService} from './recaptcha-action.service';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +33,7 @@ export class BlogService {
   private currentTagSubject = new BehaviorSubject<BlogTag | null>(null);
   public currentTag$ = this.currentTagSubject.asObservable();
 
-  recaptchaService = inject(RecaptchaService);
+  recaptchActionService = inject(RecaptchaActionService);
 
   constructor(
     private httpClient: HttpClient,
@@ -61,7 +61,7 @@ export class BlogService {
 
   public async trackArticleView(slug: string, type: 'blog'): Promise<void> {
     try {
-      const token = await this.recaptchaService.getBlogViewToken();
+      const token = await this.recaptchActionService.getBlogViewToken();
       const body = {
         recaptcha_token: token,
         data: {

@@ -20,13 +20,15 @@ import {
   ContactModalService,
   EmailCheckResponse
 } from '../../../../../../core/services/contact-modal.service';
-import { LanguageService } from '../../../../../../core/services/language.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { ChoicesSelectComponent, SelectOption } from '../../../../../../core/modules/choices/choices-select.component';
-import { ChoicesConfig } from '../../../../../../core/modules/choices/choices.directive';
-import { ToastService } from '../../../../../../core/modules/toast/toast.service';
-import {RecaptchaService} from '../../../../../../core/services/recaptcha.service';
-import {LanguageOrchestratorService} from '../../../../../../core/services/language-orchestrator.service';
+import {
+  ChoicesConfig,
+  ChoicesSelectComponent,
+  LanguageOrchestratorService,
+  LanguageService, SelectOption,
+  ToastService
+} from 'shared-lib';
+import {RecaptchaActionService} from '../../../../../services/recaptcha-action.service';
 
 @Component({
   selector: 'app-contact-modal',
@@ -50,9 +52,10 @@ export class ContactModal implements OnInit, OnDestroy {
   private contactModalService = inject(ContactModalService);
   private languageService = inject(LanguageService);
   private translateService = inject(TranslateService);
-  private recaptchaService = inject(RecaptchaService);
+  private recaptchaActionService = inject(RecaptchaActionService);
   private cdr = inject(ChangeDetectorRef);
   private languageOrchestrator= inject(LanguageOrchestratorService);
+
 
   @Input() initialData?: any;
 
@@ -388,7 +391,7 @@ export class ContactModal implements OnInit, OnDestroy {
 
     try {
       // Obtenir le token reCAPTCHA
-      const recaptchaToken = await this.recaptchaService.getContactFormToken();
+      const recaptchaToken = await this.recaptchaActionService.getContactFormToken();
 
       const formData: ContactFormData = {
         ...this.contactForm.value,

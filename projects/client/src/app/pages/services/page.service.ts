@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, map, catchError, of } from 'rxjs';
 import {environment} from '../../../environments/environment';
 import {Hero, HeroData, HeroResponse} from '../models/hero.model';
-import {LanguageService} from '../../core/services/language.service';
+import {LanguageService} from 'shared-lib';
 
 @Injectable({
   providedIn: 'root'

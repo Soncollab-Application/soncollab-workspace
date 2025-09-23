@@ -1,53 +1,8 @@
 @font-face {
-  font-family: 'komix';
-  src: url('/assets/fonts/deezer-regular.ttf') format('opentype');
-}
-
-@font-face {
   font-family: 'Dax';
   src: url('/assets/fonts/dax-regular.ttf') format('opentype');
 }
 
-/* Aeonik Light */
-@font-face {
-  font-family: "Aeonik";
-  font-style: normal;
-  font-weight: 300;
-  src: url("/assets/fonts/aeonik/aeonik-light.otf") format("opentype");
-  font-display: swap;
-}
-
-/* Aeonik Regular */
-@font-face {
-  font-family: "Aeonik";
-  font-style: normal;
-  font-weight: 400;
-  src: url("/assets/fonts/aeonik/aeonik-regular.otf") format("opentype");
-  font-display: swap;
-}
-
-/* Aeonik Medium */
-@font-face {
-  font-family: "Aeonik";
-  font-style: normal;
-  font-weight: 500;
-  src: url("/assets/fonts/aeonik/aeonik-medium.otf") format("opentype");
-  font-display: swap;
-}
-
-/* Aeonik Bold */
-@font-face {
-  font-family: "Aeonik";
-  font-style: normal;
-  font-weight: 700;
-  src: url("/assets/fonts/aeonik/aeonik-bold.otf") format("opentype");
-  font-display: swap;
-}
-
-
-.heading-custom {
-  font-family: "komix", sans-serif !important;
-}
 
 .for-dax-font {
   font-family: "Dax", sans-serif !important;

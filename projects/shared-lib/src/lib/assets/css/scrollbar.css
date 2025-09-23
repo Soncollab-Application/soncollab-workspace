@@ -1,0 +1,74 @@
+
+html, body {
+  overflow-x: hidden !important;
+  scroll-behavior: smooth !important;
+}
+
+
+* {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(15, 85, 61) rgba(0, 0, 0, 0.1);
+
+}
+
+/* Optimisation pour les appareils tactiles */
+@media (hover: none) and (pointer: coarse) {
+  * {
+    scroll-behavior: auto;
+  }
+}
+
+
+@media (max-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    transform: scaleX(1.5);
+  }
+}
+
+/* Sur très grand écran, scrollbar légèrement plus large */
+@media (min-width: 1440px) {
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+}
+
+
+@keyframes scrollParticle {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.5);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.5);
+  }
+}
+
+/* Effet de pulse sur le thumb */
+@keyframes scrollPulse {
+  0%, 100% {
+    box-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+  50% {
+    box-shadow:
+      0 4px 16px rgba(232, 121, 249, 0.4),
+      0 2px 8px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+}
+
+/* Application de l'animation pulse */
+::-webkit-scrollbar-thumb:hover {
+  animation: scrollPulse 2s ease-in-out infinite;
+}

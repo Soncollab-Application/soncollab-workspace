@@ -1,0 +1,15 @@
+.grecaptcha-badge {
+  visibility: hidden !important;
+}
+
+
+.grecaptcha-badge {
+  position: fixed !important;
+  top: -9999px !important;
+  left: -9999px !important;
+}
+
+.grecaptcha-badge {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
