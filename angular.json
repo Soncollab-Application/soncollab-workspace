@@ -170,7 +170,8 @@
               "projects/back-office/public/assets/vendor/nouislider/nouislider.min.css",
               "projects/back-office/public/assets/vendor/swiper/swiper-bundle.min.css",
               "projects/back-office/public/assets/vendor/choices.js/choices.min.css",
-              "projects/back-office/public/assets/css/theme.min.css"
+              "projects/back-office/public/assets/css/theme.min.css",
+              "dist/shared-lib/assets/css/shared-lib.css"
             ],
             "scripts": [
               "node_modules/aos/dist/aos.js",
