@@ -1,5 +1,6 @@
 export const environment = {
   production: true,
+  backoffice: true,
 
   api: {
     ip: 'api.soncollab.com',
@@ -13,7 +14,14 @@ export const environment = {
   },
 
   app: {
-    name: 'Soncollab',
+    name: 'Soncollab Back-Office',
     version: '1.0.0',
   },
+  auth: {
+    tokenKey: 'soncollab_backoffice_token',
+    refreshTokenKey: 'soncollab_backoffice_refresh',
+    cookieDomain: '.soncollab.com',
+    cookieSecure: true,
+    cookieSameSite: 'Strict' as 'Strict'
+  }
 };
