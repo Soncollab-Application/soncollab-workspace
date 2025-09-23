@@ -41,7 +41,8 @@
               "projects/client/public/assets/vendor/choices.js/choices.min.css",
               "projects/client/public/assets/css/features-global.css",
               "projects/client/public/assets/css/theme.min.css",
-              "projects/client/public/assets/css/custom.css"
+              "projects/client/public/assets/css/custom.css",
+              "dist/shared-lib/assets/css/shared-lib.css"
             ],
             "scripts": [
               "node_modules/aos/dist/aos.js",
