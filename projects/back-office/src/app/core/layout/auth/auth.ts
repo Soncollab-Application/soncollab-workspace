@@ -3,12 +3,14 @@ import {RouterLink, RouterOutlet} from '@angular/router';
 import {Language, LanguageService, Theme, ThemeService} from 'shared-lib';
 import {Subject, takeUntil} from 'rxjs';
 import {TranslatePipe} from '@ngx-translate/core';
+import {environment} from '../../../../environments/environment';
 
 @Component({
   selector: 'app-auth',
   imports: [
     RouterLink,
-    TranslatePipe
+    TranslatePipe,
+    RouterOutlet
   ],
   templateUrl: './auth.html',
   styleUrl: './auth.css'
@@ -19,6 +21,7 @@ export class Auth implements OnInit, OnDestroy {
   currentLogo: string = '/assets/images/logo/soncollablightlogo.svg';
   isDarkTheme: boolean = false;
   currentTheme: Theme = 'light';
+  currentYear = new Date().getFullYear();
 
   // Language properties
   supportedLanguages: Language[] = [];
@@ -36,6 +39,7 @@ export class Auth implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.setupThemeListener();
+    this.setupLanguageListener();
   }
 
 
@@ -161,4 +165,5 @@ export class Auth implements OnInit, OnDestroy {
     }
   }
 
+  protected readonly environment = environment;
 }

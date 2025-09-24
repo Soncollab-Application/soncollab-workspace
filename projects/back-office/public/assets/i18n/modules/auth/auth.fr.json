@@ -9,9 +9,11 @@
       "privacy": "Confidentialité",
       "terms": "Conditions d'utilisation"
     },
+
     "admin": {
       "title": "Administration Soncollab",
       "subtitle": "Plateforme de gestion administrative"
     }
   }
+
 }

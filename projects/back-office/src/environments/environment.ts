@@ -16,6 +16,7 @@ export const environment = {
   app: {
     name: 'Soncollab Back-Office',
     version: '1.0.0',
+    url: 'https://stg.soncollab.com'
   },
   auth: {
     tokenKey: 'soncollab_backoffice_token',
