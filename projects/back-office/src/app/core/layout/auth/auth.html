@@ -9,11 +9,17 @@
           <a [routerLink]="['/auth/login']" aria-label="Soncollab Admin home"
              class="navbar-brand py-1 py-md-2 py-xl-1 me-2 me-sm-n4 me-md-n5 me-lg-0">
 
-            <span class="  d-sm-flex flex-shrink-0 text-primary rtl-flip me-2">
+             <span class="d-none d-md-block d-sm-flex flex-shrink-0 text-primary rtl-flip me-2">
               <img [alt]="'Soncollab Logo - ' + (isDarkTheme ? 'Dark Theme' : 'Light Theme')"
+                   class="d-none d-md-block"
                    [src]="currentLogo"
                    width="160">
             </span>
+
+            <img [alt]="'Soncollab Mobile'"
+                 class="d-block d-md-none rounded-2 logo-transition"
+                 [src]="'/assets/images/logo/soncollab-mobile.png'"
+                 width="38">
           </a>
         </div>
 
@@ -139,18 +145,20 @@
     </div>
   </header>
 
+  <div class="pt-5 mt-5">
+    <h3 class="text-center  for-inter-font">
+      {{ 'auth.admin.title' | translate }}
+    </h3>
+
+    <p class="text-center fs-5 text-muted fw-lighter for-inter-tight-font  mb-4">
+      {{ 'auth.admin.subtitle' | translate }}
+    </p>
+  </div>
 
   <main class="flex-grow-1 d-flex align-items-center">
     <div class="container">
       <div class="row justify-content-center">
-        <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
-          <h3 class="text-center  for-inter-font">
-            {{ 'auth.admin.title' | translate }}
-          </h3>
-
-          <p class="text-center fs-5 text-muted fw-lighter for-inter-tight-font  mb-4">
-            {{ 'auth.admin.subtitle' | translate }}
-          </p>
+        <div class="col-12 col-sm-12 col-md-10 col-lg-6 col-xl-5">
           <router-outlet></router-outlet>
         </div>
       </div>
@@ -161,17 +169,26 @@
   <footer class="py-3 text-center">
     <div class="container">
       <div class="text-muted small">
-        <p class="mb-0">
-          © {{ currentYear }} Soncollab.
-          <span class="mx-2">|</span>
-          <a [href]="[environment.app.url + '/company/privacy-policy']" [target]="'_blank'" class="text-decoration-none">
-            {{ 'auth.footer.privacy' | translate }}
-          </a>
-          <span class="mx-2">|</span>
-          <a [href]="[environment.app.url + '/company/use-condition']" [target]="'_blank'" class="text-decoration-none">
-            {{ 'auth.footer.terms' | translate }}
-          </a>
-        </p>
+        <div class="d-flex flex-column flex-md-row justify-content-center align-items-center">
+          <span class="mb-1 mb-md-0">© {{ currentYear }} Soncollab.</span>
+
+          <div class="d-flex flex-column flex-sm-row align-items-center">
+            <span class="d-none d-md-inline mx-2">|</span>
+            <a
+              [href]="environment.app.url + '/company/privacy-policy'"
+              target="_blank"
+              class="text-decoration-none me-sm-2 mb-1 mb-sm-0">
+              {{ 'auth.footer.privacy' | translate }}
+            </a>
+            <span class="d-none d-sm-inline mx-1">|</span>
+            <a
+              [href]="environment.app.url + '/company/use-condition'"
+              target="_blank"
+              class="text-decoration-none">
+              {{ 'auth.footer.terms' | translate }}
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </footer>

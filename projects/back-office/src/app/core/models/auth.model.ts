@@ -9,6 +9,26 @@ export interface LoginResponse {
   user: BackofficeUser;
 }
 
+export interface ForgotPasswordRequest {
+  email: string;
+}
+
+export interface ForgotPasswordResponse {
+  ok: boolean;
+  message: string;
+}
+
+export interface ResetPasswordRequest {
+  code: string;
+  password: string;
+  passwordConfirmation: string;
+}
+
+export interface ResetPasswordResponse {
+  jwt: string;
+  user: BackofficeUser;
+}
+
 export interface BackofficeUser {
   id: number;
   documentId: string;
@@ -23,14 +43,12 @@ export interface BackofficeUser {
   territory: string;
 }
 
-
 export interface UserRole {
   id: number;
   name: string;
   description: string;
   type: SonCollabRoleType;
 }
-
 
 export type SonCollabRoleType =
   | 'soncollab_admin'
@@ -46,10 +64,7 @@ export interface AuthState {
   error: string | null;
 }
 
-
 export interface RefreshTokenResponse {
   jwt: string;
   refreshToken: string;
 }
-
-
