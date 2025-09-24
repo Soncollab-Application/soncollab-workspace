@@ -6,10 +6,10 @@ import {Router} from '@angular/router';
 import {CookieService} from './cookie.service';
 import {
   AuthState,
-  BackofficeUser,
+  BackofficeUser, ForgotPasswordRequest, ForgotPasswordResponse,
   LoginRequest,
   LoginResponse,
-  RefreshTokenResponse,
+  RefreshTokenResponse, ResetPasswordRequest, ResetPasswordResponse,
   SonCollabRoleType
 } from '../models/auth.model';
 import {environment} from '../../../environments/environment';
@@ -21,6 +21,8 @@ export class AuthService {
   private readonly API_URL = environment.api.fullUrl;
   private readonly AUTH_ENDPOINTS = {
     login: `${this.API_URL}/auth/local`,
+    forgotPassword: `${this.API_URL}/auth/forgot-password`,
+    resetPassword: `${this.API_URL}/auth/reset-password`,
     me: `${this.API_URL}/users/me`,
     refresh: `${this.API_URL}/auth/local/refresh`
   };
@@ -102,6 +104,48 @@ export class AuthService {
           return throwError(() => error);
         })
       );
+  }
+
+
+  forgotPassword(email: string): Observable<ForgotPasswordResponse> {
+    const request: ForgotPasswordRequest = { email };
+
+    return this.http.post<ForgotPasswordResponse>(this.AUTH_ENDPOINTS.forgotPassword, request)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          return throwError(() => error);
+        })
+      );
+  }
+
+
+  resetPassword(code: string, password: string, passwordConfirmation: string): Observable<ResetPasswordResponse> {
+    const request: ResetPasswordRequest = {
+      code,
+      password,
+      passwordConfirmation
+    };
+
+    return this.http.post<ResetPasswordResponse>(this.AUTH_ENDPOINTS.resetPassword, request)
+      .pipe(
+        tap((response) => {
+          // Auto-login après reset password réussi
+          this.handleResetPasswordSuccess(response);
+        }),
+        catchError((error: HttpErrorResponse) => {
+          return throwError(() => error);
+        })
+      );
+  }
+
+  private handleResetPasswordSuccess(response: ResetPasswordResponse): void {
+    const { jwt, user } = response;
+
+    this.cookieService.setCookie(environment.auth.tokenKey, jwt, 1);
+
+    this.setAuthState(user, jwt, jwt);
+
+    this.startRefreshTimer();
   }
 
   private handleLoginSuccess(response: LoginResponse): void {
