@@ -1,0 +1,110 @@
+{
+  "analytics": {
+    "hero": {
+      "title": "Analysez Vos Données avec Clarté",
+      "subtitle": "Libérez le pouvoir de vos données. Exploitez des analyses avancées pour comprendre les tendances de streaming, les modèles de revenus et l'efficacité marketing, guidant des stratégies plus intelligentes et la croissance.",
+      "getStarted": "Commencer",
+      "learnMore": "En savoir plus"
+    },
+    "benefits": {
+      "comprehensive": {
+        "title": "Données Complètes",
+        "description": "Vue à 360° des performances de votre catalogue"
+      },
+      "actionable": {
+        "title": "Insights Actionnables",
+        "description": "Identifiez les tendances pour des décisions plus intelligentes"
+      },
+      "growth": {
+        "title": "Croissance Data-Driven",
+        "description": "Repérez les opportunités pour booster votre succès"
+      }
+    },
+    "features": {
+      "title": "Analytics & Insights Avancés",
+      "subtitle": "Transformez vos données en stratégies gagnantes avec nos outils d'analyse puissants.",
+      "catalog": {
+        "title": "Analysez les Performances du Catalogue",
+        "description": "Analysez les données de streaming et de téléchargement sur plusieurs DSP avec une granularité inégalée.",
+        "feature1": "Analyse détaillée par Release, DSP, Marché, Format",
+        "feature2": "Surveillance de tous vos actifs depuis un tableau de bord unique",
+        "feature3": "Données de performance en temps réel"
+      },
+      "revenue": {
+        "title": "Suivez les Tendances de Revenus",
+        "description": "Suivez les revenus avec des détails par actifs, DSP, marchés et territoires pour optimiser vos performances financières.",
+        "feature1": "Vue complète des gains par source",
+        "feature2": "Identification des principaux moteurs de revenus",
+        "feature3": "Tendances et prévisions de revenus"
+      },
+      "export": {
+        "title": "Partagez les Données Facilement",
+        "description": "Exportez facilement les données en formats CSV ou PDF pour partager avec votre équipe ou vos parties prenantes.",
+        "feature1": "Export en formats CSV et PDF",
+        "feature2": "Jusqu'à 1000 lignes disponibles",
+        "feature3": "Intégration dans des rapports externes"
+      },
+      "playlist": {
+        "title": "Débloquez les informations sur vos playlists",
+        "description": "Recevez des alertes en temps réel lorsque votre musique est ajoutée à des playlists et évaluez leur impact sur vos performances de streaming.",
+        "feature1": "Alertes d’ajout aux playlists en temps réel",
+        "feature2": "Analyse des types de playlists",
+        "feature3": "Impact sur les performances de streaming"
+      },
+      "audience": {
+        "title": "Comprenez Votre Audience",
+        "description": "Suivez la croissance quotidienne des auditeurs et découvrez qui ils sont, d'où ils viennent et comment ils interagissent.",
+        "feature1": "Suivi de la croissance quotidienne des auditeurs",
+        "feature2": "Insights démographiques et géographiques",
+        "feature3": "Optimisation des stratégies marketing"
+      },
+      "ai": {
+        "title": "Insights Alimentés par l'IA",
+        "description": "Prenez des décisions plus intelligentes avec des résumés pilotés par l'IA et des actions recommandées.",
+        "feature1": "Résumés pilotés par l'IA",
+        "feature2": "Actions recommandées basées sur les performances",
+        "feature3": "Insights faciles à comprendre pour affiner votre stratégie"
+      }
+    },
+    "workflow": {
+      "title": "Analytics en 4 Étapes",
+      "subtitle": "De la collecte de données aux insights actionnables, notre processus optimisé pour votre croissance.",
+      "step1": {
+        "title": "Collecte",
+        "description": "Agrégation automatique des données multi-plateformes"
+      },
+      "step2": {
+        "title": "Analyse",
+        "description": "Traitement et analyse des tendances"
+      },
+      "step3": {
+        "title": "Insights",
+        "description": "Génération d'insights actionnables par l'IA"
+      },
+      "step4": {
+        "title": "Action",
+        "description": "Implémentation des stratégies optimisées"
+      }
+    },
+    "demo": {
+      "title": "Plateforme Analytics Complète",
+      "subtitle": "Découvrez notre interface d'analyse avec des insights en temps réel et des recommandations intelligentes."
+    },
+    "integrations": {
+      "title": "Sources de Données Unifiées",
+      "subtitle": "Connectez toutes vos plateformes et sources de données pour une analyse centralisée.",
+      "more": "Et plus de 50 sources de données..."
+    },
+    "related": {
+      "title": "Fonctionnalités Complémentaires",
+      "catalog": "Gestion de Catalogue",
+      "catalogDesc": "Organisez vos contenus à analyser",
+      "rights": "Gestion des Droits",
+      "rightsDesc": "Analysez les performances de vos droits",
+      "distribution": "Distribution",
+      "distributionDesc": "Optimisez vos stratégies de distribution",
+      "income": "Suivi des Revenus",
+      "incomeDesc": "Analysez vos sources de revenus"
+    }
+  }
+}

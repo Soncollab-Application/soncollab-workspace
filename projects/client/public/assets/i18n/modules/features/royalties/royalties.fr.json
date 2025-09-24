@@ -1,0 +1,110 @@
+{
+  "royalties": {
+    "hero": {
+      "title": "Comptabilité des Royalties Automatisée",
+      "subtitle": "Optimisez votre gestion des royalties avec une automatisation intelligente, des rapports transparents et une distribution instantanée sur tous les flux de revenus.",
+      "getStarted": "Commencer",
+      "learnMore": "En savoir plus"
+    },
+    "benefits": {
+      "automate": {
+        "title": "Tout Automatiser",
+        "description": "Laissez l'IA gérer les calculs complexes de royalties, les approbations et les distributions automatiquement."
+      },
+      "transparent": {
+        "title": "Transparence Totale",
+        "description": "Visibilité en temps réel sur tous les flux de royalties avec des rapports détaillés et des analyses."
+      },
+      "portal": {
+        "title": "Portail Artiste",
+        "description": "Donnez à vos artistes un accès direct à leurs données de royalties et à leur historique de paiements."
+      }
+    },
+    "features": {
+      "title": "Fonctionnalités Puissantes pour les Royalties",
+      "subtitle": "Tout ce dont vous avez besoin pour gérer efficacement les royalties, des calculs automatisés aux paiements blockchain.",
+      "runs": {
+        "title": "Calculs Automatisés des Royalties",
+        "description": "Configurez des calculs automatisés de royalties qui s'exécutent selon un calendrier, gèrent les répartitions complexes et génèrent des rapports détaillés sans intervention manuelle.",
+        "feature1": "Calculs automatiques programmés",
+        "feature2": "Gestion des répartitions complexes",
+        "feature3": "Rapports détaillés et pistes d'audit"
+      },
+      "approvals": {
+        "title": "Approbations Simplifiées",
+        "description": "Rationalisez le processus d'approbation avec des flux de travail intelligents, des approbations en masse et des étapes de révision personnalisables pour différentes parties prenantes.",
+        "feature1": "Flux d'approbation intelligents",
+        "feature2": "Capacités d'approbation en masse",
+        "feature3": "Étapes de révision personnalisables"
+      },
+      "analytics": {
+        "title": "Analyses des Royalties",
+        "description": "Obtenez des insights approfondis sur vos performances de royalties avec des analyses complètes, une analyse des tendances et des rapports prédictifs.",
+        "feature1": "Analyse des tendances de performance",
+        "feature2": "Prévisions de revenus",
+        "feature3": "Création de tableaux de bord personnalisés"
+      },
+      "distribution": {
+        "title": "Accélération de la Distribution",
+        "description": "Accélérez la distribution des royalties avec un traitement automatisé des paiements, le support multi-devises et le suivi en temps réel.",
+        "feature1": "Traitement automatisé des paiements",
+        "feature2": "Support multi-devises",
+        "feature3": "Suivi des paiements en temps réel"
+      },
+      "youtube": {
+        "title": "Intégration YouTube MCN",
+        "description": "Intégrez facilement les données YouTube MCN pour calculer et distribuer automatiquement les royalties YouTube à vos créateurs.",
+        "feature1": "Connexion directe à l'API YouTube MCN",
+        "feature2": "Calcul automatique des royalties des créateurs",
+        "feature3": "Rapports spécifiques à YouTube"
+      },
+      "blockchain": {
+        "title": "Paiements Blockchain",
+        "description": "Exploitez la technologie blockchain pour des paiements de royalties transparents, instantanés et sécurisés avec l'automatisation des contrats intelligents.",
+        "feature1": "Automatisation des contrats intelligents",
+        "feature2": "Paiements blockchain instantanés",
+        "feature3": "Enregistrements de transactions immuables"
+      }
+    },
+    "workflow": {
+      "title": "Comment Ça Fonctionne",
+      "subtitle": "De l'ingestion des données à la distribution des paiements en quatre étapes simples",
+      "step1": {
+        "title": "Connecter les Sources",
+        "description": "Liez vos plateformes de streaming, PRO et autres sources de revenus"
+      },
+      "step2": {
+        "title": "Définir les Règles",
+        "description": "Configurez les répartitions de royalties, les taux et les flux d'approbation"
+      },
+      "step3": {
+        "title": "Calcul Automatique",
+        "description": "L'IA traite toutes les données et calcule automatiquement les royalties"
+      },
+      "step4": {
+        "title": "Distribuer",
+        "description": "Les paiements sont traités et distribués à toutes les parties prenantes"
+      }
+    },
+    "demo": {
+      "title": "Voir en Action",
+      "subtitle": "Explorez notre tableau de bord complet de gestion des royalties"
+    },
+    "integrations": {
+      "title": "Intégrations Sources de Revenus",
+      "subtitle": "Connectez-vous avec toutes les principales plateformes et sociétés de perception",
+      "more": "Et bien d'autres sources de revenus..."
+    },
+    "related": {
+      "title": "Fonctionnalités Connexes",
+      "catalog": "Gestion de Catalogue",
+      "catalogDesc": "Organisez et gérez votre catalogue musical",
+      "rights": "Gestion des Droits",
+      "rightsDesc": "Suivez et gérez les droits de propriété intellectuelle",
+      "income": "Suivi des Revenus",
+      "incomeDesc": "Surveillez tous les flux de revenus en temps réel",
+      "payments": "Traitement des Paiements",
+      "paymentsDesc": "Gérez toutes les transactions financières en toute sécurité"
+    }
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "royalties": {
+    "hero": {
+      "title": "Automated Royalty Accounting",
+      "subtitle": "Streamline your royalty management with intelligent automation, transparent reporting, and instant distribution across all revenue streams.",
+      "getStarted": "Get Started",
+      "learnMore": "Learn More"
+    },
+    "benefits": {
+      "automate": {
+        "title": "Automate Everything",
+        "description": "Let AI handle complex royalty calculations, approvals, and distributions automatically."
+      },
+      "transparent": {
+        "title": "Complete Transparency",
+        "description": "Real-time visibility into all royalty flows with detailed reporting and analytics."
+      },
+      "portal": {
+        "title": "Artist Portal",
+        "description": "Give your artists direct access to their royalty data and payment history."
+      }
+    },
+    "features": {
+      "title": "Powerful Royalty Features",
+      "subtitle": "Everything you need to manage royalties efficiently, from automated calculations to blockchain payments.",
+      "runs": {
+        "title": "Automated Royalty Runs",
+        "description": "Set up automated royalty calculations that run on schedule, handle complex splits, and generate detailed reports without manual intervention.",
+        "feature1": "Scheduled automatic calculations",
+        "feature2": "Complex split management",
+        "feature3": "Detailed run reports and audit trails"
+      },
+      "approvals": {
+        "title": "Simplified Approvals",
+        "description": "Streamline the approval process with intelligent workflows, bulk approvals, and customizable review stages for different stakeholders.",
+        "feature1": "Intelligent approval workflows",
+        "feature2": "Bulk approval capabilities",
+        "feature3": "Customizable review stages"
+      },
+      "analytics": {
+        "title": "Royalty Analytics",
+        "description": "Gain deep insights into your royalty performance with comprehensive analytics, trend analysis, and predictive reporting.",
+        "feature1": "Performance trend analysis",
+        "feature2": "Revenue forecasting",
+        "feature3": "Custom dashboard creation"
+      },
+      "distribution": {
+        "title": "Distribution Acceleration",
+        "description": "Speed up royalty distributions with automated payment processing, multi-currency support, and real-time tracking.",
+        "feature1": "Automated payment processing",
+        "feature2": "Multi-currency support",
+        "feature3": "Real-time payment tracking"
+      },
+      "youtube": {
+        "title": "YouTube MCN Integration",
+        "description": "Seamlessly integrate with YouTube MCN data to automatically calculate and distribute YouTube royalties to your creators.",
+        "feature1": "Direct YouTube MCN API connection",
+        "feature2": "Automatic creator royalty calculation",
+        "feature3": "YouTube-specific reporting"
+      },
+      "blockchain": {
+        "title": "Blockchain Payments",
+        "description": "Leverage blockchain technology for transparent, instant, and secure royalty payments with smart contract automation.",
+        "feature1": "Smart contract automation",
+        "feature2": "Instant blockchain payments",
+        "feature3": "Immutable transaction records"
+      }
+    },
+    "workflow": {
+      "title": "How It Works",
+      "subtitle": "From data ingestion to payment distribution in four simple steps",
+      "step1": {
+        "title": "Connect Sources",
+        "description": "Link your streaming platforms, PROs, and other revenue sources"
+      },
+      "step2": {
+        "title": "Set Rules",
+        "description": "Configure royalty splits, rates, and approval workflows"
+      },
+      "step3": {
+        "title": "Auto Calculate",
+        "description": "AI processes all data and calculates royalties automatically"
+      },
+      "step4": {
+        "title": "Distribute",
+        "description": "Payments are processed and distributed to all stakeholders"
+      }
+    },
+    "demo": {
+      "title": "See It In Action",
+      "subtitle": "Explore our complete royalty management dashboard"
+    },
+    "integrations": {
+      "title": "Revenue Source Integrations",
+      "subtitle": "Connect with all major platforms and collecting societies",
+      "more": "And many more revenue sources..."
+    },
+    "related": {
+      "title": "Related Features",
+      "catalog": "Catalog Management",
+      "catalogDesc": "Organize and manage your music catalog",
+      "rights": "Rights Management",
+      "rightsDesc": "Track and manage intellectual property rights",
+      "income": "Income Tracking",
+      "incomeDesc": "Monitor all revenue streams in real-time",
+      "payments": "Payment Processing",
+      "paymentsDesc": "Handle all financial transactions securely"
+    }
+  }
+}

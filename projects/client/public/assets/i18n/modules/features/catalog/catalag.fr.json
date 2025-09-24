@@ -1,0 +1,100 @@
+{
+  "catalog": {
+    "hero": {
+      "title": "Gestion de Catalogue Simplifiée",
+      "subtitle": "Organisez, gérez et distribuez votre musique en toute simplicité. Une plateforme centralisée pour tout votre contenu musical.",
+      "getStarted": "Commencer",
+      "learnMore": "En savoir plus"
+    },
+    "demo": {
+      "title": "Workflow Complet en Action",
+      "subtitle": "Découvrez l'interface complète qui transforme la gestion de votre catalogue musical."
+    },
+    "benefits": {
+      "upload": {
+        "title": "Upload Facile",
+        "description": "Importez vos fichiers en quelques clics"
+      },
+      "organize": {
+        "title": "Organisation Claire",
+        "description": "Classez et retrouvez facilement vos contenus"
+      },
+      "distribute": {
+        "title": "Distribution Rapide",
+        "description": "Diffusez sur toutes les plateformes"
+      },
+      "track": {
+        "title": "Suivi Précis",
+        "description": "Analysez vos performances en temps réel"
+      }
+    },
+    "features": {
+      "title": "Fonctionnalités Essentielles",
+      "subtitle": "Tout ce dont vous avez besoin pour gérer efficacement votre catalogue musical.",
+      "management": {
+        "title": "Gestion des Fichiers",
+        "description": "Organisez tous vos fichiers audio et métadonnées dans une interface claire et intuitive.",
+        "feature1": "Upload par lot et organisation automatique",
+        "feature2": "Support de tous les formats audio",
+        "feature3": "Prévisualisation et modification en temps réel"
+      },
+      "metadata": {
+        "title": "Gestion des Métadonnées",
+        "description": "Enrichissez vos contenus avec des informations complètes et précises.",
+        "feature1": "Édition simple des informations",
+        "feature2": "Gestion des crédits et collaborateurs",
+        "feature3": "Tags automatiques et personnalisés"
+      },
+      "distribution": {
+        "title": "Distribution Globale",
+        "description": "Diffusez votre musique sur toutes les plateformes de streaming mondiales.",
+        "feature1": "Accès à 200+ plateformes",
+        "feature2": "Distribution automatisée",
+        "feature3": "Gestion des sorties programmées"
+      },
+      "analytics": {
+        "title": "Analytics Détaillées",
+        "description": "Suivez les performances de votre catalogue avec des données précises.",
+        "feature1": "Statistiques en temps réel",
+        "feature2": "Rapports détaillés par plateforme",
+        "feature3": "Analyses des tendances d'écoute"
+      }
+    },
+    "workflow": {
+      "title": "Comment ça marche",
+      "subtitle": "Un processus simple en 4 étapes pour gérer votre catalogue.",
+      "step1": {
+        "title": "Upload",
+        "description": "Importez vos fichiers et métadonnées"
+      },
+      "step2": {
+        "title": "Organisation",
+        "description": "Classez et enrichissez votre contenu"
+      },
+      "step3": {
+        "title": "Distribution",
+        "description": "Diffusez sur toutes les plateformes"
+      },
+      "step4": {
+        "title": "Analyse",
+        "description": "Suivez et optimisez vos performances"
+      }
+    },
+    "integrations": {
+      "title": "Intégrations Complètes",
+      "subtitle": "Connectez-vous à toutes les plateformes de streaming majeures.",
+      "more": "Et plus de 200 autres plateformes..."
+    },
+    "related": {
+      "title": "Fonctionnalités Complémentaires",
+      "rights": "Gestion des Droits",
+      "rightsDesc": "Protégez et gérez vos droits d'auteur",
+      "distribution": "Distribution",
+      "distributionDesc": "Diffusez votre musique partout",
+      "royalties": "Royautés",
+      "royaltiesDesc": "Suivez vos revenus en détail",
+      "analytics": "Analytics",
+      "analyticsDesc": "Analysez vos performances"
+    }
+  }
+}

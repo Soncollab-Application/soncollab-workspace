@@ -1,0 +1,55 @@
+{
+  "header": {
+    "theme": {
+      "light": "Light",
+      "dark": "Dark",
+      "auto": "Auto"
+    },
+    "navigation": {
+      "features": "Features",
+      "products": "Products",
+      "pricing": "Pricing",
+      "resources": "Resources",
+      "start": "Get Started"
+    },
+    "features": {
+      "catalog": {
+        "title": "Catalog",
+        "description": "Manage your music library"
+      },
+      "rights": {
+        "title": "Rights",
+        "description": "Control your copyrights"
+      },
+      "distribution": {
+        "title": "Distribution & Delivery",
+        "description": "Distribute on all platforms"
+      },
+      "income": {
+        "title": "Income Tracking",
+        "description": "Track your revenue in real-time"
+      },
+      "analytics": {
+        "title": "Analytics",
+        "description": "Detailed performance analytics"
+      },
+      "payments": {
+        "title": "Global Payments",
+        "description": "Secure international payments"
+      },
+      "royalties": {
+        "title": "Royalties",
+        "description": "Automated royalty management"
+      }
+    },
+    "products": {
+      "studio": "Studio",
+      "connect": "Connect"
+    },
+    "resources": {
+      "help": "Help Center",
+      "api": "API Documentation",
+      "blog": "Blog"
+    }
+  }
+}

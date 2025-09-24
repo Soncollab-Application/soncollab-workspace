@@ -1,0 +1,68 @@
+{
+  "home": {
+    "heroFallback": {
+      "title": "Empowering independent music to thrive",
+      "subtitle": "A platform designed to scale, protect and monetize independent music, globally.",
+      "button": "Get Started",
+      "button2": "See features"
+    },
+    "tagline": "A new way to distribute, protect and monetize music",
+    "forLabelsTitle": "For music labels and distributors",
+    "features": {
+      "catalog": {
+        "title": "Centralize catalogs",
+        "description": "Easily manage your artists' releases: import, organize and deliver at scale without errors or duplicates."
+      },
+      "distribution": {
+        "title": "A global distribution infrastructure",
+        "description": "Manage your deliveries to all DSP platforms like Spotify, Apple Music, Boomplay, Deezer, TikTok, YouTube, etc. — frictionless, without limits."
+      },
+      "royalties": {
+        "title": "Automated tracking & splits",
+        "description": "Analyze artist royalties and manage splits with one click."
+      },
+      "payment": {
+        "title": "Transparent revenue and payments.",
+        "description": "Visualize, segment, and automatically pay your rights holders."
+      },
+      "analytics": {
+        "title": "Analyze your performance",
+        "description": "Access key statistics for your artists: revenue, streams, platforms, territories, and much more — all in real-time."
+      }
+    },
+    "benefits": {
+      "title": "Why do 10,000+ artists trust us?",
+      "subtitle": "Discover the concrete results achieved by our users",
+      "stats": {
+        "timeSaved": {
+          "title": "Time Saved",
+          "description": "Complete automation of distribution and royalties"
+        },
+        "platforms": {
+          "title": "Platforms",
+          "description": "Distribute to all major platforms with one click"
+        },
+        "processing": {
+          "title": "Processing Time",
+          "description": "Automatic payments and instant reconciliation"
+        },
+        "accuracy": {
+          "title": "Accuracy",
+          "description": "Analytics and reporting with maximum precision"
+        }
+      },
+      "cta": {
+        "title": "Ready to join the music revolution?",
+        "subtitle": "Discover how Soncollab can transform your music business today.",
+        "button": "See a demo"
+      }
+    },
+    "whiteLabel": {
+      "title": "Your brand, our technology",
+      "subtitle": "Create your own music platform with our fully customizable white label solution. Domain, colors, logo - everything can be adapted to your identity.",
+      "cta": {
+        "demo": "See a demo"
+      }
+    }
+  }
+}

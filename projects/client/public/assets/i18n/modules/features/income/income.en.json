@@ -1,0 +1,107 @@
+{
+  "income": {
+    "hero": {
+      "title": "Streamline Your Income Tracking",
+      "subtitle": "Seamlessly manage and reconcile your revenue reporting, ensuring full visibility and control over your financial data. Know exactly how your income flows, from source to settlement.",
+      "getStarted": "Get Started",
+      "learnMore": "Learn More"
+    },
+    "benefits": {
+      "automated": {
+        "title": "Automated Ingestion",
+        "description": "Reduce time and effort in income tracking"
+      },
+      "data": {
+        "title": "Large Data Handling",
+        "description": "Streamline your reporting operations"
+      },
+      "accurate": {
+        "title": "Accurate Reporting",
+        "description": "Achieve precise financial reporting"
+      },
+      "visibility": {
+        "title": "Complete Visibility",
+        "description": "Control all your revenue streams"
+      }
+    },
+    "features": {
+      "title": "Intelligent Income Tracking",
+      "subtitle": "All the tools to precisely manage your financial data and maximize your music revenue.",
+      "ingestion": {
+        "title": "Ingest Revenue Reports",
+        "description": "Ingest revenue reports via API, FTP, or direct upload to capture all income data accurately and efficiently.",
+        "feature1": "Import via API, FTP, or direct upload",
+        "feature2": "Eliminate manual data entry and reduce errors",
+        "feature3": "Consolidated data ready for immediate use"
+      },
+      "reconcile": {
+        "title": "Reconcile Payments",
+        "description": "Streamline financial management by automatically matching transactions with catalog data.",
+        "feature1": "Automatic transaction matching",
+        "feature2": "Easy discrepancy resolution",
+        "feature3": "FX adjustments for accurate reconciliation"
+      },
+      "matching": {
+        "title": "Smart Asset Matching",
+        "description": "Automatically detect and suggest matches for unmatched transactions.",
+        "feature1": "Automatic match detection and suggestions",
+        "feature2": "Approve matches and close gaps",
+        "feature3": "Financial data always accurate and up to date"
+      },
+      "currency": {
+        "title": "Apply Currency Adjustments",
+        "description": "Streamline currency conversions and financial adjustments, including taxes, fees, and missing amounts.",
+        "feature1": "Streamlined currency conversions",
+        "feature2": "Auto-calculate FX rates for precise reporting",
+        "feature3": "Consistent and reliable financial data"
+      },
+      "audit": {
+        "title": "Audit Revenue Reports",
+        "description": "Gain comprehensive visibility into your income with our auditing tools. Track missing payments and resolve issues quickly.",
+        "feature1": "Track missing payments",
+        "feature2": "Identify discrepancies",
+        "feature3": "Quick resolution with real-time insights"
+      }
+    },
+    "workflow": {
+      "title": "Income Tracking in 4 Steps",
+      "subtitle": "From ingestion to audit, our optimized process for perfect financial management.",
+      "step1": {
+        "title": "Ingestion",
+        "description": "Automatic import of revenue reports"
+      },
+      "step2": {
+        "title": "Reconciliation",
+        "description": "Match transactions with catalog"
+      },
+      "step3": {
+        "title": "Adjustments",
+        "description": "Currency corrections and adjustments"
+      },
+      "step4": {
+        "title": "Audit",
+        "description": "Final verification and validation"
+      }
+    },
+    "demo": {
+      "title": "Complete Tracking Platform",
+      "subtitle": "Discover our revenue management interface with full control over your financial data."
+    },
+    "integrations": {
+      "title": "Multiple Data Sources",
+      "subtitle": "Integrate all your revenue sources with flexibility and precision.",
+      "more": "And many more data formats..."
+    },
+    "related": {
+      "title": "Complementary Features",
+      "catalog": "Catalog Management",
+      "catalogDesc": "Organize your revenue-generating assets",
+      "distribution": "Distribution",
+      "distributionDesc": "Track revenue by platform",
+      "royalties": "Royalty Accounting",
+      "royaltiesDesc": "Calculate your royalties precisely",
+      "payments": "Global Payments",
+      "paymentsDesc": "Receive your payments quickly"
+    }
+  }
+}

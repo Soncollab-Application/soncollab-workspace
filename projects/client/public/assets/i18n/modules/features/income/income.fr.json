@@ -1,0 +1,107 @@
+{
+  "income": {
+    "hero": {
+      "title": "Optimisez Votre Suivi des Revenus",
+      "subtitle": "Gérez et réconciliez facilement vos rapports de revenus, assurant une visibilité et un contrôle complets sur vos données financières. Sachez exactement comment vos revenus circulent, de la source au règlement.",
+      "getStarted": "Commencer",
+      "learnMore": "En savoir plus"
+    },
+    "benefits": {
+      "automated": {
+        "title": "Ingestion Automatisée",
+        "description": "Réduisez le temps et l'effort de suivi des revenus"
+      },
+      "data": {
+        "title": "Gestion de Gros Volumes",
+        "description": "Rationalisez vos opérations de reporting"
+      },
+      "accurate": {
+        "title": "Reporting Précis",
+        "description": "Obtenez des rapports financiers précis"
+      },
+      "visibility": {
+        "title": "Visibilité Complète",
+        "description": "Contrôlez tous vos flux de revenus"
+      }
+    },
+    "features": {
+      "title": "Suivi des Revenus Intelligent",
+      "subtitle": "Tous les outils pour gérer précisément vos données financières et maximiser vos revenus musicaux.",
+      "ingestion": {
+        "title": "Ingestion des Rapports de Revenus",
+        "description": "Ingérez les rapports de revenus via API, FTP ou upload direct pour capturer toutes les données de revenus avec précision et efficacité.",
+        "feature1": "Import via API, FTP ou upload direct",
+        "feature2": "Élimination de la saisie manuelle",
+        "feature3": "Données consolidées prêtes à l'emploi"
+      },
+      "reconcile": {
+        "title": "Réconciliation des Paiements",
+        "description": "Rationalisez la gestion financière en faisant automatiquement correspondre les transactions avec les données du catalogue.",
+        "feature1": "Correspondance automatique des transactions",
+        "feature2": "Résolution facile des écarts",
+        "feature3": "Ajustements FX pour réconciliation précise"
+      },
+      "matching": {
+        "title": "Correspondance Intelligente d'Actifs",
+        "description": "Détectez et suggérez automatiquement des correspondances pour les transactions non appariées.",
+        "feature1": "Détection automatique de correspondances",
+        "feature2": "Approbation des correspondances et comblement des lacunes",
+        "feature3": "Données financières toujours précises et à jour"
+      },
+      "currency": {
+        "title": "Ajustements de Devise",
+        "description": "Rationalisez les conversions de devises et les ajustements financiers, incluant taxes, frais et montants manquants.",
+        "feature1": "Conversions de devises rationalisées",
+        "feature2": "Calcul automatique des taux FX",
+        "feature3": "Données financières cohérentes et fiables"
+      },
+      "audit": {
+        "title": "Audit des Rapports de Revenus",
+        "description": "Obtenez une visibilité complète sur vos revenus avec nos outils d'audit. Suivez les paiements manquants et résolvez rapidement les problèmes.",
+        "feature1": "Suivi des paiements manquants",
+        "feature2": "Identification des écarts",
+        "feature3": "Résolution rapide avec insights temps réel"
+      }
+    },
+    "workflow": {
+      "title": "Suivi des Revenus en 4 Étapes",
+      "subtitle": "De l'ingestion à l'audit, notre processus optimisé pour une gestion financière parfaite.",
+      "step1": {
+        "title": "Ingestion",
+        "description": "Import automatique des rapports de revenus"
+      },
+      "step2": {
+        "title": "Réconciliation",
+        "description": "Correspondance des transactions et du catalogue"
+      },
+      "step3": {
+        "title": "Ajustements",
+        "description": "Corrections de devises et ajustements"
+      },
+      "step4": {
+        "title": "Audit",
+        "description": "Vérification et validation finale"
+      }
+    },
+    "demo": {
+      "title": "Plateforme de Suivi Complète",
+      "subtitle": "Découvrez notre interface de gestion des revenus avec contrôle total sur vos données financières."
+    },
+    "integrations": {
+      "title": "Sources de Données Multiples",
+      "subtitle": "Intégrez toutes vos sources de revenus avec flexibilité et précision.",
+      "more": "Et bien d'autres formats de données..."
+    },
+    "related": {
+      "title": "Fonctionnalités Complémentaires",
+      "catalog": "Gestion de Catalogue",
+      "catalogDesc": "Organisez vos actifs générateurs de revenus",
+      "distribution": "Distribution",
+      "distributionDesc": "Suivez les revenus par plateforme",
+      "royalties": "Comptabilité des Royautés",
+      "royaltiesDesc": "Calculez précisément vos royautés",
+      "payments": "Paiements Globaux",
+      "paymentsDesc": "Recevez vos paiements rapidement"
+    }
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "newsletter": {
+    "titles": {
+      "general": "Restez informé",
+      "blog": "Abonnez-vous au blog",
+      "help": "Recevez nos guides d'aide",
+      "product": "Nouveautés produit"
+    },
+    "descriptions": {
+      "general": "Recevez nos dernières actualités et conseils directement dans votre boîte mail.",
+      "blog": "Ne ratez aucun de nos articles de blog et guides pratiques.",
+      "help": "Recevez nos tutoriels et conseils pour tirer le meilleur parti de nos outils.",
+      "product": "Soyez les premiers informés de nos nouvelles fonctionnalités."
+    },
+    "form": {
+      "firstName": "Prénom (optionnel)",
+      "email": "Votre adresse email",
+      "subscribe": "S'abonner",
+      "subscribing": "Inscription..."
+    },
+    "success": {
+      "title": "Abonnement réussi !",
+      "general": "Merci ! Vous êtes maintenant abonné à notre newsletter.",
+      "blog": "Parfait ! Vous recevrez nos nouveaux articles de blog.",
+      "help": "Excellent ! Vous recevrez nos guides d'aide et tutoriels.",
+      "product": "Super ! Vous serez informé de nos nouveautés en avant-première."
+    },
+    "errors": {
+      "title": "Erreur d'abonnement",
+      "generic": "Une erreur s'est produite. Veuillez réessayer.",
+      "invalidData": "Les données saisies ne sont pas valides.",
+      "alreadySubscribed": "Cette adresse email est déjà abonnée.",
+      "serverError": "Erreur serveur. Veuillez réessayer plus tard."
+    },
+    "validation": {
+      "required": "Ce champ est obligatoire",
+      "invalidEmail": "Veuillez saisir une adresse email valide",
+      "maxLength": "Ce champ est trop long"
+    },
+    "privacy": {
+      "text": "En vous abonnant, vous acceptez notre",
+      "link": "politique de confidentialité"
+    },
+    "trust": {
+      "secure": "100% sécurisé",
+      "noSpam": "Pas de spam",
+      "unsubscribe": "Désinscription facile"
+    },
+    "blog": {
+      "title": "Ne ratez aucun article !",
+      "description": "Abonnez-vous à notre newsletter pour recevoir nos derniers articles de blog, guides pratiques et conseils directement dans votre boîte mail.",
+      "subscribe": "S'abonner au blog"
+    },
+    "help": {
+      "title": "Recevez nos guides d'aide",
+      "description": "Abonnez-vous pour recevoir nos tutoriels, conseils d'experts et mises à jour d'aide qui vous aideront à maximiser votre utilisation de nos outils.",
+      "subscribe": "Recevoir les guides",
+      "benefit1": "Tutoriels détaillés",
+      "benefit2": "Vidéos explicatives",
+      "benefit3": "Conseils d'optimisation"
+    },
+    "subscription": {
+      "type": {
+        "general": "Newsletter générale",
+        "blog": "Mises à jour blog",
+        "help": "Aide et tutoriels",
+        "product_updates": "Actualités produit"
+      }
+    }
+  }
+}

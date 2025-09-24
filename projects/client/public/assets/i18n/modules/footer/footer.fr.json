@@ -1,0 +1,33 @@
+{
+  "footer": {
+    "tagline": "Distribuez, protégez et monétisez votre musique",
+    "company": {
+      "title": "Entreprise",
+      "about": "A propos",
+      "careers": "Carrières",
+      "contact": "Contact",
+      "privacy": "Politique de confidentialité",
+      "terms": "Conditions d'utilisation",
+      "antiFraud": "Politique antifraude"
+    },
+    "resources": {
+      "title": "Ressources",
+      "api": "Api Documentation",
+      "help": "Help Center",
+      "blog": "Blog"
+    },
+    "social": {
+      "youtube": "Nous suivre sur YouTube",
+      "instagram": "Nous suivre sur Instagram",
+      "facebook": "Nous suivre sur Facebook",
+      "twitter": "Nous suivre sur X (Twitter)",
+      "tiktok": "Nous suivre sur TikTok",
+      "threads": "Nous suivre sur Threads",
+      "linkedin": "Nous suivre sur LinkedIn"
+    },
+    "language": {
+      "select": "Sélectionner la langue"
+    },
+    "copyright": "© 2025 Soncollab. Tous droits réservés."
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "studio": {
+    "hero": {
+      "title": "Boostez Votre Business Musical",
+      "subtitle": "Soncollab Studio offre une plateforme unifiée pour gérer vos actifs numériques, chaîne d'approvisionnement, gestion des droits, intelligence business, reporting financier et distribution des royalties.",
+      "getStarted": "Commencer",
+      "learnMore": "En savoir plus"
+    },
+    "benefits": {
+      "unified": {
+        "title": "Plateforme Unifiée",
+        "description": "Tous vos outils business musicaux en un seul endroit"
+      },
+      "scalable": {
+        "title": "Solution Évolutive",
+        "description": "Grandit avec votre business de l'indé à l'entreprise"
+      },
+      "automated": {
+        "title": "Workflows Automatisés",
+        "description": "Optimisez vos opérations avec l'automatisation intelligente"
+      },
+      "global": {
+        "title": "Portée Mondiale",
+        "description": "Distribuez et gérez vos droits dans le monde entier"
+      }
+    },
+    "features": {
+      "title": "Suite Business Musicale Complète",
+      "subtitle": "Tout ce dont vous avez besoin pour gérer, distribuer et monétiser efficacement votre catalogue musical.",
+      "catalog": {
+        "title": "Gestion de Catalogue",
+        "description": "Votre catalogue musical est votre actif le plus précieux—libérez tout son potentiel avec Soncollab Studio.",
+        "feature1": "Organisez tous vos actifs numériques en un seul endroit",
+        "feature2": "Gérez les droits d'auteur et métadonnées facilement",
+        "feature3": "Importez et exportez votre catalogue sans effort via DDEX, CSV ou XML",
+        "explore": "Explorer"
+      },
+      "rights": {
+        "title": "Gestion des Droits",
+        "description": "Simplifiez la gestion des droits et assurez-vous que chaque artiste et ayant droit soit payé—précisément et rapidement.",
+        "feature1": "Gérez et sécurisez vos droits avec des contrats personnalisables",
+        "feature2": "Traitez des termes complexes avec ingestion précise pour la conformité totale",
+        "feature3": "Automatisez les répartitions de royalties pour éliminer les erreurs",
+        "explore": "Explorer"
+      },
+      "distribution": {
+        "title": "Distribution & Livraison",
+        "description": "Distribuez votre musique partout et atteignez vos fans—rapidement, facilement et sans tracas.",
+        "feature1": "Profitez d'accords DSP directs, Merlin ou Soncollab",
+        "feature2": "Distribuez sur plus de 300 DSP mondiaux, plateformes sociales et plus",
+        "feature3": "Assurez le contrôle qualité avec l'Inspecteur de Métadonnées Soncollab",
+        "explore": "Explorer"
+      },
+      "income": {
+        "title": "Suivi des Revenus",
+        "description": "Obtenez un contrôle total des revenus avec suivi fluide, réconciliation et insights temps réel—tout en un endroit.",
+        "feature1": "Ingérez les rapports de revenus via API, FTP ou upload direct",
+        "feature2": "Réconciliez les paiements facilement en associant automatiquement les transactions",
+        "feature3": "Détectez et suggérez automatiquement des correspondances pour les transactions non appariées",
+        "explore": "Explorer"
+      },
+      "royalties": {
+        "title": "Comptabilité des Royalties",
+        "description": "Abandonnez les feuilles de calcul—automatisez les paiements, suivez les gains en temps réel avec précision.",
+        "feature1": "Générez des rapports financiers détaillés couvrant revenus, royalties et dépenses",
+        "feature2": "Obtenez des insights sur les flux de trésorerie, tendances de gains et historique des paiements",
+        "feature3": "Personnalisez les rapports par artiste, label, DSP ou territoire pour une analyse granulaire",
+        "explore": "Explorer"
+      },
+      "payments": {
+        "title": "Paiements Globaux",
+        "description": "Paiements multi-devises transfrontaliers fluides et sécurisés et paiements de royalties rapides et précis—simplifiés.",
+        "feature1": "Automatisez la distribution des royalties du calcul au paiement",
+        "feature2": "Gérez les paiements en plusieurs devises avec conversions FX automatisées",
+        "feature3": "Traitez les paiements pour tout nombre d'ayants droit—qu'il s'agisse d'un ou de milliers",
+        "explore": "Explorer"
+      },
+      "analytics": {
+        "title": "Analytics & Insights",
+        "description": "Libérez le pouvoir de vos données avec des analytics avancés, tendances de streaming, modèles de revenus et engagement d'audience pour une prise de décision plus intelligente.",
+        "feature1": "Analysez les données de streaming et téléchargement par sortie, DSP, marché et plus",
+        "feature2": "Suivez la croissance, démographie et engagement pour optimiser le marketing et étendre la portée",
+        "feature3": "Exportez les données en formats CSV ou PDF pour collaboration et reporting faciles",
+        "explore": "Explorer"
+      },
+      "whitelabel": {
+        "title": "Solution White Label",
+        "description": "Renforcez votre business musical avec une plateforme entièrement personnalisable et évolutive pour améliorer votre marque.",
+        "feature1": "Personnalisez domaines, visuels et UI pour un look professionnel et fluide",
+        "feature2": "Personnalisez l'onboarding avec des pages de marque et authentification sécurisée",
+        "feature3": "Gérez labels et artistes à grande échelle tout en assurant qualité et conformité",
+        "explore": "Explorer"
+      }
+    },
+    "cta": {
+      "title": "Prêt à Transformer Votre Business Musical ?",
+      "subtitle": "Rejoignez des milliers de labels et artistes qui font confiance à Soncollab Studio pour alimenter leur succès.",
+      "getStarted": "Commencer",
+      "viewPricing": "Voir les Tarifs"
+    }
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "connect": {
+    "hero": {
+      "title": "Build Your App With One Powerful API",
+      "subtitle": "Built for developers and tailored for music companies, it lets you automate operations, workflows, integrate seamlessly with your existing tech stack, and scale your music app platform with confidence.",
+      "getStarted": "Get Started",
+      "learnMore": "API Documentation"
+    },
+    "benefits": {
+      "api": {
+        "title": "Powerful API",
+        "description": "One API for all your music operations"
+      },
+      "automation": {
+        "title": "Workflow Automation",
+        "description": "Automate complex music business processes"
+      },
+      "integration": {
+        "title": "Seamless Integration",
+        "description": "Integrate with your existing tech stack"
+      },
+      "scale": {
+        "title": "Scale with Confidence",
+        "description": "Built to grow with your music platform"
+      }
+    },
+    "features": {
+      "title": "Complete API Suite",
+      "subtitle": "Everything you need to build and scale your music platform with our comprehensive API.",
+      "delivery": {
+        "title": "Delivery & Distribution",
+        "description": "Streamline and manage your end-to-end release workflows with a single, powerful API",
+        "feature1": "Create and manage releases, tracks, metadata, and rights",
+        "feature2": "Automate release scheduling and version control",
+        "feature3": "Deliver to DSPs using your own deals or Soncollab's deals",
+        "feature4": "Monitor delivery status and DSP ingestion with webhook support",
+        "cta": "Get Started"
+      },
+      "catalog": {
+        "title": "Catalog Management",
+        "description": "Complete catalog control through API endpoints for efficient music library management",
+        "feature1": "Full CRUD operations on catalog items",
+        "feature2": "Bulk import and export capabilities",
+        "feature3": "Advanced search and filtering",
+        "feature4": "Metadata validation and enrichment",
+        "cta": "Get Started"
+      },
+      "analytics": {
+        "title": "Reporting & Analytics",
+        "description": "Access structured performance data via API and embed real-time insights into your workflows",
+        "feature1": "Query streaming and revenue data by track, release, region, or DSP",
+        "feature2": "Monitor trends in audience behavior and engagement",
+        "feature3": "Export structured data or integrate directly into analytics tools",
+        "feature4": "Supports CSV export and raw data sync",
+        "cta": "Get Started"
+      },
+      "royalties": {
+        "title": "Rights, Royalties & Payments",
+        "description": "Automate calculations and streamline royalty reporting with a powerful API",
+        "feature1": "Define contracts with configurable terms: splits, recoupables, payout logic",
+        "feature2": "Import and reconcile DSP statements with contract data",
+        "feature3": "Generate audit-ready statements, invoices, and payout summaries",
+        "feature4": "Full API access to royalty line items, reports, and payment status",
+        "cta": "Get Started"
+      }
+    },
+    "resources": {
+      "title": "Developer Resources",
+      "subtitle": "Everything you need to get started with the Soncollab API.",
+      "documentation": {
+        "title": "API Reference",
+        "description": "Complete documentation with examples and use cases",
+        "cta": "View Docs"
+      },
+      "authentication": {
+        "title": "Authentication",
+        "description": "Secure API access and key management",
+        "cta": "Learn More"
+      },
+      "processing": {
+        "title": "Royalty Processing",
+        "description": "Advanced royalty calculation and processing workflows",
+        "cta": "Explore"
+      },
+      "webhooks": {
+        "title": "Webhooks",
+        "description": "Real-time notifications and event handling",
+        "cta": "Setup Guide"
+      }
+    },
+    "cta": {
+      "title": "Ready to Power Your Music Platform?",
+      "subtitle": "Join hundreds of developers and music companies building the future with Soncollab Connect API.",
+      "getStarted": "Start Building",
+      "viewPricing": "View API Pricing"
+    }
+  }
+}

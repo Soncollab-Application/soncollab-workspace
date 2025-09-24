@@ -3,13 +3,24 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "npm run build:shared && ng build client",
-    "build:prod": "npm run build:shared:prod && ng build client --configuration production",
-    "build:staging": "npm run build:shared:prod && ng build client --configuration staging",
+
+    "start": "npm run merge-i18n:client && ng serve client",
+    "start:client": "npm run merge-i18n:client && ng serve client",
+    "build": "npm run build:shared && npm run merge-i18n:client && ng build client",
+    "build:prod": "npm run build:shared:prod && npm run merge-i18n:client && ng build client --configuration production",
+    "build:staging": "npm run build:shared:prod && npm run merge-i18n:client && ng build client --configuration staging",
+
+    "start:back-office": "npm run merge-i18n:back-office && ng serve back-office",
+    "build:back-office": "npm run build:shared:prod && npm run merge-i18n:back-office && ng build back-office --configuration production",
+    "build:back-office:dev": "npm run build:shared && npm run merge-i18n:back-office && ng build back-office",
+
     "build:shared": "ng build shared-lib",
     "build:shared:prod": "ng build shared-lib --configuration production",
-    "build:back-office": "npm run build:shared:prod && ng build back-office --configuration production",
+
+    "merge-i18n:client": "node merge-i18n.js client",
+    "merge-i18n:back-office": "node merge-i18n.js back-office",
+    "merge-i18n:all": "npm run merge-i18n:client && npm run merge-i18n:back-office",
+
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "e2e": "ng e2e"

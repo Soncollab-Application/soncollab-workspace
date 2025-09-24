@@ -1,0 +1,110 @@
+{
+  "payments": {
+    "hero": {
+      "title": "Sécurisez Vos Paiements Globaux",
+      "subtitle": "Gérez les paiements transfrontaliers de manière transparente. Assurez un support multi-devises sécurisé et des distributions de royautés rapides et précises, rendant la gestion financière mondiale sans effort.",
+      "getStarted": "Commencer",
+      "learnMore": "En savoir plus"
+    },
+    "benefits": {
+      "crossborder": {
+        "title": "Paiements Transfrontaliers",
+        "description": "Payez les ayants droit dans le monde entier"
+      },
+      "multiparty": {
+        "title": "Répartitions Multi-Parties",
+        "description": "Payez tout le monde en toute transparence"
+      },
+      "multicurrency": {
+        "title": "Multi-Devises",
+        "description": "Payez en FIAT ou cryptomonnaies stables"
+      },
+      "mobilemoney": {
+        "title": "Mobile Money",
+        "description": "Support complet des solutions de paiement mobile africaines"
+      }
+    },
+    "features": {
+      "title": "Solutions de Paiement Globales",
+      "subtitle": "Tous les outils pour gérer efficacement vos paiements mondiaux et maximiser la satisfaction de vos artistes.",
+      "gateways": {
+        "title": "Passerelles de Paiement Multiples",
+        "description": "Automatisez votre distribution de royautés du calcul au paiement, minimisant le travail manuel et les erreurs.",
+        "feature1": "Intégration Tipalti avec PayPal et ACH",
+        "feature2": "Options de paiement flexibles",
+        "feature3": "Réduction du travail manuel et des erreurs"
+      },
+      "crossborder": {
+        "title": "Paiements Transfrontaliers",
+        "description": "Gérez efficacement les paiements en plusieurs devises, garantissant que les bénéficiaires sont payés dans leur devise préférée.",
+        "feature1": "Gestion efficace des paiements multi-devises",
+        "feature2": "Conversions de devises automatisées",
+        "feature3": "Réduction des erreurs et amélioration de la précision"
+      },
+      "mobilemoney": {
+        "title": "Mobile Money & Solutions Africaines",
+        "description": "Accès complet aux solutions de paiement mobile africaines incluant M-Pesa, MTN Money, Orange Money et autres.",
+        "feature1": "Support M-Pesa, MTN Money, Orange Money, Wave",
+        "feature2": "Intégration Wave et Flutterwave",
+        "feature3": "Paiements instantanés sur mobile dans toute l'Afrique"
+      },
+      "batch": {
+        "title": "Traitez les Paiements par Lots",
+        "description": "Traitez les paiements pour n'importe quel nombre d'ayants droit—d'un à des milliers—rapidement et efficacement.",
+        "feature1": "Paiements de un à des milliers de bénéficiaires",
+        "feature2": "Traitement par lots conçu pour l'évolutivité",
+        "feature3": "Croissance sans effort des opérations de paiement"
+      },
+      "crypto": {
+        "title": "Paiements Globaux à Vitesse Internet",
+        "description": "Effectuez des paiements instantanés et sécurisés aux artistes et ayants droit mondialement, 7 jours sur 7, en utilisant des cryptomonnaies stables.",
+        "feature1": "Paiements instantanés et sécurisés 24/7",
+        "feature2": "Cryptomonnaies stables pour règlement rapide",
+        "feature3": "Flexibilité en continu pour les artistes globaux"
+      }
+    },
+    "workflow": {
+      "title": "Paiements en 4 Étapes",
+      "subtitle": "Du calcul au règlement, notre processus optimisé pour des paiements globaux sans friction.",
+      "step1": {
+        "title": "Calcul",
+        "description": "Calcul automatique des royautés et répartitions"
+      },
+      "step2": {
+        "title": "Validation",
+        "description": "Vérification des montants et bénéficiaires"
+      },
+      "step3": {
+        "title": "Traitement",
+        "description": "Exécution des paiements par lots"
+      },
+      "step4": {
+        "title": "Confirmation",
+        "description": "Notifications et rapports de paiement"
+      }
+    },
+    "demo": {
+      "title": "Plateforme de Paiements Complète",
+      "subtitle": "Découvrez notre interface de paiements globaux avec support multi-devises et mobile money."
+    },
+    "integrations": {
+      "title": "Méthodes de Paiement Complètes",
+      "subtitle": "Payez vos artistes avec leurs méthodes préférées, partout dans le monde.",
+      "traditional": "Méthodes Traditionnelles",
+      "mobilemoney": "Mobile Money",
+      "crypto": "Cryptomonnaies Stables",
+      "more": "Et plus de 100 méthodes de paiement..."
+    },
+    "related": {
+      "title": "Fonctionnalités Complémentaires",
+      "catalog": "Gestion de Catalogue",
+      "catalogDesc": "Organisez vos contenus générateurs de revenus",
+      "rights": "Gestion des Droits",
+      "rightsDesc": "Gérez les droits des ayants droit",
+      "income": "Suivi des Revenus",
+      "incomeDesc": "Suivez les revenus à distribuer",
+      "royalties": "Comptabilité des Royautés",
+      "royaltiesDesc": "Calculez précisément les montants à payer"
+    }
+  }
+}

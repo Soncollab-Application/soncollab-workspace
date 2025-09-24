@@ -1,0 +1,98 @@
+{
+  "connect": {
+    "hero": {
+      "title": "Créez Votre Application avec une API Puissante",
+      "subtitle": "Conçue pour les développeurs et adaptée aux entreprises de la musique, elle vous permet d'automatiser les opérations, les flux de travail, de vous intégrer de manière transparente à votre stack technique existante et de faire évoluer votre plateforme musicale en toute confiance.",
+      "getStarted": "Démarrer",
+      "learnMore": "Documentation de l'API"
+    },
+    "benefits": {
+      "api": {
+        "title": "API Puissante",
+        "description": "Une seule API pour toutes vos opérations musicales"
+      },
+      "automation": {
+        "title": "Automatisation des Flux de Travail",
+        "description": "Automatisez les processus complexes de l'industrie musicale"
+      },
+      "integration": {
+        "title": "Intégration Transparente",
+        "description": "Intégrez-vous à votre stack technique existante"
+      },
+      "scale": {
+        "title": "Évoluez en Toute Confiance",
+        "description": "Conçue pour évoluer avec votre plateforme musicale"
+      }
+    },
+    "features": {
+      "title": "Suite API Complète",
+      "subtitle": "Tout ce dont vous avez besoin pour créer et faire évoluer votre plateforme musicale avec notre API complète.",
+      "delivery": {
+        "title": "Livraison & Distribution",
+        "description": "Optimisez et gérez vos flux de travail de sortie de bout en bout avec une seule API puissante",
+        "feature1": "Créez et gérez les sorties, les morceaux, les métadonnées et les droits",
+        "feature2": "Automatisez la planification des sorties et le contrôle des versions",
+        "feature3": "Livrez aux plateformes de streaming (DSP) avec vos propres accords ou ceux de Soncollab",
+        "feature4": "Suivez l'état de la livraison et l'ingestion par les DSP avec le support des webhooks",
+        "cta": "Démarrer"
+      },
+      "catalog": {
+        "title": "Gestion de Catalogue",
+        "description": "Contrôle total du catalogue via des points de terminaison API pour une gestion efficace de la bibliothèque musicale",
+        "feature1": "Opérations CRUD complètes sur les éléments du catalogue",
+        "feature2": "Capacités d'importation et d'exportation en masse",
+        "feature3": "Recherche et filtrage avancés",
+        "feature4": "Validation et enrichissement des métadonnées",
+        "cta": "Démarrer"
+      },
+      "analytics": {
+        "title": "Rapports & Analyses",
+        "description": "Accédez à des données de performance structurées via l'API et intégrez des informations en temps réel dans vos flux de travail",
+        "feature1": "Interrogez les données de streaming et de revenus par morceau, sortie, région ou DSP",
+        "feature2": "Surveillez les tendances du comportement et de l'engagement de l'audience",
+        "feature3": "Exportez des données structurées ou intégrez-les directement dans des outils d'analyse",
+        "feature4": "Supporte l'exportation CSV et la synchronisation des données brutes",
+        "cta": "Démarrer"
+      },
+      "royalties": {
+        "title": "Droits, Redevances & Paiements",
+        "description": "Automatisez les calculs et optimisez les rapports de redevances avec une API puissante",
+        "feature1": "Définissez des contrats avec des termes configurables : partages, frais récupérables, logique de paiement",
+        "feature2": "Importez et rapprochez les relevés des DSP avec les données des contrats",
+        "feature3": "Générez des relevés, des factures et des résumés de paiement prêts pour l'audit",
+        "feature4": "Accès API complet aux lignes de redevances, aux rapports et à l'état des paiements",
+        "cta": "Démarrer"
+      }
+    },
+    "resources": {
+      "title": "Ressources pour Développeurs",
+      "subtitle": "Tout ce dont vous avez besoin pour démarrer avec l'API Soncollab.",
+      "documentation": {
+        "title": "Référence de l'API",
+        "description": "Documentation complète avec des exemples et des cas d'utilisation",
+        "cta": "Voir la documentation"
+      },
+      "authentication": {
+        "title": "Authentification",
+        "description": "Accès API sécurisé et gestion des clés",
+        "cta": "En savoir plus"
+      },
+      "processing": {
+        "title": "Traitement des Redevances",
+        "description": "Flux de travail avancés de calcul et de traitement des redevances",
+        "cta": "Explorer"
+      },
+      "webhooks": {
+        "title": "Webhooks",
+        "description": "Notifications en temps réel et gestion des événements",
+        "cta": "Guide de configuration"
+      }
+    },
+    "cta": {
+      "title": "Prêt à Propulser Votre Plateforme Musicale ?",
+      "subtitle": "Rejoignez des centaines de développeurs et d'entreprises de la musique qui construisent l'avenir avec l'API Soncollab Connect.",
+      "getStarted": "Commencer à Développer",
+      "viewPricing": "Voir les Tarifs de l'API"
+    }
+  }
+}

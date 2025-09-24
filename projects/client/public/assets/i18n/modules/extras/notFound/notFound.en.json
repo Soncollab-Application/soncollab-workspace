@@ -1,0 +1,7 @@
+{
+  "notFound": {
+    "title": "Page Not Found",
+    "description": "The page you are looking for has been moved, deleted, or may have never existed.",
+    "homeButton": "Go to Homepage"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "footer": {
+    "tagline": "Distribute, protect and monetize your music",
+    "company": {
+      "title": "Company",
+      "about": "About",
+      "careers": "Careers",
+      "contact": "Contact",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Use",
+      "antiFraud": "Anti-fraud Policy"
+    },
+    "resources": {
+      "title": "Resources",
+      "api": "API Documentation",
+      "help": "Help Center",
+      "blog": "Blog"
+    },
+    "social": {
+      "youtube": "Follow us on YouTube",
+      "instagram": "Follow us on Instagram",
+      "facebook": "Follow us on Facebook",
+      "twitter": "Follow us on X (Twitter)",
+      "tiktok": "Follow us on TikTok",
+      "threads": "Follow us on Threads",
+      "linkedin": "Follow us on LinkedIn"
+    },
+    "language": {
+      "select": "Select language"
+    },
+    "copyright": "© 2025 Soncollab. All rights reserved."
+  }
+}

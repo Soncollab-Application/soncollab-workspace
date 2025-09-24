@@ -1,0 +1,68 @@
+{
+  "contact": {
+    "modal": {
+      "title": "Let’s Create Your Next Big Win"
+    },
+    "form": {
+      "firstName": "First Name",
+      "firstName.placeholder": "Your first name",
+      "firstName.required": "First name is required",
+      "lastName": "Last Name",
+      "lastName.placeholder": "Your last name",
+      "lastName.required": "Last name is required",
+      "email": "Email Address",
+      "email.placeholder": "your@email.com",
+      "email.required": "Email is required",
+      "email.invalid": "Invalid email format",
+      "email.checking": "Checking...",
+      "email.exists": "We already have {{count}} contact(s) with this email",
+      "phone": "Phone",
+      "phone.placeholder": "+1 234 567 8900",
+      "search": {
+        "placeholder": "Search...",
+        "country": "Search for a country...",
+        "noResults": "No results found",
+        "noChoices": "No choices available"
+      },
+      "loading": "Loading...",
+      "companyName": "Company Name",
+      "companyName.placeholder": "Your company",
+      "companyName.required": "Company name is required",
+      "companySize": "Company Size",
+      "companySize.placeholder": "Select",
+      "companySize.required": "Company size is required",
+      "companyWebsite": "Website",
+      "companyWebsite.placeholder": "https://www.example.com",
+      "companyWebsite.invalid": "Invalid URL (must start with http:// or https://)",
+      "contactType.placeholder": "Select a type",
+      "contactType.required": "Contact type is required",
+      "country": "Country",
+      "country.placeholder": "Select your country",
+      "country.required": "Country is required",
+      "message": "Message",
+      "message.placeholder": "Describe your request...",
+      "subject": "Auto-generated subject",
+      "cancel": "Cancel",
+      "submit": "Send",
+      "submitting": "Sending...",
+      "contactType": {
+        "name": "Contact Type",
+        "pricing_inquiry": "Pricing inquiry"
+      },
+      "success": "Your message has been sent successfully!",
+      "success.title": "Message sent!",
+      "error": {
+        "title": "Error",
+        "submission": "An error occurred while sending",
+        "emailCheck": "Unable to verify email",
+        "security": "Security verification failed. Please try again.",
+        "security.network": "Security verification error. Check your connection and try again."
+      }
+    },
+    "success": {
+      "title": "Message sent successfully!",
+      "responseTime": "Estimated response time: {{time}}",
+      "close": "Close"
+    }
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Découvrez nos derniers articles et actualités",
+    "categories": "Catégories",
+    "tags": "Tags",
+    "searchPlaceholder": "Rechercher des articles...",
+    "showingResults": "{{count}} articles trouvés",
+    "readTime": "min de lecture",
+    "noArticlesFound": "Aucun article trouvé",
+    "noArticlesMessage": "Aucun article ne correspond à vos critères de recherche. Essayez avec d'autres mots-clés ou supprimez les filtres.",
+    "clearFilter": "Supprimer le filtre",
+    "clearAllFilters": "Supprimer tous les filtres",
+    "featuredArticles": "Articles en vedette",
+    "recentArticles": "Articles récents",
+    "relatedArticles": "Articles similaires",
+    "browseArticles": "Parcourir les articles",
+    "articleNotFound": "Article introuvable",
+    "articleNotFoundMessage": "L'article que vous recherchez n'existe pas ou a été supprimé.",
+    "share": "Partager",
+    "shareOnTwitter": "Partager sur Twitter",
+    "shareOnLinkedIn": "Partager sur LinkedIn",
+    "copyLink": "Copier le lien",
+    "author": "Auteur",
+    "publishedOn": "Publié le",
+    "lastUpdated": "Dernière mise à jour le",
+    "tableOfContents": "Table des matières",
+    "backToTop": "Retour en haut",
+    "viewAllInCategory": "Voir tous les articles dans {{category}}",
+    "viewAllWithTag": "Voir tous les articles avec #{{tag}}",
+    "estimatedReadTime": "Temps de lecture estimé",
+    "wordCount": "{{count}} mots",
+    "loadingArticle": "Chargement de l'article...",
+    "loadingArticles": "Chargement des articles...",
+    "filterBy": "Filtrer par",
+    "sortBy": "Trier par",
+    "showing": "Affichage de",
+    "results": "résultats",
+    "result": "résultat",
+    "viewAll": "Voir tout",
+    "showingResult": "Affichage de {{count}} résultat",
+    "allCategories": "Toutes les catégories",
+    "allTags": "Tous les tags",
+    "sortOptions": {
+      "newest": "Plus récent",
+      "oldest": "Plus ancien",
+      "popular": "Populaire",
+      "title": "Titre A-Z"
+    },
+    "pagination": {
+      "previous": "Précédent",
+      "next": "Suivant",
+      "page": "Page {{number}}",
+      "of": "sur {{total}}"
+    },
+    "meta": {
+      "description": "Découvrez nos articles de blog sur les dernières tendances et actualités.",
+      "keywords": "blog, articles, actualités, tendances"
+    }
+  }
+}
