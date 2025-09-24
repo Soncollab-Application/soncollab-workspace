@@ -1,11 +1,13 @@
 const endpoint = {
   protocol: 'http',
   ip: 'localhost',
-  port: '1337'
+  port: '1337',
+  appPort: '4200'
 };
 
 const baseUrl = `${endpoint.protocol}://${endpoint.ip}:${endpoint.port}`;
 const api = `${baseUrl}/api`;
+const appUrl = `${endpoint.protocol}://${endpoint.ip}:${endpoint.appPort}`;
 
 export const environment = {
   production: false,
@@ -26,6 +28,7 @@ export const environment = {
   app: {
     name: 'Soncollab Back-Office',
     version: '1.0.0',
+    url: appUrl
   },
 
   auth: {
