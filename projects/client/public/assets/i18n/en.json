@@ -1,285 +1,215 @@
 {
-  "header": {
-    "theme": {
-      "light": "Light",
-      "dark": "Dark",
-      "auto": "Auto"
+  "contact": {
+    "modal": {
+      "title": "Let’s Create Your Next Big Win"
     },
-    "navigation": {
-      "features": "Features",
-      "products": "Products",
-      "pricing": "Pricing",
-      "resources": "Resources",
-      "start": "Get Started"
-    },
-    "features": {
-      "catalog": {
-        "title": "Catalog",
-        "description": "Manage your music library"
+    "form": {
+      "firstName": "First Name",
+      "firstName.placeholder": "Your first name",
+      "firstName.required": "First name is required",
+      "lastName": "Last Name",
+      "lastName.placeholder": "Your last name",
+      "lastName.required": "Last name is required",
+      "email": "Email Address",
+      "email.placeholder": "your@email.com",
+      "email.required": "Email is required",
+      "email.invalid": "Invalid email format",
+      "email.checking": "Checking...",
+      "email.exists": "We already have {{count}} contact(s) with this email",
+      "phone": "Phone",
+      "phone.placeholder": "+1 234 567 8900",
+      "search": {
+        "placeholder": "Search...",
+        "country": "Search for a country...",
+        "noResults": "No results found",
+        "noChoices": "No choices available"
       },
-      "rights": {
-        "title": "Rights",
-        "description": "Control your copyrights"
+      "loading": "Loading...",
+      "companyName": "Company Name",
+      "companyName.placeholder": "Your company",
+      "companyName.required": "Company name is required",
+      "companySize": "Company Size",
+      "companySize.placeholder": "Select",
+      "companySize.required": "Company size is required",
+      "companyWebsite": "Website",
+      "companyWebsite.placeholder": "https://www.example.com",
+      "companyWebsite.invalid": "Invalid URL (must start with http:// or https://)",
+      "contactType.placeholder": "Select a type",
+      "contactType.required": "Contact type is required",
+      "country": "Country",
+      "country.placeholder": "Select your country",
+      "country.required": "Country is required",
+      "message": "Message",
+      "message.placeholder": "Describe your request...",
+      "subject": "Auto-generated subject",
+      "cancel": "Cancel",
+      "submit": "Send",
+      "submitting": "Sending...",
+      "contactType": {
+        "name": "Contact Type",
+        "pricing_inquiry": "Pricing inquiry"
       },
-      "distribution": {
-        "title": "Distribution & Delivery",
-        "description": "Distribute on all platforms"
-      },
-      "income": {
-        "title": "Income Tracking",
-        "description": "Track your revenue in real-time"
-      },
-      "analytics": {
-        "title": "Analytics",
-        "description": "Detailed performance analytics"
-      },
-      "payments": {
-        "title": "Global Payments",
-        "description": "Secure international payments"
-      },
-      "royalties": {
-        "title": "Royalties",
-        "description": "Automated royalty management"
+      "success": "Your message has been sent successfully!",
+      "success.title": "Message sent!",
+      "error": {
+        "title": "Error",
+        "submission": "An error occurred while sending",
+        "emailCheck": "Unable to verify email",
+        "security": "Security verification failed. Please try again.",
+        "security.network": "Security verification error. Check your connection and try again."
       }
     },
-    "products": {
-      "studio": "Studio",
-      "connect": "Connect"
-    },
-    "resources": {
-      "help": "Help Center",
-      "api": "API Documentation",
-      "blog": "Blog"
+    "success": {
+      "title": "Message sent successfully!",
+      "responseTime": "Estimated response time: {{time}}",
+      "close": "Close"
     }
   },
-  "home": {
-    "heroFallback": {
-      "title": "Empowering independent music to thrive",
-      "subtitle": "A platform designed to scale, protect and monetize independent music, globally.",
-      "button": "Get Started",
-      "button2": "See features"
-    },
-    "tagline": "A new way to distribute, protect and monetize music",
-    "forLabelsTitle": "For music labels and distributors",
-    "features": {
-      "catalog": {
-        "title": "Centralize catalogs",
-        "description": "Easily manage your artists' releases: import, organize and deliver at scale without errors or duplicates."
-      },
-      "distribution": {
-        "title": "A global distribution infrastructure",
-        "description": "Manage your deliveries to all DSP platforms like Spotify, Apple Music, Boomplay, Deezer, TikTok, YouTube, etc. — frictionless, without limits."
-      },
-      "royalties": {
-        "title": "Automated tracking & splits",
-        "description": "Analyze artist royalties and manage splits with one click."
-      },
-      "payment": {
-        "title": "Transparent revenue and payments.",
-        "description": "Visualize, segment, and automatically pay your rights holders."
-      },
-      "analytics": {
-        "title": "Analyze your performance",
-        "description": "Access key statistics for your artists: revenue, streams, platforms, territories, and much more — all in real-time."
-      }
+  "common": {
+    "home": "Home",
+    "back": "Back",
+    "previous": "Previous",
+    "next": "Next",
+    "loading": "Loading...",
+    "error": "Error",
+    "retry": "Retry",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "all": "All",
+    "category": "Category",
+    "tag": "Tag",
+    "date": "Date",
+    "author": "Author",
+    "readMore": "Read more",
+    "readLess": "Read less",
+    "share": "Share",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "close": "Close",
+    "open": "Open",
+    "viewAll": "View all",
+    "showing": "Showing",
+    "results": "results",
+    "result": "result",
+    "backTo": "Back to",
+    "yes": "Yes",
+    "no": "No",
+    "cancel": "Cancel"
+  },
+  "notFound": {
+    "title": "Page Not Found",
+    "description": "The page you are looking for has been moved, deleted, or may have never existed.",
+    "homeButton": "Go to Homepage"
+  },
+  "analytics": {
+    "hero": {
+      "title": "Analyze Your Data with Clarity",
+      "subtitle": "Unlock the power of your data. Harness advanced analytics to gain clarity on streaming trends, revenue patterns, and marketing effectiveness, driving smarter strategies and growth.",
+      "getStarted": "Get Started",
+      "learnMore": "Learn More"
     },
     "benefits": {
-      "title": "Why do 10,000+ artists trust us?",
-      "subtitle": "Discover the concrete results achieved by our users",
-      "stats": {
-        "timeSaved": {
-          "title": "Time Saved",
-          "description": "Complete automation of distribution and royalties"
-        },
-        "platforms": {
-          "title": "Platforms",
-          "description": "Distribute to all major platforms with one click"
-        },
-        "processing": {
-          "title": "Processing Time",
-          "description": "Automatic payments and instant reconciliation"
-        },
-        "accuracy": {
-          "title": "Accuracy",
-          "description": "Analytics and reporting with maximum precision"
-        }
+      "comprehensive": {
+        "title": "Comprehensive Data",
+        "description": "360° view of your catalog performance"
       },
-      "cta": {
-        "title": "Ready to join the music revolution?",
-        "subtitle": "Discover how Soncollab can transform your music business today.",
-        "button": "See a demo"
+      "actionable": {
+        "title": "Actionable Insights",
+        "description": "Identify trends for smarter decisions"
+      },
+      "growth": {
+        "title": "Data-Driven Growth",
+        "description": "Spot opportunities to boost your success"
       }
     },
-    "whiteLabel": {
-      "title": "Your brand, our technology",
-      "subtitle": "Create your own music platform with our fully customizable white label solution. Domain, colors, logo - everything can be adapted to your identity.",
-      "cta": {
-        "demo": "See a demo"
+    "features": {
+      "title": "Advanced Analytics & Insights",
+      "subtitle": "Transform your data into winning strategies with our powerful analytics tools.",
+      "catalog": {
+        "title": "Analyze Catalog Performance",
+        "description": "Analyze streaming and download data across multiple DSPs with unmatched granularity.",
+        "feature1": "Detailed breakdown by Release, DSP, Market, Format",
+        "feature2": "Monitor all your assets from a single dashboard",
+        "feature3": "Real-time performance data"
+      },
+      "revenue": {
+        "title": "Track Revenue Trends",
+        "description": "Track revenue with detailed breakdowns by assets, DSPs, markets, and territories to optimize your financial performance.",
+        "feature1": "Comprehensive view of earnings by source",
+        "feature2": "Identify key revenue drivers",
+        "feature3": "Revenue trends and forecasting"
+      },
+      "playlist": {
+        "title": "Unlock Playlist Insights",
+        "description": "Get real-time alerts when your music is added to playlists and assess their impact on your streaming performance.",
+        "feature1": "Real-time playlist addition alerts",
+        "feature2": "Analysis of playlist types",
+        "feature3": "Impact on streaming performance"
+      },
+      "export": {
+        "title": "Share Data Effortlessly",
+        "description": "Easily export data in CSV or PDF formats for sharing with your team or stakeholders.",
+        "feature1": "Export in CSV and PDF formats",
+        "feature2": "Up to 1000 rows available",
+        "feature3": "Integration into external reports"
+      },
+      "audience": {
+        "title": "Understand Your Audience",
+        "description": "Track daily listener growth and uncover insights into who they are, where they come from, and how they engage.",
+        "feature1": "Track daily listener growth",
+        "feature2": "Demographic and geographic insights",
+        "feature3": "Optimize marketing strategies"
+      },
+      "ai": {
+        "title": "AI-Powered Insights",
+        "description": "Make smarter decisions with AI-driven summaries and recommended actions based on your catalog's performance.",
+        "feature1": "AI-driven summaries",
+        "feature2": "Recommended actions based on performance",
+        "feature3": "Easy-to-understand insights to refine strategy"
       }
+    },
+    "workflow": {
+      "title": "Analytics in 4 Steps",
+      "subtitle": "From data collection to actionable insights, our optimized process for your growth.",
+      "step1": {
+        "title": "Collection",
+        "description": "Automatic multi-platform data aggregation"
+      },
+      "step2": {
+        "title": "Analysis",
+        "description": "Processing and trend analysis"
+      },
+      "step3": {
+        "title": "Insights",
+        "description": "AI-generated actionable insights"
+      },
+      "step4": {
+        "title": "Action",
+        "description": "Implementation of optimized strategies"
+      }
+    },
+    "demo": {
+      "title": "Complete Analytics Platform",
+      "subtitle": "Discover our analytics interface with real-time insights and intelligent recommendations."
+    },
+    "integrations": {
+      "title": "Unified Data Sources",
+      "subtitle": "Connect all your platforms and data sources for centralized analysis.",
+      "more": "And 50+ more data sources..."
+    },
+    "related": {
+      "title": "Complementary Features",
+      "catalog": "Catalog Management",
+      "catalogDesc": "Organize your content to analyze",
+      "rights": "Rights Management",
+      "rightsDesc": "Analyze your rights performance",
+      "distribution": "Distribution",
+      "distributionDesc": "Optimize your distribution strategies",
+      "income": "Income Tracking",
+      "incomeDesc": "Analyze your revenue sources"
     }
   },
-  "footer": {
-    "tagline": "Distribute, protect and monetize your music",
-    "company": {
-      "title": "Company",
-      "about": "About",
-      "careers": "Careers",
-      "contact": "Contact",
-      "privacy": "Privacy Policy",
-      "terms": "Terms of Use",
-      "antiFraud": "Anti-fraud Policy"
-    },
-    "resources": {
-      "title": "Resources",
-      "api": "API Documentation",
-      "help": "Help Center",
-      "blog": "Blog"
-    },
-    "social": {
-      "youtube": "Follow us on YouTube",
-      "instagram": "Follow us on Instagram",
-      "facebook": "Follow us on Facebook",
-      "twitter": "Follow us on X (Twitter)",
-      "tiktok": "Follow us on TikTok",
-      "threads": "Follow us on Threads",
-      "linkedin": "Follow us on LinkedIn"
-    },
-    "language": {
-      "select": "Select language"
-    },
-    "copyright": "© 2025 Soncollab. All rights reserved."
-  },
-
-  "pricing": {
-    "title": "Pricing and subscriptions",
-    "description": "Choose the perfect plan for your music business. All our plans include dedicated support and free updates.",
-    "productType": "Product type",
-    "allProducts": "All products",
-    "currency": "Currency",
-    "billingPeriod": "Billing period",
-    "monthly": "Monthly",
-    "yearly": "Yearly",
-    "perMonth": "per month",
-    "perYear": "per year",
-    "month": "month",
-    "year": "year",
-    "mostPopular": "Most popular",
-    "selectPlan": "Select this plan",
-    "selectFor": "Select for",
-    "assetLimit": "Asset limit",
-    "royaltyCap": "Royalty cap",
-    "support": "Support",
-    "save": "Save",
-    "featuresIncluded": "Features included",
-    "showing": "Showing",
-    "plans": "plans",
-    "for": "for",
-    "plan": "Plan",
-    "estimatedPrice": "Estimated price",
-    "totalPrice": "Total price",
-    "supportLevel": {
-      "basic": "Basic",
-      "priority": "Priority",
-      "premium": "Premium"
-    },
-    "addons": {
-      "title": "Additional services",
-      "selected": "Selected add-ons",
-      "description": "Enhance your plan with these additional options"
-    },
-    "addonsSelected": "add-ons selected",
-    "clearSelection": "Clear selection",
-    "noPlans": {
-      "title": "No plans found",
-      "description": "No plans match the selected filters.",
-      "showAll": "Show all plans"
-    },
-    "contact": {
-      "title": "Need help choosing?",
-      "description": "Our sales team is here to advise you and offer a solution tailored to your needs.",
-      "button": "Request quote",
-      "interested": "I'm interested in the {{plan}} plan",
-      "success": "Pricing inquiry received! A sales rep will contact you within 2h.",
-      "success.title": "Request sent!",
-      "general": "I would like to learn more about your pricing and available plans.",
-      "planDetails": "Plan details",
-      "subject": {
-        "plan": "Pricing inquiry - {{plan}}",
-        "general": "Pricing inquiry"
-      }
-    },
-
-    "catalog": {
-      "title": "Manage Your Catalog Efficiently",
-      "description": "Our plans adapt to your catalog size and distribution needs.",
-      "viewPlans": "View Pricing",
-      "contactSales": "Contact Us",
-      "highlight1": "Unlimited storage",
-      "highlight2": "Dedicated support",
-      "highlight3": "Guaranteed scalability"
-    },
-    "rights": {
-      "title": "Protect Your Music Rights",
-      "description": "Secure and manage all your copyrights with our integrated legal solutions.",
-      "viewPlans": "View Pricing",
-      "contactSales": "Contact Us",
-      "highlight1": "Legal protection",
-      "highlight2": "Expert advice",
-      "highlight3": "Global coverage"
-    },
-    "distribution": {
-      "title": "Distribute Worldwide",
-      "description": "Reach all music platforms with our global distribution network.",
-      "viewPlans": "View Pricing",
-      "contactSales": "Contact Us",
-      "highlight1": "200+ platforms",
-      "highlight2": "Fast distribution",
-      "highlight3": "Detailed reporting"
-    },
-    "analytics": {
-      "title": "Analyze Your Performance",
-      "description": "Make informed decisions with our advanced analytics tools.",
-      "viewPlans": "View Pricing",
-      "contactSales": "Contact Us",
-      "highlight1": "Real-time data",
-      "highlight2": "Custom reports",
-      "highlight3": "Actionable insights"
-    },
-    "royalties": {
-      "title": "Optimize Your Revenue",
-      "description": "Maximize and track all your music revenue with precision.",
-      "viewPlans": "View Pricing",
-      "contactSales": "Contact Us",
-      "highlight1": "Accurate calculations",
-      "highlight2": "Fast payments",
-      "highlight3": "Complete transparency"
-    },
-    "payments": {
-      "title": "Receive Payments Quickly",
-      "description": "Flexible and secure payment solutions for all your music revenue.",
-      "viewPlans": "View Pricing",
-      "contactSales": "Contact Us",
-      "highlight1": "Secure payments",
-      "highlight2": "Low fees",
-      "highlight3": "Multi-currency support"
-    },
-    "income-tracking": {
-      "title": "Track Your Income in Detail",
-      "description": "Control every revenue source with our advanced tracking tools.",
-      "viewPlans": "View Pricing",
-      "contactSales": "Contact Us",
-      "highlight1": "Multi-source tracking",
-      "highlight2": "Automatic alerts",
-      "highlight3": "Accurate forecasts"
-    },
-
-    "error": {
-      "title": "Loading error",
-      "description": "An error occurred while loading the pricing plans. Please try again later or contact support if the problem persists.",
-      "retry": "Retry"
-    }
-  },
-
   "catalog": {
     "hero": {
       "title": "Simplified Catalog Management",
@@ -366,7 +296,6 @@
       "subtitle": "Connect to all major streaming platforms.",
       "more": "And 200+ more platforms..."
     },
-
     "related": {
       "title": "Complementary Features",
       "rights": "Rights Management",
@@ -379,106 +308,6 @@
       "analyticsDesc": "Analyze your performance"
     }
   },
-
-  "rights": {
-    "hero": {
-      "title": "Protect Your Music Rights",
-      "subtitle": "Secure, manage, and monetize your copyrights with our comprehensive legal platform. Global protection and integrated legal expertise.",
-      "getStarted": "Get Started",
-      "learnMore": "Learn More"
-    },
-    "benefits": {
-      "protect": {
-        "title": "Legal Protection",
-        "description": "Secure your works with our legal experts"
-      },
-      "register": {
-        "title": "Registration",
-        "description": "File your rights worldwide"
-      },
-      "monitor": {
-        "title": "Monitoring",
-        "description": "Detect unauthorized usage"
-      },
-      "monetize": {
-        "title": "Monetization",
-        "description": "Recover all your legitimate revenue"
-      }
-    },
-    "features": {
-      "title": "Complete Legal Protection",
-      "subtitle": "All the tools needed to effectively protect and manage your music rights.",
-      "registration": {
-        "title": "Rights Registration",
-        "description": "Automatically file and register your copyrights in all global jurisdictions.",
-        "feature1": "Automatic multi-jurisdiction filing",
-        "feature2": "Official copyright certificates",
-        "feature3": "Secure and timestamped database"
-      },
-      "monitoring": {
-        "title": "Violation Monitoring",
-        "description": "Detect unauthorized uses of your works in real-time across internet and media.",
-        "feature1": "24/7 automated monitoring",
-        "feature2": "Advanced AI detection",
-        "feature3": "Instant violation alerts"
-      },
-      "legal": {
-        "title": "Legal Assistance",
-        "description": "Benefit from expertise of our lawyers specialized in intellectual property law.",
-        "feature1": "Expert legal counsel included",
-        "feature2": "Cease and desist procedures",
-        "feature3": "Legal representation if necessary"
-      },
-      "claims": {
-        "title": "Revenue Recovery",
-        "description": "Automatically claim and recover all revenue owed for your used works.",
-        "feature1": "Automatic platform claims",
-        "feature2": "Retroactive license negotiation",
-        "feature3": "Damages recovery"
-      }
-    },
-    "workflow": {
-      "title": "Protection in 4 Simple Steps",
-      "subtitle": "From registration to revenue recovery, our optimized legal process.",
-      "step1": {
-        "title": "Registration",
-        "description": "Automatically file your copyrights"
-      },
-      "step2": {
-        "title": "Monitoring",
-        "description": "Continuous monitoring of potential violations"
-      },
-      "step3": {
-        "title": "Legal Action",
-        "description": "Automated procedures against infringements"
-      },
-      "step4": {
-        "title": "Recovery",
-        "description": "Collection of revenue and damages"
-      }
-    },
-    "demo": {
-      "title": "Complete Legal Interface",
-      "subtitle": "Discover our rights management platform with integrated legal assistance."
-    },
-    "partners": {
-      "title": "Global Legal Partners",
-      "subtitle": "We work with leading collective management societies and law firms.",
-      "more": "And 50+ more global legal partners..."
-    },
-    "related": {
-      "title": "Complementary Features",
-      "catalog": "Catalog Management",
-      "catalogDesc": "Organize your protected works",
-      "royalties": "Royalty Tracking",
-      "royaltiesDesc": "Track your rights revenue",
-      "payments": "Payments",
-      "paymentsDesc": "Receive your legal compensations",
-      "analytics": "Legal Analytics",
-      "analyticsDesc": "Analyze your violations and recoveries"
-    }
-  },
-
   "distribution": {
     "hero": {
       "title": "Deliver Your Music Globally",
@@ -696,114 +525,6 @@
       "paymentsDesc": "Receive your payments quickly"
     }
   },
-  "analytics": {
-    "hero": {
-      "title": "Analyze Your Data with Clarity",
-      "subtitle": "Unlock the power of your data. Harness advanced analytics to gain clarity on streaming trends, revenue patterns, and marketing effectiveness, driving smarter strategies and growth.",
-      "getStarted": "Get Started",
-      "learnMore": "Learn More"
-    },
-    "benefits": {
-      "comprehensive": {
-        "title": "Comprehensive Data",
-        "description": "360° view of your catalog performance"
-      },
-      "actionable": {
-        "title": "Actionable Insights",
-        "description": "Identify trends for smarter decisions"
-      },
-      "growth": {
-        "title": "Data-Driven Growth",
-        "description": "Spot opportunities to boost your success"
-      }
-    },
-    "features": {
-      "title": "Advanced Analytics & Insights",
-      "subtitle": "Transform your data into winning strategies with our powerful analytics tools.",
-      "catalog": {
-        "title": "Analyze Catalog Performance",
-        "description": "Analyze streaming and download data across multiple DSPs with unmatched granularity.",
-        "feature1": "Detailed breakdown by Release, DSP, Market, Format",
-        "feature2": "Monitor all your assets from a single dashboard",
-        "feature3": "Real-time performance data"
-      },
-      "revenue": {
-        "title": "Track Revenue Trends",
-        "description": "Track revenue with detailed breakdowns by assets, DSPs, markets, and territories to optimize your financial performance.",
-        "feature1": "Comprehensive view of earnings by source",
-        "feature2": "Identify key revenue drivers",
-        "feature3": "Revenue trends and forecasting"
-      },
-      "playlist": {
-        "title": "Unlock Playlist Insights",
-        "description": "Get real-time alerts when your music is added to playlists and assess their impact on your streaming performance.",
-        "feature1": "Real-time playlist addition alerts",
-        "feature2": "Analysis of playlist types",
-        "feature3": "Impact on streaming performance"
-      },
-      "export": {
-        "title": "Share Data Effortlessly",
-        "description": "Easily export data in CSV or PDF formats for sharing with your team or stakeholders.",
-        "feature1": "Export in CSV and PDF formats",
-        "feature2": "Up to 1000 rows available",
-        "feature3": "Integration into external reports"
-      },
-      "audience": {
-        "title": "Understand Your Audience",
-        "description": "Track daily listener growth and uncover insights into who they are, where they come from, and how they engage.",
-        "feature1": "Track daily listener growth",
-        "feature2": "Demographic and geographic insights",
-        "feature3": "Optimize marketing strategies"
-      },
-      "ai": {
-        "title": "AI-Powered Insights",
-        "description": "Make smarter decisions with AI-driven summaries and recommended actions based on your catalog's performance.",
-        "feature1": "AI-driven summaries",
-        "feature2": "Recommended actions based on performance",
-        "feature3": "Easy-to-understand insights to refine strategy"
-      }
-    },
-    "workflow": {
-      "title": "Analytics in 4 Steps",
-      "subtitle": "From data collection to actionable insights, our optimized process for your growth.",
-      "step1": {
-        "title": "Collection",
-        "description": "Automatic multi-platform data aggregation"
-      },
-      "step2": {
-        "title": "Analysis",
-        "description": "Processing and trend analysis"
-      },
-      "step3": {
-        "title": "Insights",
-        "description": "AI-generated actionable insights"
-      },
-      "step4": {
-        "title": "Action",
-        "description": "Implementation of optimized strategies"
-      }
-    },
-    "demo": {
-      "title": "Complete Analytics Platform",
-      "subtitle": "Discover our analytics interface with real-time insights and intelligent recommendations."
-    },
-    "integrations": {
-      "title": "Unified Data Sources",
-      "subtitle": "Connect all your platforms and data sources for centralized analysis.",
-      "more": "And 50+ more data sources..."
-    },
-    "related": {
-      "title": "Complementary Features",
-      "catalog": "Catalog Management",
-      "catalogDesc": "Organize your content to analyze",
-      "rights": "Rights Management",
-      "rightsDesc": "Analyze your rights performance",
-      "distribution": "Distribution",
-      "distributionDesc": "Optimize your distribution strategies",
-      "income": "Income Tracking",
-      "incomeDesc": "Analyze your revenue sources"
-    }
-  },
   "payments": {
     "hero": {
       "title": "Secure Your Global Payouts",
@@ -910,6 +631,104 @@
       "incomeDesc": "Track revenue to distribute",
       "royalties": "Royalty Accounting",
       "royaltiesDesc": "Calculate precise amounts to pay"
+    }
+  },
+  "rights": {
+    "hero": {
+      "title": "Protect Your Music Rights",
+      "subtitle": "Secure, manage, and monetize your copyrights with our comprehensive legal platform. Global protection and integrated legal expertise.",
+      "getStarted": "Get Started",
+      "learnMore": "Learn More"
+    },
+    "benefits": {
+      "protect": {
+        "title": "Legal Protection",
+        "description": "Secure your works with our legal experts"
+      },
+      "register": {
+        "title": "Registration",
+        "description": "File your rights worldwide"
+      },
+      "monitor": {
+        "title": "Monitoring",
+        "description": "Detect unauthorized usage"
+      },
+      "monetize": {
+        "title": "Monetization",
+        "description": "Recover all your legitimate revenue"
+      }
+    },
+    "features": {
+      "title": "Complete Legal Protection",
+      "subtitle": "All the tools needed to effectively protect and manage your music rights.",
+      "registration": {
+        "title": "Rights Registration",
+        "description": "Automatically file and register your copyrights in all global jurisdictions.",
+        "feature1": "Automatic multi-jurisdiction filing",
+        "feature2": "Official copyright certificates",
+        "feature3": "Secure and timestamped database"
+      },
+      "monitoring": {
+        "title": "Violation Monitoring",
+        "description": "Detect unauthorized uses of your works in real-time across internet and media.",
+        "feature1": "24/7 automated monitoring",
+        "feature2": "Advanced AI detection",
+        "feature3": "Instant violation alerts"
+      },
+      "legal": {
+        "title": "Legal Assistance",
+        "description": "Benefit from expertise of our lawyers specialized in intellectual property law.",
+        "feature1": "Expert legal counsel included",
+        "feature2": "Cease and desist procedures",
+        "feature3": "Legal representation if necessary"
+      },
+      "claims": {
+        "title": "Revenue Recovery",
+        "description": "Automatically claim and recover all revenue owed for your used works.",
+        "feature1": "Automatic platform claims",
+        "feature2": "Retroactive license negotiation",
+        "feature3": "Damages recovery"
+      }
+    },
+    "workflow": {
+      "title": "Protection in 4 Simple Steps",
+      "subtitle": "From registration to revenue recovery, our optimized legal process.",
+      "step1": {
+        "title": "Registration",
+        "description": "Automatically file your copyrights"
+      },
+      "step2": {
+        "title": "Monitoring",
+        "description": "Continuous monitoring of potential violations"
+      },
+      "step3": {
+        "title": "Legal Action",
+        "description": "Automated procedures against infringements"
+      },
+      "step4": {
+        "title": "Recovery",
+        "description": "Collection of revenue and damages"
+      }
+    },
+    "demo": {
+      "title": "Complete Legal Interface",
+      "subtitle": "Discover our rights management platform with integrated legal assistance."
+    },
+    "partners": {
+      "title": "Global Legal Partners",
+      "subtitle": "We work with leading collective management societies and law firms.",
+      "more": "And 50+ more global legal partners..."
+    },
+    "related": {
+      "title": "Complementary Features",
+      "catalog": "Catalog Management",
+      "catalogDesc": "Organize your protected works",
+      "royalties": "Royalty Tracking",
+      "royaltiesDesc": "Track your rights revenue",
+      "payments": "Payments",
+      "paymentsDesc": "Receive your legal compensations",
+      "analytics": "Legal Analytics",
+      "analyticsDesc": "Analyze your violations and recoveries"
     }
   },
   "royalties": {
@@ -1020,6 +839,379 @@
       "paymentsDesc": "Handle all financial transactions securely"
     }
   },
+  "footer": {
+    "tagline": "Distribute, protect and monetize your music",
+    "company": {
+      "title": "Company",
+      "about": "About",
+      "careers": "Careers",
+      "contact": "Contact",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Use",
+      "antiFraud": "Anti-fraud Policy"
+    },
+    "resources": {
+      "title": "Resources",
+      "api": "API Documentation",
+      "help": "Help Center",
+      "blog": "Blog"
+    },
+    "social": {
+      "youtube": "Follow us on YouTube",
+      "instagram": "Follow us on Instagram",
+      "facebook": "Follow us on Facebook",
+      "twitter": "Follow us on X (Twitter)",
+      "tiktok": "Follow us on TikTok",
+      "threads": "Follow us on Threads",
+      "linkedin": "Follow us on LinkedIn"
+    },
+    "language": {
+      "select": "Select language"
+    },
+    "copyright": "© 2025 Soncollab. All rights reserved."
+  },
+  "header": {
+    "theme": {
+      "light": "Light",
+      "dark": "Dark",
+      "auto": "Auto"
+    },
+    "navigation": {
+      "features": "Features",
+      "products": "Products",
+      "pricing": "Pricing",
+      "resources": "Resources",
+      "start": "Get Started"
+    },
+    "features": {
+      "catalog": {
+        "title": "Catalog",
+        "description": "Manage your music library"
+      },
+      "rights": {
+        "title": "Rights",
+        "description": "Control your copyrights"
+      },
+      "distribution": {
+        "title": "Distribution & Delivery",
+        "description": "Distribute on all platforms"
+      },
+      "income": {
+        "title": "Income Tracking",
+        "description": "Track your revenue in real-time"
+      },
+      "analytics": {
+        "title": "Analytics",
+        "description": "Detailed performance analytics"
+      },
+      "payments": {
+        "title": "Global Payments",
+        "description": "Secure international payments"
+      },
+      "royalties": {
+        "title": "Royalties",
+        "description": "Automated royalty management"
+      }
+    },
+    "products": {
+      "studio": "Studio",
+      "connect": "Connect"
+    },
+    "resources": {
+      "help": "Help Center",
+      "api": "API Documentation",
+      "blog": "Blog"
+    }
+  },
+  "home": {
+    "heroFallback": {
+      "title": "Empowering independent music to thrive",
+      "subtitle": "A platform designed to scale, protect and monetize independent music, globally.",
+      "button": "Get Started",
+      "button2": "See features"
+    },
+    "tagline": "A new way to distribute, protect and monetize music",
+    "forLabelsTitle": "For music labels and distributors",
+    "features": {
+      "catalog": {
+        "title": "Centralize catalogs",
+        "description": "Easily manage your artists' releases: import, organize and deliver at scale without errors or duplicates."
+      },
+      "distribution": {
+        "title": "A global distribution infrastructure",
+        "description": "Manage your deliveries to all DSP platforms like Spotify, Apple Music, Boomplay, Deezer, TikTok, YouTube, etc. — frictionless, without limits."
+      },
+      "royalties": {
+        "title": "Automated tracking & splits",
+        "description": "Analyze artist royalties and manage splits with one click."
+      },
+      "payment": {
+        "title": "Transparent revenue and payments.",
+        "description": "Visualize, segment, and automatically pay your rights holders."
+      },
+      "analytics": {
+        "title": "Analyze your performance",
+        "description": "Access key statistics for your artists: revenue, streams, platforms, territories, and much more — all in real-time."
+      }
+    },
+    "benefits": {
+      "title": "Why do 10,000+ artists trust us?",
+      "subtitle": "Discover the concrete results achieved by our users",
+      "stats": {
+        "timeSaved": {
+          "title": "Time Saved",
+          "description": "Complete automation of distribution and royalties"
+        },
+        "platforms": {
+          "title": "Platforms",
+          "description": "Distribute to all major platforms with one click"
+        },
+        "processing": {
+          "title": "Processing Time",
+          "description": "Automatic payments and instant reconciliation"
+        },
+        "accuracy": {
+          "title": "Accuracy",
+          "description": "Analytics and reporting with maximum precision"
+        }
+      },
+      "cta": {
+        "title": "Ready to join the music revolution?",
+        "subtitle": "Discover how Soncollab can transform your music business today.",
+        "button": "See a demo"
+      }
+    },
+    "whiteLabel": {
+      "title": "Your brand, our technology",
+      "subtitle": "Create your own music platform with our fully customizable white label solution. Domain, colors, logo - everything can be adapted to your identity.",
+      "cta": {
+        "demo": "See a demo"
+      }
+    }
+  },
+  "pricing": {
+    "title": "Pricing and subscriptions",
+    "description": "Choose the perfect plan for your music business. All our plans include dedicated support and free updates.",
+    "productType": "Product type",
+    "allProducts": "All products",
+    "currency": "Currency",
+    "billingPeriod": "Billing period",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "perMonth": "per month",
+    "perYear": "per year",
+    "month": "month",
+    "year": "year",
+    "mostPopular": "Most popular",
+    "selectPlan": "Select this plan",
+    "selectFor": "Select for",
+    "assetLimit": "Asset limit",
+    "royaltyCap": "Royalty cap",
+    "support": "Support",
+    "save": "Save",
+    "featuresIncluded": "Features included",
+    "showing": "Showing",
+    "plans": "plans",
+    "for": "for",
+    "plan": "Plan",
+    "estimatedPrice": "Estimated price",
+    "totalPrice": "Total price",
+    "supportLevel": {
+      "basic": "Basic",
+      "priority": "Priority",
+      "premium": "Premium"
+    },
+    "addons": {
+      "title": "Additional services",
+      "selected": "Selected add-ons",
+      "description": "Enhance your plan with these additional options"
+    },
+    "addonsSelected": "add-ons selected",
+    "clearSelection": "Clear selection",
+    "noPlans": {
+      "title": "No plans found",
+      "description": "No plans match the selected filters.",
+      "showAll": "Show all plans"
+    },
+    "contact": {
+      "title": "Need help choosing?",
+      "description": "Our sales team is here to advise you and offer a solution tailored to your needs.",
+      "button": "Request quote",
+      "interested": "I'm interested in the {{plan}} plan",
+      "success": "Pricing inquiry received! A sales rep will contact you within 2h.",
+      "success.title": "Request sent!",
+      "general": "I would like to learn more about your pricing and available plans.",
+      "planDetails": "Plan details",
+      "subject": {
+        "plan": "Pricing inquiry - {{plan}}",
+        "general": "Pricing inquiry"
+      }
+    },
+    "catalog": {
+      "title": "Manage Your Catalog Efficiently",
+      "description": "Our plans adapt to your catalog size and distribution needs.",
+      "viewPlans": "View Pricing",
+      "contactSales": "Contact Us",
+      "highlight1": "Unlimited storage",
+      "highlight2": "Dedicated support",
+      "highlight3": "Guaranteed scalability"
+    },
+    "rights": {
+      "title": "Protect Your Music Rights",
+      "description": "Secure and manage all your copyrights with our integrated legal solutions.",
+      "viewPlans": "View Pricing",
+      "contactSales": "Contact Us",
+      "highlight1": "Legal protection",
+      "highlight2": "Expert advice",
+      "highlight3": "Global coverage"
+    },
+    "distribution": {
+      "title": "Distribute Worldwide",
+      "description": "Reach all music platforms with our global distribution network.",
+      "viewPlans": "View Pricing",
+      "contactSales": "Contact Us",
+      "highlight1": "200+ platforms",
+      "highlight2": "Fast distribution",
+      "highlight3": "Detailed reporting"
+    },
+    "analytics": {
+      "title": "Analyze Your Performance",
+      "description": "Make informed decisions with our advanced analytics tools.",
+      "viewPlans": "View Pricing",
+      "contactSales": "Contact Us",
+      "highlight1": "Real-time data",
+      "highlight2": "Custom reports",
+      "highlight3": "Actionable insights"
+    },
+    "royalties": {
+      "title": "Optimize Your Revenue",
+      "description": "Maximize and track all your music revenue with precision.",
+      "viewPlans": "View Pricing",
+      "contactSales": "Contact Us",
+      "highlight1": "Accurate calculations",
+      "highlight2": "Fast payments",
+      "highlight3": "Complete transparency"
+    },
+    "payments": {
+      "title": "Receive Payments Quickly",
+      "description": "Flexible and secure payment solutions for all your music revenue.",
+      "viewPlans": "View Pricing",
+      "contactSales": "Contact Us",
+      "highlight1": "Secure payments",
+      "highlight2": "Low fees",
+      "highlight3": "Multi-currency support"
+    },
+    "income-tracking": {
+      "title": "Track Your Income in Detail",
+      "description": "Control every revenue source with our advanced tracking tools.",
+      "viewPlans": "View Pricing",
+      "contactSales": "Contact Us",
+      "highlight1": "Multi-source tracking",
+      "highlight2": "Automatic alerts",
+      "highlight3": "Accurate forecasts"
+    },
+    "error": {
+      "title": "Loading error",
+      "description": "An error occurred while loading the pricing plans. Please try again later or contact support if the problem persists.",
+      "retry": "Retry"
+    }
+  },
+  "connect": {
+    "hero": {
+      "title": "Build Your App With One Powerful API",
+      "subtitle": "Built for developers and tailored for music companies, it lets you automate operations, workflows, integrate seamlessly with your existing tech stack, and scale your music app platform with confidence.",
+      "getStarted": "Get Started",
+      "learnMore": "API Documentation"
+    },
+    "benefits": {
+      "api": {
+        "title": "Powerful API",
+        "description": "One API for all your music operations"
+      },
+      "automation": {
+        "title": "Workflow Automation",
+        "description": "Automate complex music business processes"
+      },
+      "integration": {
+        "title": "Seamless Integration",
+        "description": "Integrate with your existing tech stack"
+      },
+      "scale": {
+        "title": "Scale with Confidence",
+        "description": "Built to grow with your music platform"
+      }
+    },
+    "features": {
+      "title": "Complete API Suite",
+      "subtitle": "Everything you need to build and scale your music platform with our comprehensive API.",
+      "delivery": {
+        "title": "Delivery & Distribution",
+        "description": "Streamline and manage your end-to-end release workflows with a single, powerful API",
+        "feature1": "Create and manage releases, tracks, metadata, and rights",
+        "feature2": "Automate release scheduling and version control",
+        "feature3": "Deliver to DSPs using your own deals or Soncollab's deals",
+        "feature4": "Monitor delivery status and DSP ingestion with webhook support",
+        "cta": "Get Started"
+      },
+      "catalog": {
+        "title": "Catalog Management",
+        "description": "Complete catalog control through API endpoints for efficient music library management",
+        "feature1": "Full CRUD operations on catalog items",
+        "feature2": "Bulk import and export capabilities",
+        "feature3": "Advanced search and filtering",
+        "feature4": "Metadata validation and enrichment",
+        "cta": "Get Started"
+      },
+      "analytics": {
+        "title": "Reporting & Analytics",
+        "description": "Access structured performance data via API and embed real-time insights into your workflows",
+        "feature1": "Query streaming and revenue data by track, release, region, or DSP",
+        "feature2": "Monitor trends in audience behavior and engagement",
+        "feature3": "Export structured data or integrate directly into analytics tools",
+        "feature4": "Supports CSV export and raw data sync",
+        "cta": "Get Started"
+      },
+      "royalties": {
+        "title": "Rights, Royalties & Payments",
+        "description": "Automate calculations and streamline royalty reporting with a powerful API",
+        "feature1": "Define contracts with configurable terms: splits, recoupables, payout logic",
+        "feature2": "Import and reconcile DSP statements with contract data",
+        "feature3": "Generate audit-ready statements, invoices, and payout summaries",
+        "feature4": "Full API access to royalty line items, reports, and payment status",
+        "cta": "Get Started"
+      }
+    },
+    "resources": {
+      "title": "Developer Resources",
+      "subtitle": "Everything you need to get started with the Soncollab API.",
+      "documentation": {
+        "title": "API Reference",
+        "description": "Complete documentation with examples and use cases",
+        "cta": "View Docs"
+      },
+      "authentication": {
+        "title": "Authentication",
+        "description": "Secure API access and key management",
+        "cta": "Learn More"
+      },
+      "processing": {
+        "title": "Royalty Processing",
+        "description": "Advanced royalty calculation and processing workflows",
+        "cta": "Explore"
+      },
+      "webhooks": {
+        "title": "Webhooks",
+        "description": "Real-time notifications and event handling",
+        "cta": "Setup Guide"
+      }
+    },
+    "cta": {
+      "title": "Ready to Power Your Music Platform?",
+      "subtitle": "Join hundreds of developers and music companies building the future with Soncollab Connect API.",
+      "getStarted": "Start Building",
+      "viewPricing": "View API Pricing"
+    }
+  },
   "studio": {
     "hero": {
       "title": "Power Your Music Business",
@@ -1120,176 +1312,6 @@
       "viewPricing": "View Pricing"
     }
   },
-  "connect": {
-    "hero": {
-      "title": "Build Your App With One Powerful API",
-      "subtitle": "Built for developers and tailored for music companies, it lets you automate operations, workflows, integrate seamlessly with your existing tech stack, and scale your music app platform with confidence.",
-      "getStarted": "Get Started",
-      "learnMore": "API Documentation"
-    },
-    "benefits": {
-      "api": {
-        "title": "Powerful API",
-        "description": "One API for all your music operations"
-      },
-      "automation": {
-        "title": "Workflow Automation",
-        "description": "Automate complex music business processes"
-      },
-      "integration": {
-        "title": "Seamless Integration",
-        "description": "Integrate with your existing tech stack"
-      },
-      "scale": {
-        "title": "Scale with Confidence",
-        "description": "Built to grow with your music platform"
-      }
-    },
-    "features": {
-      "title": "Complete API Suite",
-      "subtitle": "Everything you need to build and scale your music platform with our comprehensive API.",
-      "delivery": {
-        "title": "Delivery & Distribution",
-        "description": "Streamline and manage your end-to-end release workflows with a single, powerful API",
-        "feature1": "Create and manage releases, tracks, metadata, and rights",
-        "feature2": "Automate release scheduling and version control",
-        "feature3": "Deliver to DSPs using your own deals or Soncollab's deals",
-        "feature4": "Monitor delivery status and DSP ingestion with webhook support",
-        "cta": "Get Started"
-      },
-      "catalog": {
-        "title": "Catalog Management",
-        "description": "Complete catalog control through API endpoints for efficient music library management",
-        "feature1": "Full CRUD operations on catalog items",
-        "feature2": "Bulk import and export capabilities",
-        "feature3": "Advanced search and filtering",
-        "feature4": "Metadata validation and enrichment",
-        "cta": "Get Started"
-      },
-      "analytics": {
-        "title": "Reporting & Analytics",
-        "description": "Access structured performance data via API and embed real-time insights into your workflows",
-        "feature1": "Query streaming and revenue data by track, release, region, or DSP",
-        "feature2": "Monitor trends in audience behavior and engagement",
-        "feature3": "Export structured data or integrate directly into analytics tools",
-        "feature4": "Supports CSV export and raw data sync",
-        "cta": "Get Started"
-      },
-      "royalties": {
-        "title": "Rights, Royalties & Payments",
-        "description": "Automate calculations and streamline royalty reporting with a powerful API",
-        "feature1": "Define contracts with configurable terms: splits, recoupables, payout logic",
-        "feature2": "Import and reconcile DSP statements with contract data",
-        "feature3": "Generate audit-ready statements, invoices, and payout summaries",
-        "feature4": "Full API access to royalty line items, reports, and payment status",
-        "cta": "Get Started"
-      }
-    },
-    "resources": {
-      "title": "Developer Resources",
-      "subtitle": "Everything you need to get started with the Soncollab API.",
-      "documentation": {
-        "title": "API Reference",
-        "description": "Complete documentation with examples and use cases",
-        "cta": "View Docs"
-      },
-      "authentication": {
-        "title": "Authentication",
-        "description": "Secure API access and key management",
-        "cta": "Learn More"
-      },
-      "processing": {
-        "title": "Royalty Processing",
-        "description": "Advanced royalty calculation and processing workflows",
-        "cta": "Explore"
-      },
-      "webhooks": {
-        "title": "Webhooks",
-        "description": "Real-time notifications and event handling",
-        "cta": "Setup Guide"
-      }
-    },
-    "cta": {
-      "title": "Ready to Power Your Music Platform?",
-      "subtitle": "Join hundreds of developers and music companies building the future with Soncollab Connect API.",
-      "getStarted": "Start Building",
-      "viewPricing": "View API Pricing"
-    }
-  },
-
-  "contact": {
-    "modal": {
-      "title": "Let’s Create Your Next Big Win"
-    },
-    "form": {
-      "firstName": "First Name",
-      "firstName.placeholder": "Your first name",
-      "firstName.required": "First name is required",
-      "lastName": "Last Name",
-      "lastName.placeholder": "Your last name",
-      "lastName.required": "Last name is required",
-      "email": "Email Address",
-      "email.placeholder": "your@email.com",
-      "email.required": "Email is required",
-      "email.invalid": "Invalid email format",
-      "email.checking": "Checking...",
-      "email.exists": "We already have {{count}} contact(s) with this email",
-      "phone": "Phone",
-      "phone.placeholder": "+1 234 567 8900",
-      "search": {
-        "placeholder": "Search...",
-        "country": "Search for a country...",
-        "noResults": "No results found",
-        "noChoices": "No choices available"
-      },
-      "loading": "Loading...",
-      "companyName": "Company Name",
-      "companyName.placeholder": "Your company",
-      "companyName.required": "Company name is required",
-      "companySize": "Company Size",
-      "companySize.placeholder": "Select",
-      "companySize.required": "Company size is required",
-      "companyWebsite": "Website",
-      "companyWebsite.placeholder": "https://www.example.com",
-      "companyWebsite.invalid": "Invalid URL (must start with http:// or https://)",
-      "contactType.placeholder": "Select a type",
-      "contactType.required": "Contact type is required",
-      "country": "Country",
-      "country.placeholder": "Select your country",
-      "country.required": "Country is required",
-      "message": "Message",
-      "message.placeholder": "Describe your request...",
-      "subject": "Auto-generated subject",
-      "cancel": "Cancel",
-      "submit": "Send",
-      "submitting": "Sending...",
-      "contactType": {
-        "name": "Contact Type",
-        "pricing_inquiry": "Pricing inquiry"
-      },
-      "success": "Your message has been sent successfully!",
-      "success.title": "Message sent!",
-      "error": {
-        "title": "Error",
-        "submission": "An error occurred while sending",
-        "emailCheck": "Unable to verify email",
-        "security": "Security verification failed. Please try again.",
-        "security.network": "Security verification error. Check your connection and try again."
-      }
-    },
-    "success": {
-      "title": "Message sent successfully!",
-      "responseTime": "Estimated response time: {{time}}",
-      "close": "Close"
-    }
-  },
-
-  "notFound": {
-    "title": "Page Not Found",
-    "description": "The page you are looking for has been moved, deleted, or may have never existed.",
-    "homeButton": "Go to Homepage"
-  },
-
   "blog": {
     "title": "Blog",
     "subtitle": "Discover our latest articles and news",
@@ -1349,7 +1371,6 @@
       "keywords": "blog, articles, news, trends"
     }
   },
-
   "help": {
     "title": "Help Center",
     "subtitle": "Find answers to your questions and learn how to use our platform",
@@ -1447,40 +1468,6 @@
       "goodExamples": "Good examples"
     }
   },
-
-  "common": {
-    "home": "Home",
-    "back": "Back",
-    "previous": "Previous",
-    "next": "Next",
-    "loading": "Loading...",
-    "error": "Error",
-    "retry": "Retry",
-    "search": "Search",
-    "filter": "Filter",
-    "sort": "Sort",
-    "all": "All",
-    "category": "Category",
-    "tag": "Tag",
-    "date": "Date",
-    "author": "Author",
-    "readMore": "Read more",
-    "readLess": "Read less",
-    "share": "Share",
-    "copy": "Copy",
-    "copied": "Copied!",
-    "close": "Close",
-    "open": "Open",
-    "viewAll": "View all",
-    "showing": "Showing",
-    "results": "results",
-    "result": "result",
-    "backTo": "Back to",
-    "yes": "Yes",
-    "no": "No",
-    "cancel": "Cancel"
-  },
-
   "newsletter": {
     "titles": {
       "general": "Stay Updated",

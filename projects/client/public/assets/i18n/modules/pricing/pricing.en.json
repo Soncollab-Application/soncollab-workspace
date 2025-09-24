@@ -1,0 +1,131 @@
+{
+  "pricing": {
+    "title": "Pricing and subscriptions",
+    "description": "Choose the perfect plan for your music business. All our plans include dedicated support and free updates.",
+    "productType": "Product type",
+    "allProducts": "All products",
+    "currency": "Currency",
+    "billingPeriod": "Billing period",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "perMonth": "per month",
+    "perYear": "per year",
+    "month": "month",
+    "year": "year",
+    "mostPopular": "Most popular",
+    "selectPlan": "Select this plan",
+    "selectFor": "Select for",
+    "assetLimit": "Asset limit",
+    "royaltyCap": "Royalty cap",
+    "support": "Support",
+    "save": "Save",
+    "featuresIncluded": "Features included",
+    "showing": "Showing",
+    "plans": "plans",
+    "for": "for",
+    "plan": "Plan",
+    "estimatedPrice": "Estimated price",
+    "totalPrice": "Total price",
+    "supportLevel": {
+      "basic": "Basic",
+      "priority": "Priority",
+      "premium": "Premium"
+    },
+    "addons": {
+      "title": "Additional services",
+      "selected": "Selected add-ons",
+      "description": "Enhance your plan with these additional options"
+    },
+    "addonsSelected": "add-ons selected",
+    "clearSelection": "Clear selection",
+    "noPlans": {
+      "title": "No plans found",
+      "description": "No plans match the selected filters.",
+      "showAll": "Show all plans"
+    },
+    "contact": {
+      "title": "Need help choosing?",
+      "description": "Our sales team is here to advise you and offer a solution tailored to your needs.",
+      "button": "Request quote",
+      "interested": "I'm interested in the {{plan}} plan",
+      "success": "Pricing inquiry received! A sales rep will contact you within 2h.",
+      "success.title": "Request sent!",
+      "general": "I would like to learn more about your pricing and available plans.",
+      "planDetails": "Plan details",
+      "subject": {
+        "plan": "Pricing inquiry - {{plan}}",
+        "general": "Pricing inquiry"
+      }
+    },
+
+    "catalog": {
+      "title": "Manage Your Catalog Efficiently",
+      "description": "Our plans adapt to your catalog size and distribution needs.",
+      "viewPlans": "View Pricing",
+      "contactSales": "Contact Us",
+      "highlight1": "Unlimited storage",
+      "highlight2": "Dedicated support",
+      "highlight3": "Guaranteed scalability"
+    },
+    "rights": {
+      "title": "Protect Your Music Rights",
+      "description": "Secure and manage all your copyrights with our integrated legal solutions.",
+      "viewPlans": "View Pricing",
+      "contactSales": "Contact Us",
+      "highlight1": "Legal protection",
+      "highlight2": "Expert advice",
+      "highlight3": "Global coverage"
+    },
+    "distribution": {
+      "title": "Distribute Worldwide",
+      "description": "Reach all music platforms with our global distribution network.",
+      "viewPlans": "View Pricing",
+      "contactSales": "Contact Us",
+      "highlight1": "200+ platforms",
+      "highlight2": "Fast distribution",
+      "highlight3": "Detailed reporting"
+    },
+    "analytics": {
+      "title": "Analyze Your Performance",
+      "description": "Make informed decisions with our advanced analytics tools.",
+      "viewPlans": "View Pricing",
+      "contactSales": "Contact Us",
+      "highlight1": "Real-time data",
+      "highlight2": "Custom reports",
+      "highlight3": "Actionable insights"
+    },
+    "royalties": {
+      "title": "Optimize Your Revenue",
+      "description": "Maximize and track all your music revenue with precision.",
+      "viewPlans": "View Pricing",
+      "contactSales": "Contact Us",
+      "highlight1": "Accurate calculations",
+      "highlight2": "Fast payments",
+      "highlight3": "Complete transparency"
+    },
+    "payments": {
+      "title": "Receive Payments Quickly",
+      "description": "Flexible and secure payment solutions for all your music revenue.",
+      "viewPlans": "View Pricing",
+      "contactSales": "Contact Us",
+      "highlight1": "Secure payments",
+      "highlight2": "Low fees",
+      "highlight3": "Multi-currency support"
+    },
+    "income-tracking": {
+      "title": "Track Your Income in Detail",
+      "description": "Control every revenue source with our advanced tracking tools.",
+      "viewPlans": "View Pricing",
+      "contactSales": "Contact Us",
+      "highlight1": "Multi-source tracking",
+      "highlight2": "Automatic alerts",
+      "highlight3": "Accurate forecasts"
+    },
+
+    "error": {
+      "title": "Loading error",
+      "description": "An error occurred while loading the pricing plans. Please try again later or contact support if the problem persists.",
+      "retry": "Retry"
+    }
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "rights": {
+    "hero": {
+      "title": "Protect Your Music Rights",
+      "subtitle": "Secure, manage, and monetize your copyrights with our comprehensive legal platform. Global protection and integrated legal expertise.",
+      "getStarted": "Get Started",
+      "learnMore": "Learn More"
+    },
+    "benefits": {
+      "protect": {
+        "title": "Legal Protection",
+        "description": "Secure your works with our legal experts"
+      },
+      "register": {
+        "title": "Registration",
+        "description": "File your rights worldwide"
+      },
+      "monitor": {
+        "title": "Monitoring",
+        "description": "Detect unauthorized usage"
+      },
+      "monetize": {
+        "title": "Monetization",
+        "description": "Recover all your legitimate revenue"
+      }
+    },
+    "features": {
+      "title": "Complete Legal Protection",
+      "subtitle": "All the tools needed to effectively protect and manage your music rights.",
+      "registration": {
+        "title": "Rights Registration",
+        "description": "Automatically file and register your copyrights in all global jurisdictions.",
+        "feature1": "Automatic multi-jurisdiction filing",
+        "feature2": "Official copyright certificates",
+        "feature3": "Secure and timestamped database"
+      },
+      "monitoring": {
+        "title": "Violation Monitoring",
+        "description": "Detect unauthorized uses of your works in real-time across internet and media.",
+        "feature1": "24/7 automated monitoring",
+        "feature2": "Advanced AI detection",
+        "feature3": "Instant violation alerts"
+      },
+      "legal": {
+        "title": "Legal Assistance",
+        "description": "Benefit from expertise of our lawyers specialized in intellectual property law.",
+        "feature1": "Expert legal counsel included",
+        "feature2": "Cease and desist procedures",
+        "feature3": "Legal representation if necessary"
+      },
+      "claims": {
+        "title": "Revenue Recovery",
+        "description": "Automatically claim and recover all revenue owed for your used works.",
+        "feature1": "Automatic platform claims",
+        "feature2": "Retroactive license negotiation",
+        "feature3": "Damages recovery"
+      }
+    },
+    "workflow": {
+      "title": "Protection in 4 Simple Steps",
+      "subtitle": "From registration to revenue recovery, our optimized legal process.",
+      "step1": {
+        "title": "Registration",
+        "description": "Automatically file your copyrights"
+      },
+      "step2": {
+        "title": "Monitoring",
+        "description": "Continuous monitoring of potential violations"
+      },
+      "step3": {
+        "title": "Legal Action",
+        "description": "Automated procedures against infringements"
+      },
+      "step4": {
+        "title": "Recovery",
+        "description": "Collection of revenue and damages"
+      }
+    },
+    "demo": {
+      "title": "Complete Legal Interface",
+      "subtitle": "Discover our rights management platform with integrated legal assistance."
+    },
+    "partners": {
+      "title": "Global Legal Partners",
+      "subtitle": "We work with leading collective management societies and law firms.",
+      "more": "And 50+ more global legal partners..."
+    },
+    "related": {
+      "title": "Complementary Features",
+      "catalog": "Catalog Management",
+      "catalogDesc": "Organize your protected works",
+      "royalties": "Royalty Tracking",
+      "royaltiesDesc": "Track your rights revenue",
+      "payments": "Payments",
+      "paymentsDesc": "Receive your legal compensations",
+      "analytics": "Legal Analytics",
+      "analyticsDesc": "Analyze your violations and recoveries"
+    }
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "contact": {
+    "modal": {
+      "title": "Créons votre prochaine grande victoire"
+    },
+    "form": {
+      "firstName": "Prénom",
+      "firstName.placeholder": "Votre prénom",
+      "firstName.required": "Le prénom est requis",
+      "lastName": "Nom",
+      "lastName.placeholder": "Votre nom",
+      "lastName.required": "Le nom est requis",
+      "email": "Adresse email",
+      "email.placeholder": "votre@email.com",
+      "email.required": "L'email est requis",
+      "email.invalid": "Format d'email invalide",
+      "email.checking": "Vérification...",
+      "email.exists": "Nous avons déjà {{count}} contact(s) avec cet email",
+      "phone": "Téléphone",
+      "phone.placeholder": "+33 1 23 45 67 89",
+      "companyName": "Nom de l'entreprise",
+      "companyName.placeholder": "Votre entreprise",
+      "companyName.required": "Le nom de l'entreprise est requis",
+      "companySize": "Taille de l'entreprise",
+      "companySize.placeholder": "Sélectionnez",
+      "companySize.required": "La taille de l'entreprise est requise",
+      "companyWebsite": "Site web",
+      "companyWebsite.placeholder": "https://www.example.com",
+      "companyWebsite.invalid": "URL invalide (doit commencer par http:// ou https://)",
+      "contactType.placeholder": "Sélectionnez un type",
+      "contactType.required": "Le type de contact est requis",
+      "country": "Pays",
+      "country.placeholder": "Sélectionnez votre pays",
+      "country.required": "Le pays est requis",
+      "message": "Message",
+      "message.placeholder": "Décrivez votre demande...",
+      "subject": "Sujet généré automatiquement",
+      "cancel": "Annuler",
+      "submit": "Envoyer",
+      "submitting": "Envoi en cours...",
+      "search": {
+        "placeholder": "Rechercher...",
+        "country": "Rechercher un pays...",
+        "noResults": "Aucun résultat trouvé",
+        "noChoices": "Aucun choix disponible"
+      },
+      "loading": "Chargement...",
+      "contactType": {
+        "name": "Type de contact",
+        "pricing_inquiry": "Demande de pricing"
+      },
+      "success": "Votre message a été envoyé avec succès !",
+      "success.title": "Message envoyé !",
+      "error": {
+        "title": "Erreur",
+        "submission": "Une erreur est survenue lors de l'envoi",
+        "emailCheck": "Impossible de vérifier l'email",
+        "security": "Vérification de sécurité échouée. Veuillez réessayer.",
+        "security.network": "Erreur de vérification de sécurité. Vérifiez votre connexion et réessayez."
+      }
+    },
+    "success": {
+      "title": "Message envoyé avec succès !",
+      "responseTime": "Temps de réponse estimé : {{time}}",
+      "close": "Fermer"
+    }
+  }
+}

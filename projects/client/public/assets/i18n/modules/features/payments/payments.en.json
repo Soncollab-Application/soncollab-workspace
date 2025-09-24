@@ -1,0 +1,110 @@
+{
+  "payments": {
+    "hero": {
+      "title": "Secure Your Global Payouts",
+      "subtitle": "Handle cross-border payments seamlessly. Ensure secure, multi-currency support and fast, accurate royalty distributions, making global financial management effortless.",
+      "getStarted": "Get Started",
+      "learnMore": "Learn More"
+    },
+    "benefits": {
+      "crossborder": {
+        "title": "Cross-Border Payments",
+        "description": "Pay rights holders around the world"
+      },
+      "multiparty": {
+        "title": "Multi-Party Splits",
+        "description": "Pay everyone with full transparency"
+      },
+      "multicurrency": {
+        "title": "Multi-Currency",
+        "description": "Pay in FIAT or stable coins"
+      },
+      "mobilemoney": {
+        "title": "Mobile Money",
+        "description": "Complete support for African mobile payment solutions"
+      }
+    },
+    "features": {
+      "title": "Global Payment Solutions",
+      "subtitle": "All the tools to efficiently manage your global payments and maximize your artists' satisfaction.",
+      "gateways": {
+        "title": "Multiple Payment Gateways",
+        "description": "Automate your royalty distribution from calculation to payment, minimizing manual work and errors.",
+        "feature1": "Tipalti integration with PayPal and ACH",
+        "feature2": "Flexible payment options for recipients",
+        "feature3": "Minimize manual work and reduce errors"
+      },
+      "crossborder": {
+        "title": "Cross-border Payments",
+        "description": "Efficiently manage payments in multiple currencies, ensuring recipients are paid in their preferred currency.",
+        "feature1": "Efficient multi-currency payment management",
+        "feature2": "Automated currency conversions",
+        "feature3": "Reduce errors and improve accuracy"
+      },
+      "mobilemoney": {
+        "title": "Mobile Money & African Solutions",
+        "description": "Complete access to African mobile payment solutions including M-Pesa, MTN Money, Orange Money and more.",
+        "feature1": "Support M-Pesa, MTN Money, Orange Money, Airtel Money",
+        "feature2": "Wave and Flutterwave integration",
+        "feature3": "Instant mobile payments across Africa"
+      },
+      "batch": {
+        "title": "Process Batch Payments",
+        "description": "Process payments for any number of rights holders—from one to thousands—quickly and efficiently.",
+        "feature1": "Payments from one to thousands of recipients",
+        "feature2": "Batch processing designed for scalability",
+        "feature3": "Payment operations grow effortlessly"
+      },
+      "crypto": {
+        "title": "Global Payments At Internet Speed",
+        "description": "Make instant, secure payments to artists and rights holders globally, 7 days a week, using stable coins.",
+        "feature1": "Instant, secure payments 24/7",
+        "feature2": "Stable coins for fast, reliable settlement",
+        "feature3": "Round-the-clock flexibility for global artists"
+      }
+    },
+    "workflow": {
+      "title": "Payments in 4 Steps",
+      "subtitle": "From calculation to settlement, our optimized process for frictionless global payments.",
+      "step1": {
+        "title": "Calculation",
+        "description": "Automatic royalty and split calculations"
+      },
+      "step2": {
+        "title": "Validation",
+        "description": "Verification of amounts and recipients"
+      },
+      "step3": {
+        "title": "Processing",
+        "description": "Batch payment execution"
+      },
+      "step4": {
+        "title": "Confirmation",
+        "description": "Payment notifications and reports"
+      }
+    },
+    "demo": {
+      "title": "Complete Payments Platform",
+      "subtitle": "Discover our global payments interface with multi-currency and mobile money support."
+    },
+    "integrations": {
+      "title": "Comprehensive Payment Methods",
+      "subtitle": "Pay your artists with their preferred methods, anywhere in the world.",
+      "traditional": "Traditional Methods",
+      "mobilemoney": "African Mobile Money",
+      "crypto": "Stable Cryptocurrencies",
+      "more": "And 100+ more payment methods..."
+    },
+    "related": {
+      "title": "Complementary Features",
+      "catalog": "Catalog Management",
+      "catalogDesc": "Organize your revenue-generating content",
+      "rights": "Rights Management",
+      "rightsDesc": "Manage rights holder information",
+      "income": "Income Tracking",
+      "incomeDesc": "Track revenue to distribute",
+      "royalties": "Royalty Accounting",
+      "royaltiesDesc": "Calculate precise amounts to pay"
+    }
+  }
+}

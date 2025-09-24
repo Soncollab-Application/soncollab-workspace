@@ -1,0 +1,114 @@
+{
+  "distribution": {
+    "hero": {
+      "title": "Diffusez Votre Musique Partout",
+      "subtitle": "Distribuez votre musique aux quatre coins du monde, rapidement et sans faille. Maîtrisez le processus de bout en bout.",
+      "getStarted": "Commencer",
+      "learnMore": "En savoir plus"
+    },
+    "benefits": {
+      "global": {
+        "title": "Portée Mondiale",
+        "description": "Diffusez sur toutes les plateformes mondiales"
+      },
+      "trusted": {
+        "title": "Partenaire de Confiance",
+        "description": "Accédez aux plus hauts standards de livraison"
+      },
+      "speed": {
+        "title": "Rapidité & Efficacité",
+        "description": "Contrôle granulaire de votre chaîne d'approvisionnement"
+      },
+      "flexible": {
+        "title": "Accords DSP Flexibles",
+        "description": "Tirez parti de nos partenariats directs"
+      }
+    },
+    "features": {
+      "title": "Distribution Musicale Avancée",
+      "subtitle": "Tous les outils pour distribuer efficacement votre musique sur les plateformes mondiales.",
+      "dsp": {
+        "title": "Accords DSP Flexibles",
+        "description": "Profitez d'accords directs avec les DSP, d'accords Merlin ou Soncollab pour une expérience de distribution fluide.",
+        "feature1": "Accords directs avec les principales plateformes",
+        "feature2": "Réseau DSP étendu ou vos partenaires préférés",
+        "feature3": "Stratégie de distribution entièrement personnalisable"
+      },
+      "markets": {
+        "title": "Accès aux Marchés Mondiaux",
+        "description": "Distribuez via les DSP mondiaux et locaux, atteignant les principales plateformes de streaming musical et vidéo, réseaux sociaux et marchés émergents.",
+        "feature1": "Plateformes de streaming majeures mondiales",
+        "feature2": "Marchés émergents gaming et fitness",
+        "feature3": "Expansion d'audience et découvrabilité"
+      },
+      "ugc": {
+        "title": "Monétisation UGC Complète",
+        "description": "Libérez le vrai potentiel de revenus de votre musique sur toutes les plateformes de contenu généré par les utilisateurs.",
+        "feature1": "Facebook, Instagram, TikTok, YouTube",
+        "feature2": "Rémunération à chaque utilisation, partage ou stream",
+        "feature3": "Suivi automatique des revenus UGC"
+      },
+      "quality": {
+        "title": "Contrôle Qualité Assuré",
+        "description": "Rationalisez votre processus de sortie avec notre Inspecteur de Métadonnées pour répondre à toutes les exigences DSP.",
+        "feature1": "Validation rapide des métadonnées musicales",
+        "feature2": "Respect de toutes les exigences DSP",
+        "feature3": "Livraison fluide sur le marché mondial"
+      },
+      "delivery": {
+        "title": "Options de Livraison Flexibles",
+        "description": "Personnalisez votre distribution pour un impact maximal. Programmez des sorties mondiales précises selon votre stratégie.",
+        "feature1": "Paramètres personnalisés par service et région",
+        "feature2": "Horaires de sortie mondiale précis",
+        "feature3": "Lancements régionaux ciblés"
+      },
+      "batch": {
+        "title": "Opérations par Lots",
+        "description": "Augmentez vos opérations avec la distribution par lots. Livrez, mettez à jour ou retirez de gros volumes de contenu.",
+        "feature1": "Distribution massive multi-plateformes",
+        "feature2": "Mises à jour et retraits en lot",
+        "feature3": "Gestion efficace de catalogues volumineux"
+      }
+    },
+    "workflow": {
+      "title": "Distribution en 4 Étapes",
+      "subtitle": "De la préparation à la diffusion mondiale, notre processus optimisé pour votre succès.",
+      "step1": {
+        "title": "Préparation",
+        "description": "Préparez vos fichiers et métadonnées"
+      },
+      "step2": {
+        "title": "Validation",
+        "description": "Contrôle qualité automatique"
+      },
+      "step3": {
+        "title": "Distribution",
+        "description": "Diffusion sur toutes les plateformes"
+      },
+      "step4": {
+        "title": "Monitoring",
+        "description": "Suivi des performances et revenus"
+      }
+    },
+    "demo": {
+      "title": "Plateforme de Distribution Complète",
+      "subtitle": "Découvrez notre interface de distribution avec contrôle total sur votre stratégie mondiale."
+    },
+    "platforms": {
+      "title": "Réseau de Distribution Mondial",
+      "subtitle": "Diffusez sur toutes les plateformes majeures et émergentes avec un seul clic.",
+      "more": "Et plus de 300 plateformes dans le monde..."
+    },
+    "related": {
+      "title": "Fonctionnalités Complémentaires",
+      "catalog": "Gestion de Catalogue",
+      "catalogDesc": "Organisez vos contenus à distribuer",
+      "rights": "Gestion des Droits",
+      "rightsDesc": "Protégez vos œuvres distribuées",
+      "tracking": "Suivi des Revenus",
+      "trackingDesc": "Suivez vos gains par plateforme",
+      "analytics": "Analytics",
+      "analyticsDesc": "Analysez vos performances de distribution"
+    }
+  }
+}

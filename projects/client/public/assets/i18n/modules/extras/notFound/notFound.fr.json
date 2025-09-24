@@ -1,0 +1,7 @@
+{
+  "notFound": {
+    "title": "Page Introuvable",
+    "description": "La page que vous recherchez a été déplacée, supprimée ou n'a peut-être jamais existé.",
+    "homeButton": "Aller à la Page d'Accueil"
+  }
+}

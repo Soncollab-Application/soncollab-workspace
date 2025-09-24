@@ -1,0 +1,137 @@
+{
+  "pricing": {
+    "title": "Tarifs et abonnements",
+    "description": "Choisissez le plan parfait pour votre activité musicale. Tous nos plans incluent un support dédié et des mises à jour gratuites.",
+    "productType": "Type de produit",
+    "allProducts": "Tous les produits",
+    "currency": "Devise",
+    "billingPeriod": "Période de facturation",
+    "monthly": "Mensuel",
+    "yearly": "Annuel",
+    "perMonth": "par mois",
+    "perYear": "par an",
+    "month": "mois",
+    "year": "an",
+    "mostPopular": "Le plus populaire",
+    "selectPlan": "Choisir ce plan",
+    "selectFor": "Choisir pour",
+    "assetLimit": "Limite d'assets",
+    "royaltyCap": "Plafond royalties",
+    "support": "Support",
+    "save": "Économisez",
+    "featuresIncluded": "Fonctionnalités incluses",
+    "showing": "Affichage de",
+    "plans": "plans",
+    "for": "pour",
+    "plan": "Plan",
+    "estimatedPrice": "Prix estimé",
+    "totalPrice": "Prix total",
+
+    "supportLevel": {
+      "basic": "Basique",
+      "priority": "Prioritaire",
+      "premium": "Premium"
+    },
+
+    "addons": {
+      "title": "Services supplémentaires",
+      "selected": "Add-ons sélectionnés",
+      "description": "Améliorez votre plan avec ces options additionnelles"
+    },
+
+    "addonsSelected": "add-ons sélectionnés",
+    "clearSelection": "Effacer la sélection",
+
+    "noPlans": {
+      "title": "Aucun plan trouvé",
+      "description": "Aucun plan ne correspond aux filtres sélectionnés.",
+      "showAll": "Afficher tous les plans"
+    },
+
+    "contact": {
+      "title": "Besoin d'aide pour choisir ?",
+      "description": "Notre équipe commerciale est là pour vous conseiller et vous proposer une solution adaptée à vos besoins.",
+      "button": "Demander un devis",
+      "interested": "Je suis intéressé par le plan {{plan}}",
+      "success": "Demande de pricing reçue ! Un commercial vous contactera sous 2h.",
+      "success.title": "Demande envoyée !",
+      "general": "J'aimerais en savoir plus sur vos tarifs et plans disponibles.",
+      "planDetails": "Détails du plan",
+      "subject": {
+        "plan": "Demande pricing - {{plan}}",
+        "general": "Demande de pricing"
+      }
+    },
+
+    "catalog": {
+      "title": "Gérez Votre Catalogue Efficacement",
+      "description": "Nos plans s'adaptent à la taille de votre catalogue et à vos besoins de distribution.",
+      "viewPlans": "Voir les tarifs",
+      "contactSales": "Nous contacter",
+      "highlight1": "Stockage illimité",
+      "highlight2": "Support dédié",
+      "highlight3": "Évolutivité garantie"
+    },
+    "rights": {
+      "title": "Protégez Vos Droits Musicaux",
+      "description": "Sécurisez et gérez tous vos droits d'auteur avec nos solutions juridiques intégrées.",
+      "viewPlans": "Voir les tarifs",
+      "contactSales": "Nous contacter",
+      "highlight1": "Protection juridique",
+      "highlight2": "Conseils d'experts",
+      "highlight3": "Couverture mondiale"
+    },
+    "distribution": {
+      "title": "Diffusez Partout dans le Monde",
+      "description": "Atteignez toutes les plateformes musicales avec notre réseau de distribution global.",
+      "viewPlans": "Voir les tarifs",
+      "contactSales": "Nous contacter",
+      "highlight1": "200+ plateformes",
+      "highlight2": "Distribution rapide",
+      "highlight3": "Reporting détaillé"
+    },
+    "analytics": {
+      "title": "Analysez Vos Performances",
+      "description": "Prenez des décisions éclairées grâce à nos outils d'analyse avancés.",
+      "viewPlans": "Voir les tarifs",
+      "contactSales": "Nous contacter",
+      "highlight1": "Données temps réel",
+      "highlight2": "Rapports personnalisés",
+      "highlight3": "Insights actionables"
+    },
+    "royalties": {
+      "title": "Optimisez Vos Revenus",
+      "description": "Maximisez et suivez tous vos revenus musicaux avec précision.",
+      "viewPlans": "Voir les tarifs",
+      "contactSales": "Nous contacter",
+      "highlight1": "Calculs précis",
+      "highlight2": "Paiements rapides",
+      "highlight3": "Transparence totale"
+    },
+    "payments": {
+      "title": "Recevez Vos Paiements Rapidement",
+      "description": "Solutions de paiement flexibles et sécurisées pour tous vos revenus musicaux.",
+      "viewPlans": "Voir les tarifs",
+      "contactSales": "Nous contacter",
+      "highlight1": "Paiements sécurisés",
+      "highlight2": "Frais réduits",
+      "highlight3": "Support multidevise"
+    },
+    "income-tracking": {
+      "title": "Suivez Vos Revenus en Détail",
+      "description": "Contrôlez chaque source de revenus avec nos outils de suivi avancés.",
+      "viewPlans": "Voir les tarifs",
+      "contactSales": "Nous contacter",
+      "highlight1": "Suivi multi-sources",
+      "highlight2": "Alertes automatiques",
+      "highlight3": "Prévisions précises"
+    },
+
+
+    "error": {
+      "title": "Erreur de chargement",
+      "description": "Une erreur est survenue lors du chargement des plans tarifaires. Veuillez réessayer plus tard.",
+      "retry": "Réessayer"
+    }
+  }
+}

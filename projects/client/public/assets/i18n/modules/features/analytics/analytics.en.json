@@ -1,0 +1,110 @@
+{
+  "analytics": {
+    "hero": {
+      "title": "Analyze Your Data with Clarity",
+      "subtitle": "Unlock the power of your data. Harness advanced analytics to gain clarity on streaming trends, revenue patterns, and marketing effectiveness, driving smarter strategies and growth.",
+      "getStarted": "Get Started",
+      "learnMore": "Learn More"
+    },
+    "benefits": {
+      "comprehensive": {
+        "title": "Comprehensive Data",
+        "description": "360° view of your catalog performance"
+      },
+      "actionable": {
+        "title": "Actionable Insights",
+        "description": "Identify trends for smarter decisions"
+      },
+      "growth": {
+        "title": "Data-Driven Growth",
+        "description": "Spot opportunities to boost your success"
+      }
+    },
+    "features": {
+      "title": "Advanced Analytics & Insights",
+      "subtitle": "Transform your data into winning strategies with our powerful analytics tools.",
+      "catalog": {
+        "title": "Analyze Catalog Performance",
+        "description": "Analyze streaming and download data across multiple DSPs with unmatched granularity.",
+        "feature1": "Detailed breakdown by Release, DSP, Market, Format",
+        "feature2": "Monitor all your assets from a single dashboard",
+        "feature3": "Real-time performance data"
+      },
+      "revenue": {
+        "title": "Track Revenue Trends",
+        "description": "Track revenue with detailed breakdowns by assets, DSPs, markets, and territories to optimize your financial performance.",
+        "feature1": "Comprehensive view of earnings by source",
+        "feature2": "Identify key revenue drivers",
+        "feature3": "Revenue trends and forecasting"
+      },
+      "playlist": {
+        "title": "Unlock Playlist Insights",
+        "description": "Get real-time alerts when your music is added to playlists and assess their impact on your streaming performance.",
+        "feature1": "Real-time playlist addition alerts",
+        "feature2": "Analysis of playlist types",
+        "feature3": "Impact on streaming performance"
+      },
+      "export": {
+        "title": "Share Data Effortlessly",
+        "description": "Easily export data in CSV or PDF formats for sharing with your team or stakeholders.",
+        "feature1": "Export in CSV and PDF formats",
+        "feature2": "Up to 1000 rows available",
+        "feature3": "Integration into external reports"
+      },
+      "audience": {
+        "title": "Understand Your Audience",
+        "description": "Track daily listener growth and uncover insights into who they are, where they come from, and how they engage.",
+        "feature1": "Track daily listener growth",
+        "feature2": "Demographic and geographic insights",
+        "feature3": "Optimize marketing strategies"
+      },
+      "ai": {
+        "title": "AI-Powered Insights",
+        "description": "Make smarter decisions with AI-driven summaries and recommended actions based on your catalog's performance.",
+        "feature1": "AI-driven summaries",
+        "feature2": "Recommended actions based on performance",
+        "feature3": "Easy-to-understand insights to refine strategy"
+      }
+    },
+    "workflow": {
+      "title": "Analytics in 4 Steps",
+      "subtitle": "From data collection to actionable insights, our optimized process for your growth.",
+      "step1": {
+        "title": "Collection",
+        "description": "Automatic multi-platform data aggregation"
+      },
+      "step2": {
+        "title": "Analysis",
+        "description": "Processing and trend analysis"
+      },
+      "step3": {
+        "title": "Insights",
+        "description": "AI-generated actionable insights"
+      },
+      "step4": {
+        "title": "Action",
+        "description": "Implementation of optimized strategies"
+      }
+    },
+    "demo": {
+      "title": "Complete Analytics Platform",
+      "subtitle": "Discover our analytics interface with real-time insights and intelligent recommendations."
+    },
+    "integrations": {
+      "title": "Unified Data Sources",
+      "subtitle": "Connect all your platforms and data sources for centralized analysis.",
+      "more": "And 50+ more data sources..."
+    },
+    "related": {
+      "title": "Complementary Features",
+      "catalog": "Catalog Management",
+      "catalogDesc": "Organize your content to analyze",
+      "rights": "Rights Management",
+      "rightsDesc": "Analyze your rights performance",
+      "distribution": "Distribution",
+      "distributionDesc": "Optimize your distribution strategies",
+      "income": "Income Tracking",
+      "incomeDesc": "Analyze your revenue sources"
+    }
+  }
+}

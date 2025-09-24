@@ -1,0 +1,100 @@
+{
+  "rights": {
+    "hero": {
+      "title": "Protégez Vos Droits Musicaux",
+      "subtitle": "Sécurisez, gérez et monétisez vos droits d'auteur avec notre plateforme juridique complète. Protection mondiale et expertise légale intégrées.",
+      "getStarted": "Commencer",
+      "learnMore": "En savoir plus"
+    },
+    "benefits": {
+      "protect": {
+        "title": "Protection Légale",
+        "description": "Sécurisez vos œuvres avec nos experts juridiques"
+      },
+      "register": {
+        "title": "Enregistrement",
+        "description": "Déposez vos droits dans le monde entier"
+      },
+      "monitor": {
+        "title": "Surveillance",
+        "description": "Détectez les utilisations non autorisées"
+      },
+      "monetize": {
+        "title": "Monétisation",
+        "description": "Récupérez tous vos revenus légitimes"
+      }
+    },
+    "features": {
+      "title": "Protection Juridique Complète",
+      "subtitle": "Tous les outils nécessaires pour protéger et gérer efficacement vos droits musicaux.",
+      "registration": {
+        "title": "Enregistrement des Droits",
+        "description": "Déposez et enregistrez automatiquement vos droits d'auteur dans toutes les juridictions mondiales.",
+        "feature1": "Dépôt automatique multi-juridictions",
+        "feature2": "Certificats officiels de droit d'auteur",
+        "feature3": "Base de données sécurisée et horodatée"
+      },
+      "monitoring": {
+        "title": "Surveillance des Violations",
+        "description": "Détectez en temps réel les utilisations non autorisées de vos œuvres sur internet et les médias.",
+        "feature1": "Surveillance 24/7 automatisée",
+        "feature2": "Détection IA avancée",
+        "feature3": "Alertes instantanées de violation"
+      },
+      "legal": {
+        "title": "Assistance Juridique",
+        "description": "Bénéficiez de l'expertise de nos avocats spécialisés en droit de la propriété intellectuelle.",
+        "feature1": "Conseil juridique expert inclus",
+        "feature2": "Procédures de mise en demeure",
+        "feature3": "Représentation légale si nécessaire"
+      },
+      "claims": {
+        "title": "Récupération de Revenus",
+        "description": "Réclamez et récupérez automatiquement tous les revenus dus pour vos œuvres utilisées.",
+        "feature1": "Claims automatiques sur plateformes",
+        "feature2": "Négociation de licences rétroactives",
+        "feature3": "Recouvrement de dommages-intérêts"
+      }
+    },
+    "workflow": {
+      "title": "Protection en 4 Étapes Simples",
+      "subtitle": "De l'enregistrement à la récupération des revenus, notre processus juridique optimisé.",
+      "step1": {
+        "title": "Enregistrement",
+        "description": "Déposez vos droits d'auteur automatiquement"
+      },
+      "step2": {
+        "title": "Surveillance",
+        "description": "Monitoring continu des violations potentielles"
+      },
+      "step3": {
+        "title": "Action Légale",
+        "description": "Procédures automatisées contre les infractions"
+      },
+      "step4": {
+        "title": "Récupération",
+        "description": "Collecte des revenus et dommages-intérêts"
+      }
+    },
+    "demo": {
+      "title": "Interface Juridique Complète",
+      "subtitle": "Découvrez notre plateforme de gestion des droits avec assistance juridique intégrée."
+    },
+    "partners": {
+      "title": "Partenaires Juridiques Mondiaux",
+      "subtitle": "Nous travaillons avec les principales sociétés de gestion collective et cabinets d'avocats.",
+      "more": "Et plus de 50 partenaires juridiques mondiaux..."
+    },
+    "related": {
+      "title": "Fonctionnalités Complémentaires",
+      "catalog": "Gestion de Catalogue",
+      "catalogDesc": "Organisez vos œuvres protégées",
+      "royalties": "Suivi des Royautés",
+      "royaltiesDesc": "Suivez vos revenus de droits",
+      "payments": "Paiements",
+      "paymentsDesc": "Recevez vos compensations légales",
+      "analytics": "Analytics Juridiques",
+      "analyticsDesc": "Analysez vos violations et récupérations"
+    }
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "catalog": {
+    "hero": {
+      "title": "Simplified Catalog Management",
+      "subtitle": "Organize, manage, and distribute your music with ease. A centralized platform for all your musical content.",
+      "getStarted": "Get Started",
+      "learnMore": "Learn More"
+    },
+    "demo": {
+      "title": "Complete Workflow in Action",
+      "subtitle": "Discover the complete interface that transforms your music catalog management."
+    },
+    "benefits": {
+      "upload": {
+        "title": "Easy Upload",
+        "description": "Import your files with just a few clicks"
+      },
+      "organize": {
+        "title": "Clear Organization",
+        "description": "Classify and find your content easily"
+      },
+      "distribute": {
+        "title": "Fast Distribution",
+        "description": "Release on all platforms"
+      },
+      "track": {
+        "title": "Precise Tracking",
+        "description": "Analyze your performance in real-time"
+      }
+    },
+    "features": {
+      "title": "Essential Features",
+      "subtitle": "Everything you need to efficiently manage your music catalog.",
+      "management": {
+        "title": "File Management",
+        "description": "Organize all your audio files and metadata in a clear and intuitive interface.",
+        "feature1": "Batch upload and automatic organization",
+        "feature2": "Support for all audio formats",
+        "feature3": "Real-time preview and editing"
+      },
+      "metadata": {
+        "title": "Metadata Management",
+        "description": "Enrich your content with complete and accurate information.",
+        "feature1": "Simple information editing",
+        "feature2": "Credits and collaborator management",
+        "feature3": "Automatic and custom tags"
+      },
+      "distribution": {
+        "title": "Global Distribution",
+        "description": "Distribute your music on all global streaming platforms.",
+        "feature1": "Access to 200+ platforms",
+        "feature2": "Automated distribution",
+        "feature3": "Scheduled release management"
+      },
+      "analytics": {
+        "title": "Detailed Analytics",
+        "description": "Track your catalog performance with accurate data.",
+        "feature1": "Real-time statistics",
+        "feature2": "Detailed reports by platform",
+        "feature3": "Listening trend analysis"
+      }
+    },
+    "workflow": {
+      "title": "How It Works",
+      "subtitle": "A simple 4-step process to manage your catalog.",
+      "step1": {
+        "title": "Upload",
+        "description": "Import your files and metadata"
+      },
+      "step2": {
+        "title": "Organization",
+        "description": "Classify and enrich your content"
+      },
+      "step3": {
+        "title": "Distribution",
+        "description": "Release on all platforms"
+      },
+      "step4": {
+        "title": "Analysis",
+        "description": "Track and optimize your performance"
+      }
+    },
+    "integrations": {
+      "title": "Complete Integrations",
+      "subtitle": "Connect to all major streaming platforms.",
+      "more": "And 200+ more platforms..."
+    },
+
+    "related": {
+      "title": "Complementary Features",
+      "rights": "Rights Management",
+      "rightsDesc": "Protect and manage your copyrights",
+      "distribution": "Distribution",
+      "distributionDesc": "Distribute your music everywhere",
+      "royalties": "Royalties",
+      "royaltiesDesc": "Track your revenue in detail",
+      "analytics": "Analytics",
+      "analyticsDesc": "Analyze your performance"
+    }
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "distribution": {
+    "hero": {
+      "title": "Deliver Your Music Globally",
+      "subtitle": "Get your music to every corner of the world, fast and flawlessly. Own the process from start to finish.",
+      "getStarted": "Get Started",
+      "learnMore": "Learn More"
+    },
+    "benefits": {
+      "global": {
+        "title": "Global Reach",
+        "description": "Distribute to all DSPs worldwide"
+      },
+      "trusted": {
+        "title": "Trusted Partner",
+        "description": "Access highest delivery standards"
+      },
+      "speed": {
+        "title": "Speed & Efficiency",
+        "description": "Granular control of your supply chain"
+      },
+      "flexible": {
+        "title": "Flexible DSP Deals",
+        "description": "Leverage our direct partnerships"
+      }
+    },
+    "features": {
+      "title": "Advanced Music Distribution",
+      "subtitle": "All the tools to effectively distribute your music on global platforms.",
+      "dsp": {
+        "title": "Flexible DSP Deals",
+        "description": "Leverage direct DSP deals, Merlin deals, or Soncollab deals for a seamless distribution experience.",
+        "feature1": "Direct deals with major platforms",
+        "feature2": "Extensive DSP network or your preferred partners",
+        "feature3": "Fully customizable distribution strategy"
+      },
+      "markets": {
+        "title": "Access to Global Markets",
+        "description": "Distribute through global and local DSPs, reaching major music and video streaming platforms, social media, and emerging markets.",
+        "feature1": "Major global streaming platforms",
+        "feature2": "Emerging markets like gaming and fitness",
+        "feature3": "Expand audience and discoverability"
+      },
+      "ugc": {
+        "title": "Monetize Across All UGC Platforms",
+        "description": "Unlock your music's true earning power across every User-Generated Content platform.",
+        "feature1": "Facebook, Instagram, TikTok, YouTube",
+        "feature2": "Get paid every time your music is used, shared, or streamed",
+        "feature3": "Automatic UGC revenue tracking"
+      },
+      "quality": {
+        "title": "Ensure Quality Control",
+        "description": "Streamline your release process with our Metadata Inspector to meet all DSP requirements.",
+        "feature1": "Swift music metadata inspection and validation",
+        "feature2": "Meet all DSP requirements",
+        "feature3": "Seamless delivery across global marketplace"
+      },
+      "delivery": {
+        "title": "Flexible Delivery Options",
+        "description": "Customize your distribution for maximum impact. Schedule precise global release times according to your strategy.",
+        "feature1": "Tailor settings by service and region",
+        "feature2": "Precise global release times",
+        "feature3": "Targeted regional launches"
+      },
+      "batch": {
+        "title": "Process Batch Operations",
+        "description": "Scale your operations with batch distribution. Deliver, update or takedown large volumes of content.",
+        "feature1": "Massive multi-platform distribution",
+        "feature2": "Bulk updates and takedowns",
+        "feature3": "Efficient management of large catalogs"
+      }
+    },
+    "workflow": {
+      "title": "Distribution in 4 Steps",
+      "subtitle": "From preparation to global release, our optimized process for your success.",
+      "step1": {
+        "title": "Preparation",
+        "description": "Prepare your files and metadata"
+      },
+      "step2": {
+        "title": "Validation",
+        "description": "Automatic quality control"
+      },
+      "step3": {
+        "title": "Distribution",
+        "description": "Release on all platforms"
+      },
+      "step4": {
+        "title": "Monitoring",
+        "description": "Track performance and revenue"
+      }
+    },
+    "demo": {
+      "title": "Complete Distribution Platform",
+      "subtitle": "Discover our distribution interface with full control over your global strategy."
+    },
+    "platforms": {
+      "title": "Global Distribution Network",
+      "subtitle": "Distribute to all major and emerging platforms with a single click.",
+      "more": "And 300+ more platforms worldwide..."
+    },
+    "related": {
+      "title": "Complementary Features",
+      "catalog": "Catalog Management",
+      "catalogDesc": "Organize your content to distribute",
+      "rights": "Rights Management",
+      "rightsDesc": "Protect your distributed works",
+      "tracking": "Income Tracking",
+      "trackingDesc": "Track your earnings by platform",
+      "analytics": "Analytics",
+      "analyticsDesc": "Analyze your distribution performance"
+    }
+  }
+}
