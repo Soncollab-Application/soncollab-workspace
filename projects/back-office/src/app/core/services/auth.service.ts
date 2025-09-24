@@ -1,3 +1,4 @@
+// auth.service.ts - VERSION PROPRE
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, catchError, map, Observable, tap, throwError, timer} from 'rxjs';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
@@ -29,7 +30,7 @@ export class AuthService {
     user: null,
     token: null,
     refreshToken: null,
-    loading: false,
+    loading: true,
     error: null
   });
 
@@ -59,7 +60,6 @@ export class AuthService {
     return this.currentUser?.role?.type || null;
   }
 
-  // Vérifier les rôles
   hasRole(role: SonCollabRoleType): boolean {
     return this.currentRole === role;
   }
@@ -68,32 +68,21 @@ export class AuthService {
     return !!this.currentRole && roles.includes(this.currentRole);
   }
 
-  isAdmin(): boolean {
-    return this.hasRole('soncollab_admin');
-  }
-
-  isContent(): boolean {
-    return this.hasRole('soncollab_content');
-  }
-
-  isSales(): boolean {
-    return this.hasRole('soncollab_sales');
-  }
-
   private initializeAuth(): void {
     const token = this.cookieService.getCookie(environment.auth.tokenKey);
     const refreshToken = this.cookieService.getCookie(environment.auth.refreshTokenKey);
 
-    if (token && refreshToken) {
+    if (token && refreshToken && token !== 'undefined' && refreshToken !== 'undefined') {
       this.validateToken(token).subscribe({
         next: (user) => {
           this.setAuthState(user, token, refreshToken);
-          this.startRefreshTimer();
         },
         error: () => {
           this.tryRefreshToken();
         }
       });
+    } else {
+      this.updateAuthState({ loading: false });
     }
   }
 
@@ -115,32 +104,13 @@ export class AuthService {
       );
   }
 
-  logout(): void {
-    this.clearRefreshTimer();
-    this.cookieService.deleteAllAuthCookies();
-    this.updateAuthState({
-      isAuthenticated: false,
-      user: null,
-      token: null,
-      refreshToken: null,
-      loading: false,
-      error: null
-    });
-    this.router.navigate(['/auth/login']);
-  }
-
   private handleLoginSuccess(response: LoginResponse): void {
     const { jwt, refreshToken, user } = response;
 
-    // Stocker dans les cookies sécurisés
-    this.cookieService.setCookie(environment.auth.tokenKey, jwt, 1); // 1 jour
-    this.cookieService.setCookie(environment.auth.refreshTokenKey, refreshToken, 30); // 30 jours
+    this.cookieService.setCookie(environment.auth.tokenKey, jwt, 1);
+    this.cookieService.setCookie(environment.auth.refreshTokenKey, refreshToken || jwt, 30);
 
-    this.setAuthState(user, jwt, refreshToken);
-    this.startRefreshTimer();
-
-    // Redirection selon le rôle
-    this.redirectAfterLogin();
+    this.setAuthState(user, jwt, refreshToken || jwt);
   }
 
   private setAuthState(user: BackofficeUser, token: string, refreshToken: string): void {
@@ -161,7 +131,9 @@ export class AuthService {
 
   private validateToken(token: string): Observable<BackofficeUser> {
     const headers = { Authorization: `Bearer ${token}` };
-    return this.http.get<BackofficeUser>(`${this.AUTH_ENDPOINTS.me}?populate=role`, { headers })
+    const url = `${this.AUTH_ENDPOINTS.me}?populate=role`;
+
+    return this.http.get<BackofficeUser>(url, { headers })
       .pipe(
         map(response => response),
         catchError(() => throwError(() => new Error('Token invalide')))
@@ -171,12 +143,12 @@ export class AuthService {
   private tryRefreshToken(): void {
     const refreshToken = this.cookieService.getCookie(environment.auth.refreshTokenKey);
 
-    if (!refreshToken) {
+    if (!refreshToken || refreshToken === 'undefined') {
       this.logout();
       return;
     }
 
-    this.refreshToken().subscribe({
+    this.refreshTokenCall().subscribe({
       next: (response) => {
         this.cookieService.setCookie(environment.auth.tokenKey, response.jwt, 1);
         this.cookieService.setCookie(environment.auth.refreshTokenKey, response.refreshToken, 30);
@@ -184,27 +156,37 @@ export class AuthService {
         this.validateToken(response.jwt).subscribe({
           next: (user) => {
             this.setAuthState(user, response.jwt, response.refreshToken);
-            this.startRefreshTimer();
           },
           error: () => this.logout()
         });
       },
-      error: () => this.logout()
+      error: () => {
+        this.logout();
+      }
     });
   }
 
-  private refreshToken(): Observable<RefreshTokenResponse> {
+  private refreshTokenCall(): Observable<RefreshTokenResponse> {
     const refreshToken = this.cookieService.getCookie(environment.auth.refreshTokenKey);
+    return this.http.post<RefreshTokenResponse>(this.AUTH_ENDPOINTS.refresh, { refreshToken });
+  }
 
-    return this.http.post<RefreshTokenResponse>(this.AUTH_ENDPOINTS.refresh, {
-      refreshToken
+  logout(): void {
+    this.clearRefreshTimer();
+    this.cookieService.deleteAllAuthCookies();
+    this.updateAuthState({
+      isAuthenticated: false,
+      user: null,
+      token: null,
+      refreshToken: null,
+      loading: false,
+      error: null
     });
+    this.router.navigate(['/auth/login']);
   }
 
   private startRefreshTimer(): void {
-    this.clearRefreshTimer();
-    // Renouveler le token toutes les 45 minutes (le JWT expire en 1h)
-    this.refreshTimer = timer(45 * 60 * 1000).subscribe(() => {
+    this.refreshTimer = timer(50 * 60 * 1000).subscribe(() => {
       this.tryRefreshToken();
     });
   }
@@ -216,35 +198,20 @@ export class AuthService {
     }
   }
 
-  private redirectAfterLogin(): void {
-    const role = this.currentRole;
-
-    switch (role) {
-      case 'soncollab_admin':
-        this.router.navigate(['/admin/dashboard']);
-        break;
-      case 'soncollab_content':
-        this.router.navigate(['/content/dashboard']);
-        break;
-      case 'soncollab_sales':
-        this.router.navigate(['/sales/dashboard']);
-        break;
-      default:
-        this.router.navigate(['/dashboard']);
-    }
-  }
-
   private getErrorMessage(error: HttpErrorResponse): string {
-    if (error.status === 400) {
-      return 'Identifiants incorrects';
-    } else if (error.status === 401) {
-      return 'Accès non autorisé';
-    } else if (error.status === 403) {
-      return 'Compte bloqué ou non confirmé';
-    } else if (error.status === 0) {
-      return 'Impossible de contacter le serveur';
-    } else {
-      return 'Une erreur est survenue lors de la connexion';
+    if (error.error?.message) {
+      return error.error.message;
+    }
+
+    switch (error.status) {
+      case 400:
+        return 'Identifiants invalides';
+      case 401:
+        return 'Email ou mot de passe incorrect';
+      case 500:
+        return 'Erreur serveur';
+      default:
+        return 'Erreur de connexion';
     }
   }
 }

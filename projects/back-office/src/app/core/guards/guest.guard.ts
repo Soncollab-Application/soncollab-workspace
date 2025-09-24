@@ -1,6 +1,7 @@
+// guest.guard.ts - Ajoute des logs
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { map } from 'rxjs';
+import { map, filter, take } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
 export const guestGuard: CanActivateFn = (route, state) => {
@@ -8,31 +9,37 @@ export const guestGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
 
   return authService.authState$.pipe(
+    filter(authState => !authState.loading),
+    take(1),
     map(authState => {
-      const isGuest = !authState.isAuthenticated;
+      if (authState.isAuthenticated) {
+        // Vérifier s'il y a un returnUrl
+        const returnUrl = route.queryParams?.['returnUrl'];
 
-      if (!isGuest) {
-        redirectAuthenticatedUser(authService.currentRole, router);
+        if (returnUrl) {
+          router.navigateByUrl(returnUrl);
+        } else {
+          // Redirection selon le rôle
+          const role = authState.user?.role?.type;
+
+          switch (role) {
+            case 'soncollab_admin':
+              router.navigate(['/admin/dashboard']);
+              break;
+            case 'soncollab_content':
+              router.navigate(['/content/dashboard']);
+              break;
+            case 'soncollab_sales':
+              router.navigate(['/sales/dashboard']);
+              break;
+            default:
+              router.navigate(['/']);
+          }
+        }
         return false;
+      } else {
+        return true;
       }
-
-      return true;
     })
   );
 };
-
-function redirectAuthenticatedUser(currentRole: string | null, router: Router): void {
-  switch (currentRole) {
-    case 'soncollab_admin':
-      router.navigate(['/admin/dashboard']);
-      break;
-    case 'soncollab_content':
-      router.navigate(['/content/dashboard']);
-      break;
-    case 'soncollab_sales':
-      router.navigate(['/sales/dashboard']);
-      break;
-    default:
-      router.navigate(['/']);
-  }
-}

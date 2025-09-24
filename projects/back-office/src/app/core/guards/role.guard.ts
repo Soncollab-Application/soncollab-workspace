@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { map } from 'rxjs';
+import { map, filter, take } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { SonCollabRoleType } from '../models/auth.model';
 
@@ -9,6 +9,8 @@ export const roleGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
 
   return authService.authState$.pipe(
+    filter(authState => !authState.loading), // Attendre la fin de l'initialisation
+    take(1), // Prendre seulement la première valeur après loading
     map(authState => {
       if (!authState.isAuthenticated) {
         router.navigate(['/auth/login']);

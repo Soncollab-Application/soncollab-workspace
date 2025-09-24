@@ -10,12 +10,19 @@ export class CookieService {
     const expires = new Date();
     expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
 
-    const cookieValue = `${name}=${value}; expires=${expires.toUTCString()}; path=/`;
-    const domain = environment.auth.cookieDomain ? `; domain=${environment.auth.cookieDomain}` : '';
-    const secure = environment.auth.cookieSecure ? '; secure' : '';
-    const sameSite = `; samesite=${environment.auth.cookieSameSite}`;
+    let cookieString = `${name}=${value}; expires=${expires.toUTCString()}; path=/`;
 
-    document.cookie = cookieValue + domain + secure + sameSite;
+    if (environment.auth.cookieDomain && environment.auth.cookieDomain.trim() !== '') {
+      cookieString += `; domain=${environment.auth.cookieDomain}`;
+    }
+
+    if (environment.auth.cookieSecure) {
+      cookieString += '; secure';
+    }
+
+    cookieString += `; samesite=${environment.auth.cookieSameSite}`;
+
+    document.cookie = cookieString;
   }
 
   getCookie(name: string): string | null {
@@ -25,14 +32,21 @@ export class CookieService {
     for (let i = 0; i < ca.length; i++) {
       let c = ca[i];
       while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-      if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+      if (c.indexOf(nameEQ) === 0) {
+        return c.substring(nameEQ.length, c.length);
+      }
     }
     return null;
   }
 
   deleteCookie(name: string): void {
-    const domain = environment.auth.cookieDomain ? `; domain=${environment.auth.cookieDomain}` : '';
-    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/${domain}`;
+    let cookieString = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
+
+    if (environment.auth.cookieDomain && environment.auth.cookieDomain.trim() !== '') {
+      cookieString += `; domain=${environment.auth.cookieDomain}`;
+    }
+
+    document.cookie = cookieString;
   }
 
   deleteAllAuthCookies(): void {
