@@ -3,9 +3,9 @@
   "dest": "../../dist/shared-lib",
   "assets": [
     {
-      "glob": "**/*.css",
-      "input": "./src/lib/assets/css",
-      "output": "./assets/css"
+      "glob": "**/*",
+      "input": "./src/lib/assets",
+      "output": "./assets"
     }
   ],
   "lib": {

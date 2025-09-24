@@ -4,7 +4,7 @@ import {
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
-import {HttpClient, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {HttpClient, provideHttpClient, withFetch, withInterceptors, withInterceptorsFromDi} from '@angular/common/http';
 import {IMAGE_CONFIG} from '@angular/common';
 import {RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module} from 'ng-recaptcha-2';
 import {FormsModule} from '@angular/forms';
@@ -25,6 +25,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(
       withInterceptorsFromDi(),
+      withFetch()
     ),
     {
       provide: IMAGE_CONFIG,

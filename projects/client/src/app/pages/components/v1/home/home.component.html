@@ -103,7 +103,7 @@
         <div class="col">
 
           <!-- Titre principal -->
-          <h2 class="display-5 fw-lighter for-inter-font
+          <h2 class="display-5 fw-lighter text-center text-lg-start for-inter-font
         mb-4"
               [ngClass]="{
               'text-warning': isDarkTheme,
@@ -113,13 +113,13 @@
           </h2>
 
           <!-- Description -->
-          <p class="fs-5 fw-light mb-4">
+          <p class="fs-5 fw-light text-muted-custom text-center text-lg-start  mb-4">
             {{ 'home.whiteLabel.subtitle' | translate }}
           </p>
 
 
           <!-- Call-to-action simple -->
-          <div class="d-flex gap-3">
+          <div class="d-flex gap-3 justify-content-center justify-content-lg-start">
             <a href="javascript:" (click)="openContactModal()" class="btn btn-lg btn-primary">
               {{ 'home.whiteLabel.cta.demo' | translate }}
             </a>

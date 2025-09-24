@@ -1,6 +1,7 @@
+// auth.guard.ts - CORRIGÉ
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { map, tap } from 'rxjs';
+import { map, tap, filter, take } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
 export const authGuard: CanActivateFn = (route, state) => {
@@ -8,12 +9,16 @@ export const authGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
 
   return authService.authState$.pipe(
-    map(authState => authState.isAuthenticated),
-    tap(isAuthenticated => {
-      if (!isAuthenticated) {
+    filter(authState => !authState.loading),
+    take(1),
+    map(authState => {
+      if (authState.isAuthenticated) {
+        return true;
+      } else {
         router.navigate(['/auth/login'], {
           queryParams: { returnUrl: state.url }
         });
+        return false;
       }
     })
   );

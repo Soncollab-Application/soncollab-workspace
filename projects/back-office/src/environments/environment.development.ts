@@ -31,7 +31,7 @@ export const environment = {
   auth: {
     tokenKey: 'soncollab_backoffice_token',
     refreshTokenKey: 'soncollab_backoffice_refresh',
-    cookieDomain: 'localhost',
+    cookieDomain: '',
     cookieSecure: false,
     cookieSameSite: 'Lax' as 'Lax'
   }
