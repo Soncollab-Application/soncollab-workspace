@@ -161,17 +161,26 @@
   <footer class="py-3 text-center">
     <div class="container">
       <div class="text-muted small">
-        <p class="mb-0">
-          © {{ currentYear }} Soncollab.
-          <span class="mx-2">|</span>
-          <a [href]="[environment.app.url + '/company/privacy-policy']" [target]="'_blank'" class="text-decoration-none">
-            {{ 'auth.footer.privacy' | translate }}
-          </a>
-          <span class="mx-2">|</span>
-          <a [href]="[environment.app.url + '/company/use-condition']" [target]="'_blank'" class="text-decoration-none">
-            {{ 'auth.footer.terms' | translate }}
-          </a>
-        </p>
+        <div class="d-flex flex-column flex-md-row justify-content-center align-items-center">
+          <span class="mb-1 mb-md-0">© {{ currentYear }} Soncollab.</span>
+
+          <div class="d-flex flex-column flex-sm-row align-items-center">
+            <span class="d-none d-md-inline mx-2">|</span>
+            <a
+              [href]="environment.app.url + '/company/privacy-policy'"
+              target="_blank"
+              class="text-decoration-none me-sm-2 mb-1 mb-sm-0">
+              {{ 'auth.footer.privacy' | translate }}
+            </a>
+            <span class="d-none d-sm-inline mx-1">|</span>
+            <a
+              [href]="environment.app.url + '/company/use-condition'"
+              target="_blank"
+              class="text-decoration-none">
+              {{ 'auth.footer.terms' | translate }}
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </footer>

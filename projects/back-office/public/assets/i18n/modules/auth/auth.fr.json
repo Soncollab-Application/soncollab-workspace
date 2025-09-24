@@ -9,11 +9,33 @@
       "privacy": "Confidentialité",
       "terms": "Conditions d'utilisation"
     },
-
     "admin": {
       "title": "Administration Soncollab",
       "subtitle": "Plateforme de gestion administrative"
+    },
+    "login": {
+      "email": {
+        "placeholder": "Email",
+        "required": "Email requis",
+        "invalid": "Format email invalide"
+      },
+      "password": {
+        "placeholder": "Mot de passe",
+        "required": "Mot de passe requis",
+        "minLength": "Minimum 6 caractères",
+        "toggleVisibility": "Afficher/masquer le mot de passe"
+      },
+      "rememberMe": "Se souvenir de moi",
+      "forgotPassword": "Mot de passe oublié ?",
+      "signIn": "Se connecter",
+      "errors": {
+        "loginFailed": "Erreur de connexion",
+        "invalidCredentials": "Email ou mot de passe incorrect",
+        "validation": "Données invalides",
+        "badRequest": "Requête invalide",
+        "unauthorized": "Accès non autorisé",
+        "serverError": "Erreur serveur, veuillez réessayer"
+      }
     }
   }
-
 }

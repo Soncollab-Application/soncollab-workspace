@@ -12,6 +12,30 @@
     "footer": {
       "privacy": "Privacy Policy",
       "terms": "Terms of Service"
+    },
+    "login": {
+      "email": {
+        "placeholder": "Email",
+        "required": "Email required",
+        "invalid": "Enter a valid email address!"
+      },
+      "password": {
+        "placeholder": "Password",
+        "required": "Password required",
+        "minLength": "Password is incorrect!",
+        "toggleVisibility": "Show/hide password"
+      },
+      "rememberMe": "Remember me",
+      "forgotPassword": "Forgot password?",
+      "signIn": "Sign In",
+      "errors": {
+        "loginFailed": "Login failed",
+        "invalidCredentials": "Invalid identifier or password",
+        "validation": "Invalid data",
+        "badRequest": "Invalid request",
+        "unauthorized": "Unauthorized access",
+        "serverError": "Server error, please try again"
+      }
     }
   }
 }
