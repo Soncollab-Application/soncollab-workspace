@@ -1,227 +1,81 @@
 <!-- Header Sidebar -->
-<div class="p-3 border-bottom flex-shrink-0">
+<div class="p-3  flex-shrink-0">
   <a href="#" class="text-decoration-none text-body fw-normal fs-5 d-flex align-items-center">
-    image
+    <img [alt]="'Soncollab Logo - ' + (isDarkTheme ? 'Dark Theme' : 'Light Theme')"
+         [src]="currentLogo"
+         width="160">
   </a>
 </div>
 
 <!-- Navigation -->
 <div class="sidebar-content p-2" id="globalAccordion">
-  <!-- Studio Section -->
-  <div class="text-uppercase text-muted fw-semibold px-3 py-2 small">Studio</div>
 
-  <nav class="nav flex-column mb-3" id="sidebarNav">
-    <a class="nav-link active bg-primary bg-opacity-10 text-primary rounded mx-1 mb-1 d-flex align-items-center py-2 px-3 fw-medium" href="#" onclick="setActive(this)">
-      <i class="bi bi-chat-dots me-3"></i>
-      Chat
-    </a>
+  @for (section of navigationSections(); track section.type + $index) {
 
-    <!-- Stream avec sous-menu -->
-    <div class="mx-1 mb-1">
-      <a class="nav-link text-body-secondary rounded d-flex align-items-center py-2 px-3 submenu-toggle collapsed"
-         href="#"
-         data-bs-toggle="collapse"
-         data-bs-target="#streamSubmenu"
-         aria-expanded="false"
-         aria-controls="streamSubmenu">
-        <i class="bi bi-activity me-3"></i>
-        Stream
-        <i class="bi bi-chevron-down ms-auto small"></i>
-      </a>
-      <div class="collapse" id="streamSubmenu" data-bs-parent="#globalAccordion">
-        <div class="d-flex flex-column ms-3">
-          <a class="nav-link text-body-secondary rounded submenu-item" href="#" onclick="setActive(this)">
-            <i class="bi bi-dot me-2"></i>
-            Live Stream
-          </a>
-          <a class="nav-link text-body-secondary rounded submenu-item" href="#" onclick="setActive(this)">
-            <i class="bi bi-dot me-2"></i>
-            Recorded Stream
-          </a>
-          <a class="nav-link text-body-secondary rounded submenu-item" href="#" onclick="setActive(this)">
-            <i class="bi bi-dot me-2"></i>
-            Stream Analytics
-          </a>
-        </div>
-      </div>
-    </div>
+    <!-- Titre de section -->
+    @if (section.type === 'section' && section.title) {
+      <div class="text-uppercase text-muted-custom fw-semibold px-3 py-2 small">{{ section.title | translate }}</div>
+    }
 
-    <!-- Generate media avec sous-menu -->
-    <div class="mx-1 mb-1">
-      <a class="nav-link text-body-secondary rounded d-flex align-items-center py-2 px-3 submenu-toggle collapsed"
-         href="#"
-         data-bs-toggle="collapse"
-         data-bs-target="#generateSubmenu"
-         aria-expanded="false"
-         aria-controls="generateSubmenu">
-        <i class="bi bi-image me-3"></i>
-        Generate media
-        <i class="bi bi-chevron-down ms-auto small"></i>
-      </a>
-      <div class="collapse" id="generateSubmenu" data-bs-parent="#globalAccordion">
-        <div class="d-flex flex-column ms-3">
-          <a class="nav-link text-body-secondary rounded submenu-item" href="#" onclick="setActive(this)">
-            <i class="bi bi-dot me-2"></i>
-            Images
-          </a>
-          <a class="nav-link text-body-secondary rounded submenu-item" href="#" onclick="setActive(this)">
-            <i class="bi bi-dot me-2"></i>
-            Videos
-          </a>
-          <a class="nav-link text-body-secondary rounded submenu-item" href="#" onclick="setActive(this)">
-            <i class="bi bi-dot me-2"></i>
-            Audio
-          </a>
-          <a class="nav-link text-body-secondary rounded submenu-item" href="#" onclick="setActive(this)">
-            <i class="bi bi-dot me-2"></i>
-            Documents
-          </a>
-        </div>
-      </div>
-    </div>
+    <!-- Séparateur -->
+    @if (section.type === 'separator') {
+      <hr class="mx-3">
+    }
 
-    <!-- Build avec sous-menu -->
-    <div class="mx-1 mb-1">
-      <a class="nav-link text-body-secondary rounded d-flex align-items-center py-2 px-3 submenu-toggle collapsed"
-         href="#"
-         data-bs-toggle="collapse"
-         data-bs-target="#buildSubmenu"
-         aria-expanded="false"
-         aria-controls="buildSubmenu">
-        <i class="bi bi-hammer me-3"></i>
-        Build
-        <i class="bi bi-chevron-down ms-auto small"></i>
-      </a>
-      <div class="collapse" id="buildSubmenu" data-bs-parent="#globalAccordion">
-        <div class="d-flex flex-column ms-3">
-          <a class="nav-link text-body-secondary rounded submenu-item" href="#" onclick="setActive(this)">
-            <i class="bi bi-dot me-2"></i>
-            Templates
-          </a>
-          <a class="nav-link text-body-secondary rounded submenu-item" href="#" onclick="setActive(this)">
-            <i class="bi bi-dot me-2"></i>
-            Custom Components
-          </a>
-          <a class="nav-link text-body-secondary rounded submenu-item" href="#" onclick="setActive(this)">
-            <i class="bi bi-dot me-2"></i>
-            Workflows
-          </a>
-        </div>
-      </div>
-    </div>
-  </nav>
+    <!-- Navigation -->
+    @if (section.type === 'nav' && section.items) {
+      <nav class="nav flex-column mb-3" [id]="section.navId">
+        @for (item of section.items; track item.key) {
 
-  <hr class="mx-3">
-
-  <!-- History avec sous-menu -->
-  <nav class="nav flex-column mb-3" id="sidebarNavHistory">
-    <div class="mx-1 mb-1">
-      <a class="nav-link text-body-secondary rounded d-flex align-items-center py-2 px-3 submenu-toggle collapsed"
-         href="#"
-         data-bs-toggle="collapse"
-         data-bs-target="#historySubmenu"
-         aria-expanded="false"
-         aria-controls="historySubmenu">
-        <i class="bi bi-clock-history me-3"></i>
-        History
-        <i class="bi bi-chevron-down ms-auto small"></i>
-      </a>
-      <div class="collapse" id="historySubmenu" data-bs-parent="#globalAccordion">
-        <div class="d-flex flex-column ms-3">
-          <a class="nav-link text-body-secondary rounded submenu-item" href="#" onclick="setActive(this)">
-            <i class="bi bi-dot me-2"></i>
-            Recent
-          </a>
-          <a class="nav-link text-body-secondary rounded submenu-item" href="#" onclick="setActive(this)">
-            <i class="bi bi-dot me-2"></i>
-            Favorites
-          </a>
-          <a class="nav-link text-body-secondary rounded submenu-item" href="#" onclick="setActive(this)">
-            <i class="bi bi-dot me-2"></i>
-            Archived
-          </a>
-        </div>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Dashboard Section -->
-  <div class="text-uppercase text-muted fw-semibold px-3 py-2 small">Dashboard</div>
-
-  <nav class="nav flex-column" id="sidebarNavDashboard">
-    <!-- API keys avec sous-menu -->
-    <div class="mx-1 mb-1">
-      <a class="nav-link text-body-secondary rounded d-flex align-items-center py-2 px-3 submenu-toggle collapsed"
-         href="#"
-         data-bs-toggle="collapse"
-         data-bs-target="#apiSubmenu"
-         aria-expanded="false"
-         aria-controls="apiSubmenu">
-        <i class="bi bi-key me-3"></i>
-        API keys
-        <i class="bi bi-chevron-down ms-auto small"></i>
-      </a>
-      <div class="collapse" id="apiSubmenu" data-bs-parent="#globalAccordion">
-        <div class="d-flex flex-column ms-3">
-          <a class="nav-link text-body-secondary rounded submenu-item" href="#" onclick="setActive(this)">
-            <i class="bi bi-dot me-2"></i>
-            Active Keys
-          </a>
-          <a class="nav-link text-body-secondary rounded submenu-item" href="#" onclick="setActive(this)">
-            <i class="bi bi-dot me-2"></i>
-            Generate New
-          </a>
-          <a class="nav-link text-body-secondary rounded submenu-item" href="#" onclick="setActive(this)">
-            <i class="bi bi-dot me-2"></i>
-            Permissions
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Usage & Billing avec sous-menu -->
-    <div class="mx-1 mb-1">
-      <a class="nav-link text-body-secondary rounded d-flex align-items-center py-2 px-3 submenu-toggle collapsed"
-         href="#"
-         data-bs-toggle="collapse"
-         data-bs-target="#billingSubmenu"
-         aria-expanded="false"
-         aria-controls="billingSubmenu">
-        <i class="bi bi-bar-chart me-3"></i>
-        Usage & Billing
-        <i class="bi bi-chevron-down ms-auto small"></i>
-      </a>
-      <div class="collapse" id="billingSubmenu" data-bs-parent="#globalAccordion">
-        <div class="d-flex flex-column ms-3">
-          <a class="nav-link text-body-secondary rounded submenu-item" href="#" onclick="setActive(this)">
-            <i class="bi bi-dot me-2"></i>
-            Current Usage
-          </a>
-          <a class="nav-link text-body-secondary rounded submenu-item" href="#" onclick="setActive(this)">
-            <i class="bi bi-dot me-2"></i>
-            Billing History
-          </a>
-          <a class="nav-link text-body-secondary rounded submenu-item" href="#" onclick="setActive(this)">
-            <i class="bi bi-dot me-2"></i>
-            Payment Methods
-          </a>
-          <a class="nav-link text-body-secondary rounded submenu-item" href="#" onclick="setActive(this)">
-            <i class="bi bi-dot me-2"></i>
-            Plans & Pricing
-          </a>
-        </div>
-      </div>
-    </div>
-  </nav>
+          @if (item.children) {
+            <!-- Menu avec sous-menu - Bootstrap gère tout -->
+            <div class="mx-1 mb-1">
+              <a class="nav-link rounded d-flex align-items-center py-2 px-3 submenu-toggle collapsed"
+                 [class.text-body-secondary]="!hasActiveChild(item)"
+                 [class.text-primary]="hasActiveChild(item)"
+                 href="#"
+                 data-bs-toggle="collapse"
+                 [attr.data-bs-target]="'#' + item.key + 'Submenu'"
+                 aria-expanded="false"
+                 [attr.aria-controls]="item.key + 'Submenu'">
+                <i [class]="item.icon + ' me-3'"></i>
+                {{ 'aside.navigation.' + item.key | translate }}
+                <i class="bi bi-chevron-down ms-auto small"></i>
+              </a>
+              <div class="collapse" [id]="item.key + 'Submenu'" data-bs-parent="#globalAccordion">
+                <div class="d-flex flex-column ms-3">
+                  @for (child of item.children; track child.key) {
+                    <a class="nav-link rounded submenu-item"
+                       [class.text-body-secondary]="!isActiveRoute(child.route!)"
+                       [routerLink]="child.route"
+                       [routerLinkActive]="['active', 'bg-primary', 'bg-opacity-10', 'text-primary']"
+                       [routerLinkActiveOptions]="{exact: false}">
+                      <i class="bi bi-dot me-2"></i>
+                      {{ 'aside.navigation.' + child.key | translate }}
+                    </a>
+                  }
+                </div>
+              </div>
+            </div>
+          } @else {
+            <!-- Menu simple -->
+            <a class="nav-link rounded mx-1 mb-1 d-flex align-items-center py-2 px-3 fw-medium"
+               [class.text-body-secondary]="!isActiveRoute(item.route!)"
+               [routerLink]="item.route"
+               [routerLinkActive]="['active', 'bg-primary', 'bg-opacity-10', 'text-primary']"
+               [routerLinkActiveOptions]="{exact: false}">
+              <i [class]="item.icon + ' me-3'"></i>
+              {{ 'aside.navigation.' + item.key | translate }}
+            </a>
+          }
+        }
+      </nav>
+    }
+  }
 </div>
 
-<!-- Footer Sidebar avec dropdown corrigé -->
+<!-- Footer Sidebar - INCHANGÉ -->
 <div class="border-top p-3 mt-auto flex-shrink-0">
-  <button class="btn btn-primary w-100 mb-3 fw-medium">
-    <i class="bi bi-key me-2"></i>
-    Get API key
-  </button>
-
   <!-- Profile Dropdown -->
   <div class="profile-dropdown dropdown">
     <button class="btn btn-link text-decoration-none p-2 d-flex align-items-center w-100 text-body rounded-2 profile-dropdown-toggle"
@@ -231,26 +85,35 @@
             aria-expanded="false">
       <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-medium flex-shrink-0"
            style="width: 32px; height: 32px;">
-        R
+        {{ getInitials() }}
       </div>
       <div class="ms-3 text-start flex-grow-1 min-width-0">
-        <div class="small fw-medium text-body text-truncate">Rodrigue Fogang</div>
-        <div class="x-small text-muted text-truncate">rodriguef802@gmail.com</div>
+        <div class="small fw-medium text-body text-truncate">{{ currentUser()?.first_name }} {{ currentUser()?.last_name }}</div>
+        <div class="x-small text-muted text-truncate">{{ currentUser()?.email }}</div>
       </div>
     </button>
     <ul class="dropdown-menu shadow border-0">
-      <li><h6 class="dropdown-header">Compte</h6></li>
-      <li><a class="dropdown-item d-flex align-items-center" href="#">
-        <i class="bi bi-person me-2"></i>Profil
-      </a></li>
-      <li><a class="dropdown-item d-flex align-items-center" href="#">
-        <i class="bi bi-gear me-2"></i>Paramètres
-      </a></li>
-
+      <li><h6 class="dropdown-header">{{ 'aside.profile.account' | translate }}</h6></li>
+      <li>
+        <a class="dropdown-item d-flex align-items-center"
+           routerLink="/profile"
+           routerLinkActive="active">
+          <i class="bi bi-person me-2"></i>{{ 'aside.profile.profile' | translate }}
+        </a>
+      </li>
+      <li>
+        <a class="dropdown-item d-flex align-items-center"
+           routerLink="/profile/settings"
+           routerLinkActive="active">
+          <i class="bi bi-gear me-2"></i>{{ 'aside.profile.settings' | translate }}
+        </a>
+      </li>
       <li><hr class="dropdown-divider"></li>
-      <li><a class="dropdown-item d-flex align-items-center text-danger" href="#">
-        <i class="bi bi-box-arrow-right me-2"></i>Log out
-      </a></li>
+      <li>
+        <button class="dropdown-item d-flex align-items-center text-danger" (click)="logout()">
+          <i class="bi bi-box-arrow-right me-2"></i>{{ 'aside.profile.logout' | translate }}
+        </button>
+      </li>
     </ul>
   </div>
 </div>

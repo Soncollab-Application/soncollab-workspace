@@ -1,4 +1,57 @@
 {
+  "aside": {
+    "sections": {
+      "management": "Management",
+      "commercial": "Sales",
+      "system": "System",
+      "content": "Content",
+      "performance": "Performance",
+      "workflow": "Workflow"
+    },
+    "navigation": {
+      "dashboard": "Dashboard",
+      "team": "Team",
+      "users": "Users",
+      "invitations": "Invitations",
+      "team-stats": "Team Statistics",
+      "commercial": "Sales",
+      "all-contacts": "All Contacts",
+      "unassigned": "Unassigned",
+      "pipeline": "Pipeline",
+      "quotas-territories": "Quotas & Territories",
+      "sales-stats": "Sales Statistics",
+      "content": "Content",
+      "blog-articles": "Blog Articles",
+      "help-articles": "Help Articles",
+      "categories-tags": "Categories & Tags",
+      "validation-workflow": "Validation Workflow",
+      "content-analytics": "Content Analytics",
+      "system": "System",
+      "configuration": "Configuration",
+      "billing": "Billing",
+      "maintenance": "Maintenance",
+      "my-contacts": "My Contacts",
+      "my-pipeline": "My Pipeline",
+      "my-proposals": "My Proposals",
+      "my-quotas": "My Quotas",
+      "my-performance": "My Performance",
+      "my-blog-articles": "My Blog Articles",
+      "my-help-articles": "My Help Articles",
+      "pending-validation": "Pending Validation",
+      "newsletter": "Newsletter"
+    },
+    "roles": {
+      "soncollab_admin": "Administrator",
+      "soncollab_sales": "Sales Representative",
+      "soncollab_content": "Content Manager"
+    },
+    "profile": {
+      "account": "Account",
+      "profile": "Profile",
+      "settings": "Settings",
+      "logout": "Logout"
+    }
+  },
   "theme": {
     "light": "Light",
     "dark": "Dark",
