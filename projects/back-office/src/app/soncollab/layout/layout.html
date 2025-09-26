@@ -1,1 +1,21 @@
-<app-content></app-content>
+<div class="container-fluid vh-100 p-0">
+  <div class="row g-0 h-100">
+    <!-- Sidebar -->
+    <app-aside class="col-auto bg-body-tertiary border-end d-none d-lg-flex flex-column sidebar-container" [style.width]="'270px'">
+    </app-aside>
+
+    <!-- Main Content -->
+    <div class="col d-flex flex-column">
+      <app-header class="bg-body border-bottom d-flex align-items-center px-4 flex-shrink-0" [style.height]="'64px'">
+      </app-header>
+
+      <div class="row g-0 flex-grow-1">
+        <div class="col-lg d-flex flex-column">
+          <app-content></app-content>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
