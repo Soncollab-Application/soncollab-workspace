@@ -1,0 +1,4 @@
+/* Hover effects for buttons */
+.btn-link:hover {
+  background-color: rgba(var(--fn-body-color-rgb), 0.08) !important;
+}

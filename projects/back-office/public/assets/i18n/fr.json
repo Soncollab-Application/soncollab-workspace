@@ -2,7 +2,7 @@
   "theme": {
     "light": "Clair",
     "dark": "Sombre",
-    "auto": "Automatique"
+    "auto": "Auto"
   },
   "auth": {
     "footer": {
@@ -12,6 +12,85 @@
     "admin": {
       "title": "Administration Soncollab",
       "subtitle": "Plateforme de gestion administrative"
+    },
+    "login": {
+      "title": "Connexion",
+      "email": {
+        "placeholder": "Email",
+        "required": "Email requis",
+        "invalid": "Format email invalide"
+      },
+      "password": {
+        "placeholder": "Mot de passe",
+        "required": "Mot de passe requis",
+        "minLength": "Minimum 6 caractères",
+        "toggleVisibility": "Afficher/masquer le mot de passe"
+      },
+      "signIn": "Se connecter",
+      "rememberMe": "Se souvenir de moi",
+      "forgotPassword": "Mot de passe oublié ?",
+      "errors": {
+        "loginFailed": "Erreur de connexion",
+        "invalidCredentials": "Email ou mot de passe incorrect",
+        "validation": "Données invalides",
+        "badRequest": "Requête invalide",
+        "unauthorized": "Accès non autorisé",
+        "serverError": "Erreur serveur, veuillez réessayer"
+      }
+    },
+    "forgotPassword": {
+      "title": "Mot de passe oublié",
+      "instructions": "Saisissez votre adresse email et nous vous enverrons un lien pour réinitialiser votre mot de passe.",
+      "email": {
+        "placeholder": "Votre adresse email",
+        "required": "Email requis",
+        "invalid": "Format email invalide"
+      },
+      "sendReset": "Envoyer le lien de réinitialisation",
+      "backToLogin": "Retour à la connexion",
+      "success": {
+        "title": "Email envoyé !",
+        "message": "Si cette adresse email existe dans notre système, vous recevrez un lien de réinitialisation dans quelques minutes."
+      },
+      "errors": {
+        "requestFailed": "Erreur lors de l'envoi",
+        "invalidEmail": "Adresse email invalide",
+        "emailNotFound": "Cette adresse email n'existe pas",
+        "badRequest": "Requête invalide",
+        "serverError": "Erreur serveur, veuillez réessayer"
+      }
+    },
+    "resetPassword": {
+      "title": "Réinitialiser le mot de passe",
+      "instructions": "Saisissez votre nouveau mot de passe ci-dessous.",
+      "password": {
+        "placeholder": "Nouveau mot de passe",
+        "required": "Nouveau mot de passe requis",
+        "minLength": "Minimum 6 caractères",
+        "toggleVisibility": "Afficher/masquer le mot de passe"
+      },
+      "passwordConfirm": {
+        "placeholder": "Confirmer le nouveau mot de passe",
+        "required": "Confirmation du mot de passe requise",
+        "mismatch": "Les mots de passe ne correspondent pas",
+        "toggleVisibility": "Afficher/masquer la confirmation"
+      },
+      "resetPassword": "Réinitialiser le mot de passe",
+      "backToLogin": "Retour à la connexion",
+      "requestNewCode": "Demander un nouveau code",
+      "goToLogin": "Aller à la connexion",
+      "success": {
+        "title": "Mot de passe réinitialisé !",
+        "message": "Votre mot de passe a été réinitialisé avec succès. Vous allez être redirigé automatiquement."
+      },
+      "errors": {
+        "resetFailed": "Erreur lors de la réinitialisation",
+        "invalidPassword": "Mot de passe invalide",
+        "invalidCode": "Code de réinitialisation invalide ou expiré",
+        "validation": "Données invalides",
+        "badRequest": "Requête invalide",
+        "serverError": "Erreur serveur, veuillez réessayer"
+      }
     }
   }
 }
