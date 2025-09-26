@@ -1,4 +1,57 @@
 {
+  "aside": {
+    "sections": {
+      "management": "Gestion",
+      "commercial": "Commercial",
+      "system": "Système",
+      "content": "Contenu",
+      "performance": "Performance",
+      "workflow": "Workflow"
+    },
+    "navigation": {
+      "dashboard": "Tableau de bord",
+      "team": "Équipe",
+      "users": "Utilisateurs",
+      "invitations": "Invitations",
+      "team-stats": "Statistiques équipe",
+      "commercial": "Commercial",
+      "all-contacts": "Tous les contacts",
+      "unassigned": "Non-assignés",
+      "pipeline": "Pipeline",
+      "quotas-territories": "Quotas & Territoires",
+      "sales-stats": "Statistiques ventes",
+      "content": "Contenu",
+      "blog-articles": "Articles Blog",
+      "help-articles": "Articles Aide",
+      "categories-tags": "Catégories & Tags",
+      "validation-workflow": "Workflow validation",
+      "content-analytics": "Analytics contenu",
+      "system": "Système",
+      "configuration": "Configuration",
+      "billing": "Facturation",
+      "maintenance": "Maintenance",
+      "my-contacts": "Mes Contacts",
+      "my-pipeline": "Mon Pipeline",
+      "my-proposals": "Mes Propositions",
+      "my-quotas": "Mes Quotas",
+      "my-performance": "Ma Performance",
+      "my-blog-articles": "Mes Articles Blog",
+      "my-help-articles": "Mes Articles Aide",
+      "pending-validation": "En attente validation",
+      "newsletter": "Newsletter"
+    },
+    "roles": {
+      "soncollab_admin": "Administrateur",
+      "soncollab_sales": "Commercial",
+      "soncollab_content": "Content Manager"
+    },
+    "profile": {
+      "account": "Compte",
+      "profile": "Profil",
+      "settings": "Paramètres",
+      "logout": "Déconnexion"
+    }
+  },
   "theme": {
     "light": "Clair",
     "dark": "Sombre",

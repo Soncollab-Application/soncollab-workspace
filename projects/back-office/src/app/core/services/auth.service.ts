@@ -1,4 +1,3 @@
-// auth.service.ts - VERSION PROPRE
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, catchError, map, Observable, tap, throwError, timer} from 'rxjs';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';

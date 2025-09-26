@@ -34,8 +34,8 @@ export interface BackofficeUser {
   documentId: string;
   username: string;
   email: string;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   role: UserRole;
   confirmed: boolean;
   blocked: boolean;
