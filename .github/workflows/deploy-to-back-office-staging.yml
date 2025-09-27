@@ -5,6 +5,7 @@ on:
     branches: [ develop, deploy-admin ]
     paths:
       - .github/workflows/deploy-to-back-office-staging.yml
+      - k8s/ctx/back-office/**
       - k8s/staging/back-office/**
       - projects/back-office/**
 
