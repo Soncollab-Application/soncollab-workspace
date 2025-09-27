@@ -1,119 +1,125 @@
-<!-- Header Sidebar -->
-<div class="p-3  flex-shrink-0">
-  <a href="#" class="text-decoration-none text-body fw-normal fs-5 d-flex align-items-center">
-    <img [alt]="'Soncollab Logo - ' + (isDarkTheme ? 'Dark Theme' : 'Light Theme')"
-         [src]="currentLogo"
-         width="160">
-  </a>
-</div>
+<div class="sidebar-container">
 
-<!-- Navigation -->
-<div class="sidebar-content p-2" id="globalAccordion">
+  <!-- Header Sidebar -->
+  <div class="p-3 flex-shrink-0">
+    <a [routerLink]="getHomeRoute()" class="text-decoration-none text-body fw-normal fs-5 d-flex align-items-center">
+      <img [alt]="'Soncollab Logo - ' + (isDarkTheme ? 'Dark Theme' : 'Light Theme')"
+           [src]="currentLogo"
+           width="160">
+    </a>
+  </div>
 
-  @for (section of navigationSections(); track section.type + $index) {
+  <!-- Navigation -->
+  <div class="sidebar-content p-2" id="globalAccordion">
+    @for (section of navigationSections(); track section.type + $index) {
 
-    <!-- Titre de section -->
-    @if (section.type === 'section' && section.title) {
-      <div class="text-uppercase text-muted-custom fw-semibold px-3 py-2 small">{{ section.title | translate }}</div>
-    }
+      @if (section.type === 'section' && section.title) {
+        <div class="text-uppercase  text-muted-custom fw-semibold px-3 py-2 small">{{ section.title | translate }}</div>
+      }
 
-    <!-- Séparateur -->
-    @if (section.type === 'separator') {
-      <hr class="mx-3">
-    }
+      @if (section.type === 'separator') {
+        <hr class="mx-3">
+      }
 
-    <!-- Navigation -->
-    @if (section.type === 'nav' && section.items) {
-      <nav class="nav flex-column mb-3" [id]="section.navId">
-        @for (item of section.items; track item.key) {
+      @if (section.type === 'nav' && section.items) {
+        <nav class="nav flex-column mb-3" [id]="section.navId">
+          @for (item of section.items; track item.key) {
 
-          @if (item.children) {
-            <!-- Menu avec sous-menu - Bootstrap gère tout -->
-            <div class="mx-1 mb-1">
-              <a class="nav-link rounded d-flex align-items-center py-2 px-3 submenu-toggle collapsed"
-                 [class.text-body-secondary]="!hasActiveChild(item)"
-                 [class.text-primary]="hasActiveChild(item)"
-                 href="#"
-                 data-bs-toggle="collapse"
-                 [attr.data-bs-target]="'#' + item.key + 'Submenu'"
-                 aria-expanded="false"
-                 [attr.aria-controls]="item.key + 'Submenu'">
-                <i [class]="item.icon + ' me-3'"></i>
-                {{ 'aside.navigation.' + item.key | translate }}
-                <i class="bi bi-chevron-down ms-auto small"></i>
-              </a>
-              <div class="collapse" [id]="item.key + 'Submenu'" data-bs-parent="#globalAccordion">
-                <div class="d-flex flex-column ms-3">
-                  @for (child of item.children; track child.key) {
-                    <a class="nav-link rounded submenu-item"
-                       [class.text-body-secondary]="!isActiveRoute(child.route!)"
-                       [routerLink]="child.route"
-                       [routerLinkActive]="['active', 'bg-primary', 'bg-opacity-10', 'text-primary']"
-                       [routerLinkActiveOptions]="{exact: false}">
-                      <i class="bi bi-dot me-2"></i>
-                      {{ 'aside.navigation.' + child.key | translate }}
-                    </a>
-                  }
+            @if (item.children) {
+              <div class="mx-1 mb-1">
+                <a class="nav-link rounded d-flex align-items-center py-2 px-3 submenu-toggle collapsed"
+                   [class.text-body-secondary]="!hasActiveChild(item)"
+                   [class.text-primary]="hasActiveChild(item)"
+                   href="javascript:"
+                   data-bs-toggle="collapse"
+                   [attr.data-bs-target]="'#' + item.key + 'Submenu'"
+                   aria-expanded="false"
+                   [attr.aria-controls]="item.key + 'Submenu'">
+                  <i [class]="item.icon + ' me-3'"></i>
+                  {{ 'aside.navigation.' + item.key | translate }}
+                  <i class="bi bi-chevron-down ms-auto small"></i>
+                </a>
+                <div class="collapse"
+                     [id]="item.key + 'Submenu'"
+                     data-bs-parent="#globalAccordion">
+                  <div class="d-flex flex-column  ms-3">
+                    @for (child of item.children; track child.key) {
+                      <a class="nav-link rounded submenu-item py-1"
+                         [class.text-body-secondary]="!isActiveRoute(child.route!)"
+                         [routerLink]="child.route"
+                         [routerLinkActive]="['active', 'bg-primary', 'bg-opacity-10', 'text-primary']"
+                         [routerLinkActiveOptions]="{exact: false}">
+                        <i class="bi bi-dot me-2"></i>
+                        {{ 'aside.navigation.' + child.key | translate }}
+                      </a>
+                    }
+                  </div>
                 </div>
               </div>
-            </div>
-          } @else {
-            <!-- Menu simple -->
-            <a class="nav-link rounded mx-1 mb-1 d-flex align-items-center py-2 px-3 fw-medium"
-               [class.text-body-secondary]="!isActiveRoute(item.route!)"
-               [routerLink]="item.route"
-               [routerLinkActive]="['active', 'bg-primary', 'bg-opacity-10', 'text-primary']"
-               [routerLinkActiveOptions]="{exact: false}">
-              <i [class]="item.icon + ' me-3'"></i>
-              {{ 'aside.navigation.' + item.key | translate }}
-            </a>
+            } @else {
+              <a class="nav-link rounded mx-1 mb-1 d-flex align-items-center py-2 px-3 fw-medium"
+                 [class.text-body-secondary]="!isActiveRoute(item.route!)"
+                 [routerLink]="item.route"
+                 [routerLinkActive]="['active', 'bg-primary', 'bg-opacity-10', 'text-primary']"
+                 [routerLinkActiveOptions]="{exact: false}">
+                <i [class]="item.icon + ' me-3'"></i>
+                {{ 'aside.navigation.' + item.key | translate }}
+              </a>
+            }
           }
-        }
-      </nav>
+        </nav>
+      }
     }
-  }
-</div>
-
-<!-- Footer Sidebar - INCHANGÉ -->
-<div class="border-top p-3 mt-auto flex-shrink-0">
-  <!-- Profile Dropdown -->
-  <div class="profile-dropdown dropdown">
-    <button class="btn btn-link text-decoration-none p-2 d-flex align-items-center w-100 text-body rounded-2 profile-dropdown-toggle"
-            type="button"
-            data-bs-toggle="dropdown"
-            data-bs-auto-close="true"
-            aria-expanded="false">
-      <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-medium flex-shrink-0"
-           style="width: 32px; height: 32px;">
-        {{ getInitials() }}
-      </div>
-      <div class="ms-3 text-start flex-grow-1 min-width-0">
-        <div class="small fw-medium text-body text-truncate">{{ currentUser()?.first_name }} {{ currentUser()?.last_name }}</div>
-        <div class="x-small text-muted text-truncate">{{ currentUser()?.email }}</div>
-      </div>
-    </button>
-    <ul class="dropdown-menu shadow border-0">
-      <li><h6 class="dropdown-header">{{ 'aside.profile.account' | translate }}</h6></li>
-      <li>
-        <a class="dropdown-item d-flex align-items-center"
-           routerLink="/profile"
-           routerLinkActive="active">
-          <i class="bi bi-person me-2"></i>{{ 'aside.profile.profile' | translate }}
-        </a>
-      </li>
-      <li>
-        <a class="dropdown-item d-flex align-items-center"
-           routerLink="/profile/settings"
-           routerLinkActive="active">
-          <i class="bi bi-gear me-2"></i>{{ 'aside.profile.settings' | translate }}
-        </a>
-      </li>
-      <li><hr class="dropdown-divider"></li>
-      <li>
-        <button class="dropdown-item d-flex align-items-center text-danger" (click)="logout()">
-          <i class="bi bi-box-arrow-right me-2"></i>{{ 'aside.profile.logout' | translate }}
-        </button>
-      </li>
-    </ul>
   </div>
+
+  <!-- Footer Sidebar -->
+  <div class="border-top p-3 mt-auto flex-shrink-0">
+    <div class="profile-dropdown dropdown">
+      <button class="btn btn-link text-decoration-none p-2 d-flex align-items-center w-100 text-body rounded-2 profile-dropdown-toggle"
+              type="button"
+              data-bs-toggle="dropdown"
+              data-bs-auto-close="true"
+              aria-expanded="false">
+        <div class="bg-primary text-white rounded-circle for-inter-tight-font d-flex align-items-center justify-content-center fw-medium flex-shrink-0"
+             style="width: 32px; height: 32px;">
+          {{ getInitials() }}
+        </div>
+        <div class="ms-3 text-start flex-grow-1 min-width-0">
+          <div class="small fw-medium text-body text-truncate">{{ currentUser()?.first_name }} {{ currentUser()?.last_name }}</div>
+          <div class="x-small text-muted text-truncate">{{ currentUser()?.email }}</div>
+        </div>
+      </button>
+      <ul class="dropdown-menu shadow border-0">
+        <li><h6 class="dropdown-header">{{ 'aside.profile.account' | translate }}</h6></li>
+        <li>
+          <a class="dropdown-item d-flex align-items-center"
+             [routerLink]="['/profile/settings']"
+             [routerLinkActive]="['active']">
+            <i class="bi bi-person me-2"></i>{{ 'aside.profile.settings' | translate }}
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item d-flex align-items-center"
+             [routerLink]="['/profile/security']"
+             [routerLinkActive]="['active']">
+            <i class="bi bi-shield-lock me-2"></i>{{ 'aside.profile.security' | translate }}
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item d-flex align-items-center"
+             [routerLink]="['/profile/notifications']"
+             [routerLinkActive]="['active']">
+            <i class="bi bi-bell me-2"></i>{{ 'aside.profile.notifications' | translate }}
+          </a>
+        </li>
+        <li><hr class="dropdown-divider"></li>
+        <li>
+          <button class="dropdown-item d-flex align-items-center text-danger" (click)="logout()">
+            <i class="bi bi-box-arrow-right me-2"></i>{{ 'aside.profile.logout' | translate }}
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+
 </div>

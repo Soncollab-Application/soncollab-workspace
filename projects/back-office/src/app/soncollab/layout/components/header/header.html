@@ -2,7 +2,9 @@
   <i class="bi bi-list fs-5"></i>
 </button>
 
-<h1 class="fs-6 fw-normal mb-0 flex-grow-1 text-body-emphasis">Titre</h1>
+<h1 class="fs-6 fw-normal mb-0 flex-grow-1 text-body-emphasis">
+  {{ currentTitle() }}
+</h1>
 
 <div class="d-flex align-items-center">
   <button class="btn btn-link text-body-secondary p-2 rounded">
@@ -11,4 +13,105 @@
   <button class="btn btn-link text-body-secondary p-2 rounded">
     <i class="bi bi-files"></i>
   </button>
+  <button class="btn btn-link text-body-secondary p-2 rounded">
+    <i class="bi bi-share"></i>
+  </button>
+  <button class="btn btn-link text-body-secondary p-2 rounded">
+    <i class="bi bi-plus"></i>
+  </button>
+  <button class="btn btn-link text-body-secondary p-2 rounded d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#mobileSettings">
+    <i class="bi bi-gear"></i>
+  </button>
+</div>
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="mobileSidebar">
+
+  <div class="offcanvas-header">
+    <img [alt]="'Soncollab Logo'"
+         [src]="currentLogo"
+         width="140"
+         class="offcanvas-title">
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+  </div>
+
+  <div class="offcanvas-body px-2" id="mobileAccordion">
+
+    @for (section of navigationSections(); track section.type + $index) {
+
+      @if (section.type === 'section' && section.title) {
+        <div class="text-uppercase text-muted-custom fw-semibold px-3 py-2 small">{{ section.title | translate }}</div>
+      }
+
+      @if (section.type === 'separator') {
+        <hr class="mx-3">
+      }
+
+      @if (section.type === 'nav' && section.items) {
+        <nav class="nav flex-column mb-3" [id]="'mobile' + section.navId">
+          @for (item of section.items; track item.key) {
+
+            @if (item.children) {
+              <div class="mx-1 mb-1">
+                <a class="nav-link rounded d-flex align-items-center py-2 px-3 submenu-toggle collapsed"
+                   [class.text-body-secondary]="!hasActiveChild(item)"
+                   [class.text-primary]="hasActiveChild(item)"
+                   href="#"
+                   data-bs-toggle="collapse"
+                   [attr.data-bs-target]="'#mobile' + item.key + 'Submenu'"
+                   aria-expanded="false"
+                   [attr.aria-controls]="'mobile' + item.key + 'Submenu'">
+                  <i [class]="item.icon + ' me-3'"></i>
+                  {{ 'aside.navigation.' + item.key | translate }}
+                  <i class="bi bi-chevron-down ms-auto small"></i>
+                </a>
+                <div class="collapse"
+                     [id]="'mobile' + item.key + 'Submenu'"
+                     data-bs-parent="#mobileAccordion">
+                  <div class="d-flex flex-column ms-3">
+                    @for (child of item.children; track child.key) {
+                      <a class="nav-link rounded submenu-item py-1 mb-1"
+                         [class.text-body-secondary]="!isActiveRoute(child.route!)"
+                         [routerLink]="child.route"
+                         [routerLinkActive]="['active', 'bg-primary', 'bg-opacity-10', 'text-primary']"
+                         [routerLinkActiveOptions]="{exact: false}"
+                         data-bs-dismiss="offcanvas">
+                        <i class="bi bi-dot me-2"></i>
+                        {{ 'aside.navigation.' + child.key | translate }}
+                      </a>
+                    }
+                  </div>
+                </div>
+              </div>
+            } @else {
+              <a class="nav-link rounded mx-1 mb-1 d-flex align-items-center py-2 px-3 fw-medium"
+                 [class.text-body-secondary]="!isActiveRoute(item.route!)"
+                 [routerLink]="item.route"
+                 [routerLinkActive]="['active', 'bg-primary', 'bg-opacity-10', 'text-primary']"
+                 [routerLinkActiveOptions]="{exact: false}"
+                 data-bs-dismiss="offcanvas">
+                <i [class]="item.icon + ' me-3'"></i>
+                {{ 'aside.navigation.' + item.key | translate }}
+              </a>
+            }
+          }
+        </nav>
+      }
+    }
+  </div>
+
+  <div class="border-top p-3 mt-auto">
+    <div class="d-flex align-items-center mb-3">
+      <div class="bg-primary for-inter-tight-font text-white rounded-circle d-flex align-items-center justify-content-center fw-medium flex-shrink-0"
+           style="width: 32px; height: 32px;">
+        {{ getInitials() }}
+      </div>
+      <div class="ms-3">
+        <div class="small fw-medium text-body">{{ currentUser()?.first_name }} {{ currentUser()?.last_name }}</div>
+        <div class="x-small text-muted for-inter-font">{{ currentUser()?.email }}</div>
+      </div>
+    </div>
+    <button class="btn btn-outline-danger for-inter-font btn-sm fs-sm w-100" (click)="logout()" data-bs-dismiss="offcanvas">
+      <i class="bi bi-box-arrow-in-right me-2"></i>{{ 'aside.profile.logout' | translate }}
+    </button>
+  </div>
 </div>

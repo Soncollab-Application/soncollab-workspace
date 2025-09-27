@@ -1,0 +1,13 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb mb-0">
+    @for (item of breadcrumbs(); track item.label) {
+      <li class="breadcrumb-item" [class.active]="item.active">
+        @if (item.route && !item.active) {
+          <a [routerLink]="item.route" class="text-decoration-none">{{ item.label }}</a>
+        } @else {
+          {{ item.label }}
+        }
+      </li>
+    }
+  </ol>
+</nav>

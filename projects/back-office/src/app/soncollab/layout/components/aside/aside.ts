@@ -29,7 +29,6 @@ export class Aside implements OnInit, OnDestroy {
   isDarkTheme: boolean = false;
   currentTheme: Theme = 'light';
 
-
   navigationSections = signal<NavigationConfig[]>([]);
   currentUser = computed(() => this.authService.currentUser);
 
@@ -101,4 +100,19 @@ export class Aside implements OnInit, OnDestroy {
   logout(): void {
     this.authService.logout();
   }
+
+  getHomeRoute(): string {
+    const currentRole = this.authService.currentRole;
+    switch (currentRole) {
+      case 'soncollab_admin':
+        return '/admin/dashboard';
+      case 'soncollab_sales':
+        return '/sales/dashboard';
+      case 'soncollab_content':
+        return '/content/dashboard';
+      default:
+        return '/';
+    }
+  }
+
 }

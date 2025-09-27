@@ -83,7 +83,6 @@ export const adminRoutes: Routes = [
         loadComponent: () => import('../../../pages/admin/system/maintenance/system-maintenance/system-maintenance').then(c => c.SystemMaintenance)
       },
 
-
       {
         path: '',
         redirectTo: 'dashboard',
