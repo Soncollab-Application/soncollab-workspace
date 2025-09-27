@@ -1,5 +1,8 @@
 {
   "header": {
+    "theme": {
+      "toggle": "Toggle theme"
+    },
     "pages": {
       "default": "Dashboard",
       "admin": {

@@ -5,16 +5,18 @@ import {TranslateModule} from '@ngx-translate/core';
 import {Subject, takeUntil} from 'rxjs';
 import {NavigationService} from '../../../../core/services/navigation.service';
 import {AuthService} from '../../../../core/services/auth.service';
-import {LanguageService, ThemeService} from 'shared-lib';
-import {NavigationConfig, NavigationItem} from '../../../../core/models/navigation-config.model';
+import {LanguageService, ThemeService } from 'shared-lib';
+import {NavigationConfig} from '../../../../core/models/navigation-config.model';
 import {PageTitleService} from '../../../../core/services/page-title.service';
+import { NgbPopover } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-header',
   imports: [
     CommonModule,
     RouterModule,
-    TranslateModule
+    TranslateModule,
+    NgbPopover,
   ],
   templateUrl: './header.html',
   styleUrl: './header.css'
@@ -66,6 +68,10 @@ export class Header implements OnInit, OnDestroy {
       });
   }
 
+  setLanguage(lang: string): void {
+    this.languageService.setLanguage(lang);
+  }
+
   private updateLogo(): void {
     this.currentLogo = this.isDarkTheme()
       ? '/assets/images/logo/soncollablightlogo.svg'
@@ -90,6 +96,11 @@ export class Header implements OnInit, OnDestroy {
     const last = user.last_name?.charAt(0) || '';
     return (first + last).toUpperCase() || user.email?.charAt(0).toUpperCase() || 'U';
   }
+
+  toggleTheme(): void {
+    this.themeService.toggleTheme();
+  }
+
 
   logout(): void {
     this.authService.logout();
