@@ -47,8 +47,9 @@
     },
     "profile": {
       "account": "Account",
-      "profile": "Profile",
       "settings": "Settings",
+      "security": "Security",
+      "notifications": "Notifications",
       "logout": "Logout"
     }
   }

@@ -1,4 +1,34 @@
-/* Hover effects for buttons */
+.nav-link:not(.active):hover {
+  background-color: rgba(var(--fn-body-color-rgb), 0.08) !important;
+  color: var(--fn-emphasis-color) !important;
+}
+
 .btn-link:hover {
   background-color: rgba(var(--fn-body-color-rgb), 0.08) !important;
+}
+
+.submenu-item {
+  padding-left: 1rem !important;
+  font-size: 0.875rem;
+}
+
+.submenu-item .bi-dot {
+  font-size: 1.2rem;
+  margin-right: 0.5rem;
+}
+
+.submenu-toggle .bi-chevron-down {
+  transition: transform 0.2s ease;
+}
+
+.submenu-toggle[aria-expanded="true"] .bi-chevron-down {
+  transform: rotate(180deg);
+}
+
+.submenu-toggle.collapsed .bi-chevron-down {
+  transform: rotate(0deg);
+}
+
+.x-small {
+  font-size: 0.75rem;
 }

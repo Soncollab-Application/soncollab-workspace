@@ -8,8 +8,21 @@ export const profileRoutes: Routes = [
     children: [
       {
         path: 'settings',
-        loadComponent: () => import('../../../pages/profile/settings/settings').then(c => c.Settings)
+        loadComponent: () => import('../../../pages/profile/settings/profile-settings/profile-settings').then(c => c.ProfileSettings)
       },
+      {
+        path: 'security',
+        loadComponent: () => import('../../../pages/profile/security/security-settings/security-settings').then(c => c.SecuritySettings)
+      },
+      {
+        path: 'notifications',
+        loadComponent: () => import('../../../pages/profile/notifications/notification-settings/notification-settings').then(c => c.NotificationSettings)
+      },
+      {
+        path: '',
+        redirectTo: 'settings',
+        pathMatch: 'full'
+      }
     ]
   }
 ]

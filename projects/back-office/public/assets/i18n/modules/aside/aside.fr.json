@@ -47,8 +47,9 @@
     },
     "profile": {
       "account": "Compte",
-      "profile": "Profil",
       "settings": "Paramètres",
+      "security": "Sécurité",
+      "notifications": "Notifications",
       "logout": "Déconnexion"
     }
   }

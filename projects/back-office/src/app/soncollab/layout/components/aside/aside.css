@@ -1,25 +1,3 @@
-/* Hover effects for nav links */
-.nav-link:not(.active):hover {
-  background-color: rgba(var(--fn-body-color-rgb), 0.08) !important;
-  color: var(--fn-emphasis-color) !important;
-}
-
-/* Hover effects for buttons */
-.btn-link:hover {
-  background-color: rgba(var(--fn-body-color-rgb), 0.08) !important;
-}
-
-/* Chevron rotation animation */
-.nav-link[aria-expanded="true"] .bi-chevron-down {
-  transform: rotate(180deg);
-  transition: transform 0.2s ease;
-}
-
-.bi-chevron-down {
-  transition: transform 0.2s ease;
-}
-
-/* Sidebar scroll fix */
 .sidebar-container {
   display: flex;
   flex-direction: column;
@@ -33,7 +11,15 @@
   overflow-x: hidden;
 }
 
-/* Styles pour les sous-menus */
+.nav-link:not(.active):hover {
+  background-color: rgba(var(--fn-body-color-rgb), 0.08) !important;
+  color: var(--fn-emphasis-color) !important;
+}
+
+.btn-link:hover {
+  background-color: rgba(var(--fn-body-color-rgb), 0.08) !important;
+}
+
 .submenu-item {
   padding-left: 1rem !important;
   font-size: 0.875rem;
@@ -44,7 +30,6 @@
   margin-right: 0.5rem;
 }
 
-/* Animation des chevrons pour les sous-menus */
 .submenu-toggle .bi-chevron-down {
   transition: transform 0.2s ease;
 }
@@ -57,7 +42,6 @@
   transform: rotate(0deg);
 }
 
-/* Styles pour le dropdown profil */
 .dropdown-toggle::after {
   display: none !important;
 }
@@ -83,18 +67,8 @@
   background-color: rgba(var(--fn-primary-rgb), 0.08);
 }
 
-.form-check-input:checked {
-  background-color: var(--fn-primary);
-  border-color: var(--fn-primary);
-}
-
 .x-small {
   font-size: 0.75rem;
-}
-
-/* Forcer le dropdown à s'ouvrir vers le haut */
-.profile-dropdown {
-  position: relative;
 }
 
 .profile-dropdown .dropdown-menu {
