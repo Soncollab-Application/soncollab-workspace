@@ -1039,7 +1039,7 @@
 
 
 
-[data-bs-theme=dark] .feature-icon-wrapper {
+[data-bs-theme=dark] .theming-custom .feature-icon-wrapper {
   width: 32px !important;
   height: 32px !important;
   background: rgba(255, 255, 255, 0.1) !important;
@@ -1050,13 +1050,13 @@
 
 /* Taille icône plus grande sur desktop */
 @media (min-width: 992px) {
-  [data-bs-theme=dark] .feature-icon-wrapper {
+  [data-bs-theme=dark] .theming-custom .feature-icon-wrapper {
     width: 40px !important;
     height: 40px !important;
   }
 }
 
-[data-bs-theme=dark] .nav-link.hover-effect-slide {
+[data-bs-theme=dark] .theming-custom .nav-link.hover-effect-slide {
   position: relative !important;
   overflow: hidden !important;
   background: rgba(255, 255, 255, 0.03) !important;
@@ -1064,7 +1064,7 @@
   border-radius: 8px !important;
 }
 
-[data-bs-theme=dark] .nav-link.hover-effect-slide::before {
+[data-bs-theme=dark] .theming-custom .nav-link.hover-effect-slide::before {
   content: '' !important;
   position: absolute !important;
   top: 0 !important;
@@ -1075,60 +1075,60 @@
   transition: left 0.5s ease !important;
 }
 
-[data-bs-theme=dark] .nav-link.hover-effect-slide:hover::before {
+[data-bs-theme=dark] .theming-custom .nav-link.hover-effect-slide:hover::before {
   left: 100% !important;
 }
 
-[data-bs-theme=dark] .nav-link.hover-effect-slide:hover {
+[data-bs-theme=dark] .theming-custom .nav-link.hover-effect-slide:hover {
   background: rgba(255, 255, 255, 0.08) !important;
   border-color: rgba(255, 255, 255, 0.15) !important;
   transform: translateY(-1px) !important;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
 }
 
-[data-bs-theme=dark] .nav-link.hover-effect-slide:hover .feature-icon-wrapper {
+[data-bs-theme=dark] .theming-custom .nav-link.hover-effect-slide:hover .feature-icon-wrapper {
   background: rgba(255, 255, 255, 0.2) !important;
   transform: scale(1.1) !important;
 }
 
 
-[data-bs-theme=dark] .feature-content {
+[data-bs-theme=dark] .theming-custom .feature-content {
   flex: 1 !important;
   min-width: 0 !important;
 }
 
-[data-bs-theme=dark] .nav-link.active-feature {
+[data-bs-theme=dark] .theming-custom .nav-link.active-feature {
   background: rgba(255, 255, 255, 0.1) !important;
   border-color: rgba(255, 255, 255, 0.2) !important;
   border-radius: 8px !important;
 }
 
-[data-bs-theme=dark] .nav-link.active-feature .feature-icon-wrapper {
+[data-bs-theme=dark] .theming-custom .nav-link.active-feature .feature-icon-wrapper {
   background: rgba(255, 255, 255, 0.25) !important;
 }
 
-[data-bs-theme=dark] .nav-link.active-feature {
+[data-bs-theme=dark] .theming-custom .nav-link.active-feature {
   color: #fff !important;
 }
 
 /* Animation d'entrée pour le dropdown */
-[data-bs-theme=dark] .dropdown-menu {
+[data-bs-theme=dark] .theming-custom .dropdown-menu {
   opacity: 0 !important;
   transform: translateY(-10px) !important;
   transition: all 0.3s ease !important;
 }
 
-[data-bs-theme=dark] .dropdown-menu.show {
+[data-bs-theme=dark] .theming-custom .dropdown-menu.show {
   opacity: 1 !important;
   transform: translateY(0) !important;
 }
 
 
-[data-bs-theme=dark] .nav-link.dropdown-toggle i {
+[data-bs-theme=dark] .theming-custom .nav-link.dropdown-toggle i {
   transition: transform 0.3s ease !important;
 }
 
-[data-bs-theme=dark] .nav-link.dropdown-toggle:hover i {
+[data-bs-theme=dark] .theming-custom .nav-link.dropdown-toggle:hover i {
   transform: scale(1.1) !important;
 }
 
@@ -1156,14 +1156,7 @@
 
 
 
-
-
-
-/* ------------------------------ Light --------------------------------- */
-
-/* Pas de séparateur entre colonnes */
-
-[data-bs-theme=light] .feature-icon-wrapper {
+[data-bs-theme=light] .theming-custom .feature-icon-wrapper {
   width: 32px !important;
   height: 32px !important;
   background: rgba(68, 140, 116, 0.08) !important;
@@ -1174,13 +1167,13 @@
 
 /* Taille icône plus grande sur desktop */
 @media (min-width: 992px) {
-  [data-bs-theme=light] .feature-icon-wrapper {
+  [data-bs-theme=light] .theming-custom .feature-icon-wrapper {
     width: 40px !important;
     height: 40px !important;
   }
 }
 
-[data-bs-theme=light] .nav-link.hover-effect-slide {
+[data-bs-theme=light] .theming-custom .nav-link.hover-effect-slide {
   position: relative !important;
   overflow: hidden !important;
   background: transparent !important;
@@ -1188,7 +1181,7 @@
   border-radius: 8px !important;
 }
 
-[data-bs-theme=light] .nav-link.hover-effect-slide::before {
+[data-bs-theme=light]  .theming-custom .nav-link.hover-effect-slide::before {
   content: '' !important;
   position: absolute !important;
   top: 0 !important;
@@ -1199,357 +1192,73 @@
   transition: left 0.5s ease !important;
 }
 
-[data-bs-theme=light] .nav-link.hover-effect-slide:hover::before {
+[data-bs-theme=light] .theming-custom .nav-link.hover-effect-slide:hover::before {
   left: 100% !important;
 }
 
-[data-bs-theme=light] .nav-link.hover-effect-slide:hover {
+[data-bs-theme=light] .theming-custom .nav-link.hover-effect-slide:hover {
   background: rgba(40, 81, 68, 0.08) !important;
   border-color: rgba(68, 140, 116, 0.15) !important;
   transform: translateY(-1px) !important;
   box-shadow: 0 4px 20px rgba(68, 140, 116, 0.1) !important;
 }
 
-[data-bs-theme=light] .nav-link.hover-effect-slide:hover .feature-icon-wrapper {
+[data-bs-theme=light] .theming-custom .nav-link.hover-effect-slide:hover .feature-icon-wrapper {
   background: rgba(68, 140, 116, 0.15) !important;
   transform: scale(1.1) !important;
 }
 
 
 
-[data-bs-theme=light] .feature-content {
+[data-bs-theme=light] .theming-custom .feature-content {
   flex: 1 !important;
   min-width: 0 !important;
 }
 
-[data-bs-theme=light] .nav-link.active-feature {
+[data-bs-theme=light] .theming-custom .nav-link.active-feature {
   background: rgba(68, 140, 116, 0.1) !important;
   border-color: rgba(18, 103, 79, 0.9) !important;
   border-radius: 8px !important;
 }
 
-[data-bs-theme=light] .nav-link.active-feature .feature-icon-wrapper {
+[data-bs-theme=light]  .theming-custom .nav-link.active-feature .feature-icon-wrapper {
   background: rgba(68, 140, 116, 0.2) !important;
 }
 
-[data-bs-theme=light] .nav-link.active-feature  {
+[data-bs-theme=light] .theming-custom .nav-link.active-feature  {
   color: #16674c !important;
 }
 
-[data-bs-theme=light] .nav-link.active-feature small  {
+[data-bs-theme=light] .theming-custom .nav-link.active-feature small  {
   color: rgba(0, 0, 0, 0.94) !important;
   font-weight: 400 !important;
 }
 
-[data-bs-theme=light] .nav-link small  {
+[data-bs-theme=light] .theming-custom .nav-link small  {
   color: rgba(23, 21, 21, 0.73) !important;
 }
 
 
 /* Animation d'entrée pour le dropdown */
-[data-bs-theme=light] .dropdown-menu {
+[data-bs-theme=light] .theming-custom .dropdown-menu {
   opacity: 0 !important;
   transform: translateY(-10px) !important;
   transition: all 0.3s ease !important;
 }
 
-[data-bs-theme=light] .dropdown-menu.show {
+[data-bs-theme=light]  .theming-custom .dropdown-menu.show {
   opacity: 1 !important;
   transform: translateY(0) !important;
 }
 
-[data-bs-theme=light] .nav-link.dropdown-toggle i {
+[data-bs-theme=light] .theming-custom .nav-link.dropdown-toggle i {
   transition: transform 0.3s ease !important;
 }
 
-[data-bs-theme=light] .nav-link.dropdown-toggle:hover i {
+[data-bs-theme=light] .theming-custom .nav-link.dropdown-toggle:hover i {
   transform: scale(1.1) !important;
 }
 
-
-[data-bs-theme=light] .gradient-text {
-  background: linear-gradient(90deg, #000000, rgba(68, 140, 116, 0.87), #000000, #000000);
-  background-size: 200% auto;
-  color: transparent;
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: gradientFlow 6s ease infinite;
-  will-change: background-position;
-}
-
-@keyframes gradientFlow {
-  0% {
-    background-position: 200% center;
-  }
-  100% {
-    background-position: -200% center;
-  }
-}
-
-/* ===================================
-   SECTION GRID PATTERN - VERSION AMÉLIORÉE
-   Correction des problèmes de redimensionnement
-   =================================== */
-
-/* ========== THÈME SOMBRE ========== */
-[data-bs-theme="dark"] .section-grid-pattern {
-  position: relative;
-  z-index: 0;
-  background-color: transparent;
-  overflow: hidden;
-  transform: translateZ(0); /* GPU optimization */
-  min-height: 200px;
-
-  /* Effet de masque avec dégradé */
-  -webkit-mask-image: -webkit-linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0) 0%,
-    rgba(0, 0, 0, 1) 15%,
-    rgba(0, 0, 0, 1) 85%,
-    rgba(0, 0, 0, 0) 100%
-  );
-  mask-image: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0) 0%,
-    rgba(0, 0, 0, 1) 15%,
-    rgba(0, 0, 0, 1) 85%,
-    rgba(0, 0, 0, 0) 100%
-  );
-
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
-}
-
-
-[data-bs-theme=dark] .section-grid-pattern::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.18) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.21) 1px, transparent 1px);
-
-  /* Taille de grille responsive */
-  background-size: 80px 80px;
-  background-position: center center;
-  background-repeat: repeat;
-
-  opacity: 0.4;
-  filter: blur(0.2px);
-  pointer-events: none;
-
-  /* Optimisation GPU */
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-  will-change: transform;
-}
-
-/* ========== THÈME CLAIR ========== */
-[data-bs-theme=light] .section-grid-pattern {
-  position: relative;
-  z-index: 0;
-  background-color: transparent;
-  overflow: hidden;
-  transform: translateZ(0); /* GPU optimization */
-  min-height: 200px; /* Hauteur minimale pour éviter les problèmes de layout */
-
-  /* Mask pour un effet de fondu propre */
-  mask-image: linear-gradient(to bottom,
-  rgba(0, 0, 0, 0) 0%,
-  rgba(0, 0, 0, 1) 15%,
-  rgba(0, 0, 0, 1) 85%,
-  rgba(0, 0, 0, 0) 100%);
-
-  /* WebKit fallback */
-  -webkit-mask-image: -webkit-linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0) 0%,
-    rgba(0, 0, 0, 1) 15%,
-    rgba(0, 0, 0, 1) 85%,
-    rgba(0, 0, 0, 0) 100%);
-
-
-  mask-repeat: no-repeat;
-  -webkit-mask-repeat: no-repeat;
-  mask-size: 100% 100%;
-  -webkit-mask-size: 100% 100%;
-}
-
-[data-bs-theme=light] .section-grid-pattern::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background-image:
-    linear-gradient(to right, rgba(0, 0, 0, 0.18) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.21) 1px, transparent 1px);
-
-  /* Taille de grille responsive */
-  background-size: 80px 80px;
-  background-position: center center;
-  background-repeat: repeat;
-
-  opacity: 0.4;
-  filter: blur(0.2px);
-  pointer-events: none;
-
-  /* Optimisation GPU */
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-  will-change: transform;
-}
-
-/* ===================================
-   RESPONSIVE BREAKPOINTS
-   =================================== */
-
-/* Tablettes et petits écrans */
-@media (max-width: 1200px) {
-  [data-bs-theme=dark] .section-grid-pattern::before,
-  [data-bs-theme=light] .section-grid-pattern::before {
-    background-size: 70px 70px;
-    opacity: 0.35;
-  }
-}
-
-/* Tablettes */
-@media (max-width: 992px) {
-  [data-bs-theme=dark] .section-grid-pattern::before,
-  [data-bs-theme=light] .section-grid-pattern::before {
-    background-size: 60px 60px;
-    opacity: 0.3;
-    filter: blur(0.3px);
-  }
-
-  [data-bs-theme=dark] .section-grid-pattern,
-  [data-bs-theme=light] .section-grid-pattern {
-    min-height: 180px;
-  }
-}
-
-/* Mobile large */
-@media (max-width: 768px) {
-  [data-bs-theme=dark] .section-grid-pattern::before,
-  [data-bs-theme=light] .section-grid-pattern::before {
-    background-size: 50px 50px;
-    opacity: 0.25;
-    filter: blur(0.4px);
-  }
-
-  [data-bs-theme=dark] .section-grid-pattern,
-  [data-bs-theme=light] .section-grid-pattern {
-    min-height: 160px;
-  }
-}
-
-/* Mobile */
-@media (max-width: 576px) {
-  [data-bs-theme=dark] .section-grid-pattern::before,
-  [data-bs-theme=light] .section-grid-pattern::before {
-    background-size: 40px 40px;
-    opacity: 0.2;
-    filter: blur(0.5px);
-  }
-
-  [data-bs-theme=dark] .section-grid-pattern,
-  [data-bs-theme=light] .section-grid-pattern {
-    min-height: 140px;
-  }
-}
-
-/* Très petits écrans */
-@media (max-width: 480px) {
-  [data-bs-theme=dark] .section-grid-pattern::before,
-  [data-bs-theme=light] .section-grid-pattern::before {
-    background-size: 35px 35px;
-    opacity: 0.15;
-    filter: blur(0.6px);
-  }
-
-  [data-bs-theme=dark] .section-grid-pattern,
-  [data-bs-theme=light] .section-grid-pattern {
-    min-height: 120px;
-  }
-}
-
-/* ===================================
-   OPTIMISATIONS PERFORMANCES
-   =================================== */
-
-/* Animation fluide du gradient text pour éviter les conflits */
-@keyframes gradientFlow {
-  0% {
-    background-position: 200% center;
-  }
-  100% {
-    background-position: -200% center;
-  }
-}
-
-/* Optimisation pour les écrans haute densité */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  [data-bs-theme=dark] .section-grid-pattern::before,
-  [data-bs-theme=light] .section-grid-pattern::before {
-    filter: blur(0.1px);
-  }
-}
-
-/* Préférences utilisateur pour les animations réduites */
-@media (prefers-reduced-motion: reduce) {
-  [data-bs-theme=dark] .section-grid-pattern::before,
-  [data-bs-theme=light] .section-grid-pattern::before {
-    filter: none;
-    transition: none;
-  }
-
-  .gradient-text {
-    animation: none !important;
-  }
-}
-
-/* ===================================
-   CONTAINER OPTIMIZATION
-   =================================== */
-
-/* Amélioration du container dans la section grid */
-.section-grid-pattern .container {
-  position: relative;
-  z-index: 1;
-
-  /* Espacement responsive amélioré */
-  padding-top: clamp(2rem, 5vw, 4rem);
-  padding-bottom: clamp(2rem, 5vw, 4rem);
-}
-
-/* Optimisation du titre h1 dans la section */
-.section-grid-pattern h1.gradient-text {
-  /* Amélioration de la lisibilité */
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-
-  /* Responsive font-size amélioré */
-  font-size: clamp(2rem, 4vw + 1rem, 3.5rem);
-  line-height: 1.2;
-
-  /* Centrage parfait */
-  margin: 0 auto;
-  max-width: 90%;
-}
-
-/* Corrections spécifiques pour éviter le débordement */
-.section-grid-pattern {
-  contain: layout style paint;
-  isolation: isolate;
-}
-
-
-/* -------------------------------------------- */
-
-/* Theme variables for light and dark modes */
 [data-bs-theme="light"] {
   --bs-body-bg: #ffffff;
   --bs-body-color: #212529;

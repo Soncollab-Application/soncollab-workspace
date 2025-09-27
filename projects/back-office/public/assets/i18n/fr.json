@@ -148,6 +148,9 @@
     }
   },
   "header": {
+    "theme": {
+      "toggle": "Basculer le thème"
+    },
     "pages": {
       "default": "Tableau de bord",
       "admin": {

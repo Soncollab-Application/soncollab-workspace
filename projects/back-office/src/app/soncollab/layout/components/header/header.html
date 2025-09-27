@@ -1,28 +1,46 @@
-<button class="btn btn-link text-body-secondary p-2 me-2 d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar">
+<button class="btn btn-link  text-body-secondary p-2 me-2 d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar">
   <i class="bi bi-list fs-5"></i>
 </button>
 
-<h1 class="fs-6 fw-normal mb-0 flex-grow-1 text-body-emphasis">
+<h1 class="fs-6 fw-normal mb-0 flex-grow-1 text-body-emphasis text-truncate">
   {{ currentTitle() }}
 </h1>
 
-<div class="d-flex align-items-center">
-  <button class="btn btn-link text-body-secondary p-2 rounded">
-    <i class="bi bi-incognito"></i>
+<div class="d-flex align-items-center header-container">
+
+  <button class="btn btn-link text-body-secondary p-2 rounded"
+          (click)="toggleTheme()"
+          ngbPopover="{{'header.theme.toggle' | translate }}"
+          triggers="mouseenter:mouseleave"
+  >
+    <i [class]="isDarkTheme() ? 'bi bi-sun' : 'bi bi-moon'"></i>
   </button>
-  <button class="btn btn-link text-body-secondary p-2 rounded">
-    <i class="bi bi-files"></i>
-  </button>
-  <button class="btn btn-link text-body-secondary p-2 rounded">
-    <i class="bi bi-share"></i>
-  </button>
-  <button class="btn btn-link text-body-secondary p-2 rounded">
-    <i class="bi bi-plus"></i>
-  </button>
-  <button class="btn btn-link text-body-secondary p-2 rounded d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#mobileSettings">
-    <i class="bi bi-gear"></i>
-  </button>
+
+  <div class="dropdown-center">
+    <button class="btn btn-link text-body-secondary p-2 rounded " type="button"
+            data-bs-toggle="dropdown">
+      <i class="bi bi-globe"></i>
+    </button>
+    <ul class="dropdown-menu" style="min-width: 150px;">
+      <li>
+        <button class="dropdown-item"
+                [class.active]="currentLanguage() === 'fr'"
+                (click)="setLanguage('fr')">
+          🇫🇷 Français
+        </button>
+      </li>
+      <li>
+        <button class="dropdown-item"
+                [class.active]="currentLanguage() === 'en'"
+                (click)="setLanguage('en')">
+          🇬🇧 English
+        </button>
+      </li>
+    </ul>
+  </div>
+
 </div>
+
 
 <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileSidebar">
 

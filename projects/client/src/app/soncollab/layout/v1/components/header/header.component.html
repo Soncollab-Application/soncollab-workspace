@@ -1,17 +1,16 @@
-<header class="navbar navbar-expand-lg bg-body fixed-top px-0 "
+<header class="theming-custom navbar navbar-expand-lg bg-body fixed-top px-0 "
         [ngClass]="{
           'shadow-sm': isScrolled,
           'bg-body-tertiary': !isScrolled,
         }"
 >
   <div class="container">
-    <!-- Mobile offcanvas menu toggler (Hamburger) -->
+
     <button aria-controls="navbarNav" aria-label="Toggle navigation" class="navbar-toggler me-3 me-lg-0" data-bs-target="#navbarNav"
             data-bs-toggle="offcanvas" type="button">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <!-- Navbar brand (Logo) - ✅ Logo dynamique selon le thème -->
     <a [routerLink]="['/']" aria-label="Soncollab Home"
        class="navbar-brand py-1 py-md-2 py-xl-1 me-2 me-sm-n4 me-md-n5 me-lg-0"
        (click)="closeMenu()">
@@ -29,7 +28,7 @@
            width="38">
     </a>
 
-    <!-- Main navigation that turns into offcanvas on screens < 992px wide (lg breakpoint) -->
+
     <nav aria-labelledby="navbarNavLabel" class="offcanvas offcanvas-start" id="navbarNav"
          tabindex="-1">
       <div class="offcanvas-header py-3">
@@ -244,7 +243,7 @@
       </div>
     </nav>
 
-    <!-- Button group -->
+
     <div class="d-flex gap-2 align-items-center">
 
       <div class="dropdown position-relative">
@@ -296,7 +295,6 @@
         </ul>
       </div>
 
-      <!-- ✅ Theme switcher (light/dark/auto) -->
       <div class="dropdown position-relative">
         <button type="button"
                 class="theme-switcher btn btn-icon btn-outline-secondary fs-lg border-0 animate-scale"
@@ -312,7 +310,6 @@
         <ul class="dropdown-menu dropdown-menu-center"
             data-bs-popper="static">
 
-          <!-- Light Theme -->
           <li>
             <button type="button"
                     class="dropdown-item d-flex align-items-center"
@@ -328,7 +325,7 @@
             </button>
           </li>
 
-          <!-- Dark Theme -->
+
           <li>
             <button type="button"
                     class="dropdown-item d-flex align-items-center"
@@ -344,7 +341,7 @@
             </button>
           </li>
 
-          <!-- Auto Theme -->
+
           <li>
             <button type="button"
                     class="dropdown-item d-flex align-items-center"
@@ -362,7 +359,7 @@
         </ul>
       </div>
 
-      <!-- Join button  -->
+
       <a class="btn btn-primary animate-scale" href="javascript:"
          (click)="openContactModal()">
         <i class="fi-plus fs-lg animate-target ms-n2 me-1"></i>
