@@ -1,0 +1,135 @@
+name: Build and Deploy back office to staging
+
+on:
+  push:
+    branches: [ develop, deploy-admin ]
+    paths:
+      - .github/workflows/deploy-to-back-office-staging.yml
+      - k8s/staging/back-office/**
+      - projects/back-office/**
+
+  workflow_dispatch:
+    inputs:
+      deploy-branch:
+        description: 'Branch to deploy'
+        default: 'develop'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.inputs.deploy-branch || github.ref }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build application
+        run: npm run build -- --configuration production
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-files
+          path: dist/
+
+  build-and-push-image:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    outputs:
+      image-tag: ${{ steps.meta.outputs.tags }}
+      image-digest: ${{ steps.build.outputs.digest }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Harbor Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GHCRTOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/back-office
+          tags: |
+            type=sha
+
+      - name: Build and push Docker image
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./k8s/ctx/back-office/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64
+
+  deploy-to-staging:
+    needs: build-and-push-image
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: 'latest'
+
+      - name: Configure kubectl
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
+
+      - name: Deploy to staging
+        env:
+          IMAGE_TAG: ${{ needs.build-and-push-image.outputs.image-tag }}
+        run: |
+          # Update image tag in deployment
+          kubectl config use-context kubernetes-admin@kubernetes
+          kubectl create namespace "${{ vars.KUBE_STG_NAMESPACE }}" --dry-run=client -o yaml | kubectl apply -f -
+          kubectl create secret docker-registry image-pull-secret-bk \
+            --docker-server="ghcr.io" \
+            --docker-username="${{ github.repository_owner }}" \
+            --docker-password="${{ secrets.GHCRTOKEN }}" \
+            --namespace="${{ vars.KUBE_STG_NAMESPACE }}" \
+            --dry-run=client \
+            --save-config \
+            -o yaml | \
+            kubectl apply -f -
+
+          kubectl apply -f k8s/staging/back-office/namespace.yml
+          kubectl apply -f k8s/staging/back-office/sa.yml
+          kubectl apply -f k8s/staging/back-office/cpnfigmap.yml
+          kubectl apply -f k8s/staging/back-office/service.yml
+          kubectl apply -f k8s/staging/back-office/servicemonitor.yml
+          kubectl apply -f k8s/staging/back-office/ingress.yml
+          kubectl apply -f k8s/staging/back-office/hpa.yml
+
+          # Update deployment with new image
+          envsubst < k8s/staging/back-office/deployment.yml| kubectl apply -f -
+
+          # Wait for rollout
+          kubectl rollout status deployment/soncollab-back-office -n ${{ vars.KUBE_STG_NAMESPACE }} --timeout=3000s
+

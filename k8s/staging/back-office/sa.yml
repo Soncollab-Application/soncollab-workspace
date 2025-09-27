@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: soncollab-back-office-sa
+  namespace: soncollab-staging
+imagePullSecrets:
+  - name: image-pull-secret-bk
