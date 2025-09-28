@@ -1,15 +1,15 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: soncollab-frontend-monitor
+  name: soncollab-back-office-monitor
   namespace: soncollab-staging
   labels:
-    app: soncollab-frontend
+    app: soncollab-back-office
     release: prometheus
 spec:
   selector:
     matchLabels:
-      app: soncollab-frontend
+      app: soncollab-back-office
   endpoints:
     - port: http
       interval: 30s
@@ -20,10 +20,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: soncollab-frontend-metrics
+  name: soncollab-back-office-metrics
   namespace: soncollab-staging
   labels:
-    app: soncollab-frontend
+    app: soncollab-back-office
     monitoring: "true"
   annotations:
     prometheus.io/scrape: "true"
@@ -37,4 +37,4 @@ spec:
       protocol: TCP
       name: metrics
   selector:
-    app: soncollab-frontend
+    app: soncollab-back-office
