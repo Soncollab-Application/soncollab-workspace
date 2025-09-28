@@ -2,11 +2,11 @@ name: Build and Deploy frontend to staging
 
 on:
   push:
-    branches: [ deploy-admin ]
+    branches: [ main, deploy-admin ]
     paths:
-      - .github/workflows/staging/deploy-client.yml
-      - k8s/ctx/client/**
-      - k8s/staging/client/**
+      - deploy-client.yml
+      - ../../k8s/ctx/client
+      - ../../k8s/staging/client
 
   workflow_dispatch:
     inputs:
