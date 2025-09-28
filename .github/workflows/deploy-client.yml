@@ -1,8 +1,13 @@
-name: Build and Deploy to staging
+name: Build and Deploy frontend to staging
 
 on:
   push:
     branches: [ develop ]
+    paths:
+      - .github/workflows/deploy-client.yml
+      - k8s/ctx/client/**
+      - k8s/staging/client/**
+
   workflow_dispatch:
     inputs:
       deploy-branch:
@@ -70,7 +75,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./k8s/ctx/Dockerfile
+          file: ./k8s/ctx/client/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -114,16 +119,16 @@ jobs:
             -o yaml | \
             kubectl apply -f -
 
-          kubectl apply -f k8s/staging/namespace.yml
-          kubectl apply -f k8s/staging/sa.yml
-          kubectl apply -f k8s/staging/cpnfigmap.yml
-          kubectl apply -f k8s/staging/service.yml
-          kubectl apply -f k8s/staging/servicemonitor.yml
-          kubectl apply -f k8s/staging/ingress.yml
-          kubectl apply -f k8s/staging/hpa.yml
+          kubectl apply -f k8s/staging/client/namespace.yml
+          kubectl apply -f k8s/staging/client/sa.yml
+          kubectl apply -f k8s/staging/client/cpnfigmap.yml
+          kubectl apply -f k8s/staging/client/service.yml
+          kubectl apply -f k8s/staging/client/servicemonitor.yml
+          kubectl apply -f k8s/staging/client/ingress.yml
+          kubectl apply -f k8s/staging/client/hpa.yml
 
           # Update deployment with new image
-          envsubst < k8s/staging/deployment.yml| kubectl apply -f -
+          envsubst < k8s/staging/client/deployment.yml| kubectl apply -f -
 
           # Wait for rollout
           kubectl rollout status deployment/soncollab-frontend -n ${{ vars.KUBE_STG_NAMESPACE }} --timeout=3000s

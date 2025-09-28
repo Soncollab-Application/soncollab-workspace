@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: soncollab-back-office-ingress
+  namespace: soncollab-staging
+  labels:
+    app: soncollab-back-office
+    environment: staging
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/use-gzip: "true"
+    ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - stg-admin.soncollab.com
+      secretName: soncollab-back-office-stg-tls
+  rules:
+    - host: stg-admin.soncollab.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: soncollab-back-office-service
+                port:
+                  number: 8081
+            path: /
+            pathType: Prefix

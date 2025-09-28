@@ -14,33 +14,33 @@ RUN npm install
 RUN npm install -g @angular/cli
 
 # Copy source code
-COPY . .
+COPY ../../ .
 
 # Build the Angular application - Fix: specify the project name
 RUN ng build shared-lib
-RUN ng build client --configuration staging
+RUN ng build back-office --configuration staging
 
 
 # Production stage with Nginx
 FROM nginx:alpine
 
 # Copy custom nginx configuration
-COPY k8s/ctx/nginx.conf /etc/nginx/nginx.conf
+COPY k8s/ctx/back-office/nginx.conf /etc/nginx/nginx.conf
 
 # Copy built application from builder stage
 COPY --from=builder /app/dist/shared-lib/ /usr/share/nginx/html
-COPY --from=builder /app/dist/client/browser/ /usr/share/nginx/html
+COPY --from=builder /app/dist/back-office/browser/ /usr/share/nginx/html
 
 # Copy additional nginx configuration for Angular routing
-COPY k8s/ctx/default.conf /etc/nginx/conf.d/default.conf
+COPY k8s/ctx/back-office/default.conf /etc/nginx/conf.d/default.conf
 
 # Switch to non-root user
 USER nginx
-EXPOSE 8080
+EXPOSE 8081
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:8080/health || exit 1
+  CMD curl -f http://localhost:8081/health || exit 1
 
 # Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
