@@ -6,6 +6,7 @@ import {AuthService} from '../../../../core/services/auth.service';
 import {Router, RouterLink, RouterLinkActive} from '@angular/router';
 import { LanguageService, Theme, ThemeService} from 'shared-lib';
 import {TranslatePipe} from '@ngx-translate/core';
+import {PageTitleService} from '../../../../core/services/page-title.service';
 
 @Component({
   selector: 'app-aside',
@@ -25,6 +26,8 @@ export class Aside implements OnInit, OnDestroy {
   private languageService = inject(LanguageService);
   private themeService = inject(ThemeService);
   private router = inject(Router);
+  private pageTitleService = inject(PageTitleService);
+
   currentLogo: string = '/assets/images/logo/soncollablightlogo.svg';
   isDarkTheme: boolean = false;
   currentTheme: Theme = 'light';
@@ -103,16 +106,7 @@ export class Aside implements OnInit, OnDestroy {
 
   getHomeRoute(): string {
     const currentRole = this.authService.currentRole;
-    switch (currentRole) {
-      case 'soncollab_admin':
-        return '/admin/dashboard';
-      case 'soncollab_sales':
-        return '/sales/dashboard';
-      case 'soncollab_content':
-        return '/content/dashboard';
-      default:
-        return '/';
-    }
+    return this.pageTitleService.getDashboardRoute(currentRole);
   }
 
 }

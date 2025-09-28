@@ -3,6 +3,8 @@ import { Router, NavigationEnd } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { filter, map } from 'rxjs/operators';
 import { AuthService } from './auth.service';
+import {Subject, takeUntil} from 'rxjs';
+import {LanguageService} from 'shared-lib';
 
 export interface BreadcrumbItem {
   label: string;
@@ -14,9 +16,14 @@ export interface BreadcrumbItem {
   providedIn: 'root'
 })
 export class PageTitleService {
+
   private router = inject(Router);
   private translate = inject(TranslateService);
   private authService = inject(AuthService);
+  private languageService = inject(LanguageService);
+
+  private destroy$ = new Subject<void>();
+  private currentUrl = '';
 
   // Signals pour la réactivité
   currentTitle = signal<string>('');
@@ -63,13 +70,29 @@ export class PageTitleService {
   };
 
   constructor() {
+    this.setupRouterListener();
+    this.setupLanguageListener();
+  }
+
+
+  private setupRouterListener(): void {
     this.router.events
       .pipe(
         filter(event => event instanceof NavigationEnd),
-        map(event => (event as NavigationEnd).url)
+        map(event => (event as NavigationEnd).url),
+        takeUntil(this.destroy$)
       )
       .subscribe(url => {
+        this.currentUrl = url;
         this.updatePageInfo(url);
+      });
+  }
+
+  private setupLanguageListener(): void {
+    this.languageService.languageChanged$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.updatePageInfo(this.currentUrl);
       });
   }
 
@@ -118,7 +141,7 @@ export class PageTitleService {
     this.breadcrumbs.set(breadcrumbs);
   }
 
-  private getDashboardRoute(role: string): string {
+  public getDashboardRoute(role: string|null): string {
     switch (role) {
       case 'soncollab_admin': return '/admin/dashboard';
       case 'soncollab_sales': return '/sales/dashboard';
