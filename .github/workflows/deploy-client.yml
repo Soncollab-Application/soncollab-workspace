@@ -1,13 +1,10 @@
-name: Build and Deploy back office to staging
+name: Build and Deploy frontend to staging
 
 on:
   push:
     branches: [ develop, deploy-admin ]
     paths:
-      - .github/workflows/deploy-to-back-office-staging.yml
-      - k8s/ctx/back-office/**
-      - k8s/staging/back-office/**
-      - projects/back-office/**
+      - deploy-client.yml
 
   workflow_dispatch:
     inputs:
@@ -26,7 +23,7 @@ jobs:
           ref: ${{ github.event.inputs.deploy-branch || github.ref }}
 
       - name: Setup Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v4
         with:
           node-version: '22'
 
@@ -67,7 +64,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/${{ github.repository_owner }}/back-office
+          images: ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}
           tags: |
             type=sha
 
@@ -76,7 +73,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./k8s/ctx/back-office/Dockerfile
+          file: ./k8s/ctx/client/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -110,7 +107,7 @@ jobs:
           # Update image tag in deployment
           kubectl config use-context kubernetes-admin@kubernetes
           kubectl create namespace "${{ vars.KUBE_STG_NAMESPACE }}" --dry-run=client -o yaml | kubectl apply -f -
-          kubectl create secret docker-registry image-pull-secret-bk \
+          kubectl create secret docker-registry harbor-registry-secret \
             --docker-server="ghcr.io" \
             --docker-username="${{ github.repository_owner }}" \
             --docker-password="${{ secrets.GHCRTOKEN }}" \
@@ -120,17 +117,17 @@ jobs:
             -o yaml | \
             kubectl apply -f -
 
-          kubectl apply -f k8s/staging/back-office/namespace.yml
-          kubectl apply -f k8s/staging/back-office/sa.yml
-          kubectl apply -f k8s/staging/back-office/cpnfigmap.yml
-          kubectl apply -f k8s/staging/back-office/service.yml
-          kubectl apply -f k8s/staging/back-office/servicemonitor.yml
-          kubectl apply -f k8s/staging/back-office/ingress.yml
-          kubectl apply -f k8s/staging/back-office/hpa.yml
+          kubectl apply -f k8s/staging/client/namespace.yml
+          kubectl apply -f k8s/staging/client/sa.yml
+          kubectl apply -f k8s/staging/client/cpnfigmap.yml
+          kubectl apply -f k8s/staging/client/service.yml
+          kubectl apply -f k8s/staging/client/servicemonitor.yml
+          kubectl apply -f k8s/staging/client/ingress.yml
+          kubectl apply -f k8s/staging/client/hpa.yml
 
           # Update deployment with new image
-          envsubst < k8s/staging/back-office/deployment.yml| kubectl apply -f -
+          envsubst < k8s/staging/client/deployment.yml| kubectl apply -f -
 
           # Wait for rollout
-          kubectl rollout status deployment/soncollab-back-office -n ${{ vars.KUBE_STG_NAMESPACE }} --timeout=3000s
+          kubectl rollout status deployment/soncollab-frontend -n ${{ vars.KUBE_STG_NAMESPACE }} --timeout=3000s
 

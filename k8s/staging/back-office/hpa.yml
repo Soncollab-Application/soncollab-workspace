@@ -1,16 +1,16 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: soncollab-back-office-hpa
+  name: soncollab-frontend-hpa
   namespace: soncollab-staging
   labels:
-    app: soncollab-back-office
+    app: soncollab-frontend
     environment: staging
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: soncollab-back-office
+    name: soncollab-frontend
   minReplicas: 2
   maxReplicas: 6
   metrics:

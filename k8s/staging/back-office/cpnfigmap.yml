@@ -2,10 +2,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: soncollab-back-office-config-staging
+  name: soncollab-frontend-config-staging
   namespace: soncollab-staging
   labels:
-    app: soncollab-back-office
+    app: soncollab-frontend
     environment: staging
 data:
   # Application configuration

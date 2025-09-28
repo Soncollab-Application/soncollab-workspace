@@ -14,7 +14,7 @@ RUN npm install
 RUN npm install -g @angular/cli
 
 # Copy source code
-COPY . .
+COPY ... .
 
 # Build the Angular application - Fix: specify the project name
 RUN ng build shared-lib
@@ -25,14 +25,14 @@ RUN ng build client --configuration staging
 FROM nginx:alpine
 
 # Copy custom nginx configuration
-COPY k8s/ctx/nginx.conf /etc/nginx/nginx.conf
+COPY k8s/ctx/client/nginx.conf /etc/nginx/nginx.conf
 
 # Copy built application from builder stage
 COPY --from=builder /app/dist/shared-lib/ /usr/share/nginx/html
 COPY --from=builder /app/dist/client/browser/ /usr/share/nginx/html
 
 # Copy additional nginx configuration for Angular routing
-COPY k8s/ctx/default.conf /etc/nginx/conf.d/default.conf
+COPY k8s/ctx/client/default.conf /etc/nginx/conf.d/default.conf
 
 # Switch to non-root user
 USER nginx
