@@ -14,7 +14,7 @@ RUN npm install
 RUN npm install -g @angular/cli
 
 # Copy source code
-COPY ... .
+COPY ../../ .
 
 # Build the Angular application - Fix: specify the project name
 RUN ng build shared-lib

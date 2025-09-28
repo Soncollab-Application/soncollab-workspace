@@ -5,6 +5,8 @@ on:
     branches: [ develop, deploy-admin ]
     paths:
       - .github/workflows/staging/deploy-client.yml
+      - k8s/ctx/client/**
+      - k8s/staging/client/**
 
   workflow_dispatch:
     inputs:
