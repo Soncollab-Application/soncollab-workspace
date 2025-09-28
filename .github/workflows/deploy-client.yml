@@ -12,7 +12,7 @@ on:
     inputs:
       deploy-branch:
         description: 'Branch to deploy'
-        default: 'develop'
+        default: 'main'
 
 jobs:
   build-and-test:
