@@ -15,10 +15,10 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - stg.soncollab.com
+        - stg-admin.soncollab.com
       secretName: soncollab-back-office-stg-tls
   rules:
-    - host: stg.soncollab.com
+    - host: stg-admin.soncollab.com
       http:
         paths:
           - backend:
