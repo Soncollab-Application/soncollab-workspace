@@ -7,7 +7,6 @@ on:
       - deploy-client.yml
       - ../../k8s/ctx/client
       - ../../k8s/staging/client
-
   workflow_dispatch:
     inputs:
       deploy-branch:
