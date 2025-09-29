@@ -4,7 +4,7 @@ import {NavigationConfig, NavigationItem} from '../../../../core/models/navigati
 import {NavigationService} from '../../../../core/services/navigation.service';
 import {AuthService} from '../../../../core/services/auth.service';
 import {Router, RouterLink, RouterLinkActive} from '@angular/router';
-import { LanguageService, Theme, ThemeService} from 'shared-lib';
+import { LanguageService, Theme, ThemeService, getUserInitials } from 'shared-lib';
 import {TranslatePipe} from '@ngx-translate/core';
 import {PageTitleService} from '../../../../core/services/page-title.service';
 
@@ -83,12 +83,7 @@ export class Aside implements OnInit, OnDestroy {
 
 
   getInitials(): string {
-    const user = this.currentUser();
-    if (!user) return 'U';
-
-    const first = user.first_name?.charAt(0) || '';
-    const last = user.last_name?.charAt(0) || '';
-    return (first + last).toUpperCase() || user.email?.charAt(0).toUpperCase() || 'U';
+    return getUserInitials(this.currentUser());
   }
 
   isActiveRoute(route: string): boolean {

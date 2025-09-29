@@ -1,3 +1,6 @@
+import {Image} from './api.model';
+import {Country} from './country.model';
+
 export interface LoginRequest {
   identifier: string;
   password: string;
@@ -29,6 +32,7 @@ export interface ResetPasswordResponse {
   user: BackofficeUser;
 }
 
+
 export interface BackofficeUser {
   id: number;
   documentId: string;
@@ -39,7 +43,13 @@ export interface BackofficeUser {
   role: UserRole;
   confirmed: boolean;
   blocked: boolean;
-  preferredLanguage: string;
+  availability_status: AvailabilityStatus;
+  preferred_language: PreferredLanguage;
+  bio: string;
+  phone: string;
+  timezone: string;
+  avatar: Image;
+  home_country: Country;
   territory: string;
 }
 
@@ -55,6 +65,15 @@ export type SonCollabRoleType =
   | 'soncollab_content'
   | 'soncollab_sales';
 
+export type AvailabilityStatus =
+  | 'available'
+  | 'busy'
+  | 'out_of_office';
+
+export type PreferredLanguage =
+  | 'fr'
+  | 'en';
+
 export interface AuthState {
   isAuthenticated: boolean;
   user: BackofficeUser | null;
@@ -63,6 +82,7 @@ export interface AuthState {
   loading: boolean;
   error: string | null;
 }
+
 
 export interface RefreshTokenResponse {
   jwt: string;

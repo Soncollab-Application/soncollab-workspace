@@ -23,7 +23,7 @@ export const routes: Routes = [
   {
     path: 'content',
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['soncollab_content', 'soncollab_admin'] },
+    data: { roles: ['soncollab_content'] },
     loadChildren: () => import('./core/routes/content/content.routes').then(r => r.contentRoutes)
   },
 
@@ -31,7 +31,7 @@ export const routes: Routes = [
   {
     path: 'sales',
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['soncollab_sales', 'soncollab_admin'] },
+    data: { roles: ['soncollab_sales'] },
     loadChildren: () => import('./core/routes/sales/sales.routes').then(r => r.salesRoutes)
   },
 
