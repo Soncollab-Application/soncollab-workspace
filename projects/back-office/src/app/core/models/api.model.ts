@@ -19,3 +19,9 @@ export interface ApiError {
     details: any;
   };
 }
+
+
+export interface Image {
+  documentId: string;
+  url: string;
+}

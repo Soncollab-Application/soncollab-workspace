@@ -4,8 +4,9 @@ import {NavigationConfig, NavigationItem} from '../../../../core/models/navigati
 import {NavigationService} from '../../../../core/services/navigation.service';
 import {AuthService} from '../../../../core/services/auth.service';
 import {Router, RouterLink, RouterLinkActive} from '@angular/router';
-import { LanguageService, Theme, ThemeService} from 'shared-lib';
+import { LanguageService, Theme, ThemeService, getUserInitials } from 'shared-lib';
 import {TranslatePipe} from '@ngx-translate/core';
+import {PageTitleService} from '../../../../core/services/page-title.service';
 
 @Component({
   selector: 'app-aside',
@@ -25,6 +26,8 @@ export class Aside implements OnInit, OnDestroy {
   private languageService = inject(LanguageService);
   private themeService = inject(ThemeService);
   private router = inject(Router);
+  private pageTitleService = inject(PageTitleService);
+
   currentLogo: string = '/assets/images/logo/soncollablightlogo.svg';
   isDarkTheme: boolean = false;
   currentTheme: Theme = 'light';
@@ -80,12 +83,7 @@ export class Aside implements OnInit, OnDestroy {
 
 
   getInitials(): string {
-    const user = this.currentUser();
-    if (!user) return 'U';
-
-    const first = user.first_name?.charAt(0) || '';
-    const last = user.last_name?.charAt(0) || '';
-    return (first + last).toUpperCase() || user.email?.charAt(0).toUpperCase() || 'U';
+    return getUserInitials(this.currentUser());
   }
 
   isActiveRoute(route: string): boolean {
@@ -103,16 +101,7 @@ export class Aside implements OnInit, OnDestroy {
 
   getHomeRoute(): string {
     const currentRole = this.authService.currentRole;
-    switch (currentRole) {
-      case 'soncollab_admin':
-        return '/admin/dashboard';
-      case 'soncollab_sales':
-        return '/sales/dashboard';
-      case 'soncollab_content':
-        return '/content/dashboard';
-      default:
-        return '/';
-    }
+    return this.pageTitleService.getDashboardRoute(currentRole);
   }
 
 }

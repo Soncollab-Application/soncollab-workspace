@@ -5,7 +5,7 @@ import {TranslateModule} from '@ngx-translate/core';
 import {Subject, takeUntil} from 'rxjs';
 import {NavigationService} from '../../../../core/services/navigation.service';
 import {AuthService} from '../../../../core/services/auth.service';
-import {LanguageService, ThemeService } from 'shared-lib';
+import {LanguageService, ThemeService, getUserInitials } from 'shared-lib';
 import {NavigationConfig} from '../../../../core/models/navigation-config.model';
 import {PageTitleService} from '../../../../core/services/page-title.service';
 import { NgbPopover } from '@ng-bootstrap/ng-bootstrap';
@@ -89,12 +89,7 @@ export class Header implements OnInit, OnDestroy {
   }
 
   getInitials(): string {
-    const user = this.currentUser();
-    if (!user) return 'U';
-
-    const first = user.first_name?.charAt(0) || '';
-    const last = user.last_name?.charAt(0) || '';
-    return (first + last).toUpperCase() || user.email?.charAt(0).toUpperCase() || 'U';
+    return getUserInitials(this.currentUser());
   }
 
   toggleTheme(): void {

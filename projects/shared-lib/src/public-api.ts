@@ -23,7 +23,7 @@ export * from './lib/modules/choices/choices.module';
 export * from './lib/modules/toast/toast-container.component';
 export * from './lib/modules/toast/toast.service';
 export * from './lib/modules/toast/toast.module';
-
+export * from './lib/utils/user.utils';
 
 // Main module
 export * from './lib/shared-lib.module';

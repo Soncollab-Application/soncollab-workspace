@@ -174,7 +174,7 @@ export class AuthService {
 
   private validateToken(token: string): Observable<BackofficeUser> {
     const headers = { Authorization: `Bearer ${token}` };
-    const url = `${this.AUTH_ENDPOINTS.me}?populate=role`;
+    const url = `${this.AUTH_ENDPOINTS.me}`;
 
     return this.http.get<BackofficeUser>(url, { headers })
       .pipe(
