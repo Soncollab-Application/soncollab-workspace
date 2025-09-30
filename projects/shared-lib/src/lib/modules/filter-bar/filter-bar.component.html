@@ -1,0 +1,76 @@
+<div class="bg-light rounded p-3 mb-4">
+  <div class="row g-3 align-items-end">
+    @if (showSearch()) {
+      <div class="col-md-4">
+        <div class="input-group">
+          <span class="input-group-text bg-white">
+            <i class="bi bi-search"></i>
+          </span>
+          <input
+            type="text"
+            class="form-control"
+            [placeholder]="getSearchPlaceholder()"
+            [value]="searchTerm()"
+            (input)="onSearchInput($event)"
+          >
+        </div>
+      </div>
+    }
+
+    @for (filter of filters(); track filter.key) {
+      <div class="col-md-3">
+        @if (filter.type === 'select') {
+          <select
+            class="form-select"
+            [value]="getFilterValue(filter.key)"
+            (change)="onFilterChange(filter.key, $any($event.target).value)"
+          >
+            <option value="">{{ filter.placeholder || filter.label }}</option>
+            @for (option of filter.options; track option.value) {
+              <option [value]="option.value">{{ option.label }}</option>
+            }
+          </select>
+        } @else if (filter.type === 'date') {
+          <input
+            type="date"
+            class="form-control"
+            [placeholder]="filter.placeholder || filter.label"
+            [value]="getFilterValue(filter.key)"
+            (change)="onFilterChange(filter.key, $any($event.target).value)"
+          >
+        } @else if (filter.type === 'boolean') {
+          <select
+            class="form-select"
+            [value]="getFilterValue(filter.key)"
+            (change)="onFilterChange(filter.key, $any($event.target).value)"
+          >
+            <option value="">{{ filter.placeholder || filter.label }}</option>
+            <option value="true">{{ 'filterBar.yes' | translate }}</option>
+            <option value="false">{{ 'filterBar.no' | translate }}</option>
+          </select>
+        } @else {
+          <input
+            type="text"
+            class="form-control"
+            [placeholder]="filter.placeholder || filter.label"
+            [value]="getFilterValue(filter.key)"
+            (input)="onFilterChange(filter.key, $any($event.target).value)"
+          >
+        }
+      </div>
+    }
+
+    @if (showClearButton() && hasActiveFilters()) {
+      <div class="col-auto">
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          (click)="onClearFilters()"
+        >
+          <i class="bi bi-x-circle me-1"></i>
+          {{ 'filterBar.reset' | translate }}
+        </button>
+      </div>
+    }
+  </div>
+</div>

@@ -115,7 +115,7 @@ export class ToastService {
     methods[type](message, config);
   }
 
-  private show(toast: Omit<Toast, 'id'>): void {
+  public show(toast: Omit<Toast, 'id'>): void {
     const newToast: Toast = {
       ...toast,
       id: this.generateId(),

@@ -1,0 +1,35 @@
+<div class="card h-100" [class.cursor-pointer]="clickable()">
+  @if (loading()) {
+    <div class="card-body text-center">
+      <div class="spinner-border spinner-border-sm text-primary" role="status">
+        <span class="visually-hidden">{{ 'kpiCard.loading' | translate }}</span>
+      </div>
+    </div>
+  } @else {
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-start mb-3">
+        <div>
+          <p class="text-muted mb-1 small text-uppercase fw-semibold">{{ data().label }}</p>
+          <h3 class="mb-0 fw-bold">{{ data().value }}</h3>
+        </div>
+        @if (data().icon) {
+          <div [class]="'rounded-circle p-3 d-flex align-items-center justify-content-center ' + (data().bgClass || 'bg-primary bg-opacity-10')" style="width: 60px; height: 60px;">
+            <i [class]="'bi bi-' + data().icon + ' fs-4 ' + (data().iconClass || 'text-primary')"></i>
+          </div>
+        }
+      </div>
+
+      @if (hasTrend()) {
+        <div class="d-flex align-items-center gap-2">
+          <span [class]="'badge ' + trendClass()">
+            <i [class]="'bi ' + trendIcon() + ' me-1'"></i>
+            {{ data().trend }}%
+          </span>
+          @if (data().trendLabel) {
+            <small class="text-muted">{{ data().trendLabel }}</small>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

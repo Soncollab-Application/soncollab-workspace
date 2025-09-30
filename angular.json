@@ -150,6 +150,10 @@
           "builder": "@angular/build:application",
           "options": {
             "browser": "projects/back-office/src/main.ts",
+            "polyfills": [
+              "zone.js",
+              "@angular/localize/init"
+            ],
             "tsConfig": "projects/back-office/tsconfig.app.json",
             "assets": [
               {

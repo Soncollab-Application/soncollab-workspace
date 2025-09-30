@@ -84,6 +84,11 @@ export const adminRoutes: Routes = [
       },
 
       {
+        path: 'test',
+        loadComponent: () => import('../../../pages/test/test-components/test-components').then(c => c.TestComponents)
+      },
+
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full'

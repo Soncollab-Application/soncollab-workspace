@@ -1,0 +1,155 @@
+<div class="table-responsive">
+  @if (loading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">{{ 'dataTable.loading' | translate }}</span>
+      </div>
+    </div>
+  } @else {
+    <table class="table table-hover align-middle">
+      <thead class="table-light">
+      <tr>
+        @if (selectable()) {
+          <th style="width: 40px;">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              [checked]="allSelected()"
+              (change)="toggleAllRows()"
+            >
+          </th>
+        }
+
+        @for (column of columns(); track column.key) {
+          <th
+            [style.width]="column.width"
+            [class.cursor-pointer]="column.sortable"
+            (click)="onSort(column)"
+          >
+            <div class="d-flex align-items-center gap-2">
+              <span>{{ column.label }}</span>
+              @if (column.sortable) {
+                <i [class]="'bi ' + getSortIcon(column)"></i>
+              }
+            </div>
+          </th>
+        }
+
+        @if (hasActions()) {
+          <th style="width: 100px;" class="text-end">Actions</th>
+        }
+      </tr>
+      </thead>
+
+      <tbody>
+        @if (data().length === 0) {
+          <tr>
+            <td [attr.colspan]="columns().length + (selectable() ? 1 : 0) + (hasActions() ? 1 : 0)" class="text-center py-5 text-muted">
+              {{ 'dataTable.noData' | translate }}
+            </td>
+          </tr>
+        }
+
+        @for (row of data(); track $index) {
+          <tr
+            [class.cursor-pointer]="clickable()"
+            (click)="onRowClick(row)"
+          >
+            @if (selectable()) {
+              <td (click)="$event.stopPropagation()">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  [checked]="isRowSelected(row)"
+                  (change)="toggleRowSelection(row)"
+                >
+              </td>
+            }
+
+            @for (column of columns(); track column.key) {
+              <td [class]="getCellClass(row, column)">
+                @if (column.type === 'badge') {
+                  <span class="badge" [class]="getCellValue(row, column)">
+                    {{ getCellValue(row, column) }}
+                  </span>
+                } @else if (column.type === 'date') {
+                  {{ getCellValue(row, column) | date:'short' }}
+                } @else if (column.type === 'image') {
+                  <img
+                    [src]="getCellValue(row, column)"
+                    class="rounded"
+                    style="width: 40px; height: 40px; object-fit: cover;"
+                    alt=""
+                  >
+                } @else {
+                  {{ getCellValue(row, column) }}
+                }
+              </td>
+            }
+
+            @if (hasActions()) {
+              <td class="text-end" (click)="$event.stopPropagation()">
+                <div class="btn-group btn-group-sm">
+                  @for (action of actions(); track action.label) {
+                    @if (shouldShowAction(action, row)) {
+                      <button
+                        type="button"
+                        [class]="'btn ' + (action.class || 'btn-outline-primary')"
+                        (click)="onActionClick(action, row, $event)"
+                        [title]="action.label"
+                      >
+                        @if (action.icon) {
+                          <i [class]="'bi bi-' + action.icon"></i>
+                        } @else {
+                          {{ action.label }}
+                        }
+                      </button>
+                    }
+                  }
+                </div>
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    @if (pagination()) {
+      <nav class="d-flex justify-content-between align-items-center mt-3">
+        <div class="text-muted small">
+          {{ 'dataTable.showing' | translate }} {{ (pagination()!.currentPage - 1) * pagination()!.pageSize + 1 }}
+          {{ 'dataTable.to' | translate }} {{ Math.min(pagination()!.currentPage * pagination()!.pageSize, pagination()!.total) }}
+          {{ 'dataTable.of' | translate }} {{ pagination()!.total }} {{ 'dataTable.results' | translate }}
+        </div>
+
+        <ul class="pagination mb-0">
+          <li class="page-item" [class.disabled]="pagination()!.currentPage === 1">
+            <button class="page-link" (click)="onPageChange(pagination()!.currentPage - 1)">
+              {{ 'dataTable.previous' | translate }}
+            </button>
+          </li>
+
+          @for (page of getPageNumbers(); track $index) {
+            @if (page === -1) {
+              <li class="page-item disabled">
+                <span class="page-link">...</span>
+              </li>
+            } @else {
+              <li class="page-item" [class.active]="page === pagination()!.currentPage">
+                <button class="page-link" (click)="onPageChange(page)">
+                  {{ page }}
+                </button>
+              </li>
+            }
+          }
+
+          <li class="page-item" [class.disabled]="pagination()!.currentPage === pagination()!.pageCount">
+            <button class="page-link" (click)="onPageChange(pagination()!.currentPage + 1)">
+              {{ 'dataTable.next' | translate }}
+            </button>
+          </li>
+        </ul>
+      </nav>
+    }
+  }
+</div>

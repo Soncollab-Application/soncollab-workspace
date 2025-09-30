@@ -1,0 +1,20 @@
+<div class="text-center py-5">
+  <div class="mb-3">
+    <i [class]="'bi bi-' + icon() + ' display-1 text-muted opacity-25'"></i>
+  </div>
+
+  <h4 class="fw-semibold text-secondary mb-2">{{ title() }}</h4>
+
+  @if (message()) {
+    <p class="text-muted mb-4">{{ message() }}</p>
+  }
+
+  @if (actionLabel()) {
+    <button type="button" class="btn btn-primary" (click)="onAction()">
+      @if (actionIcon()) {
+        <i [class]="'bi bi-' + actionIcon() + ' me-2'"></i>
+      }
+      {{ actionLabel() }}
+    </button>
+  }
+</div>
