@@ -1,6 +1,5 @@
 import {
-  ApplicationConfig, importProvidersFrom, provideBrowserGlobalErrorListeners,
-  provideZonelessChangeDetection
+  ApplicationConfig, importProvidersFrom, provideBrowserGlobalErrorListeners, provideZoneChangeDetection,
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
@@ -21,7 +20,7 @@ export function HttpLoaderFactory(http: HttpClient) {
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideZonelessChangeDetection(),
+    provideZoneChangeDetection({eventCoalescing: true}),
     provideRouter(routes),
     provideHttpClient(
       withInterceptorsFromDi(),

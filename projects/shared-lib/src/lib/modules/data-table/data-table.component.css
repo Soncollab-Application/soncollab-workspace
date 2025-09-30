@@ -1,0 +1,7 @@
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.table th {
+  user-select: none;
+}

@@ -1,0 +1,13 @@
+{
+  "confirmDialog": {
+    "title": "Confirmation",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "delete": {
+      "title": "Confirm Deletion",
+      "message": "Are you sure you want to delete this item?",
+      "messageWithName": "Are you sure you want to delete \"{{name}}\"?",
+      "confirm": "Delete"
+    }
+  }
+}

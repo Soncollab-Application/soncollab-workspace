@@ -1,0 +1,20 @@
+<div class="modal-header">
+  @if (data().icon) {
+    <i [class]="'bi bi-' + data().icon + ' me-2 ' + (data().iconClass || 'text-danger')"></i>
+  }
+  <h5 class="modal-title">{{ getTitle() }}</h5>
+  <button type="button" class="btn-close" (click)="cancel()"></button>
+</div>
+
+<div class="modal-body">
+  <p class="mb-0">{{ data().message }}</p>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="cancel()">
+    {{ getCancelText() }}
+  </button>
+  <button type="button" [class]="'btn ' + getConfirmClass()" (click)="confirm()">
+    {{ getConfirmText() }}
+  </button>
+</div>

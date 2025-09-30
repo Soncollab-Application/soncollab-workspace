@@ -1,0 +1,12 @@
+{
+  "dataTable": {
+    "noData": "Aucune donnée disponible",
+    "loading": "Chargement...",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "showing": "Affichage de",
+    "to": "à",
+    "of": "sur",
+    "results": "résultats"
+  }
+}
