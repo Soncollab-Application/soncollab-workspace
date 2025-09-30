@@ -1,7 +1,9 @@
-import {inject, Injectable} from '@angular/core';
-import {ConfirmDialogComponent, ConfirmDialogData} from './confirm-dialog.component';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {TranslateService} from '@ngx-translate/core';
+import { Injectable, inject } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateService } from '@ngx-translate/core';
+import { ConfirmDialogComponent, ConfirmDialogData } from './confirm-dialog.component';
+import enTranslations from './i18n/en.json';
+import frTranslations from './i18n/fr.json';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +11,11 @@ import {TranslateService} from '@ngx-translate/core';
 export class ConfirmDialogService {
   private modalService = inject(NgbModal);
   private translate = inject(TranslateService);
+
+  constructor() {
+    this.translate.setTranslation('en', { confirmDialog: enTranslations.confirmDialog }, true);
+    this.translate.setTranslation('fr', { confirmDialog: frTranslations.confirmDialog }, true);
+  }
 
   open(data: ConfirmDialogData): Promise<boolean> {
     const modalRef = this.modalService.open(ConfirmDialogComponent, {
