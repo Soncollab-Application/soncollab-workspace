@@ -52,6 +52,12 @@ export * from './lib/modules/form-modal';
 export * from './lib/modules/empty-state';
 export * from './lib/modules/kpi-card';
 
+export * from './lib/modules/choice-lib/choice';
+export * from './lib/modules/choice-lib/choice.directive';
+export * from './lib/modules/choice-lib/choice.service';
+export * from './lib/modules/choice-lib/choice-lib.module';
+export * from './lib/modules/choice-lib/choice.types';
+
 
 export * from './lib/utils/user.utils';
 

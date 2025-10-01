@@ -10,6 +10,7 @@ import {ConfirmDialogModule} from './modules/confirm-dialog';
 import {FormModalModule} from './modules/form-modal';
 import {EmptyStateModule} from './modules/empty-state';
 import {KpiCardModule} from './modules/kpi-card';
+import {ChoiceLibModule} from './modules/choice-lib/choice-lib.module';
 @NgModule({
   imports: [
     ChoicesModule,
@@ -31,7 +32,8 @@ import {KpiCardModule} from './modules/kpi-card';
     ConfirmDialogModule,
     FormModalModule,
     EmptyStateModule,
-    KpiCardModule
+    KpiCardModule,
+    ChoiceLibModule
   ]
 })
 export class SharedLibModule { }

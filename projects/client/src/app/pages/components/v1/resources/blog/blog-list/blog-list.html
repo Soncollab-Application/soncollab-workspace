@@ -26,20 +26,27 @@
   <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-2 g-md-3 g-lg-4 mb-4">
     <!-- Categories Filter -->
     <div class="col">
-      <shared-choices-select
-        [options]="categoryOptions"
-        [choicesConfig]="categoryConfig"
-        [(ngModel)]="selectedCategorySlug"
-        (ngModelChange)="onCategoryChange($event)"
-        ariaLabel="{{ 'blog.categories' | translate }}"
-        theme="auto"
-        iconPosition="start"
-        staticIcon="fi-menu"
-        [transparent]="true">
-      </shared-choices-select>
+      @if (filtersReady) {
+        <div class="position-relative">
+          <i class="fi-menu position-absolute top-50 start-0 translate-middle-y ms-3" style="z-index: 10; pointer-events: none;"></i>
+          <lib-choice
+            [type]="'select-one'"
+            [options]="categoryOptions"
+            [config]="categoryConfig"
+            [cssClass]="'form-select form-icon-start bg-transparent'"
+            [ariaLabel]="'blog.categories' | translate"
+            [(ngModel)]="selectedCategorySlug"
+            (change)="onCategoryChange($any($event))"
+          />
+        </div>
+      } @else {
+        <select class="form-select bg-transparent" disabled>
+          <option>{{ 'blog.loading' | translate }}</option>
+        </select>
+      }
     </div>
 
-    <!-- Search - Gardé comme input normal car c'est un champ de saisie -->
+    <!-- Search - pas de changement nécessaire -->
     <div class="col">
       <div class="position-relative">
         <i class="fi-search position-absolute top-50 start-0 translate-middle-y ms-3"></i>
@@ -53,32 +60,46 @@
 
     <!-- Tags Filter -->
     <div class="col">
-      <shared-choices-select
-        [options]="tagOptions"
-        [choicesConfig]="tagConfig"
-        [(ngModel)]="selectedTagSlug"
-        (ngModelChange)="onTagChange($event)"
-        ariaLabel="{{ 'blog.tags' | translate }}"
-        theme="auto"
-        iconPosition="start"
-        staticIcon="fi-tag"
-        [transparent]="true">
-      </shared-choices-select>
+      @if (filtersReady) {
+        <div class="position-relative">
+          <i class="fi-tag position-absolute top-50 start-0 translate-middle-y ms-3"></i>
+          <lib-choice
+            [type]="'select-one'"
+            [options]="tagOptions"
+            [config]="tagConfig"
+            [cssClass]="'form-select form-icon-start bg-transparent'"
+            [ariaLabel]="'blog.tags' | translate"
+            [(ngModel)]="selectedTagSlug"
+            (change)="onTagChange($any($event))"
+          />
+        </div>
+      } @else {
+        <select class="form-select bg-transparent" disabled>
+          <option>{{ 'blog.loading' | translate }}</option>
+        </select>
+      }
     </div>
 
     <!-- Sort -->
     <div class="col">
-      <shared-choices-select
-        [options]="sortOptions"
-        [choicesConfig]="sortConfig"
-        [(ngModel)]="sortBy"
-        (ngModelChange)="onSortChange()"
-        ariaLabel="{{ 'blog.sortBy' | translate }}"
-        theme="auto"
-        iconPosition="start"
-        staticIcon="fi-sort"
-        [transparent]="true">
-      </shared-choices-select>
+      @if (filtersReady) {
+        <div class="position-relative">
+          <i class="fi-sort position-absolute top-50 start-0 translate-middle-y ms-3"></i>
+          <lib-choice
+            [type]="'select-one'"
+            [options]="sortOptions"
+            [config]="sortConfig"
+            [cssClass]="'form-select form-icon-start bg-transparent'"
+            [ariaLabel]="'blog.sortBy' | translate"
+            [(ngModel)]="sortBy"
+            (change)="onSortChange()"
+          />
+        </div>
+      } @else {
+        <select class="form-select bg-transparent" disabled>
+          <option>{{ 'blog.loading' | translate }}</option>
+        </select>
+      }
     </div>
   </div>
 
@@ -128,6 +149,7 @@
     </div>
   </div>
 </section>
+
 
 <!-- Le reste du template reste identique -->
 <section class="container pb-2 pb-sm-3 pb-md-4 pb-lg-5 mb-xxl-3">
