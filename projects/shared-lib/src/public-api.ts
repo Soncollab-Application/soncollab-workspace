@@ -33,9 +33,6 @@ export * from './lib/models/table.model';
 
 
 // Modules
-export * from './lib/modules/choices/choices-select.component';
-export * from './lib/modules/choices/choices.directive';
-export * from './lib/modules/choices/choices.module';
 
 export * from './lib/modules/toast/toast-container.component';
 export * from './lib/modules/toast/toast.service';
@@ -51,6 +48,12 @@ export * from './lib/modules/confirm-dialog';
 export * from './lib/modules/form-modal';
 export * from './lib/modules/empty-state';
 export * from './lib/modules/kpi-card';
+
+export * from './lib/modules/choice-lib/choice';
+export * from './lib/modules/choice-lib/choice.directive';
+export * from './lib/modules/choice-lib/choice.service';
+export * from './lib/modules/choice-lib/choice-lib.module';
+export * from './lib/modules/choice-lib/choice.types';
 
 
 export * from './lib/utils/user.utils';

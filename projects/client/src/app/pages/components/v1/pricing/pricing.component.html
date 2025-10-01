@@ -3,7 +3,7 @@
   <!-- Header -->
   <div class="text-center mb-5 pt-4">
     <h1 class="display-4 fw-lighter for-inter-font mb-3">{{ 'pricing.title' | translate }}</h1>
-    <p class="fs-5  text-muted">{{ 'pricing.description' | translate }}</p>
+    <p class="fs-5 text-muted">{{ 'pricing.description' | translate }}</p>
   </div>
 
   <!-- Controls -->
@@ -15,26 +15,38 @@
 
             <div class="col-md-4">
               <label class="form-label fw-semibold">{{ 'pricing.productType' | translate }}</label>
-              <shared-choices-select
-                [options]="productTypeOptions"
-                [choicesConfig]="productTypeConfig"
-                [(ngModel)]="selectedProductType"
-                (ngModelChange)="onProductTypeChange($event)"
-                [ariaLabel]="'pricing.productType' | translate"
-                [transparent]="false">
-              </shared-choices-select>
+              @if (initialDataLoaded) {
+                <lib-choice
+                  [type]="'select-one'"
+                  [options]="productTypeOptions"
+                  [config]="productTypeConfig"
+                  [cssClass]="'form-select'"
+                  [ariaLabel]="'pricing.productType' | translate"
+                  [(ngModel)]="selectedProductType"
+                />
+              } @else {
+                <select class="form-select" disabled>
+                  <option>{{ 'common.loading' | translate }}</option>
+                </select>
+              }
             </div>
 
             <div class="col-md-4">
               <label class="form-label fw-semibold">{{ 'pricing.currency' | translate }}</label>
-              <shared-choices-select
-                [options]="currencyOptions"
-                [choicesConfig]="currencyConfig"
-                [(ngModel)]="selectedCurrency"
-                (ngModelChange)="onCurrencyChange($event)"
-                [ariaLabel]="'pricing.currency' | translate"
-                [transparent]="false">
-              </shared-choices-select>
+              @if (initialDataLoaded) {
+                <lib-choice
+                  [type]="'select-one'"
+                  [options]="currencyOptions"
+                  [config]="currencyConfig"
+                  [cssClass]="'form-select'"
+                  [ariaLabel]="'pricing.currency' | translate"
+                  [(ngModel)]="selectedCurrency"
+                />
+              } @else {
+                <select class="form-select" disabled>
+                  <option>{{ 'common.loading' | translate }}</option>
+                </select>
+              }
             </div>
 
             <!-- Billing Period -->
@@ -88,8 +100,7 @@
 
 </div>
 
-
-
+<!-- Le reste reste identique -->
 <div class="container-lg">
   <!-- Plans Display -->
   @if (filteredPlans.length > 0 && !isLoading && !error) {

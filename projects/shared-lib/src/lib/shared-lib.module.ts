@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import {ChoicesModule} from './modules/choices/choices.module';
 import {ToastModule} from './modules/toast/toast.module';
 import {LanguageOrchestratorService, LanguageService, RecaptchaService, ThemeService} from './services';
 import {ToastService} from './modules/toast';
@@ -10,9 +9,9 @@ import {ConfirmDialogModule} from './modules/confirm-dialog';
 import {FormModalModule} from './modules/form-modal';
 import {EmptyStateModule} from './modules/empty-state';
 import {KpiCardModule} from './modules/kpi-card';
+import {ChoiceLibModule} from './modules/choice-lib/choice-lib.module';
 @NgModule({
   imports: [
-    ChoicesModule,
     ToastModule
   ],
   providers: [
@@ -24,14 +23,14 @@ import {KpiCardModule} from './modules/kpi-card';
     FilterService
   ],
   exports: [
-    ChoicesModule,
     ToastModule,
     DataTableModule,
     FilterBarModule,
     ConfirmDialogModule,
     FormModalModule,
     EmptyStateModule,
-    KpiCardModule
+    KpiCardModule,
+    ChoiceLibModule
   ]
 })
 export class SharedLibModule { }
