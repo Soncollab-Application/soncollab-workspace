@@ -1,0 +1,67 @@
+@if (isText()) {
+  <input
+    libChoice
+    [config]="mergedConfigValue"
+    [disabled]="disabledValue"
+    type="text"
+    [class]="cssClassValue"
+    [name]="name"
+    [id]="id"
+    [placeholder]="placeholderValue"
+    [required]="required"
+    [attr.aria-label]="ariaLabel"
+    (addItem)="onAddItem($event)"
+    (removeItem)="onRemoveItem($event)"
+    (highlightItem)="highlightItem.emit($event)"
+    (unhighlightItem)="unhighlightItem.emit($event)"
+    (search)="search.emit($event)"
+    (change)="change.emit($event)"
+  />
+} @else if (isSelect()) {
+  <select
+    libChoice
+    [config]="mergedConfigValue"
+    [disabled]="disabledValue"
+    [multiple]="isMultipleValue"
+    [class]="cssClassValue"
+    [name]="name"
+    [id]="id"
+    [required]="required"
+    [attr.aria-label]="ariaLabel"
+    (addItem)="onAddItem($event)"
+    (removeItem)="onRemoveItem($event)"
+    (highlightItem)="highlightItem.emit($event)"
+    (unhighlightItem)="unhighlightItem.emit($event)"
+    (choice)="choice.emit($event)"
+    (search)="search.emit($event)"
+    (showDropdown)="showDropdown.emit()"
+    (hideDropdown)="hideDropdown.emit()"
+    (change)="change.emit($event)"
+  >
+    @if (!hasGroups()) {
+      @for (option of optionsValue; track option.value) {
+        <option
+          [value]="option.value"
+          [selected]="option.selected"
+          [disabled]="option.disabled"
+        >
+          {{ option.label }}
+        </option>
+      }
+    } @else {
+      @for (group of groupsValue; track group.label) {
+        <optgroup [label]="group.label">
+          @for (option of group.choices; track option.value) {
+            <option
+              [value]="option.value"
+              [selected]="option.selected"
+              [disabled]="option.disabled"
+            >
+              {{ option.label }}
+            </option>
+          }
+        </optgroup>
+      }
+    }
+  </select>
+}
