@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import {ChoicesModule} from './modules/choices/choices.module';
 import {ToastModule} from './modules/toast/toast.module';
 import {LanguageOrchestratorService, LanguageService, RecaptchaService, ThemeService} from './services';
 import {ToastService} from './modules/toast';
@@ -13,7 +12,6 @@ import {KpiCardModule} from './modules/kpi-card';
 import {ChoiceLibModule} from './modules/choice-lib/choice-lib.module';
 @NgModule({
   imports: [
-    ChoicesModule,
     ToastModule
   ],
   providers: [
@@ -25,7 +23,6 @@ import {ChoiceLibModule} from './modules/choice-lib/choice-lib.module';
     FilterService
   ],
   exports: [
-    ChoicesModule,
     ToastModule,
     DataTableModule,
     FilterBarModule,

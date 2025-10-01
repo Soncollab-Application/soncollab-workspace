@@ -33,9 +33,6 @@ export * from './lib/models/table.model';
 
 
 // Modules
-export * from './lib/modules/choices/choices-select.component';
-export * from './lib/modules/choices/choices.directive';
-export * from './lib/modules/choices/choices.module';
 
 export * from './lib/modules/toast/toast-container.component';
 export * from './lib/modules/toast/toast.service';

@@ -2,16 +2,7 @@ import {Component, signal} from '@angular/core';
 import {ReactiveFormsModule, } from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import {TranslateModule} from '@ngx-translate/core';
-import  { ChoiceOption, ChoiceConfig, ChoiceGroup , Choice } from 'shared-lib';
-
-interface TestUser {
-  documentId: string;
-  username: string;
-  email: string;
-  role: string;
-  status: 'active' | 'inactive';
-  createdAt: string;
-}
+import {Choice, ChoiceConfig, ChoiceGroup, ChoiceOption } from "shared-lib";
 
 @Component({
   selector: 'app-test-components',
