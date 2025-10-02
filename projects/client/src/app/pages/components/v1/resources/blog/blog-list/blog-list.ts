@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, signal} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { forkJoin, Subject, Observable, timer, finalize } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -28,7 +28,7 @@ export class BlogList implements OnInit, OnDestroy {
   private searchSubject = new Subject<string>();
   private componentId = 'blog-list';
 
-  private dataReady = signal<boolean>(false);
+  private initialDataLoaded = false;
   private pendingParams: Params | null = null;
 
   public articles: BlogArticle[] = [];
@@ -185,7 +185,7 @@ export class BlogList implements OnInit, OnDestroy {
 
   private setupRouteListener(): void {
     this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
-      if (this.dataReady()) {
+      if (this.initialDataLoaded) {
         this.processRouteParams(params);
       } else {
         this.pendingParams = params;
@@ -205,21 +205,17 @@ export class BlogList implements OnInit, OnDestroy {
 
       this.buildCategoryOptions();
       this.buildTagOptions();
+      this.initialDataLoaded = true;
+      this.hasInitialLoad = true;
+
+      if (this.pendingParams) {
+        this.processRouteParams(this.pendingParams);
+        this.pendingParams = null;
+      }
 
       setTimeout(() => {
-        this.dataReady.set(true);
-        this.hasInitialLoad = true;
-
-        if (this.pendingParams) {
-          this.processRouteParams(this.pendingParams);
-          this.pendingParams = null;
-        }
-
-        setTimeout(() => {
-          this.filtersReady = true;
-        }, 100);
-      }, 0);
-
+        this.filtersReady = true;
+      }, 100);
     });
   }
 

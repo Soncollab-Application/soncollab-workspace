@@ -1,4 +1,4 @@
-import {Component, inject, OnInit, OnDestroy, signal} from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -27,7 +27,7 @@ export class PricingComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private componentId = 'pricing';
   private hasInitialLoad = false;
-  protected dataReady = signal<boolean>(false);
+  protected initialDataLoaded = false;
   private pendingParams: Params | null = null;
   private isProcessingRouteChange = false;
 
@@ -183,7 +183,7 @@ export class PricingComponent implements OnInit, OnDestroy {
     this.activatedRoute.queryParams
       .pipe(takeUntil(this.destroy$))
       .subscribe(params => {
-        if (this.dataReady()) {
+        if (this.initialDataLoaded) {
           this.processRouteParams(params);
         } else {
           this.pendingParams = params;
@@ -273,18 +273,14 @@ export class PricingComponent implements OnInit, OnDestroy {
           this.buildOptions();
           this.setDefaultValues();
 
-          setTimeout(() => {
-            this.dataReady.set(true);
-            this.isLoading = false;
-            this.hasInitialLoad = true;
+          this.isLoading = false;
+          this.initialDataLoaded = true;
+          this.hasInitialLoad = true;
 
-            if (this.pendingParams) {
-              setTimeout(() => {
-                this.processRouteParams(this.pendingParams!);
-                this.pendingParams = null;
-              }, 150);
-            }
-          }, 0);
+          if (this.pendingParams) {
+            this.processRouteParams(this.pendingParams);
+            this.pendingParams = null;
+          }
         },
         error: (error) => {
           console.error('Erreur lors du chargement des données pricing:', error);
