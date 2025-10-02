@@ -144,7 +144,7 @@ export class NewsletterModal implements OnInit, OnDestroy {
 
     this.translateService.get(errorMessageKey).subscribe((message: string) => {
       this.toastService.showError(message, {
-        header: this.translateService.instant('newsletter.errors.title'),
+        title: this.translateService.instant('newsletter.errors.title'),
         position: 'top-center',
         delay: 6000
       });

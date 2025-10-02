@@ -26,15 +26,16 @@ export * from './lib/components/status-badge/status-badge.component';
 
 // Models
 export * from './lib/models/language.model';
-export * from './lib/models/pagination.model';
-export * from './lib/models/filter.model';
+export * from './lib/modules/data-table/pagination.model';
+export * from './lib/modules/filter-bar/filter.model';
 export * from './lib/models/crud.model';
-export * from './lib/models/table.model';
+export * from './lib/modules/data-table/table.model';
 
 
 // Modules
 
-export * from './lib/modules/toast/toast-container.component';
+export * from './lib/modules/toast/toast';
+export * from './lib/modules/toast/toast.types';
 export * from './lib/modules/toast/toast.service';
 export * from './lib/modules/toast/toast.module';
 

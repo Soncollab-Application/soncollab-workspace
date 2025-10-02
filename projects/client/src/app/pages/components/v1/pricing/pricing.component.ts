@@ -462,7 +462,7 @@ export class PricingComponent implements OnInit, OnDestroy {
             this.toastService.showSuccess(
               this.translateService.instant('contact.form.success'),
               {
-                header: this.translateService.instant('contact.form.success.title'),
+                title: this.translateService.instant('contact.form.success.title'),
                 delay: 5000
               }
             );

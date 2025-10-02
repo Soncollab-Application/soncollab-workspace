@@ -1,0 +1,119 @@
+@for (position of activePositions(); track position) {
+  <div [class]="'toast-container p-3 position-fixed ' + getPositionClass(position)">
+    @for (toast of getToastsByPosition(position); track toast.id) {
+
+      <!-- Tiny variant -->
+      @if (toast.variant === 'tiny') {
+        <div
+          class="toast fade show"
+          [class]="getToastClasses(toast)"
+          [attr.data-bs-theme]="getDataBsTheme(toast)"
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true">
+          <div class="d-flex">
+            <div class="toast-body me-2">
+              {{ toast.message }}
+            </div>
+            <button
+              type="button"
+              class="btn-close ms-auto"
+              (click)="remove(toast.id)"
+              aria-label="Close">
+            </button>
+          </div>
+        </div>
+      }
+
+      <!-- Tiny with icon variant -->
+      @if (toast.variant === 'tiny-icon') {
+        <div
+          class="toast fade show"
+          [class]="getToastClasses(toast)"
+          [attr.data-bs-theme]="getDataBsTheme(toast)"
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true">
+          <div class="d-flex">
+            @if (toast.icon) {
+              <i [class]="toast.icon + ' fs-base mt-1 me-2'"></i>
+            }
+            <div class="toast-body me-2">
+              {{ toast.message }}
+            </div>
+            @if (toast.type === 'light') {
+              <button
+                type="button"
+                class="btn btn-sm fs-base opacity-75 border-0 p-0 ms-auto"
+                (click)="remove(toast.id)"
+                aria-label="Close">
+                <i class="fi-close"></i>
+              </button>
+            } @else {
+              <button
+                type="button"
+                class="btn-close ms-auto"
+                (click)="remove(toast.id)"
+                aria-label="Close">
+              </button>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Header variant -->
+      @if (toast.variant === 'header') {
+        <div
+          class="toast fade show"
+          [class]="getToastClasses(toast)"
+          [attr.data-bs-theme]="getDataBsTheme(toast)"
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true">
+          <div class="toast-header" [class.text-dark]="toast.type === 'light'">
+            @if (toast.icon) {
+              <i [class]="getHeaderIconClasses(toast)"></i>
+            }
+            <span class="fw-semibold">{{ toast.title || 'Notification' }}</span>
+            @if (toast.timestamp) {
+              <small class="text-body-secondary ms-auto me-2">{{ getTimeAgo(toast.timestamp) }}</small>
+            }
+            @if (toast.type === 'light') {
+              <button
+                type="button"
+                class="btn btn-sm fs-base opacity-75 border-0 p-0"
+                (click)="remove(toast.id)"
+                aria-label="Close">
+                <i class="fi-close"></i>
+              </button>
+            } @else {
+              <button
+                type="button"
+                class="btn-close"
+                (click)="remove(toast.id)"
+                aria-label="Close">
+              </button>
+            }
+          </div>
+          <div class="toast-body" [class.text-body]="toast.type === 'light'">
+            {{ toast.message }}
+          </div>
+
+          @if (toast.actionButtons && toast.actionButtons.length > 0) {
+            <div class="d-flex pt-3">
+              @for (action of toast.actionButtons; track action.label) {
+                <button
+                  type="button"
+                  [class]="action.cssClass || 'btn btn-sm btn-primary me-2'"
+                  (click)="onActionClick(toast.id, action)">
+                  {{ action.label }}
+                </button>
+              }
+            </div>
+          }
+        </div>
+      }
+
+    }
+  </div>
+}

@@ -1,7 +1,6 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
-import {FilterValue, SortConfig} from '../models';
-
+import {FilterValue, SortConfig} from '../modules/filter-bar/filter.model';
 @Injectable({
   providedIn: 'root'
 })

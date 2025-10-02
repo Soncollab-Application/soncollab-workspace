@@ -44,6 +44,7 @@ export class Choice implements AfterViewInit, OnDestroy, ControlValueAccessor {
   private _cssClass = signal<string>('form-select');
   private _pendingValue: any = null;
   private _isReady = signal<boolean>(false);
+  private _initializationEndTime = 0;
 
   @Input() set type(value: 'text' | 'select-one' | 'select-multiple') {
     this._type.set(value);
@@ -191,6 +192,10 @@ export class Choice implements AfterViewInit, OnDestroy, ControlValueAccessor {
           }
           this._pendingValue = null;
         }
+
+        setTimeout(() => {
+          this._initializationEndTime = Date.now();
+        }, 300);
       }, 100);
     }, 0);
   }
@@ -246,13 +251,23 @@ export class Choice implements AfterViewInit, OnDestroy, ControlValueAccessor {
     }
   }
 
-  onAddItem(detail: ChoiceEventDetail): void {
-    this.addItem.emit(detail);
+  onRemoveItem(detail: ChoiceEventDetail): void {
+    this.removeItem.emit(detail);
     this.updateValue();
   }
 
-  onRemoveItem(detail: ChoiceEventDetail): void {
-    this.removeItem.emit(detail);
+  onShowDropdown(): void {
+    this.showDropdown.emit();
+    const now = Date.now();
+    const timeSinceInit = now - this._initializationEndTime;
+
+    if (this._initializationEndTime > 0 && timeSinceInit > 0) {
+      this.onTouched();
+    }
+  }
+
+  onAddItem(detail: ChoiceEventDetail): void {
+    this.addItem.emit(detail);
     this.updateValue();
   }
 
@@ -273,7 +288,13 @@ export class Choice implements AfterViewInit, OnDestroy, ControlValueAccessor {
       this.valueChange.emit(actualValue);
       this.change.emit(actualValue);
       this.onChange(actualValue);
-      this.onTouched();
+
+      const now = Date.now();
+      const timeSinceInit = now - this._initializationEndTime;
+
+      if (this._initializationEndTime > 0 && timeSinceInit > 0) {
+        this.onTouched();
+      }
 
       Promise.resolve().then(() => {
         this.isInternalChange = false;

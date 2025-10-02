@@ -243,7 +243,7 @@ export class ContactModal implements OnInit, OnDestroy {
           setTimeout(() => {
             this.optionsLoaded.set(true);
 
-            // Réinitialiser tous les champs comme untouched
+            // IMPORTANT: Marquer tous les champs comme untouched et pristine
             Object.keys(this.contactForm.controls).forEach(key => {
               const control = this.contactForm.get(key);
               control?.markAsUntouched();
@@ -330,7 +330,7 @@ export class ContactModal implements OnInit, OnDestroy {
           this.toastService.showWarning(
             this.getTranslation('contact.form.error.emailCheck', 'Impossible de vérifier l\'email'),
             {
-              header: this.getTranslation('contact.form.error.title', 'Erreur'),
+              title: this.getTranslation('contact.form.error.title', 'Erreur'),
               position: 'top-center',
               delay: 5000
             }
@@ -343,12 +343,11 @@ export class ContactModal implements OnInit, OnDestroy {
     const field = this.contactForm.get(fieldName);
     if (!field) return false;
 
-    const shouldShow = field.touched || this.formSubmitAttempted();
-    return field.invalid && shouldShow;
+    return field.invalid && field.touched;
   }
 
+
   async onSubmit(): Promise<void> {
-    this.formSubmitAttempted.set(true);
 
     if (this.contactForm.invalid || this.isSubmitting()) {
       this.markAllFieldsAsTouched();
@@ -356,7 +355,7 @@ export class ContactModal implements OnInit, OnDestroy {
       this.toastService.showWarning(
         this.getTranslation('contact.form.error.validation', 'Veuillez corriger les erreurs dans le formulaire'),
         {
-          header: this.getTranslation('contact.form.error.title', 'Erreur de validation'),
+          title: this.getTranslation('contact.form.error.title', 'Erreur de validation'),
           position: 'top-center',
           delay: 4000
         }
@@ -413,7 +412,7 @@ export class ContactModal implements OnInit, OnDestroy {
             this.toastService.showError(
               errorMessage,
               {
-                header: this.getTranslation('contact.form.error.title', 'Erreur'),
+                title: this.getTranslation('contact.form.error.title', 'Erreur'),
                 position: 'top-center',
                 autohide: true,
                 delay: 8000
@@ -428,7 +427,7 @@ export class ContactModal implements OnInit, OnDestroy {
       this.toastService.showError(
         this.getTranslation('contact.form.error.security.network', 'Erreur de vérification de sécurité. Vérifiez votre connexion et réessayez.'),
         {
-          header: this.getTranslation('contact.form.error.title', 'Erreur'),
+          title: this.getTranslation('contact.form.error.title', 'Erreur'),
           position: 'top-center',
           delay: 6000
         }

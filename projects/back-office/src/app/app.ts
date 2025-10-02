@@ -6,12 +6,12 @@ import {
   LanguageOrchestratorService,
   LanguageService,
   ThemeService,
-  ToastContainerComponent
+  Toast
 } from 'shared-lib';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, ToastContainerComponent],
+  imports: [RouterOutlet, Toast],
   templateUrl: './app.html',
   standalone: true,
   styleUrl: './app.css'
