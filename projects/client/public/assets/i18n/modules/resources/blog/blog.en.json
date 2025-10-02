@@ -30,6 +30,7 @@
     "viewAllWithTag": "View all articles with #{{tag}}",
     "estimatedReadTime": "Estimated read time",
     "wordCount": "{{count}} words",
+    "loading": "Loading...",
     "loadingArticle": "Loading article...",
     "loadingArticles": "Loading articles...",
     "filterBy": "Filter by",

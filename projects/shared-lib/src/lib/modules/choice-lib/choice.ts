@@ -42,24 +42,36 @@ export class Choice implements AfterViewInit, OnDestroy, ControlValueAccessor {
   private _value = signal<any>(null);
   private _initialized = signal<boolean>(false);
   private _cssClass = signal<string>('form-select');
-
-
+  private _pendingValue: any = null;
+  private _isReady = signal<boolean>(false);
 
   @Input() set type(value: 'text' | 'select-one' | 'select-multiple') {
     this._type.set(value);
   }
 
   @Input() set options(value: ChoiceOption[]) {
+    const hasChanged = JSON.stringify(this._options()) !== JSON.stringify(value);
     this._options.set(value);
-    if (this._initialized() && value.length > 0) {
-      setTimeout(() => this.updateChoicesOptions(), 0);
+
+    if (this._initialized() && hasChanged && value.length > 0) {
+      this._isReady.set(false);
+      setTimeout(() => {
+        this.updateChoicesOptions();
+        setTimeout(() => this._isReady.set(true), 100);
+      }, 0);
     }
   }
 
   @Input() set groups(value: ChoiceGroup[]) {
+    const hasChanged = JSON.stringify(this._groups()) !== JSON.stringify(value);
     this._groups.set(value);
-    if (this._initialized() && value.length > 0) {
-      setTimeout(() => this.updateChoicesOptions(), 0);
+
+    if (this._initialized() && hasChanged && value.length > 0) {
+      this._isReady.set(false);
+      setTimeout(() => {
+        this.updateChoicesOptions();
+        setTimeout(() => this._isReady.set(true), 100);
+      }, 0);
     }
   }
 
@@ -99,7 +111,6 @@ export class Choice implements AfterViewInit, OnDestroy, ControlValueAccessor {
   @Output() showDropdown = new EventEmitter<void>();
   @Output() hideDropdown = new EventEmitter<void>();
 
-  // ControlValueAccessor
   private onChange: (value: any) => void = () => {};
   private onTouched: () => void = () => {};
   private isInternalChange = false;
@@ -107,7 +118,6 @@ export class Choice implements AfterViewInit, OnDestroy, ControlValueAccessor {
 
   private mergedConfig = computed<ChoiceConfig>(() => {
     const cssClasses = this._cssClass().split(' ').filter(c => c);
-
     return {
       placeholder: this._placeholder() !== '',
       placeholderValue: this._placeholder(),
@@ -127,27 +137,21 @@ export class Choice implements AfterViewInit, OnDestroy, ControlValueAccessor {
   protected get mergedConfigValue(): ChoiceConfig {
     return this.mergedConfig();
   }
-
   protected get placeholderValue(): string {
     return this._placeholder();
   }
-
   protected get disabledValue(): boolean {
     return this._disabled();
   }
-
   protected get isMultipleValue(): boolean {
     return this.isMultiple();
   }
-
   protected get cssClassValue(): string {
     return this._cssClass();
   }
-
   protected get optionsValue(): ChoiceOption[] {
     return this._options();
   }
-
   protected get groupsValue(): ChoiceGroup[] {
     return this._groups();
   }
@@ -155,13 +159,15 @@ export class Choice implements AfterViewInit, OnDestroy, ControlValueAccessor {
   constructor() {
     effect(() => {
       const val = this._value();
-      if (this._initialized() && this.choiceDirective && !this.isInternalChange) {
+      if (this._isReady() && this._initialized() && this.choiceDirective && !this.isInternalChange) {
         const instance = this.choiceDirective.getInstance();
         if (instance && val !== undefined && val !== null) {
           setTimeout(() => {
             instance.setChoiceByValue(Array.isArray(val) ? val : [val]);
           }, 50);
         }
+      } else if (val !== undefined && val !== null) {
+        this._pendingValue = val;
       }
     });
   }
@@ -170,11 +176,28 @@ export class Choice implements AfterViewInit, OnDestroy, ControlValueAccessor {
     setTimeout(() => {
       this._initialized.set(true);
       this.updateChoicesOptions();
+
+      setTimeout(() => {
+        this._isReady.set(true);
+
+        if (this._pendingValue !== null) {
+          const instance = this.choiceDirective?.getInstance();
+          if (instance) {
+            instance.setChoiceByValue(
+              Array.isArray(this._pendingValue)
+                ? this._pendingValue
+                : [this._pendingValue]
+            );
+          }
+          this._pendingValue = null;
+        }
+      }, 100);
     }, 0);
   }
 
   ngOnDestroy(): void {
     this._initialized.set(false);
+    this._isReady.set(false);
   }
 
   private updateChoicesOptions(): void {
@@ -182,52 +205,44 @@ export class Choice implements AfterViewInit, OnDestroy, ControlValueAccessor {
     const options = this._options();
     const groups = this._groups();
 
-    if (instance && this.isSelect()) {
-      instance.clearChoices();
+    if (!instance || !this.isSelect()) return;
 
-      if (groups.length > 0) {
-        const groupedChoices = groups.map(group => ({
-          label: group.label,
-          disabled: group.disabled || false,
-          choices: group.choices.map(opt => ({
-            value: opt.value,
-            label: opt.label,
-            selected: opt.selected || false,
-            disabled: opt.disabled || false,
-            customProperties: opt.customProperties
-          }))
-        }));
+    instance.clearChoices();
 
-        instance.setChoices(groupedChoices, 'value', 'label', false);
-      } else if (options.length > 0) {
-        instance.setChoices(
-          options.map(opt => ({
-            value: opt.value,
-            label: opt.label,
-            selected: opt.selected || false,
-            disabled: opt.disabled || false,
-            placeholder: opt.placeholder || opt.value === '',
-            customProperties: opt.customProperties
-          })),
-          'value',
-          'label',
-          false
-        );
+    if (groups.length > 0) {
+      const groupedChoices = groups.map(group => ({
+        label: group.label,
+        disabled: group.disabled || false,
+        choices: group.choices.map(opt => ({
+          value: opt.value,
+          label: opt.label,
+          selected: opt.selected || false,
+          disabled: opt.disabled || false,
+          customProperties: opt.customProperties
+        }))
+      }));
+      instance.setChoices(groupedChoices, 'value', 'label', false);
+    } else if (options.length > 0) {
+      instance.setChoices(
+        options.map(opt => ({
+          value: opt.value,
+          label: opt.label,
+          selected: opt.selected || false,
+          disabled: opt.disabled || false,
+          placeholder: opt.placeholder || opt.value === '',
+          customProperties: opt.customProperties
+        })),
+        'value',
+        'label',
+        false
+      );
+    }
 
-        const val = this._value();
-        if (!val || val === '' || (Array.isArray(val) && val.length === 0)) {
-          setTimeout(() => {
-            instance.setChoiceByValue('');
-          }, 10);
-        }
-      }
-
-      const val = this._value();
-      if (val !== undefined && val !== null && val !== '') {
-        setTimeout(() => {
-          instance.setChoiceByValue(Array.isArray(val) ? val : [val]);
-        }, 50);
-      }
+    const val = this._value();
+    if (val !== undefined && val !== null && val !== '') {
+      setTimeout(() => {
+        instance.setChoiceByValue(Array.isArray(val) ? val : [val]);
+      }, 50);
     }
   }
 
@@ -243,7 +258,7 @@ export class Choice implements AfterViewInit, OnDestroy, ControlValueAccessor {
 
   private updateValue(): void {
     const instance = this.choiceDirective?.getInstance();
-    if (instance && !this.isExternalUpdate) { // NE PAS émettre si c'est une mise à jour externe
+    if (instance && !this.isExternalUpdate) {
       this.isInternalChange = true;
       const currentValue = instance.getValue(true);
 
@@ -257,7 +272,6 @@ export class Choice implements AfterViewInit, OnDestroy, ControlValueAccessor {
       this._value.set(actualValue);
       this.valueChange.emit(actualValue);
       this.change.emit(actualValue);
-
       this.onChange(actualValue);
       this.onTouched();
 
@@ -270,6 +284,7 @@ export class Choice implements AfterViewInit, OnDestroy, ControlValueAccessor {
   writeValue(value: any): void {
     this.isExternalUpdate = true;
     this._value.set(value || '');
+    this._pendingValue = value;
     Promise.resolve().then(() => {
       this.isExternalUpdate = false;
     });
@@ -287,7 +302,6 @@ export class Choice implements AfterViewInit, OnDestroy, ControlValueAccessor {
     this._disabled.set(isDisabled);
   }
 
-  // Méthodes publiques
   public getChoicesInstance(): any {
     return this.choiceDirective?.getInstance() || null;
   }

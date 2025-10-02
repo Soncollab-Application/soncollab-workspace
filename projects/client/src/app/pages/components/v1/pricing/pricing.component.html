@@ -15,7 +15,7 @@
 
             <div class="col-md-4">
               <label class="form-label fw-semibold">{{ 'pricing.productType' | translate }}</label>
-              @if (initialDataLoaded) {
+              @if (dataReady()) {
                 <lib-choice
                   [type]="'select-one'"
                   [options]="productTypeOptions"
@@ -33,7 +33,7 @@
 
             <div class="col-md-4">
               <label class="form-label fw-semibold">{{ 'pricing.currency' | translate }}</label>
-              @if (initialDataLoaded) {
+              @if (dataReady()) {
                 <lib-choice
                   [type]="'select-one'"
                   [options]="currencyOptions"
@@ -223,7 +223,7 @@
   }
 
   <!-- No Plans Found -->
-  @if (filteredPlans.length === 0 && !isLoading && !error && initialDataLoaded) {
+  @if (filteredPlans.length === 0 && !isLoading && !error && dataReady()) {
     <div class="text-center py-5">
       <i class="fi-search fs-1 text-muted mb-3"></i>
       <h4>{{ 'pricing.noPlans.title' | translate }}</h4>
@@ -308,7 +308,7 @@
 
   <!-- Contact Section -->
   <div class="text-center py-5">
-    <div class="card border-0 bg-gradient" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+    <div class="card border-1 ">
       <div class="card-body p-5">
         <i class="fi-headphones fs-1 text-primary mb-3"></i>
         <h3 class="mb-3">{{ 'pricing.contact.title' | translate }}</h3>
