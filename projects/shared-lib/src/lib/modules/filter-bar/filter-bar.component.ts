@@ -1,10 +1,10 @@
 import {Component, inject, input, OnInit, output, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-import {FilterConfig, FilterValue} from '../../models';
 import {TranslateModule, TranslateService} from '@ngx-translate/core';
 import enTranslations from './i18n/en.json';
 import frTranslations from './i18n/fr.json';
+import {FilterConfig, FilterValue} from './filter.model';
 
 @Component({
   selector: 'lib-filter-bar',
