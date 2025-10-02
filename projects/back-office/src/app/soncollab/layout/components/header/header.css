@@ -2,9 +2,17 @@
   background-color: rgba(var(--fn-body-color-rgb), 0.08) !important;
 }
 
+.header-container .btn-link {
+  transition: background-color 0.3s ease;
+}
+
 .offcanvas .nav-link:not(.active):hover {
   background-color: rgba(var(--fn-body-color-rgb), 0.08) !important;
   color: var(--fn-emphasis-color) !important;
+}
+
+.offcanvas .nav-link {
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .offcanvas .submenu-item {
