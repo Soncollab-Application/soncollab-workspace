@@ -1,0 +1,15 @@
+<span [class]="getBadgeClasses()">
+  @if (icon() && iconPosition() === 'left') {
+    <i [class]="getIconClasses()"></i>
+  }
+
+  @if (text()) {
+    {{ text() }}
+  } @else {
+    <ng-content />
+  }
+
+  @if (icon() && iconPosition() === 'right') {
+    <i [class]="getIconClasses()"></i>
+  }
+</span>

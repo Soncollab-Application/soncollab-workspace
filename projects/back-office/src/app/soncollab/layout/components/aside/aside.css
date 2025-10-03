@@ -14,10 +14,20 @@
 .sidebar-container .nav-link:not(.active):hover {
   background-color: rgba(var(--fn-body-color-rgb), 0.08) !important;
   color: var(--fn-emphasis-color) !important;
+  transition: background-color 0.3s ease, color 0.3s ease !important;
+}
+
+.sidebar-container .nav-link {
+  transition: background-color 0.3s ease, color 0.3s ease !important;
 }
 
 .sidebar-container .btn-link:hover {
   background-color: rgba(var(--fn-body-color-rgb), 0.08) !important;
+  transition: background-color 0.3s ease!important;
+}
+
+.sidebar-container .btn-link {
+  transition: background-color 0.3s ease!important;
 }
 
 .submenu-item {

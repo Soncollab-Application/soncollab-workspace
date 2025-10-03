@@ -1,4 +1,4 @@
-import {Component, effect, inject, OnInit, signal} from '@angular/core';
+import {Component, effect, inject, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ToastAction, ToastItem, ToastPosition} from './toast.types';
 import {ToastService} from './toast.service';
@@ -11,7 +11,7 @@ import {ToastService} from './toast.service';
   templateUrl: './toast.html',
   styleUrls: ['./toast.css']
 })
-export class Toast implements OnInit {
+export class Toast {
   private toastService = inject(ToastService);
 
   toasts = this.toastService.toasts$;
@@ -33,10 +33,6 @@ export class Toast implements OnInit {
       });
     });
   }
-
-  ngOnInit(): void {
-        throw new Error("Method not implemented.");
-    }
 
   getToastsByPosition(position: ToastPosition): ToastItem[] {
     return this.toastService.getToastsByPosition(position);

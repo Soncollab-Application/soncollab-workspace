@@ -1,0 +1,28 @@
+<div [class]="getAccordionClasses()" [id]="accordionId()">
+  @for (item of items(); track item.id) {
+    <div class="accordion-item">
+      <h3 class="accordion-header" [id]="'heading-' + item.id">
+        <button
+          type="button"
+          [class]="getButtonClasses(item)"
+          data-bs-toggle="collapse"
+          [attr.data-bs-target]="'#collapse-' + item.id"
+          [attr.aria-expanded]="isExpanded(item.id)"
+          [attr.aria-controls]="'collapse-' + item.id"
+          (click)="onToggle(item.id)">
+          @if (item.icon) {
+            <i [class]="'fi-' + item.icon + ' fs-lg pe-1 me-2'"></i>
+          }
+          <span class="hover-effect-underline stretched-link me-2">{{ item.title }}</span>
+        </button>
+      </h3>
+      <div
+        [class]="getCollapseClasses(item)"
+        [id]="'collapse-' + item.id"
+        [attr.aria-labelledby]="'heading-' + item.id"
+        [attr.data-bs-parent]="'#' + accordionId()">
+        <div [class]="getBodyClasses()">{{ item.content }}</div>
+      </div>
+    </div>
+  }
+</div>

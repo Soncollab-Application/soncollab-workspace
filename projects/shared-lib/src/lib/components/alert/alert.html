@@ -1,0 +1,49 @@
+<div [class]="getAlertClasses()" role="alert">
+  @if (icon()) {
+    <i [class]="getIconClasses()"></i>
+  }
+
+  @if (heading() || additionalContent()) {
+    <div [class]="icon() ? 'ps-sm-3 pe-sm-4' : ''">
+      @if (heading()) {
+        <h4 class="alert-heading mb-2">{{ heading() }}</h4>
+      }
+
+      <p [class]="additionalContent() ? 'mb-3' : 'mb-0'">
+        {{ message() }}
+        @if (linkText() && linkUrl()) {
+          <a class="alert-link" [href]="linkUrl()">{{ linkText() }}</a>
+        }
+      </p>
+
+      @if (additionalContent()) {
+        <hr [class]="'text-' + type() + ' opacity-25 my-3'">
+        <p class="mb-0">{{ additionalContent() }}</p>
+      }
+    </div>
+  } @else {
+    @if (icon()) {
+      <div>
+        {{ message() }}
+        @if (linkText() && linkUrl()) {
+          <a class="alert-link" [href]="linkUrl()">{{ linkText() }}</a>
+        }
+      </div>
+    } @else {
+      {{ message() }}
+      @if (linkText() && linkUrl()) {
+        <a class="alert-link" [href]="linkUrl()">{{ linkText() }}</a>
+      }
+    }
+  }
+
+  @if (dismissible()) {
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="alert"
+      aria-label="Close"
+      (click)="onDismiss()">
+    </button>
+  }
+</div>
