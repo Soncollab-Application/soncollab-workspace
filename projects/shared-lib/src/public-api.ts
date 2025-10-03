@@ -24,8 +24,11 @@ export * from './lib/pipes/relative-date.pipe';
 
 // Components
 export * from './lib/components/status-badge/status-badge.component';
+
 export * from './lib/components/accordion/accordion';
 export * from './lib/components/accordion/accordion.types';
+export * from './lib/components/alert/alert';
+export * from './lib/components/alert/alert.types';
 
 // Models
 export * from './lib/models/language.model';
