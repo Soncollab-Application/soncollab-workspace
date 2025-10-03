@@ -23,10 +23,13 @@ export * from './lib/pipes/truncate.pipe';
 export * from './lib/pipes/relative-date.pipe';
 
 // Components
-export * from './lib/components/status-badge/status-badge.component';
+// Remplacer l'ancien export
+export * from './lib/components/badge/badge';
+export * from './lib/components/badge/badge.types';
 
 export * from './lib/components/accordion/accordion';
 export * from './lib/components/accordion/accordion.types';
+
 export * from './lib/components/alert/alert';
 export * from './lib/components/alert/alert.types';
 
