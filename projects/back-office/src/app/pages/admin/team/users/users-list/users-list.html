@@ -1,1 +1,127 @@
-<p>users-list works!</p>
+<header class="page-header">
+  <div>
+    <h1>Gestion des Utilisateurs</h1>
+    <p class="text-muted">{{ users().length }} utilisateurs</p>
+  </div>
+
+  @if (canCreate()) {
+    <button (click)="createUser()" class="btn-primary">
+      + Créer un utilisateur
+    </button>
+  }
+</header>
+
+<div class="filters-bar">
+  <input
+    type="search"
+    [(ngModel)]="searchTerm"
+    (ngModelChange)="onSearchChange()"
+    placeholder="Rechercher par nom ou email..."
+    class="search-input"
+  />
+
+  <select [(ngModel)]="roleFilter" (ngModelChange)="onFilterChange()" class="filter-select">
+    <option value="">Tous les rôles</option>
+    @for (role of availableRoles(); track role) {
+      <option [value]="role">{{ role }}</option>
+    }
+  </select>
+
+  <select [(ngModel)]="statusFilter" (ngModelChange)="onFilterChange()" class="filter-select">
+    <option value="">Tous les statuts</option>
+    <option value="active">Actif</option>
+    <option value="blocked">Bloqué</option>
+  </select>
+
+  <select [(ngModel)]="confirmedFilter" (ngModelChange)="onFilterChange()" class="filter-select">
+    <option value="">Confirmation</option>
+    <option value="true">Confirmé</option>
+    <option value="false">Non confirmé</option>
+  </select>
+</div>
+
+@if (loading()) {
+  <div class="loading-container">
+    <div class="spinner"></div>
+    <p>Chargement...</p>
+  </div>
+} @else if (error()) {
+  <div class="error-container">
+    <p class="error-message">{{ error() }}</p>
+    <button (click)="loadUsers()" class="btn-secondary">Réessayer</button>
+  </div>
+} @else {
+  <div class="table-container">
+    <table class="data-table">
+      <thead>
+      <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Nom complet</th>
+        <th>Rôle</th>
+        <th>Statut</th>
+        <th>Confirmé</th>
+        <th class="text-right">Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+        @for (user of users(); track user.documentId) {
+          <tr>
+            <td class="font-medium">{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ getFullName(user) }}</td>
+            <td>
+              <span class="badge-role">{{ user.role.name  }}</span>
+            </td>
+            <td>
+                    <span [class]="user.blocked ? 'badge badge-danger' : 'badge badge-success'">
+                      {{ user.blocked ? 'Bloqué' : 'Actif' }}
+                    </span>
+            </td>
+            <td>
+                    <span [class]="user.confirmed ? 'badge badge-info' : 'badge badge-warning'">
+                      {{ user.confirmed ? 'Oui' : 'Non' }}
+                    </span>
+            </td>
+            <td>
+              <div class="actions-cell">
+                @if (canView()) {
+                  <button (click)="viewUser(user)" class="btn-icon btn-info" title="Voir">
+                    👁
+                  </button>
+                }
+
+                @if (canUpdate()) {
+                  <button (click)="editUser(user)" class="btn-icon btn-warning" title="Modifier">
+                    ✏️
+                  </button>
+                }
+
+                @if (canUpdate()) {
+                  <button
+                    (click)="toggleBlockUser(user)"
+                    class="btn-icon"
+                    [class.btn-danger]="!user.blocked"
+                    [class.btn-success]="user.blocked"
+                    [title]="user.blocked ? 'Débloquer' : 'Bloquer'">
+                    {{ user.blocked ? '✓' : '🚫' }}
+                  </button>
+                }
+
+                @if (canDelete()) {
+                  <button (click)="deleteUser(user)" class="btn-icon btn-danger" title="Supprimer">
+                    🗑
+                  </button>
+                }
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="7" class="empty-state">Aucun utilisateur trouvé</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

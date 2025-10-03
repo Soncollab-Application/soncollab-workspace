@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {BehaviorSubject, catchError, map, Observable, tap, throwError, timer} from 'rxjs';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {Router} from '@angular/router';
@@ -12,12 +12,14 @@ import {
   SonCollabRoleType
 } from '../models/auth.model';
 import {environment} from '../../../environments/environment';
+import { PERMISSION_CONFIG } from "shared-lib";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private readonly API_URL = environment.api.fullUrl;
+  private permissionConfig = inject(PERMISSION_CONFIG);
   private readonly AUTH_ENDPOINTS = {
     login: `${this.API_URL}/auth/local`,
     forgotPassword: `${this.API_URL}/auth/forgot-password`,
@@ -157,6 +159,14 @@ export class AuthService {
   }
 
   private setAuthState(user: BackofficeUser, token: string, refreshToken: string): void {
+    console.log(user, 'user');
+    if (user.role?.id) {
+      this.permissionConfig.roleId = user.role.id;
+      this.permissionConfig.endpoint = this.API_URL;
+      this.permissionConfig.accessDeniedUrl = '/access-denied';
+      console.log(this.permissionConfig , 'permissionConfig');
+    }
+
     this.updateAuthState({
       isAuthenticated: true,
       user,

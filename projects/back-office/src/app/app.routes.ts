@@ -49,6 +49,12 @@ export const routes: Routes = [
     loadComponent: () => import('./core/components/redirect/redirect').then(c => c.Redirect)
   },
 
+  {
+    path: 'access-denied',
+    loadComponent: () =>
+      import('./core/components/access-denied/access-denied').then(c => c.AccessDenied)
+  },
+
   // Route de fallback
   {
     path: '**',

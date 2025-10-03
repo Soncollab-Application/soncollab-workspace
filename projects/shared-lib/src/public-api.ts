@@ -10,12 +10,12 @@ export * from './lib/services/theme.service';
 export * from './lib/services/recaptcha.service';
 export * from './lib/services/base-crud.service';
 export * from './lib/services/filter.service';
+export * from './lib/services/permission.service';
 
 // Mixins
 export * from './lib/mixins/language-aware.mixin';
 
 // Directives
-export * from './lib/directives/has-permission.directive';
 export * from './lib/directives/tooltip.directive';
 
 // Pipes
@@ -23,7 +23,6 @@ export * from './lib/pipes/truncate.pipe';
 export * from './lib/pipes/relative-date.pipe';
 
 // Components
-// Remplacer l'ancien export
 export * from './lib/components/badge/badge';
 export * from './lib/components/badge/badge.types';
 
@@ -39,6 +38,13 @@ export * from './lib/modules/data-table/pagination.model';
 export * from './lib/modules/filter-bar/filter.model';
 export * from './lib/models/crud.model';
 export * from './lib/modules/data-table/table.model';
+export * from './lib/models/permission.models';
+
+//Config
+export * from './lib/config/permission.config';
+
+//guard
+export * from './lib/guards/permission.guard';
 
 
 // Modules

@@ -1,5 +1,6 @@
 import {Routes} from '@angular/router';
 import {Layout} from '../../../soncollab/layout/layout';
+import { pluginPermissionGuard } from "shared-lib";
 
 export const adminRoutes: Routes = [
   {
@@ -14,7 +15,13 @@ export const adminRoutes: Routes = [
       // Équipe
       {
         path: 'team/users',
-        loadComponent: () => import('../../../pages/admin/team/users/users-list/users-list').then(c => c.UsersList)
+        loadComponent: () => import('../../../pages/admin/team/users/users-list/users-list').then(c => c.UsersList),
+        canActivate: [pluginPermissionGuard(
+          'users-permissions',
+          'user',
+          'find',
+
+        )]
       },
       {
         path: 'team/invitations',
