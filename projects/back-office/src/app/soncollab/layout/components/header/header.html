@@ -10,8 +10,9 @@
 
   <button class="btn btn-link text-body-secondary p-2 rounded"
           (click)="toggleTheme()"
-          ngbPopover="{{'header.theme.toggle' | translate }}"
-          triggers="mouseenter:mouseleave"
+          [libTooltip]="'header.theme.toggle' | translate"
+          [tooltipPlacement]="'left'"
+          [tooltipSm]="true"
   >
     <i [class]="isDarkTheme() ? 'bi bi-sun' : 'bi bi-moon'"></i>
   </button>

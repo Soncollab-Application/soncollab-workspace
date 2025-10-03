@@ -16,6 +16,7 @@ export * from './lib/mixins/language-aware.mixin';
 
 // Directives
 export * from './lib/directives/has-permission.directive';
+export * from './lib/directives/tooltip.directive';
 
 // Pipes
 export * from './lib/pipes/truncate.pipe';
@@ -23,6 +24,8 @@ export * from './lib/pipes/relative-date.pipe';
 
 // Components
 export * from './lib/components/status-badge/status-badge.component';
+export * from './lib/components/accordion/accordion';
+export * from './lib/components/accordion/accordion.types';
 
 // Models
 export * from './lib/models/language.model';
@@ -55,6 +58,7 @@ export * from './lib/modules/choice-lib/choice.directive';
 export * from './lib/modules/choice-lib/choice.service';
 export * from './lib/modules/choice-lib/choice-lib.module';
 export * from './lib/modules/choice-lib/choice.types';
+
 
 
 export * from './lib/utils/user.utils';
