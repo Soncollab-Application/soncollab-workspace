@@ -63,7 +63,6 @@
             [class.is-valid]="isEmailValid()"
             placeholder="{{ 'contact.form.email.placeholder' | translate }}">
 
-          <!-- Spinner de vérification -->
           @if (isCheckingEmail()) {
             <div class="position-absolute top-50 end-0 translate-middle-y me-3">
               <div class="spinner-border spinner-border-sm text-primary" role="status">
@@ -73,7 +72,6 @@
           }
         </div>
 
-        <!-- Messages de validation email -->
         @if (isFieldInvalid('email')) {
           <div class="invalid-feedback d-block">
             @if (contactForm.get('email')?.errors?.['required']) {
@@ -85,7 +83,6 @@
           </div>
         }
 
-        <!-- Message contact existant -->
         @if (emailCheckResult()?.exists) {
           <div class="alert alert-info alert-sm mt-2 py-2">
             <i class="bi bi-info-circle me-2"></i>
@@ -128,15 +125,15 @@
           {{ 'contact.form.companySize' | translate }} <span class="text-danger">*</span>
         </label>
 
-        <!-- Company Size Select -->
-        @if (optionsLoaded() && companySizeOptions.length > 1) {
-          <shared-choices-select
+        @if (optionsLoaded() && companySizeOptions().length > 1) {
+          <lib-choice
             formControlName="company_size"
-            [options]="companySizeOptions"
-            [choicesConfig]="companySizeConfig"
-            ariaLabel="{{ 'contact.form.companySize' | translate }}"
-            theme="auto">
-          </shared-choices-select>
+            [type]="'select-one'"
+            [options]="companySizeOptions()"
+            [config]="companySizeConfig"
+            [cssClass]="'form-select'"
+            [ariaLabel]="'contact.form.companySize' | translate"
+          />
         } @else {
           <select class="form-select" disabled>
             <option>{{ 'contact.form.loading' | translate }}</option>
@@ -175,21 +172,20 @@
           {{ 'contact.form.contactType.name' | translate }} <span class="text-danger">*</span>
         </label>
 
-        <!-- Contact Type Select -->
         @if (isPricingInquiry) {
-          <div class="form-control  d-flex align-items-center">
+          <div class="form-control d-flex align-items-center">
             <strong>{{ 'contact.form.contactType.pricing_inquiry' | translate }}</strong>
           </div>
         } @else {
-          <!-- Contact Type Select normal -->
-          @if (optionsLoaded() && contactTypeOptions.length > 1) {
-            <shared-choices-select
+          @if (optionsLoaded() && contactTypeOptions().length > 1) {
+            <lib-choice
               formControlName="contact_type"
-              [options]="contactTypeOptions"
-              [choicesConfig]="contactTypeConfig"
-              ariaLabel="{{ 'contact.form.contactType' | translate }}"
-              theme="auto">
-            </shared-choices-select>
+              [type]="'select-one'"
+              [options]="contactTypeOptions()"
+              [config]="contactTypeConfig"
+              [cssClass]="'form-select'"
+              [ariaLabel]="'contact.form.contactType' | translate"
+            />
           } @else {
             <select class="form-select" disabled>
               <option>{{ 'contact.form.loading' | translate }}</option>
@@ -208,15 +204,15 @@
           {{ 'contact.form.country' | translate }} <span class="text-danger">*</span>
         </label>
 
-        <!-- Country Select avec Choices.js -->
-        @if (optionsLoaded() && countryOptions.length > 1) {
-          <shared-choices-select
+        @if (optionsLoaded() && countryOptions().length > 1) {
+          <lib-choice
             formControlName="country"
-            [options]="countryOptions"
-            [choicesConfig]="countryConfig"
-            ariaLabel="{{ 'contact.form.country' | translate }}"
-            theme="auto">
-          </shared-choices-select>
+            [type]="'select-one'"
+            [options]="countryOptions()"
+            [config]="countryConfig"
+            [cssClass]="'form-select'"
+            [ariaLabel]="'contact.form.country' | translate"
+          />
         } @else {
           <select class="form-select" disabled>
             <option>{{ 'contact.form.loading' | translate }}</option>

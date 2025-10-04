@@ -34,8 +34,6 @@
       "companyWebsite": "Website",
       "companyWebsite.placeholder": "https://www.example.com",
       "companyWebsite.invalid": "Invalid URL (must start with http:// or https://)",
-      "contactType.placeholder": "Select a type",
-      "contactType.required": "Contact type is required",
       "country": "Country",
       "country.placeholder": "Select your country",
       "country.required": "Country is required",
@@ -47,6 +45,8 @@
       "submitting": "Sending...",
       "contactType": {
         "name": "Contact Type",
+        "placeholder": "Select a type",
+        "required": "Contact type is required",
         "pricing_inquiry": "Pricing inquiry"
       },
       "success": "Your message has been sent successfully!",
@@ -1343,6 +1343,7 @@
     "viewAllWithTag": "View all articles with #{{tag}}",
     "estimatedReadTime": "Estimated read time",
     "wordCount": "{{count}} words",
+    "loading": "Loading...",
     "loadingArticle": "Loading article...",
     "loadingArticles": "Loading articles...",
     "filterBy": "Filter by",

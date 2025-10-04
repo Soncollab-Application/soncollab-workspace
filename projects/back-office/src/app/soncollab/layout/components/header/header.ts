@@ -5,10 +5,9 @@ import {TranslateModule} from '@ngx-translate/core';
 import {Subject, takeUntil} from 'rxjs';
 import {NavigationService} from '../../../../core/services/navigation.service';
 import {AuthService} from '../../../../core/services/auth.service';
-import {LanguageService, ThemeService, getUserInitials } from 'shared-lib';
+import {LanguageService, ThemeService, getUserInitials, TooltipDirective} from 'shared-lib';
 import {NavigationConfig} from '../../../../core/models/navigation-config.model';
 import {PageTitleService} from '../../../../core/services/page-title.service';
-import { NgbPopover } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-header',
@@ -16,7 +15,7 @@ import { NgbPopover } from '@ng-bootstrap/ng-bootstrap';
     CommonModule,
     RouterModule,
     TranslateModule,
-    NgbPopover,
+    TooltipDirective,
   ],
   templateUrl: './header.html',
   styleUrl: './header.css'

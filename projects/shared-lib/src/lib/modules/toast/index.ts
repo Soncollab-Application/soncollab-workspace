@@ -1,2 +1,3 @@
 export * from './toast.service';
-export * from './toast-container.component';
+export * from './toast.types';
+export * from './toast'

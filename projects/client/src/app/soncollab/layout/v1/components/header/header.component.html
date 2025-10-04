@@ -33,7 +33,7 @@
          tabindex="-1">
       <div class="offcanvas-header py-3">
         <h5 class="offcanvas-title" id="navbarNavLabel">
-          <!-- ✅ Logo dynamique aussi dans l'offcanvas mobile -->
+          <!-- Logo dynamique aussi dans l'offcanvas mobile -->
           <img [alt]="'Soncollab Logo - ' + (isDarkTheme ? 'Dark Theme' : 'Light Theme')"
                class="d-block  logo-transition"
                [src]="currentLogo"
@@ -191,7 +191,7 @@
           </li>
 
           <li class="nav-item py-lg-2 me-lg-n2 me-xl-0">
-            <a class="nav-link fw-bolder fs-6" [routerLinkActiveOptions]="{ exact: true }" [routerLinkActive]="['active']"
+            <a class="nav-link fw-bolder fs-6" [routerLinkActiveOptions]="{ exact: false }" [routerLinkActive]="['active']"
                [routerLink]="['/pricing']"
                (click)="closeMenu()">
               {{ 'header.navigation.pricing' | translate }}

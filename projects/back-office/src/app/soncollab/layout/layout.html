@@ -1,21 +1,18 @@
-<div class="container-fluid vh-100 p-0">
-  <div class="row g-0 h-100">
-    <!-- Sidebar -->
-    <app-aside class="col-auto bg-body border-end d-none d-lg-flex flex-column sidebar-container" [style.width]="'270px'">
-    </app-aside>
+<div class="d-flex vh-100 vw-100 overflow-hidden">
+  <app-aside class="col-auto bg-body border-end d-none d-lg-flex flex-column sidebar-container" [style.width]="'280px'">
+  </app-aside>
 
-    <!-- Main Content -->
-    <div class="col d-flex flex-column">
-      <app-header class="bg-body border-bottom d-flex align-items-center px-4 flex-shrink-0" [style.height]="'64px'">
-      </app-header>
+  <div class="d-flex flex-column flex-grow-1 overflow-hidden">
+    <app-header class="bg-body border-bottom d-flex align-items-center px-4 flex-shrink-0 rounded-start-2" [style.height]="'64px'">
+    </app-header>
 
-      <div class="row g-0 flex-grow-1">
-        <div class="col-lg d-flex flex-column">
+    <div class="d-flex flex-grow-1 overflow-hidden">
+      <div class="flex-grow-1 overflow-y-auto">
+        <div class="d-flex flex-column p-4 " style="min-height: 100%;">
           <app-content></app-content>
         </div>
       </div>
     </div>
   </div>
 </div>
-
 

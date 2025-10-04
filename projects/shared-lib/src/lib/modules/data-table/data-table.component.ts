@@ -1,9 +1,11 @@
 import {Component, input, output, signal, computed, OnInit, inject} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {PaginationState, SortConfig, TableAction, TableColumn} from '../../models';
 import {TranslatePipe, TranslateService} from '@ngx-translate/core';
 import enTranslations from './i18n/en.json';
 import frTranslations from './i18n/fr.json';
+import {TableAction, TableColumn} from './table.model';
+import {PaginationState} from './pagination.model';
+import {SortConfig} from '../filter-bar/filter.model';
 
 @Component({
   selector: 'lib-data-table',

@@ -1,24 +1,24 @@
 import { Injectable } from '@angular/core';
 import { TranslateService} from '@ngx-translate/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import {Language} from '../models/language.model';
+import {Language} from '../models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LanguageService {
 
-  // ✅ Langues supportées
+
   private readonly supportedLanguages: Language[] = [
     { code: 'fr', name: 'Français' },
     { code: 'en', name: 'English' }
   ];
 
-  // ✅ BehaviorSubject pour la langue actuelle
+
   private currentLanguageSubject = new BehaviorSubject<string>('fr');
   public currentLanguage$ = this.currentLanguageSubject.asObservable();
 
-  // ✅ BehaviorSubject pour détecter les changements
+
   private languageChangedSubject = new BehaviorSubject<string>('fr');
   public languageChanged$ = this.languageChangedSubject.asObservable();
 

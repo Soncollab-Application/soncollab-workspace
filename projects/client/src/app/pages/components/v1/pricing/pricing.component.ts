@@ -12,13 +12,14 @@ import {
   PricingCurrency,
   BillingPeriod
 } from '../../../models/pricing.model';
-import {
-  ToastService, ChoicesSelectComponent,
-  LanguageOrchestratorService,SelectOption, ChoicesConfig } from 'shared-lib';
+import { Choice } from 'shared-lib';
+import type { ChoiceOption, ChoiceConfig } from 'shared-lib';
+import { ToastService, LanguageOrchestratorService } from 'shared-lib';
+import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 
 @Component({
   selector: 'app-pricing',
-  imports: [CommonModule, FormsModule, TranslatePipe, ChoicesSelectComponent],
+  imports: [CommonModule, FormsModule, TranslatePipe, Choice],
   templateUrl: './pricing.component.html',
   styleUrl: './pricing.component.css'
 })
@@ -28,6 +29,11 @@ export class PricingComponent implements OnInit, OnDestroy {
   private hasInitialLoad = false;
   protected initialDataLoaded = false;
   private pendingParams: Params | null = null;
+  private isProcessingRouteChange = false;
+
+  // Subjects pour détecter les changements de modèle
+  private productTypeChange$ = new Subject<string>();
+  private currencyChange$ = new Subject<string>();
 
   // Services
   contactModalService = inject(ContactModalService);
@@ -47,27 +53,53 @@ export class PricingComponent implements OnInit, OnDestroy {
   public addons: PricingAddon[] = [];
   public currencies: PricingCurrency[] = [];
 
-  // Filters
-  public selectedProductType: string = '';
-  public selectedCurrency = '';
+  // Filters avec setters pour détecter les changements
+  private _selectedProductType: string = '';
+  public get selectedProductType(): string {
+    return this._selectedProductType;
+  }
+  public set selectedProductType(value: string) {
+    if (this._selectedProductType !== value && !this.isProcessingRouteChange) {
+      this._selectedProductType = value;
+      this.productTypeChange$.next(value);
+    } else {
+      this._selectedProductType = value;
+    }
+  }
+
+  private _selectedCurrency: string = '';
+  public get selectedCurrency(): string {
+    return this._selectedCurrency;
+  }
+  public set selectedCurrency(value: string) {
+    if (this._selectedCurrency !== value && !this.isProcessingRouteChange) {
+      this._selectedCurrency = value;
+      this.currencyChange$.next(value);
+    } else {
+      this._selectedCurrency = value;
+    }
+  }
+
   public billingPeriod: BillingPeriod = 'monthly';
   public selectedAddons: string[] = [];
 
   // Options pour les dropdowns
-  public productTypeOptions: SelectOption[] = [];
-  public currencyOptions: SelectOption[] = [];
+  public productTypeOptions: ChoiceOption[] = [];
+  public currencyOptions: ChoiceOption[] = [];
 
-  // Configurations Choices
-  public productTypeConfig: ChoicesConfig = {
+  // Configurations
+  public productTypeConfig: ChoiceConfig = {
     searchEnabled: false,
+    allowHTML: false,
     itemSelectText: '',
-    removeItemButton: false
+    placeholder: true
   };
 
-  public currencyConfig: ChoicesConfig = {
+  public currencyConfig: ChoiceConfig = {
     searchEnabled: false,
+    allowHTML: false,
     itemSelectText: '',
-    removeItemButton: false
+    placeholder: true
   };
 
   // Filtered plans
@@ -76,7 +108,6 @@ export class PricingComponent implements OnInit, OnDestroy {
 
     let filtered = this.plans.filter(plan => plan.productType === this.selectedProductType);
 
-    // Sort by price
     return filtered.sort((a, b) => {
       const priceA = this.billingPeriod === 'monthly' ? a.priceMonthly : a.priceYearly;
       const priceB = this.billingPeriod === 'monthly' ? b.priceMonthly : b.priceYearly;
@@ -100,16 +131,15 @@ export class PricingComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     window.scrollTo(0, 0);
 
-    // S'enregistrer pour les changements de langue
     this.languageOrchestrator.registerComponent(
       this.componentId,
       () => this.onLanguageChange()
     );
 
-    // Charger les données initiales
-    this.loadPricingData();
+    // Écouter les changements de productType et currency
+    this.setupModelChangeListeners();
 
-    // Configurer l'écoute des paramètres d'URL
+    this.loadPricingData();
     this.setupRouteListener();
   }
 
@@ -119,18 +149,36 @@ export class PricingComponent implements OnInit, OnDestroy {
     this.languageOrchestrator.unregisterComponent(this.componentId);
   }
 
-  /**
-   * Gère les changements de langue
-   */
+  private setupModelChangeListeners(): void {
+    // Product Type
+    this.productTypeChange$
+      .pipe(
+        debounceTime(100),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(productType => {
+        this.updateUrl({ productType: productType !== 'Studio' ? productType : undefined });
+      });
+
+    // Currency
+    this.currencyChange$
+      .pipe(
+        debounceTime(100),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(currency => {
+        this.updateUrl({ currency: currency !== 'USD' ? currency : undefined });
+      });
+  }
+
   private onLanguageChange(): void {
     if (this.hasInitialLoad) {
       this.loadPricingData();
     }
   }
 
-  /**
-   * Configure l'écoute des paramètres d'URL
-   */
   private setupRouteListener(): void {
     this.activatedRoute.queryParams
       .pipe(takeUntil(this.destroy$))
@@ -143,22 +191,23 @@ export class PricingComponent implements OnInit, OnDestroy {
       });
   }
 
-  /**
-   * Traite les paramètres d'URL
-   */
   private processRouteParams(params: Params): void {
+    if (this.isProcessingRouteChange) return;
+
+    this.isProcessingRouteChange = true;
+
     // Product Type
     if (params['productType'] && this.isValidProductType(params['productType'])) {
-      this.selectedProductType = params['productType'];
-    } else if (!this.selectedProductType && this.productTypeOptions.length > 0) {
-      this.selectedProductType = 'Studio';
+      this._selectedProductType = params['productType'];
+    } else if (!this._selectedProductType && this.productTypeOptions.length > 0) {
+      this._selectedProductType = 'Studio';
     }
 
     // Currency
     if (params['currency'] && this.isValidCurrency(params['currency'])) {
-      this.selectedCurrency = params['currency'];
-    } else if (!this.selectedCurrency) {
-      this.selectedCurrency = 'USD';
+      this._selectedCurrency = params['currency'];
+    } else if (!this._selectedCurrency) {
+      this._selectedCurrency = 'USD';
     }
 
     // Billing Period
@@ -173,23 +222,22 @@ export class PricingComponent implements OnInit, OnDestroy {
     } else {
       this.selectedAddons = [];
     }
+
+    setTimeout(() => {
+      this.isProcessingRouteChange = false;
+    }, 150);
   }
 
-  /**
-   * Met à jour l'URL avec les paramètres actuels
-   */
   private updateUrl(params: { [key: string]: string | string[] | undefined }): void {
     const currentParams = this.activatedRoute.snapshot.queryParams;
     const newParams = { ...currentParams, ...params };
 
-    // Nettoyer les paramètres undefined
     Object.keys(newParams).forEach(key => {
       if (newParams[key] === undefined || newParams[key] === null || newParams[key] === '') {
         delete newParams[key];
       }
     });
 
-    // Supprimer les valeurs par défaut pour éviter l'encombrement d'URL
     if (newParams['productType'] === 'Studio') {
       delete newParams['productType'];
     }
@@ -210,9 +258,6 @@ export class PricingComponent implements OnInit, OnDestroy {
     });
   }
 
-  /**
-   * Charge les données depuis l'API
-   */
   private loadPricingData(): void {
     this.isLoading = true;
     this.error = null;
@@ -232,7 +277,6 @@ export class PricingComponent implements OnInit, OnDestroy {
           this.initialDataLoaded = true;
           this.hasInitialLoad = true;
 
-          // Traiter les paramètres en attente
           if (this.pendingParams) {
             this.processRouteParams(this.pendingParams);
             this.pendingParams = null;
@@ -240,46 +284,35 @@ export class PricingComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Erreur lors du chargement des données pricing:', error);
-          this.error = this.translateService.instant('pricing.error.description') ;
+          this.error = this.translateService.instant('pricing.error.description');
           this.isLoading = false;
           this.hasInitialLoad = true;
         }
       });
   }
 
-  /**
-   * Construit les options pour les dropdowns
-   */
   private buildOptions(): void {
-    // Product types
     const productTypes = [...new Set(this.plans.map(plan => plan.productType))].sort();
     this.productTypeOptions = productTypes.map(type => ({
       value: type,
       label: type
     }));
 
-    // Currencies
     this.currencyOptions = this.currencies.map(currency => ({
       value: currency.code,
       label: this.getCurrencyLabel(currency)
     }));
   }
 
-  /**
-   * Définit les valeurs par défaut
-   */
   private setDefaultValues(): void {
-    if (!this.selectedProductType && this.productTypeOptions.length > 0) {
-      this.selectedProductType = 'Studio';
+    if (!this._selectedProductType && this.productTypeOptions.length > 0) {
+      this._selectedProductType = 'Studio';
     }
-    if (!this.selectedCurrency) {
-      this.selectedCurrency = 'USD';
+    if (!this._selectedCurrency) {
+      this._selectedCurrency = 'USD';
     }
   }
 
-  /**
-   * Obtient le label formaté pour une devise
-   */
   private getCurrencyLabel(currency: PricingCurrency): string {
     const labelMap: { [key: string]: string } = {
       'XOF': `${currency.code} - Franc CFA (${currency.symbol})`,
@@ -291,9 +324,6 @@ export class PricingComponent implements OnInit, OnDestroy {
     return labelMap[currency.code] || `${currency.code} (${currency.symbol})`;
   }
 
-  /**
-   * Validation des paramètres d'URL
-   */
   private isValidProductType(productType: string): boolean {
     return this.plans.some(plan => plan.productType === productType);
   }
@@ -304,19 +334,6 @@ export class PricingComponent implements OnInit, OnDestroy {
 
   private isValidAddon(addonId: string): boolean {
     return this.addons.some(addon => addon.documentId === addonId);
-  }
-
-  /**
-   * Handlers pour les changements de filtres
-   */
-  public onProductTypeChange(productType: string): void {
-    this.selectedProductType = productType;
-    this.updateUrl({ productType: productType !== 'Studio' ? productType : undefined });
-  }
-
-  public onCurrencyChange(currency: string): void {
-    this.selectedCurrency = currency;
-    this.updateUrl({ currency: currency !== 'USD' ? currency : undefined });
   }
 
   public onBillingPeriodChange(event: Event): void {
@@ -347,9 +364,7 @@ export class PricingComponent implements OnInit, OnDestroy {
     this.updateUrl({ addons: undefined });
   }
 
-  /**
-   * Méthodes de calcul de prix
-   */
+  // Méthodes de calcul de prix (identiques)
   public convertPrice(price: number): number {
     const convertedPrice = Math.round(price * this.currentConversionRate);
 
@@ -435,9 +450,6 @@ export class PricingComponent implements OnInit, OnDestroy {
     this.loadPricingData();
   }
 
-  /**
-   * Ouvre le modal de contact général
-   */
   public openContactModal(): void {
     this.contactModalService.openContactModal()
       .subscribe({
@@ -446,7 +458,7 @@ export class PricingComponent implements OnInit, OnDestroy {
             this.toastService.showSuccess(
               this.translateService.instant('contact.form.success'),
               {
-                header: this.translateService.instant('contact.form.success.title'),
+                title: this.translateService.instant('contact.form.success.title'),
                 delay: 5000
               }
             );
@@ -458,11 +470,7 @@ export class PricingComponent implements OnInit, OnDestroy {
       });
   }
 
-  /**
-   * Ouvre le modal de contact avec données pricing pré-remplies
-   */
   public contactForPricing(plan?: PricingPlan): void {
-    // Préparer le message pré-rempli
     let prefilledMessage = '';
 
     if (plan) {
@@ -493,7 +501,6 @@ export class PricingComponent implements OnInit, OnDestroy {
       prefilledMessage = this.translateService.instant('pricing.contact.general');
     }
 
-    // Données initiales pour le modal - AVEC VERROUILLAGE
     const initialData = {
       contact_type: 'pricing_inquiry',
       message: prefilledMessage,
@@ -504,11 +511,10 @@ export class PricingComponent implements OnInit, OnDestroy {
       isPricingInquiry: true
     };
 
-    // Ouvrir le modal de contact
     this.contactModalService.openContactModal(initialData)
       .subscribe({
         next: (result) => {
-
+          // Géré par le modal
         },
         error: (error) => {
           console.error('Erreur lors de l\'envoi:', error);
@@ -516,11 +522,7 @@ export class PricingComponent implements OnInit, OnDestroy {
       });
   }
 
-  /**
-   * Sélectionne un plan (pour futur checkout)
-   */
   public selectPlan(plan: PricingPlan): void {
-    // Pour l'instant, ouvre le modal pricing
     this.contactForPricing(plan);
   }
 }

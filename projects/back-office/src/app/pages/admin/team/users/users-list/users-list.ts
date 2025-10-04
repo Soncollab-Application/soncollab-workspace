@@ -1,11 +1,17 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+
 
 @Component({
   selector: 'app-users-list',
-  imports: [],
+  imports: [
+
+  ],
   templateUrl: './users-list.html',
   styleUrl: './users-list.css'
 })
-export class UsersList {
+export class UsersList implements OnInit {
+    ngOnInit(): void {
+
+    }
 
 }

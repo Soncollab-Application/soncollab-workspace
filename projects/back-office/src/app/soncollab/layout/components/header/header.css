@@ -1,10 +1,32 @@
 .header-container .btn-link:hover {
   background-color: rgba(var(--fn-body-color-rgb), 0.08) !important;
+  transition: background-color 0.2s ease, color 0.2s ease !important;
+  will-change: background-color, color !important;
+  backface-visibility: hidden !important;
+  transform: translateZ(0) !important;
+}
+
+.header-container .btn-link {
+  transition: background-color 0.2s ease, color 0.2s ease !important;
+  will-change: background-color, color !important;
+  backface-visibility: hidden !important;
+  transform: translateZ(0) !important;
 }
 
 .offcanvas .nav-link:not(.active):hover {
   background-color: rgba(var(--fn-body-color-rgb), 0.08) !important;
   color: var(--fn-emphasis-color) !important;
+  transition: background-color 0.2s ease, color 0.2s ease !important;
+  will-change: background-color, color !important;
+  backface-visibility: hidden !important;
+  transform: translateZ(0) !important;
+}
+
+.offcanvas .nav-link {
+  transition: background-color 0.2s ease, color 0.2s ease !important;
+  will-change: background-color, color !important;
+  backface-visibility: hidden !important;
+  transform: translateZ(0) !important;
 }
 
 .offcanvas .submenu-item {

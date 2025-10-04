@@ -1,17 +1,17 @@
 import {AfterViewInit, Component, OnInit, OnDestroy} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
-import { Subject } from 'rxjs';
+import {from, Subject} from 'rxjs';
 import {
   AosService,
   LanguageOrchestratorService,
   LanguageService,
   ThemeService,
-  ToastContainerComponent
+  Toast
 } from 'shared-lib';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, ToastContainerComponent],
+  imports: [RouterOutlet, Toast],
   templateUrl: './app.component.html',
   standalone: true,
   styleUrl: './app.component.css'

@@ -1,20 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { forkJoin, Subject, Observable, timer, finalize } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import {TranslatePipe, TranslateService} from '@ngx-translate/core';
-import {FormsModule} from '@angular/forms';
-import {ActivatedRoute, Params, Router, RouterLink} from '@angular/router';
-import {ApiSearchResponse, BlogArticle, BlogCategory, BlogResponse, BlogTag} from '../../../../../models/blog.model';
-import {BlogService} from '../../../../../services/blog.service';
-import {environment} from '../../../../../../../environments/environment';
-import {
-  ChoicesConfig,
-  ChoicesSelectComponent,
-  SelectOption,
-  LanguageOrchestratorService
-} from 'shared-lib';
-
-
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Params, Router, RouterLink } from '@angular/router';
+import { ApiSearchResponse, BlogArticle, BlogCategory, BlogResponse, BlogTag } from '../../../../../models/blog.model';
+import { BlogService } from '../../../../../services/blog.service';
+import { environment } from '../../../../../../../environments/environment';
+import { Choice } from 'shared-lib';
+import type { ChoiceOption, ChoiceConfig } from 'shared-lib';
+import { LanguageOrchestratorService } from 'shared-lib';
 
 @Component({
   selector: 'app-blog-list',
@@ -23,7 +18,7 @@ import {
     RouterLink,
     TranslatePipe,
     FormsModule,
-    ChoicesSelectComponent
+    Choice // Remplace ChoicesSelectComponent
   ],
   templateUrl: './blog-list.html',
   styleUrl: './blog-list.css'
@@ -36,21 +31,21 @@ export class BlogList implements OnInit, OnDestroy {
   private initialDataLoaded = false;
   private pendingParams: Params | null = null;
 
-
   public articles: BlogArticle[] = [];
   public categories: BlogCategory[] = [];
   public tags: BlogTag[] = [];
   public featuredArticles: BlogArticle[] = [];
 
-
   public currentCategory: BlogCategory | null = null;
   public currentTag: BlogTag | null = null;
   public searchQuery = '';
   public sortBy: 'newest' | 'oldest' | 'title' = 'newest';
-
+  private isProcessingRouteChange = false;
 
   public selectedCategorySlug: string = '';
   public selectedTagSlug: string = '';
+
+  public filtersReady = false;
 
   public isLoading = false;
   public totalArticles = 0;
@@ -61,15 +56,15 @@ export class BlogList implements OnInit, OnDestroy {
     total: number;
   } | null = null;
 
-  // Options pour les dropdowns
-  public categoryOptions: SelectOption[] = [];
-  public tagOptions: SelectOption[] = [];
-  public sortOptions: SelectOption[] = [];
+  // Options pour les dropdowns - maintenant ChoiceOption[]
+  public categoryOptions: ChoiceOption[] = [];
+  public tagOptions: ChoiceOption[] = [];
+  public sortOptions: ChoiceOption[] = [];
 
-  // Configurations Choices
-  public categoryConfig: ChoicesConfig = {};
-  public tagConfig: ChoicesConfig = {};
-  public sortConfig: ChoicesConfig = {};
+  // Configurations - maintenant ChoiceConfig
+  public categoryConfig: ChoiceConfig = {};
+  public tagConfig: ChoiceConfig = {};
+  public sortConfig: ChoiceConfig = {};
   private hasInitialLoad = false;
 
   constructor(
@@ -78,12 +73,14 @@ export class BlogList implements OnInit, OnDestroy {
     private translateService: TranslateService,
     private activatedRoute: ActivatedRoute,
     private router: Router
-  ) {}
+  ) {
+    // Initialiser les configurations
+    this.initializeConfigurations();
+  }
 
   public ngOnInit(): void {
     window.scrollTo(0, 0);
 
-    // S'enregistrer pour les changements de langue
     this.languageOrchestrator.registerComponent(
       this.componentId,
       () => this.onLanguageChange()
@@ -95,13 +92,40 @@ export class BlogList implements OnInit, OnDestroy {
     this.loadInitialData();
   }
 
-
-
   public ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
     this.languageOrchestrator.unregisterComponent(this.componentId);
     this.blogService.clearState();
+  }
+
+  private initializeConfigurations(): void {
+    this.categoryConfig = {
+      searchEnabled: false,
+      allowHTML: false,
+      itemSelectText: "",
+      noChoicesText: this.translateService.instant('blog.noChoices') || 'Aucun choix disponible',
+      placeholderValue: this.translateService.instant('blog.allCategories') || 'Toutes les catégories',
+      placeholder: true
+    };
+
+    this.tagConfig = {
+      searchEnabled: false,
+      allowHTML: false,
+      itemSelectText: "",
+      noChoicesText: this.translateService.instant('blog.noChoices') || 'Aucun choix disponible',
+      placeholderValue: this.translateService.instant('blog.allTags') || 'Tous les tags',
+      placeholder: true
+    };
+
+    this.sortConfig = {
+      searchEnabled: false,
+      allowHTML: false,
+      itemSelectText: "",
+      noChoicesText: this.translateService.instant('blog.noChoices') || 'Aucun choix disponible',
+      placeholderValue: this.translateService.instant('blog.sortBy') || 'Trier par',
+      placeholder: true
+    };
   }
 
   private onLanguageChange(): void {
@@ -127,7 +151,6 @@ export class BlogList implements OnInit, OnDestroy {
       this.buildCategoryOptions();
       this.buildTagOptions();
 
-      // Gérer la navigation après changement de langue
       const queryParamsToUpdate: { [key: string]: string | undefined } = {};
       let needsNavigation = false;
 
@@ -157,6 +180,7 @@ export class BlogList implements OnInit, OnDestroy {
 
   private updateTranslatedContent(): void {
     this.buildSortOptions();
+    this.initializeConfigurations(); // Mettre à jour les placeholders traduits
   }
 
   private setupRouteListener(): void {
@@ -168,7 +192,6 @@ export class BlogList implements OnInit, OnDestroy {
       }
     });
   }
-
 
   private loadInitialData(): void {
     forkJoin({
@@ -189,10 +212,19 @@ export class BlogList implements OnInit, OnDestroy {
         this.processRouteParams(this.pendingParams);
         this.pendingParams = null;
       }
+
+      setTimeout(() => {
+        this.filtersReady = true;
+      }, 100);
     });
   }
 
+
   private processRouteParams(params: Params): void {
+    if (this.isProcessingRouteChange) return;
+
+    this.isProcessingRouteChange = true;
+
     const page = parseInt(params['page']) || 1;
     const categorySlug = params['category'];
     const tagSlug = params['tag'];
@@ -206,8 +238,11 @@ export class BlogList implements OnInit, OnDestroy {
     this.currentTag = this.tags.find(t => t.slug === tagSlug) || null;
 
     this.loadArticles(page, categorySlug, tagSlug, search);
-  }
 
+    setTimeout(() => {
+      this.isProcessingRouteChange = false;
+    }, 100);
+  }
 
   private loadArticles(page: number = 1, categorySlug?: string, tagSlug?: string, searchQuery?: string): void {
     this.isLoading = true;
@@ -239,24 +274,43 @@ export class BlogList implements OnInit, OnDestroy {
             this.pagination = null;
             this.totalArticles = (response.data as any[]).length;
           }
-          this.articles = this.articles.map(article => ({ ...article, readTime: article.reading_time || this.blogService.calculateReadTime(article.content || article.excerpt || '') }));
+          this.articles = this.articles.map(article => ({
+            ...article,
+            readTime: article.reading_time || this.blogService.calculateReadTime(article.content || article.excerpt || '')
+          }));
         } else {
-          this.articles = []; this.totalArticles = 0; this.pagination = null;
+          this.articles = [];
+          this.totalArticles = 0;
+          this.pagination = null;
         }
       });
   }
 
   private buildCategoryOptions(): void {
     this.categoryOptions = [
-      { value: '', label: this.translateService.instant('blog.allCategories') },
-      ...this.categories.map(category => ({ value: category.slug, label: category.name }))
+      {
+        value: '',
+        label: this.translateService.instant('blog.allCategories'),
+        placeholder: true
+      },
+      ...this.categories.map(category => ({
+        value: category.slug,
+        label: category.name
+      }))
     ];
   }
 
   private buildTagOptions(): void {
     this.tagOptions = [
-      { value: '', label: this.translateService.instant('blog.allTags') },
-      ...this.tags.map(tag => ({ value: tag.slug, label: `#${tag.name}` }))
+      {
+        value: '',
+        label: this.translateService.instant('blog.allTags'),
+        placeholder: true
+      },
+      ...this.tags.map(tag => ({
+        value: tag.slug,
+        label: `#${tag.name}`
+      }))
     ];
   }
 
@@ -267,8 +321,6 @@ export class BlogList implements OnInit, OnDestroy {
       { value: 'title', label: this.translateService.instant('blog.sortOptions.title') }
     ];
   }
-
-  // --- LOGIQUE DE NAVIGATION CORRIGÉE ET SIMPLIFIÉE ---
 
   private setupSearchListener(): void {
     this.searchSubject.pipe(
@@ -284,16 +336,20 @@ export class BlogList implements OnInit, OnDestroy {
   }
 
   public onCategoryChange(categorySlug: string): void {
+    if (this.isProcessingRouteChange) return;
     this.router.navigate([], {
       relativeTo: this.activatedRoute,
-      queryParams: { category: categorySlug || undefined }
+      queryParams: { category: categorySlug || undefined, page: undefined }, // Reset page
+      queryParamsHandling: 'merge'
     });
   }
 
   public onTagChange(tagSlug: string): void {
+    if (this.isProcessingRouteChange) return;
     this.router.navigate([], {
       relativeTo: this.activatedRoute,
-      queryParams: { tag: tagSlug || undefined }
+      queryParams: { tag: tagSlug || undefined, page: undefined },
+      queryParamsHandling: 'merge'
     });
   }
 
@@ -315,7 +371,7 @@ export class BlogList implements OnInit, OnDestroy {
 
   public clearSearchFilter(): void {
     this.searchQuery = '';
-    this.searchSubject.next(''); // Émettre une chaîne vide pour déclencher le listener
+    this.searchSubject.next('');
   }
 
   public clearAllFilters(): void {
@@ -331,16 +387,21 @@ export class BlogList implements OnInit, OnDestroy {
   }
 
   public onSortChange(): void {
+    if (this.isProcessingRouteChange) return;
     this.articles = this.sortArticles(this.articles, this.sortBy);
   }
 
   private sortArticles(articles: BlogArticle[], sortBy: string): BlogArticle[] {
     const sortedArticles = [...articles];
     switch (sortBy) {
-      case 'newest': return sortedArticles.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
-      case 'oldest': return sortedArticles.sort((a, b) => new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime());
-      case 'title': return sortedArticles.sort((a, b) => a.title.localeCompare(b.title));
-      default: return sortedArticles;
+      case 'newest':
+        return sortedArticles.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+      case 'oldest':
+        return sortedArticles.sort((a, b) => new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime());
+      case 'title':
+        return sortedArticles.sort((a, b) => a.title.localeCompare(b.title));
+      default:
+        return sortedArticles;
     }
   }
 

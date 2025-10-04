@@ -6,8 +6,6 @@ import {
   OnDestroy,
   OnInit,
   signal,
-  ViewChildren,
-  QueryList,
   ChangeDetectorRef
 } from '@angular/core';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -21,14 +19,14 @@ import {
   EmailCheckResponse
 } from '../../../../../../core/services/contact-modal.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { Choice } from 'shared-lib';
+import type { ChoiceOption, ChoiceConfig } from 'shared-lib';
 import {
-  ChoicesConfig,
-  ChoicesSelectComponent,
   LanguageOrchestratorService,
-  LanguageService, SelectOption,
+  LanguageService,
   ToastService
 } from 'shared-lib';
-import {RecaptchaActionService} from '../../../../../services/recaptcha-action.service';
+import { RecaptchaActionService } from '../../../../../services/recaptcha-action.service';
 
 @Component({
   selector: 'app-contact-modal',
@@ -36,16 +34,13 @@ import {RecaptchaActionService} from '../../../../../services/recaptcha-action.s
     TranslatePipe,
     ReactiveFormsModule,
     CommonModule,
-    ChoicesSelectComponent,
+    Choice
   ],
   standalone: true,
   templateUrl: './contact-modal.html',
   styleUrl: './contact-modal.css'
 })
 export class ContactModal implements OnInit, OnDestroy {
-  // ViewChildren pour accéder aux composants choices-select
-  @ViewChildren(ChoicesSelectComponent) choicesSelects!: QueryList<ChoicesSelectComponent>;
-
   activeModal = inject(NgbActiveModal);
   private toastService = inject(ToastService);
   private fb = inject(FormBuilder);
@@ -54,35 +49,35 @@ export class ContactModal implements OnInit, OnDestroy {
   private translateService = inject(TranslateService);
   private recaptchaActionService = inject(RecaptchaActionService);
   private cdr = inject(ChangeDetectorRef);
-  private languageOrchestrator= inject(LanguageOrchestratorService);
-
+  private languageOrchestrator = inject(LanguageOrchestratorService);
 
   @Input() initialData?: any;
 
-  private componentId = 'blog-detail';
+  private componentId = 'contact-modal';
   private destroy$ = new Subject<void>();
   private hasInitialLoad = false;
 
-  // Signals pour l'état réactif
+  // Signals
   formOptions = signal<ContactFormOptions | null>(null);
   isSubmitting = signal(false);
   isCheckingEmail = signal(false);
   emailCheckResult = signal<EmailCheckResponse | null>(null);
   generatedSubject = signal('');
   optionsLoaded = signal(false);
+  formSubmitAttempted = signal(false);
 
-  // Form réactif
+  // Form
   contactForm: FormGroup;
 
-  // Options pour les selects - Maintenant en propriétés normales
-  companySizeOptions: SelectOption[] = [];
-  contactTypeOptions: SelectOption[] = [];
-  countryOptions: SelectOption[] = [];
+  // Options pour les selects
+  companySizeOptions = signal<ChoiceOption[]>([]);
+  contactTypeOptions = signal<ChoiceOption[]>([]);
+  countryOptions = signal<ChoiceOption[]>([]);
 
-  // Configuration pour les différents selects - Maintenant en propriétés stables
-  companySizeConfig: ChoicesConfig = {};
-  contactTypeConfig: ChoicesConfig = {};
-  countryConfig: ChoicesConfig = {};
+  // Configuration pour les différents selects
+  companySizeConfig: ChoiceConfig = {};
+  contactTypeConfig: ChoiceConfig = {};
+  countryConfig: ChoiceConfig = {};
 
   // Computed signals
   isEmailValid = computed(() => {
@@ -109,7 +104,7 @@ export class ContactModal implements OnInit, OnDestroy {
 
     if (this.initialData) {
       this.isPricingInquiry = this.initialData.isPricingInquiry || false;
-      this.contactForm.patchValue(this.initialData);
+      this.contactForm.patchValue(this.initialData, { emitEvent: false });
       if (this.isPricingInquiry) {
         this.contactForm.get('contact_type')?.disable();
       }
@@ -122,54 +117,39 @@ export class ContactModal implements OnInit, OnDestroy {
     this.languageOrchestrator.unregisterComponent(this.componentId);
   }
 
-  /**
-   * Initialise les configurations de base des dropdowns
-   */
   private initializeConfigurations(): void {
     this.companySizeConfig = {
       searchEnabled: true,
-      allowHTML: true,
+      allowHTML: false,
       searchPlaceholderValue: this.getTranslation('contact.form.search.placeholder', 'Rechercher...'),
-      removeItemButton: false,
-      editItems: false,
-      shouldSort: false,
       itemSelectText: "",
       noResultsText: this.getTranslation('contact.form.search.noResults', 'Aucun résultat trouvé'),
       noChoicesText: this.getTranslation('contact.form.search.noChoices', 'Aucun choix disponible'),
-      classNames: { containerInner: "form-select" },
-      placeholderValue: this.getTranslation('contact.form.companySize.placeholder', 'Sélectionnez')
+      placeholderValue: this.getTranslation('contact.form.companySize.placeholder', 'Sélectionnez'),
+      placeholder: true
     };
 
     this.contactTypeConfig = {
       searchEnabled: false,
-      allowHTML: true,
-      removeItemButton: false,
-      editItems: false,
-      shouldSort: false,
+      allowHTML: false,
       itemSelectText: "",
       noChoicesText: this.getTranslation('contact.form.search.noChoices', 'Aucun choix disponible'),
-      classNames: { containerInner: "form-select" },
-      placeholderValue: this.getTranslation('contact.form.contactType.placeholder', 'Sélectionnez un type')
+      placeholderValue: this.getTranslation('contact.form.contactType.placeholder', 'Sélectionnez un type'),
+      placeholder: true
     };
 
     this.countryConfig = {
       searchEnabled: true,
-      allowHTML: true,
+      allowHTML: false,
       searchPlaceholderValue: this.getTranslation('contact.form.search.country', 'Rechercher un pays...'),
-      removeItemButton: false,
-      editItems: false,
-      shouldSort: false,
       itemSelectText: "",
       noResultsText: this.getTranslation('contact.form.search.noResults', 'Aucun résultat trouvé'),
       noChoicesText: this.getTranslation('contact.form.search.noChoices', 'Aucun choix disponible'),
-      classNames: { containerInner: "form-select" },
-      placeholderValue: this.getTranslation('contact.form.country.placeholder', 'Sélectionnez votre pays')
+      placeholderValue: this.getTranslation('contact.form.country.placeholder', 'Sélectionnez votre pays'),
+      placeholder: true
     };
   }
 
-  /**
-   * Met à jour les configurations avec les nouvelles traductions
-   */
   private updateConfigurations(): void {
     this.companySizeConfig = {
       ...this.companySizeConfig,
@@ -193,27 +173,9 @@ export class ContactModal implements OnInit, OnDestroy {
       placeholderValue: this.getTranslation('contact.form.country.placeholder', 'Sélectionnez votre pays')
     };
 
-    // Déclencher la détection des changements
     this.cdr.detectChanges();
   }
 
-  /**
-   * Force la mise à jour de tous les composants choices-select
-   */
-  private forceUpdateChoicesSelects(): void {
-    // Attendre que les changements soient appliqués
-    setTimeout(() => {
-      this.choicesSelects?.forEach(select => {
-        if (select && typeof select.forceUpdate === 'function') {
-          select.forceUpdate();
-        }
-      });
-    }, 100);
-  }
-
-  /**
-   * Utilitaire pour récupérer une traduction avec fallback
-   */
   private getTranslation(key: string, fallback?: string): string {
     const translation = this.translateService.instant(key);
     return translation !== key ? translation : (fallback || key);
@@ -257,16 +219,14 @@ export class ContactModal implements OnInit, OnDestroy {
     }
   }
 
-  onLanguageChange(){
+  onLanguageChange(): void {
     if (this.hasInitialLoad) {
       const currentLang = this.languageService.getCurrentLanguage();
-      this.contactForm.patchValue({ language: currentLang });
+      this.contactForm.patchValue({ language: currentLang }, { emitEvent: false });
       this.updateConfigurations();
       this.loadFormOptions();
     }
   }
-
-
 
   private loadFormOptions(): void {
     this.optionsLoaded.set(false);
@@ -280,12 +240,21 @@ export class ContactModal implements OnInit, OnDestroy {
           this.updateSelectOptions(options);
           this.hasInitialLoad = true;
 
-          // Attendre un peu pour que les options soient prêtes
           setTimeout(() => {
             this.optionsLoaded.set(true);
-            // Forcer la mise à jour des composants choices-select
-            this.forceUpdateChoicesSelects();
-          }, 150);
+
+            // IMPORTANT: Marquer tous les champs comme untouched et pristine
+            Object.keys(this.contactForm.controls).forEach(key => {
+              const control = this.contactForm.get(key);
+              control?.markAsUntouched();
+              control?.markAsPristine();
+            });
+
+            // Réinitialiser le flag de soumission
+            this.formSubmitAttempted.set(false);
+
+            this.cdr.detectChanges();
+          }, 300);
         },
         error: (error) => {
           console.error('Error loading form options:', error);
@@ -296,43 +265,51 @@ export class ContactModal implements OnInit, OnDestroy {
   }
 
   private updateSelectOptions(options: ContactFormOptions): void {
-    // Mise à jour des options de taille d'entreprise
-    this.companySizeOptions = [
+    this.companySizeOptions.set([
       {
         value: '',
-        label: this.getTranslation('contact.form.companySize.placeholder', 'Sélectionnez')
+        label: this.getTranslation('contact.form.companySize.placeholder', 'Sélectionnez'),
+        placeholder: true,
+        disabled: false,
+        selected: false
       },
       ...options.company_sizes.map(option => ({
         value: option.value,
-        label: option.label
+        label: option.label,
+        selected: false
       }))
-    ];
+    ]);
 
-    // Mise à jour des options de type de contact
-    this.contactTypeOptions = [
+    this.contactTypeOptions.set([
       {
         value: '',
-        label: this.getTranslation('contact.form.contactType.placeholder', 'Sélectionnez un type')
+        label: this.getTranslation('contact.form.contactType.placeholder', 'Sélectionnez un type'),
+        placeholder: true,
+        disabled: false,
+        selected: false
       },
       ...options.contact_types.map(option => ({
         value: option.value,
-        label: option.label
+        label: option.label,
+        selected: false
       }))
-    ];
+    ]);
 
-    // Mise à jour des options de pays
-    this.countryOptions = [
+    this.countryOptions.set([
       {
         value: '',
-        label: this.getTranslation('contact.form.country.placeholder', 'Sélectionnez votre pays')
+        label: this.getTranslation('contact.form.country.placeholder', 'Sélectionnez votre pays'),
+        placeholder: true,
+        disabled: false,
+        selected: false
       },
       ...options.countries.map(option => ({
         value: option.value,
-        label: option.label
+        label: option.label,
+        selected: false
       }))
-    ];
+    ]);
 
-    // Déclencher la détection des changements
     this.cdr.detectChanges();
   }
 
@@ -350,11 +327,10 @@ export class ContactModal implements OnInit, OnDestroy {
           this.isCheckingEmail.set(false);
           this.emailCheckResult.set(null);
 
-          // Toast d'erreur pour la vérification email - Position en haut centre pour modal
           this.toastService.showWarning(
             this.getTranslation('contact.form.error.emailCheck', 'Impossible de vérifier l\'email'),
             {
-              header: this.getTranslation('contact.form.error.title', 'Erreur'),
+              title: this.getTranslation('contact.form.error.title', 'Erreur'),
               position: 'top-center',
               delay: 5000
             }
@@ -365,18 +341,21 @@ export class ContactModal implements OnInit, OnDestroy {
 
   isFieldInvalid(fieldName: string): boolean {
     const field = this.contactForm.get(fieldName);
-    return !!(field && field.invalid && (field.dirty || field.touched));
+    if (!field) return false;
+
+    return field.invalid && field.touched;
   }
 
+
   async onSubmit(): Promise<void> {
+
     if (this.contactForm.invalid || this.isSubmitting()) {
       this.markAllFieldsAsTouched();
 
-      // Toast d'erreur pour formulaire invalide - Position en haut centre pour modal
       this.toastService.showWarning(
         this.getTranslation('contact.form.error.validation', 'Veuillez corriger les erreurs dans le formulaire'),
         {
-          header: this.getTranslation('contact.form.error.title', 'Erreur de validation'),
+          title: this.getTranslation('contact.form.error.title', 'Erreur de validation'),
           position: 'top-center',
           delay: 4000
         }
@@ -386,17 +365,15 @@ export class ContactModal implements OnInit, OnDestroy {
     }
 
     this.generateSubject();
-    this.choiceSpecialValue();
     this.isSubmitting.set(true);
 
     try {
-      // Obtenir le token reCAPTCHA
       const recaptchaToken = await this.recaptchaActionService.getContactFormToken();
 
       const formData: ContactFormData = {
         ...this.contactForm.value,
         language: this.languageService.getCurrentLanguage(),
-        recaptcha_token: recaptchaToken // Ajouter le token reCAPTCHA
+        recaptcha_token: recaptchaToken
       };
 
       if (this.isPricingInquiry) {
@@ -408,8 +385,6 @@ export class ContactModal implements OnInit, OnDestroy {
         .subscribe({
           next: (response) => {
             this.isSubmitting.set(false);
-
-
 
             this.activeModal.close({
               success: true,
@@ -428,18 +403,16 @@ export class ContactModal implements OnInit, OnDestroy {
           error: (error) => {
             this.isSubmitting.set(false);
 
-            // Gestion d'erreurs spécifiques reCAPTCHA
             let errorMessage = this.getTranslation('contact.form.error.submission', 'Une erreur est survenue lors de l\'envoi');
 
             if (error.status === 400 && error.error?.message?.includes('reCAPTCHA')) {
               errorMessage = this.getTranslation('contact.form.error.security', 'Vérification de sécurité échouée. Veuillez réessayer.');
             }
 
-            // Toast d'erreur pour l'envoi - Position en haut centre pour modal
             this.toastService.showError(
               errorMessage,
               {
-                header: this.getTranslation('contact.form.error.title', 'Erreur'),
+                title: this.getTranslation('contact.form.error.title', 'Erreur'),
                 position: 'top-center',
                 autohide: true,
                 delay: 8000
@@ -451,11 +424,10 @@ export class ContactModal implements OnInit, OnDestroy {
     } catch (recaptchaError) {
       this.isSubmitting.set(false);
 
-      // Erreur spécifique reCAPTCHA (réseau, configuration, etc.)
       this.toastService.showError(
         this.getTranslation('contact.form.error.security.network', 'Erreur de vérification de sécurité. Vérifiez votre connexion et réessayez.'),
         {
-          header: this.getTranslation('contact.form.error.title', 'Erreur'),
+          title: this.getTranslation('contact.form.error.title', 'Erreur'),
           position: 'top-center',
           delay: 6000
         }
@@ -472,40 +444,13 @@ export class ContactModal implements OnInit, OnDestroy {
   }
 
   private generateSubject(): void {
-    const contactTypeValue = this.contactForm.get('contact_type')?.value;
+    const contactType = this.contactForm.get('contact_type')?.value;
     const companyName = this.contactForm.get('company_name')?.value;
-
-    // Extraire la vraie valeur si c'est un objet Choices.js
-    let contactType: string;
-    if (contactTypeValue && typeof contactTypeValue === 'object' && contactTypeValue.value) {
-      contactType = contactTypeValue.value;
-    } else if (typeof contactTypeValue === 'string') {
-      contactType = contactTypeValue;
-    } else {
-      contactType = '';
-    }
 
     if (contactType && companyName) {
       const subject = `${contactType} - ${companyName}`;
       this.generatedSubject.set(subject);
-      this.contactForm.patchValue({ contact_subject: subject });
-    }
-  }
-
-  private choiceSpecialValue(): void {
-    let contactTypeValue = this.contactForm.get('contact_type')?.value;
-    let company_sizeValue = this.contactForm.get('company_size')?.value;
-    let countryValue = this.contactForm.get('country')?.value;
-
-    // Normaliser les valeurs des selects Choices.js
-    if (contactTypeValue && typeof contactTypeValue === 'object' && contactTypeValue.value) {
-      this.contactForm.patchValue({ contact_type: contactTypeValue.value });
-    }
-    if (company_sizeValue && typeof company_sizeValue === 'object' && company_sizeValue.value) {
-      this.contactForm.patchValue({ company_size: company_sizeValue.value });
-    }
-    if (countryValue && typeof countryValue === 'object' && countryValue.value) {
-      this.contactForm.patchValue({ country: countryValue.value });
+      this.contactForm.patchValue({ contact_subject: subject }, { emitEvent: false });
     }
   }
 
@@ -515,14 +460,5 @@ export class ContactModal implements OnInit, OnDestroy {
 
   onCancel(): void {
     this.activeModal.dismiss('cancel');
-  }
-
-  private resetForm(): void {
-    this.contactForm.reset({
-      language: this.languageService.getCurrentLanguage(),
-      source: 'website_modal'
-    });
-    this.emailCheckResult.set(null);
-    this.generatedSubject.set('');
   }
 }

@@ -1,50 +1,36 @@
-import {Directive, inject, Input, OnDestroy, OnInit, TemplateRef, ViewContainerRef} from '@angular/core';
-import {Subject, takeUntil} from 'rxjs';
-
-export interface PermissionService {
-  hasPermission(permission: string | string[]): boolean;
-  permissions$?: Subject<string[]>;
-}
+import {Directive, inject, Input, OnInit, TemplateRef, ViewContainerRef} from '@angular/core';
+import {PermissionService} from '../services';
 
 @Directive({
   selector: '[libHasPermission]',
   standalone: true
 })
-export class HasPermissionDirective implements OnInit, OnDestroy {
+export class HasPermissionDirective implements OnInit {
+  @Input() hasPermission!: { plugin?: string; api?: string; controller: string; action: string };
+
   private templateRef = inject(TemplateRef<any>);
   private viewContainer = inject(ViewContainerRef);
-  private destroy$ = new Subject<void>();
+  private permissionService = inject(PermissionService);
 
-  private permissions: string | string[] = [];
-  private permissionService?: PermissionService;
-
-  @Input() set libHasPermission(permissions: string | string[]) {
-    this.permissions = permissions;
+  ngOnInit() {
     this.updateView();
   }
 
-  @Input() set libHasPermissionService(service: PermissionService) {
-    this.permissionService = service;
-    this.updateView();
-  }
+  private updateView() {
+    const hasAccess = this.hasPermission.plugin
+      ? this.permissionService.hasPluginPermission(
+        this.hasPermission.plugin,
+        this.hasPermission.controller,
+        this.hasPermission.action
+      )
+      : this.permissionService.hasPermission(
+        this.hasPermission.api!,
+        this.hasPermission.controller,
+        this.hasPermission.action
+      );
 
-  ngOnInit(): void {
-    if (this.permissionService?.permissions$) {
-      this.permissionService.permissions$
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(() => this.updateView());
-    }
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  private updateView(): void {
     this.viewContainer.clear();
-
-    if (this.permissionService && this.permissionService.hasPermission(this.permissions)) {
+    if (hasAccess) {
       this.viewContainer.createEmbeddedView(this.templateRef);
     }
   }

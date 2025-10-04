@@ -27,8 +27,6 @@
       "companyWebsite": "Site web",
       "companyWebsite.placeholder": "https://www.example.com",
       "companyWebsite.invalid": "URL invalide (doit commencer par http:// ou https://)",
-      "contactType.placeholder": "Sélectionnez un type",
-      "contactType.required": "Le type de contact est requis",
       "country": "Pays",
       "country.placeholder": "Sélectionnez votre pays",
       "country.required": "Le pays est requis",
@@ -47,7 +45,9 @@
       "loading": "Chargement...",
       "contactType": {
         "name": "Type de contact",
-        "pricing_inquiry": "Demande de pricing"
+        "pricing_inquiry": "Demande de pricing",
+        "placeholder": "Sélectionnez un type",
+        "required": "Le type de contact est requis"
       },
       "success": "Votre message a été envoyé avec succès !",
       "success.title": "Message envoyé !",
@@ -1343,6 +1343,7 @@
     "viewAllWithTag": "Voir tous les articles avec #{{tag}}",
     "estimatedReadTime": "Temps de lecture estimé",
     "wordCount": "{{count}} mots",
+    "loading": "Chargement...",
     "loadingArticle": "Chargement de l'article...",
     "loadingArticles": "Chargement des articles...",
     "filterBy": "Filtrer par",
