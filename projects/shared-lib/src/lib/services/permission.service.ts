@@ -61,6 +61,22 @@ export class PermissionService {
     return config[pluginKey]?.controllers?.[controller]?.[action]?.enabled ?? false;
   }
 
+  checkMultiplePermissions(
+    permissions: Array<{ plugin?: string; api?: string; controller: string; action: string }>,
+    mode: 'all' | 'any' = 'all'
+  ): boolean {
+    const results = permissions.map(p => {
+      if (p.plugin) {
+        return this.hasPluginPermission(p.plugin, p.controller, p.action);
+      } else if (p.api) {
+        return this.hasPermission(p.api, p.controller, p.action);
+      }
+      return false;
+    });
+
+    return mode === 'all' ? results.every(r => r) : results.some(r => r);
+  }
+
   canAccessUserManagement(): boolean {
     return this.hasPluginPermission('users-permissions', 'user', 'find');
   }

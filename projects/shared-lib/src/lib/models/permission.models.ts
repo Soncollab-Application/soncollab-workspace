@@ -1,3 +1,15 @@
+import {TranslateService} from '@ngx-translate/core';
+
+export type PermissionCheck = {
+  plugin?: string;
+  api?: string;
+  controller: string;
+  action: string;
+};
+
+export type PermissionMode = 'all' | 'any';
+
+
 export interface PermissionAction {
   enabled: boolean;
   policy: string;
@@ -30,4 +42,21 @@ export interface RolePermissionsResponse {
     type: string;
     permissions: PermissionsConfig;
   };
+}
+
+
+export interface PermissionDeniedToastOptions {
+  message?: string;
+  title?: string;
+  translateKey?: string;
+  translateParams?: any;
+  showToast?: boolean;
+  customToastConfig?: any;
+  customToastConfigFactory?: (translate: TranslateService) => any;
+}
+
+export interface PermissionConfig {
+  endpoint: string;
+  roleId: number;
+  authUrl: string;
 }

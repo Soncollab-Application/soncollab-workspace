@@ -233,5 +233,11 @@
       "security": "Sécurité",
       "notifications": "Notifications"
     }
+  },
+  "permissions": {
+    "denied": {
+      "title": "Accès refusé",
+      "message": "Vous n'avez pas les permissions nécessaires pour accéder à cette ressource."
+    }
   }
 }

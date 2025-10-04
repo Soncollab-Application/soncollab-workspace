@@ -19,12 +19,12 @@ import {RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module} from 'ng-recaptcha-2';
 import {provideMarkdown} from 'ngx-markdown';
 import {IMAGE_CONFIG} from '@angular/common';
 import {AuthInterceptor} from './core/services/http-interceptor.service';
-import {filter, of, switchMap, take} from 'rxjs';
+import {filter, firstValueFrom, of, switchMap, take} from 'rxjs';
 import {routes} from './app.routes';
 import {FormsModule} from '@angular/forms';
 import {AuthService} from './core/services/auth.service';
 import {environment} from '../environments/environment';
-import {PERMISSION_CONFIG, PermissionService, SharedLibModule } from "shared-lib";
+import {PERMISSION_CONFIG, PermissionService, SharedLibModule, TOAST_SERVICE, ToastService } from "shared-lib";
 
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -74,26 +74,31 @@ export const appConfig: ApplicationConfig = {
       useValue: {
         endpoint: environment.api.fullUrl,
         roleId: 0,
-        accessDeniedUrl: '/access-denied'
+        authUrl: '/auth/login'
       }
+    },
+    {
+      provide: TOAST_SERVICE,
+      useExisting: ToastService
     },
     provideAppInitializer(() => {
       const authService = inject(AuthService);
       const permissionService = inject(PermissionService);
       const config = inject(PERMISSION_CONFIG);
 
-      // Même pattern que dans auth.guard.ts et role.guard.ts
-      return authService.authState$.pipe(
-        filter(authState => !authState.loading),
-        take(1),
-        switchMap(authState => {
-          if (authState.isAuthenticated && authState.user?.role?.id) {
-            config.roleId = authState.user.role.id;
-            return permissionService.loadPermissions();
-          }
-          return of(null);
-        })
-      ).toPromise();
+      return firstValueFrom(
+        authService.authState$.pipe(
+          filter(authState => !authState.loading),
+          take(1),
+          switchMap(authState => {
+            if (authState.isAuthenticated && authState.user?.role?.id) {
+              config.roleId = authState.user.role.id;
+              return permissionService.loadPermissions();
+            }
+            return of(null);
+          })
+        )
+      );
     })
   ]
 };

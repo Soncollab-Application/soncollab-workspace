@@ -17,6 +17,10 @@ export * from './lib/mixins/language-aware.mixin';
 
 // Directives
 export * from './lib/directives/tooltip.directive';
+export * from './lib/directives/has-permission.directive';
+
+//Tokens
+export * from './lib/tokens/toast.token';
 
 // Pipes
 export * from './lib/pipes/truncate.pipe';

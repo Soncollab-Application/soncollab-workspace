@@ -159,12 +159,9 @@ export class AuthService {
   }
 
   private setAuthState(user: BackofficeUser, token: string, refreshToken: string): void {
-    console.log(user, 'user');
     if (user.role?.id) {
       this.permissionConfig.roleId = user.role.id;
       this.permissionConfig.endpoint = this.API_URL;
-      this.permissionConfig.accessDeniedUrl = '/access-denied';
-      console.log(this.permissionConfig , 'permissionConfig');
     }
 
     this.updateAuthState({
