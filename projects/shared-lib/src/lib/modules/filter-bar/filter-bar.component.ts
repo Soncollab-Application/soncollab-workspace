@@ -5,11 +5,12 @@ import {TranslateModule, TranslateService} from '@ngx-translate/core';
 import enTranslations from './i18n/en.json';
 import frTranslations from './i18n/fr.json';
 import {FilterConfig, FilterValue} from './filter.model';
+import {Choice, ChoiceOption} from '../choice-lib';
 
 @Component({
   selector: 'lib-filter-bar',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule],
+  imports: [CommonModule, FormsModule, TranslateModule, Choice],
   templateUrl: './filter-bar.component.html',
   styleUrls: ['./filter-bar.component.css']
 })
@@ -71,5 +72,22 @@ export class FilterBarComponent implements OnInit {
 
   getSearchPlaceholder(): string {
     return this.searchPlaceholder() || this.translate.instant('filterBar.search');
+  }
+
+  getChoiceConfig(filter: FilterConfig): any {
+    return {
+      searchEnabled: filter.options && filter.options.length > 5,
+      shouldSort: false,
+      removeItemButton: false,
+      ...filter.choiceConfig
+    };
+  }
+
+  getBooleanOptions(): ChoiceOption[] {
+    return [
+      { value: '', label: this.translate.instant('filterBar.select'), placeholder: true },
+      { value: 'true', label: this.translate.instant('filterBar.yes') },
+      { value: 'false', label: this.translate.instant('filterBar.no') }
+    ];
   }
 }

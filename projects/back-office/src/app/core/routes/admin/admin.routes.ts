@@ -19,8 +19,7 @@ export const adminRoutes: Routes = [
         canActivate: [pluginPermissionGuard(
           'users-permissions',
           'user',
-          'find',
-
+          'find'
         )]
       },
       {

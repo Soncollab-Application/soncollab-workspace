@@ -20,16 +20,15 @@
     @for (filter of filters(); track filter.key) {
       <div class="col-md-3">
         @if (filter.type === 'select') {
-          <select
-            class="form-select"
-            [value]="getFilterValue(filter.key)"
-            (change)="onFilterChange(filter.key, $any($event.target).value)"
-          >
-            <option value="">{{ filter.placeholder || filter.label }}</option>
-            @for (option of filter.options; track option.value) {
-              <option [value]="option.value">{{ option.label }}</option>
-            }
-          </select>
+          <lib-choice
+            type="select-one"
+            [options]="filter.options || []"
+            [groups]="filter.groups || []"
+            [placeholder]="filter.placeholder || filter.label"
+            [config]="getChoiceConfig(filter)"
+            [cssClass]="'form-select'"
+            (valueChange)="onFilterChange(filter.key, $event)"
+          />
         } @else if (filter.type === 'date') {
           <input
             type="date"
@@ -39,15 +38,14 @@
             (change)="onFilterChange(filter.key, $any($event.target).value)"
           >
         } @else if (filter.type === 'boolean') {
-          <select
-            class="form-select"
-            [value]="getFilterValue(filter.key)"
-            (change)="onFilterChange(filter.key, $any($event.target).value)"
-          >
-            <option value="">{{ filter.placeholder || filter.label }}</option>
-            <option value="true">{{ 'filterBar.yes' | translate }}</option>
-            <option value="false">{{ 'filterBar.no' | translate }}</option>
-          </select>
+          <lib-choice
+            type="select-one"
+            [options]="getBooleanOptions()"
+            [placeholder]="filter.placeholder || filter.label"
+            [config]="{ searchEnabled: false, removeItemButton: false }"
+            [cssClass]="'form-select'"
+            (valueChange)="onFilterChange(filter.key, $event)"
+          />
         } @else {
           <input
             type="text"

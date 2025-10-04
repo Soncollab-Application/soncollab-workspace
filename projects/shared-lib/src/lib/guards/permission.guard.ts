@@ -112,7 +112,7 @@ function showPermissionDeniedToast(
     position: 'top-center',
     icon: 'bi-exclamation-triangle-fill',
     autohide: true,
-    delay: 6000,
+    delay: 3000,
     title: translate.instant('permissions.denied.title'),
     message: translate.instant('permissions.denied.message')
   };
