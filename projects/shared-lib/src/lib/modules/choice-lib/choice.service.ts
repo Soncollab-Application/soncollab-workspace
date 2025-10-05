@@ -9,7 +9,11 @@ export class ChoiceService {
   private instances = new Map<string, any>();
 
   createInstance(element: HTMLElement, config: any = {}): any {
-    return new Choices(element, config);
+    const defaultConfig = {
+      itemSelectText: '',
+      ...config
+    };
+    return new Choices(element, defaultConfig);
   }
 
   registerInstance(id: string, instance: any): void {

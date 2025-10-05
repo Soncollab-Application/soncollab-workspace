@@ -28,6 +28,7 @@ export class PageTitleService {
   // Signals pour la réactivité
   currentTitle = signal<string>('');
   breadcrumbs = signal<BreadcrumbItem[]>([]);
+  private hasCustomBreadcrumbs = signal<boolean>(false);
 
   // Mapping des routes vers les titres
   private routeTitleMap: Record<string, string> = {
@@ -92,7 +93,9 @@ export class PageTitleService {
     this.languageService.languageChanged$
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
-        this.updatePageInfo(this.currentUrl);
+        if (!this.hasCustomBreadcrumbs()) {
+          this.updatePageInfo(this.currentUrl);
+        }
       });
   }
 
@@ -150,13 +153,13 @@ export class PageTitleService {
     }
   }
 
-  // Méthode pour définir un titre personnalisé
-  setCustomTitle(title: string): void {
-    this.currentTitle.set(title);
-  }
-
-  // Méthode pour définir des breadcrumbs personnalisés
   setCustomBreadcrumbs(breadcrumbs: BreadcrumbItem[]): void {
     this.breadcrumbs.set(breadcrumbs);
+    this.hasCustomBreadcrumbs.set(true);
+  }
+
+  resetBreadcrumbs(): void {
+    this.hasCustomBreadcrumbs.set(false);
+    this.generateBreadcrumbs(this.currentUrl);
   }
 }

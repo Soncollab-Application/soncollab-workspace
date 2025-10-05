@@ -1,0 +1,40 @@
+<div class="row align-items-center py-3 mb-7">
+  <div class="col">
+    <h2 class="fs-5 for-inter-font fw-lighter mb-0">
+      {{ currentTitle() }}
+    </h2>
+    <app-breadcrumb/>
+  </div>
+</div>
+
+
+
+<!--
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="h3 mb-0">Gestion des utilisateurs</h1>
+  @if (canManageUsers()) {
+    <button class="btn btn-primary" (click)="router.navigate(['/admin/team/users/new'])">
+      <i class="bi bi-plus-lg"></i>
+      Nouvel utilisateur
+    </button>
+  }
+</div>
+
+<lib-filter-bar
+  [filters]="filterConfigs"
+  [searchPlaceholder]="'Rechercher par nom, email...'"
+  (searchChange)="onSearchChange($any($event))"
+  (filterChange)="onFilterChange($event)"
+/>
+
+<lib-data-table
+  [data]="users()"
+  [columns]="columns"
+  [actions]="actions"
+  [loading]="loading()"
+  [pagination]="pagination()"
+  (pageChange)="onPageChange($any($event))"
+  (actionClick)="onActionClick($any($event))"
+/>
+-->

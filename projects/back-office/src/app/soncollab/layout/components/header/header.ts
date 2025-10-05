@@ -29,14 +29,14 @@ export class Header implements OnInit, OnDestroy {
   private themeService = inject(ThemeService);
   private router = inject(Router);
   private pageTitleService = inject(PageTitleService);
-
+  currentTitle = this.pageTitleService.currentTitle;
 
   navigationSections = signal<NavigationConfig[]>([]);
   currentUser = computed(() => this.authService.currentUser);
   currentLanguage = signal('fr');
   isDarkTheme = signal(false);
   currentLogo: string = '/assets/images/logo/soncollablightlogo.svg';
-  currentTitle = this.pageTitleService.currentTitle;
+
 
   ngOnInit(): void {
     this.loadNavigation();

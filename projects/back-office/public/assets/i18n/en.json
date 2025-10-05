@@ -147,6 +147,13 @@
       }
     }
   },
+  "breadcrumbs": {
+    "users-list": {
+      "dashboard": "Dashboard",
+      "team": "Team",
+      "users": "Users"
+    }
+  },
   "header": {
     "theme": {
       "toggle": "Toggle theme"
