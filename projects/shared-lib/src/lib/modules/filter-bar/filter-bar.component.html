@@ -1,74 +1,71 @@
-<div class="bg-light rounded p-3 mb-4">
-  <div class="row g-3 align-items-end">
-    @if (showSearch()) {
-      <div class="col-md-4">
-        <div class="input-group">
-          <span class="input-group-text bg-white">
-            <i class="bi bi-search"></i>
-          </span>
-          <input
-            type="text"
-            class="form-control"
-            [placeholder]="getSearchPlaceholder()"
-            [value]="searchTerm()"
-            (input)="onSearchInput($event)"
-          >
-        </div>
+<!-- projects/shared-lib/src/lib/modules/filter-bar/filter-bar.component.html -->
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-2 g-md-3 mb-4">
+  @if (showSearch()) {
+    <div class="col">
+      <div class="position-relative">
+        <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3"></i>
+        <input
+          type="text"
+          class="form-control form-icon-start bg-transparent"
+          [placeholder]="getSearchPlaceholder()"
+          [value]="searchTerm()"
+          (input)="onSearchInput($event)"
+        >
       </div>
-    }
+    </div>
+  }
 
-    @for (filter of filters(); track filter.key) {
-      <div class="col-md-3">
-        @if (filter.type === 'select') {
+  @for (filter of filters(); track filter.key) {
+    <div class="col">
+      <div class="position-relative">
+        @if (filter.type === 'select' || filter.type === 'boolean') {
           <lib-choice
             type="select-one"
-            [options]="filter.options || []"
+            [options]="filter.type === 'boolean' ? getBooleanOptions() : (filter.options || [])"
             [groups]="filter.groups || []"
             [placeholder]="filter.placeholder || filter.label"
             [config]="getChoiceConfig(filter)"
-            [cssClass]="'form-select'"
             (valueChange)="onFilterChange(filter.key, $event)"
           />
         } @else if (filter.type === 'date') {
           <input
             type="date"
-            class="form-control"
+            class="form-control bg-transparent"
             [placeholder]="filter.placeholder || filter.label"
             [value]="getFilterValue(filter.key)"
             (change)="onFilterChange(filter.key, $any($event.target).value)"
           >
-        } @else if (filter.type === 'boolean') {
-          <lib-choice
-            type="select-one"
-            [options]="getBooleanOptions()"
+        } @else if (filter.type === 'daterange') {
+          <input
+            type="text"
+            class="form-control bg-transparent"
             [placeholder]="filter.placeholder || filter.label"
-            [config]="{ searchEnabled: false, removeItemButton: false }"
-            [cssClass]="'form-select'"
-            (valueChange)="onFilterChange(filter.key, $event)"
-          />
+            [value]="getFilterValue(filter.key)"
+            (change)="onFilterChange(filter.key, $any($event.target).value)"
+          >
         } @else {
           <input
             type="text"
-            class="form-control"
+            class="form-control bg-transparent"
             [placeholder]="filter.placeholder || filter.label"
             [value]="getFilterValue(filter.key)"
             (input)="onFilterChange(filter.key, $any($event.target).value)"
           >
         }
       </div>
-    }
+    </div>
+  }
 
-    @if (showClearButton() && hasActiveFilters()) {
-      <div class="col-auto">
-        <button
-          type="button"
-          class="btn btn-outline-secondary"
-          (click)="onClearFilters()"
-        >
-          <i class="bi bi-x-circle me-1"></i>
-          {{ 'filterBar.reset' | translate }}
-        </button>
-      </div>
-    }
-  </div>
+  @if (showClearButton() && hasActiveFilters()) {
+    <div class="col-auto">
+      <button
+        type="button"
+        class="btn btn-outline-secondary"
+        (click)="onClearFilters()"
+      >
+        <i class="bi bi-x-circle me-1"></i>
+        {{ 'filterBar.reset' | translate }}
+      </button>
+    </div>
+  }
 </div>

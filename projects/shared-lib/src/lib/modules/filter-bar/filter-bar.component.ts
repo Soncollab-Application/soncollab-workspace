@@ -79,6 +79,9 @@ export class FilterBarComponent implements OnInit {
       searchEnabled: filter.options && filter.options.length > 5,
       shouldSort: false,
       removeItemButton: false,
+      classNames: {
+        containerInner: ['form-select', 'bg-transparent']
+      },
       ...filter.choiceConfig
     };
   }

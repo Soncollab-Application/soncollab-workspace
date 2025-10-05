@@ -147,6 +147,13 @@
       }
     }
   },
+  "breadcrumbs": {
+    "users-list": {
+      "dashboard": "Tableau de bord",
+      "team": "Équipe",
+      "users": "Utilisateurs"
+    }
+  },
   "header": {
     "theme": {
       "toggle": "Basculer le thème"
