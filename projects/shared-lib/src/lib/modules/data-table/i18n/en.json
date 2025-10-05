@@ -2,6 +2,9 @@
   "dataTable": {
     "noData": "No data available",
     "loading": "Loading...",
+    "noDataTitle": "No data found",
+    "noDataMessage": "There are no items to display",
+    "total": "total",
     "previous": "Previous",
     "next": "Next",
     "showing": "Showing",

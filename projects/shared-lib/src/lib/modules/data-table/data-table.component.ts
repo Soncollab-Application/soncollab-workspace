@@ -6,11 +6,13 @@ import frTranslations from './i18n/fr.json';
 import {TableAction, TableColumn} from './table.model';
 import {PaginationState} from './pagination.model';
 import {SortConfig} from '../filter-bar/filter.model';
+import {DropdownSingleDirective} from '../../directives/dropdown-single.directive';
+import {EmptyStateComponent} from '../empty-state';
 
 @Component({
   selector: 'lib-data-table',
   standalone: true,
-  imports: [CommonModule, TranslatePipe],
+  imports: [CommonModule, TranslatePipe, DropdownSingleDirective, EmptyStateComponent],
   templateUrl: './data-table.component.html',
   styleUrls: ['./data-table.component.css']
 })
@@ -49,6 +51,12 @@ export class DataTableComponent<T = any> implements OnInit {
     this.translate.setTranslation('fr', { dataTable: frTranslations.dataTable }, true);
   }
 
+  getTotalColspan(): number {
+    const columnsCount = this.columns().reduce((sum, col) => sum + (col.colspan || 1), 0);
+    const selectableCol = this.selectable() ? 1 : 0;
+    return columnsCount + selectableCol;
+  }
+
   getSortIcon(column: TableColumn<T>): string {
     const sort = this.currentSort();
     if (!sort || sort.field !== column.key) return 'bi-arrow-down-up';
@@ -72,12 +80,13 @@ export class DataTableComponent<T = any> implements OnInit {
   }
 
   onActionClick(action: TableAction<T>, row: T, event: Event): void {
-    event.stopPropagation();
     this.actionClick.emit({ action, row });
   }
 
   onRowClick(row: T): void {
-    this.rowClick.emit(row);
+    if (this.clickable()) {
+      this.rowClick.emit(row);
+    }
   }
 
   toggleRowSelection(row: any): void {
@@ -129,7 +138,11 @@ export class DataTableComponent<T = any> implements OnInit {
     if (column.render) {
       return column.render(row);
     }
-    return (row as any)[column.key];
+    return this.getNestedValue(row, column.key);
+  }
+
+  getNestedValue(obj: any, path: string): any {
+    return path.split('.').reduce((curr, key) => curr?.[key], obj);
   }
 
   getCellClass(row: T, column: TableColumn<T>): string {

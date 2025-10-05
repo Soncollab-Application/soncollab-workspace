@@ -3,9 +3,15 @@ export interface TableColumn<T = any> {
   label: string;
   sortable?: boolean;
   width?: string;
-  type?: 'text' | 'date' | 'badge' | 'image' | 'custom';
+  colspan?: number;
+  type?: 'text' | 'date' | 'badge' | 'image' | 'user' | 'phone' | 'email' | 'custom';
   render?: (row: T) => string;
   cellClass?: string | ((row: T) => string);
+  // Pour le type 'user'
+  avatarKey?: string;
+  subtitleKey?: string;
+  // Pour le type 'phone' ou 'email'
+  linkPrefix?: 'tel:' | 'mailto:';
 }
 
 export interface TableAction<T = any> {

@@ -1,42 +1,36 @@
-<div class="table-responsive">
-  @if (loading()) {
-    <div class="text-center py-5">
-      <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">{{ 'dataTable.loading' | translate }}</span>
-      </div>
+@if (loading()) {
+  <div class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">{{ 'dataTable.loading' | translate }}</span>
     </div>
-  } @else {
-    <table class="table table-hover align-middle">
-      <thead class="table-light">
+  </div>
+} @else {
+  <div class="table-responsive card">
+    <table class="table table-hover table-select table-round align-middle mb-0">
+      <thead>
       <tr>
         @if (selectable()) {
-          <th style="width: 40px;">
-            <input
-              type="checkbox"
-              class="form-check-input"
-              [checked]="allSelected()"
-              (change)="toggleAllRows()"
-            >
+          <th style="width: 0px">
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="tableCheckAll"
+                [checked]="allSelected()"
+                (change)="toggleAllRows()">
+              <label class="form-check-label" for="tableCheckAll"></label>
+            </div>
           </th>
         }
 
         @for (column of columns(); track column.key) {
           <th
             [style.width]="column.width"
+            [attr.colspan]="column.colspan || 1"
             [class.cursor-pointer]="column.sortable"
-            (click)="onSort(column)"
-          >
-            <div class="d-flex align-items-center gap-2">
-              <span>{{ column.label }}</span>
-              @if (column.sortable) {
-                <i [class]="'bi ' + getSortIcon(column)"></i>
-              }
-            </div>
+            (click)="onSort(column)">
+            {{ column.label }}
           </th>
-        }
-
-        @if (hasActions()) {
-          <th style="width: 100px;" class="text-end">Actions</th>
         }
       </tr>
       </thead>
@@ -44,8 +38,12 @@
       <tbody>
         @if (data().length === 0) {
           <tr>
-            <td [attr.colspan]="columns().length + (selectable() ? 1 : 0) + (hasActions() ? 1 : 0)" class="text-center py-5 text-muted">
-              {{ 'dataTable.noData' | translate }}
+            <td [attr.colspan]="getTotalColspan()" class="p-0">
+              <lib-empty-state
+                [icon]="'inbox'"
+                [title]="'dataTable.noDataTitle' | translate"
+                [message]="'dataTable.noDataMessage' | translate"
+              />
             </td>
           </tr>
         }
@@ -53,103 +51,172 @@
         @for (row of data(); track $index) {
           <tr
             [class.cursor-pointer]="clickable()"
-            (click)="onRowClick(row)"
-          >
+            [class.table-active]="isRowSelected(row)"
+            [attr.role]="clickable() ? 'link' : null"
+            [attr.tabindex]="clickable() ? '0' : null"
+            (click)="onRowClick(row)">
+
             @if (selectable()) {
-              <td (click)="$event.stopPropagation()">
-                <input
-                  type="checkbox"
-                  class="form-check-input"
-                  [checked]="isRowSelected(row)"
-                  (change)="toggleRowSelection(row)"
-                >
-              </td>
-            }
-
-            @for (column of columns(); track column.key) {
-              <td [class]="getCellClass(row, column)">
-                @if (column.type === 'badge') {
-                  <span class="badge" [class]="getCellValue(row, column)">
-                    {{ getCellValue(row, column) }}
-                  </span>
-                } @else if (column.type === 'date') {
-                  {{ getCellValue(row, column) | date:'short' }}
-                } @else if (column.type === 'image') {
-                  <img
-                    [src]="getCellValue(row, column)"
-                    class="rounded"
-                    style="width: 40px; height: 40px; object-fit: cover;"
-                    alt=""
-                  >
-                } @else {
-                  {{ getCellValue(row, column) }}
-                }
-              </td>
-            }
-
-            @if (hasActions()) {
-              <td class="text-end" (click)="$event.stopPropagation()">
-                <div class="btn-group btn-group-sm">
-                  @for (action of actions(); track action.label) {
-                    @if (shouldShowAction(action, row)) {
-                      <button
-                        type="button"
-                        [class]="'btn ' + (action.class || 'btn-outline-primary')"
-                        (click)="onActionClick(action, row, $event)"
-                        [title]="action.label"
-                      >
-                        @if (action.icon) {
-                          <i [class]="'bi bi-' + action.icon"></i>
-                        } @else {
-                          {{ action.label }}
-                        }
-                      </button>
-                    }
-                  }
+              <td style="width: 0px" (click)="$event.stopPropagation()">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    [id]="'tableCheck' + $index"
+                    [checked]="isRowSelected(row)"
+                    (change)="toggleRowSelection(row)">
+                  <label class="form-check-label" [for]="'tableCheck' + $index"></label>
                 </div>
               </td>
+            }
+
+            @for (column of columns(); track column.key; let isLast = $last) {
+              @if (isLast && hasActions()) {
+                <td [class]="getCellClass(row, column)">
+                  {{ getCellValue(row, column) }}
+                </td>
+                <td style="width: 0px">
+                  <div class="dropdown" libDropdownSingle (click)="$event.stopPropagation()">
+                    <button
+                      class="btn btn-sm btn-link"
+                      type="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false">
+                      <i class="bi bi-three-dots" style="font-size: 1.25rem;"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                      @for (action of actions(); track action.label) {
+                        @if (shouldShowAction(action, row)) {
+                          <li>
+                            <a class="dropdown-item"
+                               href="javascript:void(0)"
+                               (click)="onActionClick(action, row, $event)">
+                              @if (action.icon) {
+                                <i [class]="'bi bi-' + action.icon + ' me-2'"></i>
+                              }
+                              {{ action.label }}
+                            </a>
+                          </li>
+                        }
+                      }
+                    </ul>
+                  </div>
+                </td>
+              } @else {
+                <td [class]="getCellClass(row, column)">
+                  @switch (column.type) {
+                    @case ('user') {
+                      <div class="d-flex align-items-center">
+                        @if (column.avatarKey) {
+                          <div class="avatar">
+                            <img class="avatar-img"
+                                 [src]="getNestedValue(row, column.avatarKey)"
+                                 [alt]="getCellValue(row, column)">
+                          </div>
+                        }
+                        <div class="ms-4">
+                          <div>{{ getCellValue(row, column) }}</div>
+                          @if (column.subtitleKey) {
+                            <div class="fs-sm text-body-secondary">
+                              <a class="text-reset"
+                                 [href]="'mailto:' + getNestedValue(row, column.subtitleKey)">
+                                {{ getNestedValue(row, column.subtitleKey) }}
+                              </a>
+                            </div>
+                          }
+                        </div>
+                      </div>
+                    }
+                    @case ('phone') {
+                      <a class="text-muted"
+                         [href]="'tel:' + getCellValue(row, column)">
+                        {{ getCellValue(row, column) }}
+                      </a>
+                    }
+                    @case ('email') {
+                      <a class="text-reset"
+                         [href]="'mailto:' + getCellValue(row, column)">
+                        {{ getCellValue(row, column) }}
+                      </a>
+                    }
+                    @case ('badge') {
+                      <span class="badge" [class]="getCellValue(row, column)">
+                        {{ getCellValue(row, column) }}
+                      </span>
+                    }
+                    @case ('date') {
+                      {{ getCellValue(row, column) | date:'short' }}
+                    }
+                    @case ('image') {
+                      <div class="avatar">
+                        <img class="avatar-img"
+                             [src]="getCellValue(row, column)"
+                             alt="">
+                      </div>
+                    }
+                    @default {
+                      {{ getCellValue(row, column) }}
+                    }
+                  }
+                </td>
+              }
             }
           </tr>
         }
       </tbody>
     </table>
+  </div>
 
-    @if (pagination()) {
-      <nav class="d-flex justify-content-between align-items-center mt-3">
-        <div class="text-muted small">
-          {{ 'dataTable.showing' | translate }} {{ (pagination()!.currentPage - 1) * pagination()!.pageSize + 1 }}
-          {{ 'dataTable.to' | translate }} {{ Math.min(pagination()!.currentPage * pagination()!.pageSize, pagination()!.total) }}
-          {{ 'dataTable.of' | translate }} {{ pagination()!.total }} {{ 'dataTable.results' | translate }}
-        </div>
+  @if (pagination()) {
+    <div class="row for-inter-font align-items-center mt-4">
+      <div class="col">
+        <p class="text-body-secondary mb-0">
+          {{ (pagination()!.currentPage - 1) * pagination()!.pageSize + 1 }} –
+          {{ Math.min(pagination()!.currentPage * pagination()!.pageSize, pagination()!.total) }}
+          ({{ pagination()!.total }} {{ 'dataTable.total' | translate }})
+        </p>
+      </div>
+      <div class="col-auto">
+        <nav aria-label="Page navigation">
+          <ul class="pagination mb-0">
+            <li class="page-item" [class.disabled]="pagination()!.currentPage === 1">
+              <a class="page-link"
+                 href="javascript:void(0)"
+                 (click)="pagination()!.currentPage > 1 && onPageChange(pagination()!.currentPage - 1)"
+                 aria-label="Previous">
+                <span aria-hidden="true">«</span>
+              </a>
+            </li>
 
-        <ul class="pagination mb-0">
-          <li class="page-item" [class.disabled]="pagination()!.currentPage === 1">
-            <button class="page-link" (click)="onPageChange(pagination()!.currentPage - 1)">
-              {{ 'dataTable.previous' | translate }}
-            </button>
-          </li>
-
-          @for (page of getPageNumbers(); track $index) {
-            @if (page === -1) {
-              <li class="page-item disabled">
-                <span class="page-link">...</span>
-              </li>
-            } @else {
-              <li class="page-item" [class.active]="page === pagination()!.currentPage">
-                <button class="page-link" (click)="onPageChange(page)">
-                  {{ page }}
-                </button>
-              </li>
+            @for (page of getPageNumbers(); track $index) {
+              @if (page === -1) {
+                <li class="page-item disabled">
+                  <span class="page-link">...</span>
+                </li>
+              } @else {
+                <li class="page-item">
+                  <a class="page-link"
+                     [class.active]="page === pagination()!.currentPage"
+                     href="javascript:void(0)"
+                     (click)="onPageChange(page)">
+                    {{ page }}
+                  </a>
+                </li>
+              }
             }
-          }
 
-          <li class="page-item" [class.disabled]="pagination()!.currentPage === pagination()!.pageCount">
-            <button class="page-link" (click)="onPageChange(pagination()!.currentPage + 1)">
-              {{ 'dataTable.next' | translate }}
-            </button>
-          </li>
-        </ul>
-      </nav>
-    }
+            <li class="page-item" [class.disabled]="pagination()!.currentPage === pagination()!.pageCount">
+              <a class="page-link"
+                 href="javascript:void(0)"
+                 (click)="pagination()!.currentPage < pagination()!.pageCount && onPageChange(pagination()!.currentPage + 1)"
+                 aria-label="Next">
+                <span aria-hidden="true">»</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
   }
-</div>
+}
+

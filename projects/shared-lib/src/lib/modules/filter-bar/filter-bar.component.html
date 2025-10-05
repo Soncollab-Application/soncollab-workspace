@@ -1,71 +1,279 @@
-<!-- projects/shared-lib/src/lib/modules/filter-bar/filter-bar.component.html -->
-<div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-2 g-md-3 mb-4">
-  @if (showSearch()) {
-    <div class="col">
-      <div class="position-relative">
-        <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3"></i>
-        <input
-          type="text"
-          class="form-control form-icon-start bg-transparent"
-          [placeholder]="getSearchPlaceholder()"
-          [value]="searchTerm()"
-          (input)="onSearchInput($event)"
-        >
+<div class="card  for-inter-font  border-transparent mb-7">
+  <div class="card-body p-4">
+    <!-- Version Desktop (lg et plus) -->
+    <div class="d-none d-lg-block">
+      <div class="row align-items-center">
+        <div class="col-12 col-lg-auto mb-3 mb-lg-0">
+          <div class="text-body-secondary">{{ selectedText() }}</div>
+        </div>
+
+        <div class="col-12 col-lg">
+          <div class="row gx-3">
+            @if (showSearch()) {
+              <div class="col col-lg-auto ms-auto">
+                <div class="input-group bg-body">
+                  <input
+                    type="text"
+                    class="form-control"
+                    [placeholder]="'filterBar.search' | translate"
+                    [value]="searchTerm()"
+                    (input)="onSearchInput($event)">
+                  <span class="input-group-text">
+                    <i class="bi bi-search"></i>
+                  </span>
+                </div>
+              </div>
+            }
+
+            @if (filters().length > 0) {
+              <div class="col-auto">
+                <div class="dropdown">
+                  <button
+                    class="btn btn-dark px-3"
+                    type="button"
+                    data-bs-toggle="dropdown"
+                    data-bs-auto-close="outside"
+                    aria-expanded="false">
+                    <i class="bi bi-funnel"></i>
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-end rounded-3 p-6">
+                    <h4 class="fs-lg mb-4">{{ 'filterBar.filter' | translate }}</h4>
+                    <div style="width: 350px">
+                      @for (filter of filters(); track filter.key) {
+                        <div class="row align-items-center mb-3">
+                          <div class="col-3">
+                            <label class="form-label mb-0" [for]="filter.key">
+                              {{ filter.label }}
+                            </label>
+                          </div>
+                          <div class="col-9">
+                            @if (filter.type === 'select' || filter.type === 'boolean') {
+                              <lib-choice
+                                type="select-one"
+                                [options]="filter.options || []"
+                                [groups]="filter.groups || []"
+                                [placeholder]="filter.placeholder || filter.label"
+                                [config]="getChoiceConfig(filter)"
+                                (valueChange)="onFilterChange(filter.key, $event)"
+                              />
+                            } @else if (filter.type === 'date') {
+                              <input
+                                type="date"
+                                class="form-control"
+                                [id]="filter.key"
+                                [placeholder]="filter.placeholder || filter.label"
+                                [value]="getFilterValue(filter.key)"
+                                (change)="onFilterChange(filter.key, $any($event.target).value)">
+                            } @else {
+                              <input
+                                type="text"
+                                class="form-control"
+                                [id]="filter.key"
+                                [placeholder]="filter.placeholder || filter.label"
+                                [value]="getFilterValue(filter.key)"
+                                (input)="onFilterChange(filter.key, $any($event.target).value)">
+                            }
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+
+            @if (sortOptions().length > 0) {
+              <div class="col-auto ms-n2">
+                <div class="dropdown">
+                  <button
+                    class="btn btn-dark px-3"
+                    type="button"
+                    data-bs-toggle="dropdown"
+                    data-bs-auto-close="outside"
+                    aria-expanded="false">
+                    <i class="bi bi-sort-alpha-down"></i>
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-end rounded-3 p-6">
+                    <h4 class="fs-lg mb-4">{{ 'filterBar.sort' | translate }}</h4>
+                    <div style="width: 350px">
+                      <div class="row gx-3">
+                        <div class="col">
+                          <lib-choice
+                            type="select-one"
+                            [options]="getSortChoiceOptions()"
+                            [config]="getSortChoiceConfig()"
+                            (valueChange)="onSortFieldChangeFromChoice($event)"
+                          />
+                        </div>
+                        <div class="col-auto">
+                          <div class="btn-group">
+                            <button
+                              type="button"
+                              class="btn btn-light"
+                              [class.active]="currentSort().direction === 'asc'"
+                              (click)="currentSort().direction === 'desc' && toggleSortDirection()">
+                              <i class="bi bi-arrow-up"></i>
+                            </button>
+                            <button
+                              type="button"
+                              class="btn btn-light"
+                              [class.active]="currentSort().direction === 'desc'"
+                              (click)="currentSort().direction === 'asc' && toggleSortDirection()">
+                              <i class="bi bi-arrow-down"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+
+            @if (hasActiveFilters()) {
+              <div class="col-auto">
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  (click)="onClearFilters()">
+                  <i class="bi bi-x-circle me-1"></i>
+                  {{ 'filterBar.reset' | translate }}
+                </button>
+              </div>
+            }
+          </div>
+        </div>
       </div>
     </div>
-  }
 
-  @for (filter of filters(); track filter.key) {
-    <div class="col">
-      <div class="position-relative">
-        @if (filter.type === 'select' || filter.type === 'boolean') {
-          <lib-choice
-            type="select-one"
-            [options]="filter.type === 'boolean' ? getBooleanOptions() : (filter.options || [])"
-            [groups]="filter.groups || []"
-            [placeholder]="filter.placeholder || filter.label"
-            [config]="getChoiceConfig(filter)"
-            (valueChange)="onFilterChange(filter.key, $event)"
-          />
-        } @else if (filter.type === 'date') {
-          <input
-            type="date"
-            class="form-control bg-transparent"
-            [placeholder]="filter.placeholder || filter.label"
-            [value]="getFilterValue(filter.key)"
-            (change)="onFilterChange(filter.key, $any($event.target).value)"
-          >
-        } @else if (filter.type === 'daterange') {
-          <input
-            type="text"
-            class="form-control bg-transparent"
-            [placeholder]="filter.placeholder || filter.label"
-            [value]="getFilterValue(filter.key)"
-            (change)="onFilterChange(filter.key, $any($event.target).value)"
-          >
-        } @else {
-          <input
-            type="text"
-            class="form-control bg-transparent"
-            [placeholder]="filter.placeholder || filter.label"
-            [value]="getFilterValue(filter.key)"
-            (input)="onFilterChange(filter.key, $any($event.target).value)"
-          >
+    <!-- Version Mobile (md et moins) -->
+    <div class="d-lg-none">
+      <div class="row g-3">
+        <div class="col-12">
+          <div class="text-body-secondary small">{{ selectedText() }}</div>
+        </div>
+
+        @if (showSearch()) {
+          <div class="col-12">
+            <div class="input-group bg-body">
+              <input
+                type="text"
+                class="form-control"
+                [placeholder]="'filterBar.search' | translate"
+                [value]="searchTerm()"
+                (input)="onSearchInput($event)">
+              <span class="input-group-text">
+                <i class="bi bi-search"></i>
+              </span>
+            </div>
+          </div>
         }
+
+        <div class="col-12">
+          <div class="d-flex gap-2">
+            @if (filters().length > 0) {
+              <div class="dropdown flex-fill">
+                <button
+                  class="btn btn-dark w-100"
+                  type="button"
+                  data-bs-toggle="dropdown"
+                  data-bs-auto-close="outside"
+                  aria-expanded="false">
+                  <i class="bi bi-funnel me-2"></i>
+                  {{ 'filterBar.filter' | translate }}
+                </button>
+                <div class="dropdown-menu dropdown-menu-center rounded-3 p-4 w-100">
+                  <h5 class="mb-3">{{ 'filterBar.filter' | translate }}</h5>
+                  @for (filter of filters(); track filter.key) {
+                    <div class="mb-3 w-100">
+                      <label class="form-label small" [for]="'mobile-' + filter.key">
+                        {{ filter.label }}
+                      </label>
+                      @if (filter.type === 'select' || filter.type === 'boolean') {
+                        <lib-choice
+                          type="select-one"
+                          [options]="filter.options || []"
+                          [groups]="filter.groups || []"
+                          [placeholder]="filter.placeholder || filter.label"
+                          [config]="getChoiceConfig(filter)"
+                          (valueChange)="onFilterChange(filter.key, $event)"
+                        />
+                      } @else if (filter.type === 'date') {
+                        <input
+                          type="date"
+                          class="form-control"
+                          [id]="'mobile-' + filter.key"
+                          [value]="getFilterValue(filter.key)"
+                          (change)="onFilterChange(filter.key, $any($event.target).value)">
+                      } @else {
+                        <input
+                          type="text"
+                          class="form-control"
+                          [id]="'mobile-' + filter.key"
+                          [placeholder]="filter.placeholder || filter.label"
+                          [value]="getFilterValue(filter.key)"
+                          (input)="onFilterChange(filter.key, $any($event.target).value)">
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+
+            @if (sortOptions().length > 0) {
+              <div class="dropdown flex-fill">
+                <button
+                  class="btn btn-dark w-100"
+                  type="button"
+                  data-bs-toggle="dropdown"
+                  data-bs-auto-close="outside"
+                  aria-expanded="false">
+                  <i class="bi bi-sort-alpha-down me-2"></i>
+                  {{ 'filterBar.sort' | translate }}
+                </button>
+                <div class="dropdown-menu dropdown-menu-center rounded-3 p-4">
+                  <h5 class="mb-3">{{ 'filterBar.sort' | translate }}</h5>
+                  <div class="mb-3">
+                    <lib-choice
+                      type="select-one"
+                      [options]="getSortChoiceOptions()"
+                      [config]="getSortChoiceConfig()"
+                      (valueChange)="onSortFieldChangeFromChoice($event)"
+                    />
+                  </div>
+                  <div class="btn-group w-100">
+                    <button
+                      type="button"
+                      class="btn btn-outline-secondary"
+                      [class.active]="currentSort().direction === 'asc'"
+                      (click)="currentSort().direction === 'desc' && toggleSortDirection()">
+                      <i class="bi bi-arrow-up me-2"></i>
+                      {{ 'filterBar.ascending' | translate }}
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-outline-secondary"
+                      [class.active]="currentSort().direction === 'desc'"
+                      (click)="currentSort().direction === 'asc' && toggleSortDirection()">
+                      <i class="bi bi-arrow-down me-2"></i>
+                      {{ 'filterBar.descending' | translate }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            }
+
+            @if (hasActiveFilters()) {
+              <button
+                type="button"
+                class="btn btn-outline-secondary"
+                (click)="onClearFilters()">
+                <i class="bi bi-x-circle"></i>
+              </button>
+            }
+          </div>
+        </div>
       </div>
     </div>
-  }
-
-  @if (showClearButton() && hasActiveFilters()) {
-    <div class="col-auto">
-      <button
-        type="button"
-        class="btn btn-outline-secondary"
-        (click)="onClearFilters()"
-      >
-        <i class="bi bi-x-circle me-1"></i>
-        {{ 'filterBar.reset' | translate }}
-      </button>
-    </div>
-  }
+  </div>
 </div>

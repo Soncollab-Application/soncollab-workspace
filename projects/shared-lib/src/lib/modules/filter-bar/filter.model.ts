@@ -8,11 +8,13 @@ export interface FilterConfig {
   options?: FilterOption[];
   groups?: ChoiceGroup[];
   choiceConfig?: any;
+  avatarField?: string; // Pour afficher des avatars dans les options
 }
 
 export interface FilterOption {
   label: string;
   value: any;
+  avatarSrc?: string; // Pour les avatars
 }
 
 export interface FilterValue {
@@ -22,4 +24,9 @@ export interface FilterValue {
 export interface SortConfig {
   field: string;
   direction: 'asc' | 'desc';
+}
+
+export interface SortOption {
+  value: string;
+  label: string;
 }

@@ -1,8 +1,14 @@
 {
   "filterBar": {
-    "search": "Rechercher...",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "sort": "Trier",
     "reset": "Réinitialiser",
     "yes": "Oui",
-    "no": "Non"
+    "no": "Non",
+    "noSelection": "Aucun élément sélectionné",
+    "selected": "{{count}} éléments sélectionnés",
+    "ascending": "Croissant",
+    "descending": "Décroissant"
   }
 }

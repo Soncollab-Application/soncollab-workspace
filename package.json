@@ -4,11 +4,11 @@
   "scripts": {
     "ng": "ng",
     "start": "npm run merge-i18n:client && ng serve client",
-    "start:client": "npm run merge-i18n:client && ng serve client",
+    "start:client": "npm run merge-i18n:client && ng build shared-lib && ng serve client",
     "build": "npm run build:shared && npm run merge-i18n:client && ng build client",
     "build:prod": "npm run build:shared:prod && npm run merge-i18n:client && ng build client --configuration production",
     "build:staging": "npm run build:shared:prod && npm run merge-i18n:client && ng build client --configuration staging",
-    "start:back-office": "npm run merge-i18n:back-office && ng serve back-office",
+    "start:back-office": "npm run merge-i18n:back-office && ng build shared-lib && ng serve back-office",
     "build:back-office": "npm run build:shared:prod && npm run merge-i18n:back-office && ng build back-office --configuration production",
     "build:back-office:dev": "npm run build:shared && npm run merge-i18n:back-office && ng build back-office",
     "build:shared": "ng build shared-lib",
