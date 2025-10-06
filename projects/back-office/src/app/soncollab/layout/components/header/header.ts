@@ -1,11 +1,11 @@
 import {Component, computed, inject, OnDestroy, OnInit, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {Router, RouterModule} from '@angular/router';
-import {TranslateModule} from '@ngx-translate/core';
+import { TranslateModule} from '@ngx-translate/core';
 import {Subject, takeUntil} from 'rxjs';
 import {NavigationService} from '../../../../core/services/navigation.service';
 import {AuthService} from '../../../../core/services/auth.service';
-import {LanguageService, ThemeService, getUserInitials, TooltipDirective} from 'shared-lib';
+import {LanguageService, ThemeService, getUserInitials, TooltipDirective , Language } from 'shared-lib';
 import {NavigationConfig} from '../../../../core/models/navigation-config.model';
 import {PageTitleService} from '../../../../core/services/page-title.service';
 
@@ -34,6 +34,7 @@ export class Header implements OnInit, OnDestroy {
   navigationSections = signal<NavigationConfig[]>([]);
   currentUser = computed(() => this.authService.currentUser);
   currentLanguage = signal('fr');
+  supportedLanguages: Language[] = [];
   isDarkTheme = signal(false);
   currentLogo: string = '/assets/images/logo/soncollablightlogo.svg';
 
@@ -41,6 +42,7 @@ export class Header implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadNavigation();
     this.setupListeners();
+    this.initializeLanguage();
   }
 
   ngOnDestroy(): void {
@@ -66,6 +68,13 @@ export class Header implements OnInit, OnDestroy {
         this.updateLogo();
       });
   }
+
+  private initializeLanguage(): void {
+    this.supportedLanguages = this.languageService.getSupportedLanguages();
+    this.currentLanguage.set(this.languageService.getCurrentLanguage());
+  }
+
+
 
   setLanguage(lang: string): void {
     this.languageService.setLanguage(lang);

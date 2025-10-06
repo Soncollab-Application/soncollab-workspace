@@ -6,7 +6,8 @@ import {
   LanguageOrchestratorService,
   LanguageService,
   ThemeService,
-  Toast
+  Toast,
+  Language
 } from 'shared-lib';
 
 @Component({
@@ -18,6 +19,8 @@ import {
 })
 export class App implements OnInit, AfterViewInit, OnDestroy {
   private destroy$ = new Subject<void>();
+  supportedLanguages: Language[] = [];
+  currentLanguage: string = 'fr';
 
   constructor(
     private themeService: ThemeService,
@@ -30,6 +33,7 @@ export class App implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     this.aosService.initializeAOS();
+    this.initializeLanguageSelector();
   }
 
   ngAfterViewInit(): void {
@@ -39,6 +43,11 @@ export class App implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  private initializeLanguageSelector(): void {
+    this.supportedLanguages = this.languageService.getSupportedLanguages();
+    this.currentLanguage = this.languageService.getCurrentLanguage();
   }
 
   /**

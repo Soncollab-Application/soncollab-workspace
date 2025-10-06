@@ -99,6 +99,7 @@
                       <div class="row gx-3">
                         <div class="col">
                           <lib-choice
+                            #sortChoice
                             type="select-one"
                             [options]="getSortChoiceOptions()"
                             [config]="getSortChoiceConfig()"
@@ -235,6 +236,7 @@
                   <h5 class="mb-3">{{ 'filterBar.sort' | translate }}</h5>
                   <div class="mb-3">
                     <lib-choice
+                      #sortChoiceMobile
                       type="select-one"
                       [options]="getSortChoiceOptions()"
                       [config]="getSortChoiceConfig()"

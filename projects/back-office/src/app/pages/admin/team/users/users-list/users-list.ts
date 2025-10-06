@@ -4,27 +4,27 @@ import { UserFilters, UserListItem } from '../../../../../core/models/admin/user
 import { AdminService } from '../../../../../core/services/admin/admin.service';
 import {
   FilterConfig,
+  FilterValue,
+  SortConfig,
+  SortOption,
   FilterBarComponent,
   DataTableComponent,
   TableColumn,
   TableAction,
   PaginationState,
   PermissionService,
-  LanguageService,
   LanguageOrchestratorService
 } from 'shared-lib';
 import {PageTitleService} from '../../../../../core/services/page-title.service';
 import {Breadcrumb} from '../../../../../core/components/breadcrumb/breadcrumb';
-import {TranslateService} from '@ngx-translate/core';
-import {Subject, takeUntil} from 'rxjs';
+import {TranslatePipe, TranslateService} from '@ngx-translate/core';
+import {Subject} from 'rxjs';
+import {environment} from '../../../../../../environments/environment';
 
 @Component({
   selector: 'app-users-list',
-  imports: [
-    FilterBarComponent,
-    DataTableComponent,
-    Breadcrumb
-  ],
+  standalone: true,
+  imports: [FilterBarComponent, DataTableComponent, Breadcrumb, TranslatePipe],
   templateUrl: './users-list.html',
   styleUrl: './users-list.css'
 })
@@ -34,28 +34,26 @@ export class UsersList implements OnInit, OnDestroy {
   private permissionsService = inject(PermissionService);
   private pageTitleService = inject(PageTitleService);
   private translate = inject(TranslateService);
-  private languageService = inject(LanguageService);
-  private languageOrchestrator=  inject(LanguageOrchestratorService);
+  private languageOrchestrator = inject(LanguageOrchestratorService);
 
   private destroy$ = new Subject<void>();
-
   private componentId = 'users-list';
 
   currentTitle = this.pageTitleService.currentTitle;
-  breadcrumbs = this.pageTitleService.breadcrumbs;
 
   users = signal<UserListItem[]>([]);
   loading = signal(false);
-  filters = signal<UserFilters>({});
+  selectedCount = signal(0);
 
   currentPage = signal(1);
   pageSize = signal(10);
-
-  // Ces valeurs viennent de la réponse API (ne déclenchent PAS l'effect)
   totalUsers = signal(0);
   pageCount = signal(0);
 
-  // Computed pour l'affichage (ne déclenche pas l'effect)
+  searchTerm = signal('');
+  filterValues = signal<FilterValue>({});
+  currentSort = signal<SortConfig>({ field: 'username', direction: 'asc' });
+
   pagination = computed<PaginationState>(() => ({
     currentPage: this.currentPage(),
     pageSize: this.pageSize(),
@@ -64,141 +62,195 @@ export class UsersList implements OnInit, OnDestroy {
   }));
 
   canManageUsers = computed(() =>
-    this.permissionsService.hasPermission('users-permissions', 'user', 'find')
+    this.permissionsService.hasPermission('users-permissions', 'user', 'update')
   );
 
-  filterConfigs: FilterConfig[] = [
-    {
-      key: 'role',
-      type: 'select',
-      label: 'Rôle',
-      placeholder: 'Tous les rôles',
-      options: [
-        { value: 'soncollab_admin', label: 'Admin' },
-        { value: 'soncollab_sales', label: 'Commercial' },
-        { value: 'soncollab_content', label: 'Content Manager' }
-      ]
-    },
-    {
-      key: 'status',
-      type: 'select',
-      label: 'Statut',
-      placeholder: 'Tous les statuts',
-      options: [
-        { value: 'available', label: 'Disponible' },
-        { value: 'busy', label: 'Occupé' },
-        { value: 'offline', label: 'Hors ligne' }
-      ]
-    },
-    {
-      key: 'blocked',
-      type: 'boolean',
-      label: 'Bloqué'
-    }
-  ];
-
-  columns: TableColumn<UserListItem>[] = [
-    {
-      key: 'avatar',
-      label: '',
-      type: 'image',
-      width: '48px'
-    },
-    {
-      key: 'full_name',
-      label: 'Utilisateur',
-      sortable: true,
-      render: (user) => `${user.first_name} ${user.last_name}`
-    },
-    {
-      key: 'email',
-      label: 'Email',
-      sortable: true
-    },
-    {
-      key: 'role',
-      label: 'Rôle',
-      render: (user) => user.role.name
-    },
-    {
-      key: 'availability_status',
-      label: 'Statut',
-      type: 'badge',
-      render: (user) => this.formatStatus(user.availability_status),
-      cellClass: (user) => this.getStatusClass(user.availability_status)
-    },
-    {
-      key: 'sales_quotas',
-      label: 'Quota',
-      render: (user) => {
-        const activeQuota = user.sales_quotas?.find(q => q.is_active);
-        return activeQuota
-          ? `${activeQuota.current_contacts}/${activeQuota.max_contacts}`
-          : '-';
-      }
-    },
-    {
-      key: 'blocked',
-      label: 'État',
-      type: 'badge',
-      render: (user) => user.blocked ? 'Bloqué' : 'Actif',
-      cellClass: (user) => user.blocked ? 'text-danger' : 'text-success'
-    }
-  ];
-
-  actions: TableAction<UserListItem>[] = [
-    {
-      label: 'Voir',
-      icon: 'eye',
-      class: 'btn-outline-primary',
-      handler: (user) => this.viewUser(user)
-    },
-    {
-      label: 'Modifier',
-      icon: 'pencil',
-      class: 'btn-outline-secondary',
-      condition: () => this.canManageUsers(),
-      handler: (user) => this.editUser(user)
-    },
-    {
-      label: 'Bloquer',
-      icon: 'lock',
-      class: 'btn-outline-danger',
-      condition: (user) => this.canManageUsers() && !user.blocked,
-      handler: (user) => this.blockUser(user)
-    },
-    {
-      label: 'Débloquer',
-      icon: 'unlock',
-      class: 'btn-outline-success',
-      condition: (user) => this.canManageUsers() && user.blocked,
-      handler: (user) => this.unblockUser(user)
-    }
-  ];
+  filters = signal<FilterConfig[]>([]);
+  sortOptions = signal<SortOption[]>([]);
+  columns = signal<TableColumn<UserListItem>[]>([]);
+  actions = signal<TableAction<UserListItem>[]>([]);
 
   constructor() {
     effect(() => {
       const page = this.currentPage();
       const size = this.pageSize();
-      const currentFilters = this.filters();
+      const search = this.searchTerm();
+      const filters = this.filterValues();
+      const sort = this.currentSort();
+
       untracked(() => {
-        this.loadUsers(page, size, currentFilters);
+        const userFilters = this.buildUserFilters(search, filters);
+        this.loadUsers(page, size, userFilters, sort.field, sort.direction);
       });
     });
   }
 
   ngOnInit() {
     this.setBreadcrumbs();
+    this.initializeConfig();
+    this.loadRoles();
     this.languageOrchestrator.registerComponent(
       this.componentId,
       () => this.onLanguageChange()
     );
   }
 
-  onLanguageChange(): void {
-    this.setBreadcrumbs();
+
+
+
+  private initializeConfig(): void {
+    this.filters.set([
+      {
+        key: 'role',
+        type: 'select',
+        label: this.translate.instant('users-list.filters.role'),
+        placeholder: this.translate.instant('users-list.filters.allRoles'),
+        options: [
+          { value: '', label: this.translate.instant('users-list.filters.allRoles') }
+        ]
+      },
+      {
+        key: 'blocked',
+        type: 'select',
+        label: this.translate.instant('users-list.filters.state'),
+        placeholder: this.translate.instant('users-list.filters.allStates'),
+        options: [
+          { value: '', label: this.translate.instant('users-list.filters.allStates') },
+          { value: 'false', label: this.translate.instant('users-list.filters.active') },
+          { value: 'true', label: this.translate.instant('users-list.filters.blocked') }
+        ]
+      },
+      {
+        key: 'confirmed',
+        type: 'select',
+        label: this.translate.instant('users-list.filters.confirmation'),
+        placeholder: this.translate.instant('users-list.filters.allStates'),
+        options: [
+          { value: '', label: this.translate.instant('users-list.filters.allStates') },
+          { value: 'true', label: this.translate.instant('users-list.filters.confirmed') },
+          { value: 'false', label: this.translate.instant('users-list.filters.notConfirmed') }
+        ]
+      }
+    ]);
+
+    this.sortOptions.set([
+      { value: 'username', label: this.translate.instant('users-list.sort.username') },
+      { value: 'email', label: this.translate.instant('users-list.sort.email') },
+      { value: 'createdAt', label: this.translate.instant('users-list.sort.createdAt') }
+    ]);
+
+    this.columns.set([
+      {
+        key: 'username',
+        label: this.translate.instant('users-list.columns.user'),
+        sortable: true,
+        type: 'user',
+        avatarKey: 'avatar.url',
+        subtitleKey: 'email',
+        avatarTransform: (url: string) => url ? `${environment.api.baseUrl}${url}` : '',
+        render: (user) => {
+          return user.first_name && user.last_name
+            ? `${user.first_name} ${user.last_name}`
+            : user.username;
+        }
+      },
+      {
+        key: 'role',
+        label: this.translate.instant('users-list.columns.role'),
+        type: 'text',
+        sortable: true,
+        render: (user) => this.translateRole(user.role.type)  // ← Utiliser translateRole
+      },
+      {
+        key: 'confirmed',
+        label: this.translate.instant('users-list.columns.confirmation'),
+        type: 'custom-badge',
+        render: (user) => user.confirmed
+          ? this.translate.instant('users-list.badges.confirmed')
+          : this.translate.instant('users-list.badges.notConfirmed'),
+        cellClass: (user) => user.confirmed ? 'text-success bg-success-subtle' : 'text-warning bg-warning-subtle'
+      },
+      {
+        key: 'blocked',
+        label: this.translate.instant('users-list.columns.state'),
+        type: 'custom-badge',
+        render: (user) => user.blocked
+          ? this.translate.instant('users-list.badges.blocked')
+          : this.translate.instant('users-list.badges.active'),
+        cellClass: (user) => user.blocked ? 'text-danger bg-danger-subtle' : 'text-success bg-success-subtle',
+        colspan: 2
+      }
+    ]);
+
+    this.actions.set([
+      {
+        label: this.translate.instant('users-list.actions.view'),
+        icon: 'eye',
+        handler: (user) => this.viewUser(user)
+      },
+      {
+        label: this.translate.instant('users-list.actions.edit'),
+        icon: 'pencil',
+        condition: () => this.canManageUsers(),
+        handler: (user) => this.editUser(user)
+      },
+      {
+        label: this.translate.instant('users-list.actions.block'),
+        icon: 'lock',
+        condition: (user) => this.canManageUsers() && !user.blocked,
+        handler: (user) => this.blockUser(user)
+      },
+      {
+        label: this.translate.instant('users-list.actions.unblock'),
+        icon: 'unlock',
+        condition: (user) => this.canManageUsers() && user.blocked,
+        handler: (user) => this.unblockUser(user)
+      }
+    ]);
   }
 
+  private loadRoles(): void {
+    this.adminService.getRoles().subscribe({
+      next: (response) => {
+        // Filtrer les rôles public et authenticated
+        const roleOptions = response.roles
+          .filter((role: any) => role.type !== 'public' && role.type !== 'authenticated')
+          .map((role: any) => ({
+            value: role.type,
+            label: this.translateRole(role.type)
+          }));
+
+        this.filters.update(filters =>
+          filters.map(filter =>
+            filter.key === 'role'
+              ? {
+                ...filter,
+                options: [
+                  { value: '', label: this.translate.instant('users-list.filters.allRoles') },
+                  ...roleOptions
+                ]
+              }
+              : filter
+          )
+        );
+      },
+      error: (err) => console.error('Erreur lors du chargement des rôles:', err)
+    });
+  }
+
+  private translateRole(roleType: string): string {
+    const key = `users-list.roles.${roleType}`;
+    const translated = this.translate.instant(key);
+    return translated !== key ? translated : roleType;
+  }
+
+  onLanguageChange(): void {
+    setTimeout(() => {
+      this.setBreadcrumbs();
+      this.initializeConfig();
+      this.loadRoles();
+    }, 150);
+  }
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
@@ -213,7 +265,7 @@ export class UsersList implements OnInit, OnDestroy {
         route: '/admin/dashboard'
       },
       {
-        label: this.translate.instant('breadcrumbs.users-list.team'),
+        label: this.translate.instant('breadcrumbs.users-list.team')
       },
       {
         label: this.translate.instant('breadcrumbs.users-list.users'),
@@ -222,16 +274,42 @@ export class UsersList implements OnInit, OnDestroy {
     ]);
   }
 
-  private loadUsers(page: number, pageSize: number, filters: UserFilters): void {
+  private buildUserFilters(search: string, filterValues: FilterValue): UserFilters {
+    const userFilters: UserFilters = {};
+
+    if (search) {
+      userFilters.search = search;
+    }
+
+    if (filterValues['role']) {
+      userFilters.role = filterValues['role'];
+    }
+
+    if (filterValues['blocked'] !== undefined && filterValues['blocked'] !== '') {
+      userFilters.blocked = filterValues['blocked'] === 'true';
+    }
+
+    if (filterValues['confirmed'] !== undefined && filterValues['confirmed'] !== '') {
+      userFilters.confirmed = filterValues['confirmed'] === 'true';
+    }
+
+    return userFilters;
+  }
+
+  private loadUsers(
+    page: number,
+    pageSize: number,
+    filters: UserFilters,
+    sortField: string,
+    sortDirection: 'asc' | 'desc'
+  ): void {
     this.loading.set(true);
 
-    this.adminService.getUsers(page, pageSize, filters).subscribe({
+    this.adminService.getUsers(page, pageSize, filters, sortField, sortDirection).subscribe({
       next: (response) => {
         this.users.set(response.data);
-
         this.totalUsers.set(response.meta.pagination.total);
         this.pageCount.set(response.meta.pagination.pageCount);
-
         this.loading.set(false);
       },
       error: () => this.loading.set(false)
@@ -239,13 +317,17 @@ export class UsersList implements OnInit, OnDestroy {
   }
 
   onSearchChange(search: string): void {
-    this.filters.update(f => ({ ...f, search }));
+    this.searchTerm.set(search);
     this.currentPage.set(1);
   }
 
-  onFilterChange(filterValues: any): void {
-    this.filters.set(filterValues);
+  onFilterChange(filterValues: FilterValue): void {
+    this.filterValues.set(filterValues);
     this.currentPage.set(1);
+  }
+
+  onSortChange(sort: SortConfig): void {
+    this.currentSort.set(sort);
   }
 
   onPageChange(page: number): void {
@@ -256,44 +338,49 @@ export class UsersList implements OnInit, OnDestroy {
     event.action.handler(event.row);
   }
 
+  onRowClick(row: UserListItem): void {
+    this.viewUser(row);
+  }
+
   viewUser(user: UserListItem): void {
-    this.router.navigate(['/admin/team/users', user.id]);
+    this.router.navigate(['/admin/team/users', user.documentId]);
   }
 
   editUser(user: UserListItem): void {
-    this.router.navigate(['/admin/team/users', user.id, 'edit']);
+    this.router.navigate(['/admin/team/users', user.documentId, 'edit']);
   }
 
   blockUser(user: UserListItem): void {
-    if (confirm(`Bloquer ${user.first_name} ${user.last_name} ?`)) {
+    const username = user.first_name && user.last_name
+      ? `${user.first_name} ${user.last_name}`
+      : user.username;
+
+    const message = this.translate.instant('users-list.confirmBlock', { name: username });
+
+    if (confirm(message)) {
       this.adminService.blockUser(user.id).subscribe(() => {
-        // Re-charger en utilisant les valeurs actuelles
-        this.loadUsers(this.currentPage(), this.pageSize(), this.filters());
+        const sort = this.currentSort();
+        this.loadUsers(
+          this.currentPage(),
+          this.pageSize(),
+          this.buildUserFilters(this.searchTerm(), this.filterValues()),
+          sort.field,
+          sort.direction
+        );
       });
     }
   }
 
   unblockUser(user: UserListItem): void {
     this.adminService.unblockUser(user.id).subscribe(() => {
-      this.loadUsers(this.currentPage(), this.pageSize(), this.filters());
+      const sort = this.currentSort();
+      this.loadUsers(
+        this.currentPage(),
+        this.pageSize(),
+        this.buildUserFilters(this.searchTerm(), this.filterValues()),
+        sort.field,
+        sort.direction
+      );
     });
-  }
-
-  private formatStatus(status: string): string {
-    const labels: Record<string, string> = {
-      'available': 'Disponible',
-      'busy': 'Occupé',
-      'offline': 'Hors ligne'
-    };
-    return labels[status] || status;
-  }
-
-  private getStatusClass(status: string): string {
-    const classes: Record<string, string> = {
-      'available': 'badge bg-success',
-      'busy': 'badge bg-warning',
-      'offline': 'badge bg-secondary'
-    };
-    return classes[status] || 'badge bg-secondary';
   }
 }

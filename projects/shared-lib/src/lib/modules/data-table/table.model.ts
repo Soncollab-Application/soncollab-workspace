@@ -4,14 +4,12 @@ export interface TableColumn<T = any> {
   sortable?: boolean;
   width?: string;
   colspan?: number;
-  type?: 'text' | 'date' | 'badge' | 'image' | 'user' | 'phone' | 'email' | 'custom' | 'custom-badge';
+  type?: 'text' | 'date' | 'badge' | 'image' | 'user' | 'phone' | 'email' | 'custom-badge' | 'custom';
   render?: (row: T) => string;
   cellClass?: string | ((row: T) => string);
-  // Pour le type 'user'
   avatarKey?: string;
   subtitleKey?: string;
-  // Pour le type 'phone' ou 'email'
-  linkPrefix?: 'tel:' | 'mailto:';
+  avatarTransform?: (url: string) => string;
 }
 
 export interface TableAction<T = any> {

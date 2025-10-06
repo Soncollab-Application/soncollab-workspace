@@ -1,36 +1,36 @@
 .avatar {
-  --fn-avatar-size: calc(2.8125rem + var(--fn-border-width) * 2);
-  --fn-avatar-border-radius: 50rem;
-  --fn-avatar-font-size: 0.875rem;
-  --fn-avatar-bg: var(--fn-tertiary-bg);
-  --fn-avatar-color: var(--fn-body-color);
-  --fn-avatar-group-offset: calc(var(--fn-avatar-size) / -5);
-  --fn-avatar-group-outline-width: calc(var(--fn-avatar-size) / 15);
-  --fn-avatar-status-border-width: var(--fn-border-width);
-  --fn-avatar-status-border-color: var(--fn-border-color);
-  align-items: center;
-  background-color: var(--fn-avatar-bg);
-  border-radius: var(--fn-avatar-border-radius);
-  color: var(--fn-avatar-color);
-  display: inline-flex;
-  font-size: var(--fn-avatar-font-size);
-  height: var(--fn-avatar-size);
-  justify-content: center;
-  min-width: var(--fn-avatar-size);
-  position: relative;
-  text-transform: uppercase;
+  --fn-avatar-size: calc(2.8125rem + var(--fn-border-width) * 2) !important;
+  --fn-avatar-border-radius: 50rem !important;
+  --fn-avatar-font-size: 0.875rem !important;
+  --fn-avatar-bg: var(--fn-tertiary-bg) !important;
+  --fn-avatar-color: var(--fn-body-color) !important;
+  --fn-avatar-group-offset: calc(var(--fn-avatar-size) / -5) !important;
+  --fn-avatar-group-outline-width: calc(var(--fn-avatar-size) / 15) !important;
+  --fn-avatar-status-border-width: var(--fn-border-width) !important;
+  --fn-avatar-status-border-color: var(--fn-border-color) !important;
+  align-items: center !important;
+  background-color: var(--fn-avatar-bg) !important;
+  border-radius: var(--fn-avatar-border-radius) !important;
+  color: var(--fn-avatar-color) !important;
+  display: inline-flex !important;
+  font-size: var(--fn-avatar-font-size) !important;
+  height: var(--fn-avatar-size) !important;
+  justify-content: center !important;
+  min-width: var(--fn-avatar-size) !important;
+  position: relative !important;
+  text-transform: uppercase !important;
   width: var(--fn-avatar-size)
 }
 
 .avatar-status:before {
-  border: calc(var(--fn-avatar-status-border-width) * 2) solid var(--fn-avatar-status-border-color);
-  border-radius: inherit;
-  -webkit-clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
-  clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
-  content: "";
-  inset: calc(var(--fn-avatar-size) / -8);
-  position: absolute;
-  transition: all .3s ease-in-out;
+  border: calc(var(--fn-avatar-status-border-width) * 2) solid var(--fn-avatar-status-border-color) !important;
+  border-radius: inherit !important;
+  -webkit-clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%) !important;
+  clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%) !important;
+  content: "" !important;
+  inset: calc(var(--fn-avatar-size) / -8) !important;
+  position: absolute !important;
+  transition: all .3s ease-in-out !important;
   transition-property: transform
 }
 
@@ -71,30 +71,30 @@
 }
 
 .avatar-xl {
-  --fn-avatar-size: 4rem;
+  --fn-avatar-size: 4rem !important;
   --fn-avatar-font-size: 1rem
 }
 
 .avatar-lg {
-  --fn-avatar-size: calc(3.5rem + var(--fn-border-width) * 2);
+  --fn-avatar-size: calc(3.5rem + var(--fn-border-width) * 2) !important;
   --fn-avatar-font-size: 1rem
 }
 
 .avatar-sm {
-  --fn-avatar-size: calc(2.125rem + var(--fn-border-width) * 2);
+  --fn-avatar-size: calc(2.125rem + var(--fn-border-width) * 2) !important;
   --fn-avatar-font-size: 0.75rem
 }
 
 .avatar-xs {
-  --fn-avatar-size: 1.5rem;
+  --fn-avatar-size: 1.5rem !important;
   --fn-avatar-font-size: 0.75rem
 }
 
 .avatar-img {
-  border-radius: inherit;
-  height: 100%;
-  -o-object-fit: cover;
-  object-fit: cover;
+  border-radius: inherit !important;
+  height: 100% !important;
+  -o-object-fit: cover !important;
+  object-fit: cover !important;
   width: 100%
 }
 
@@ -107,23 +107,13 @@
 }
 
 .avatar-group .avatar:not(:last-child) {
-  --fn-mask-radius: calc(var(--fn-avatar-size) / 2 + var(--fn-avatar-group-outline-width) / 2);
-  --fn-mask-center-x: calc(100% - var(--fn-avatar-group-offset) + var(--fn-avatar-group-outline-width));
+  --fn-mask-radius: calc(var(--fn-avatar-size) / 2 + var(--fn-avatar-group-outline-width) / 2) !important;
+  --fn-mask-center-x: calc(100% - var(--fn-avatar-group-offset) + var(--fn-avatar-group-outline-width)) !important;
 
   mask-image: radial-gradient(
     circle at var(--fn-mask-center-x) 50%,
     #fff var(--fn-mask-radius),
     transparent var(--fn-mask-radius)
-  );
-  mask-repeat: no-repeat;
-}
-
-
-
-.avatar-placeholder {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  font-size: 14px;
-  font-weight: 600;
+  ) !important;
+  mask-repeat: no-repeat !important;
 }

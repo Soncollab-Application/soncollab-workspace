@@ -9,11 +9,12 @@ import {SortConfig} from '../filter-bar/filter.model';
 import {DropdownSingleDirective} from '../../directives/dropdown-single.directive';
 import {EmptyStateComponent} from '../empty-state';
 import {getInitialsByParamsName} from '../../utils/user.utils';
+import {RelativeDatePipe} from '../../pipes/relative-date.pipe';
 
 @Component({
   selector: 'lib-data-table',
   standalone: true,
-  imports: [CommonModule, TranslatePipe, DropdownSingleDirective, EmptyStateComponent],
+  imports: [CommonModule, TranslatePipe, DropdownSingleDirective, EmptyStateComponent, RelativeDatePipe],
   templateUrl: './data-table.component.html',
   styleUrls: ['./data-table.component.css']
 })
@@ -68,6 +69,20 @@ export class DataTableComponent<T = any> implements OnInit {
     if (!sort || sort.field !== column.key) return 'bi-arrow-down-up';
     return sort.direction === 'asc' ? 'bi-sort-up' : 'bi-sort-down';
   }
+
+  getAvatarUrl(row: T, column: TableColumn<T>): string {
+    const avatarPath = this.getNestedValue(row, column.avatarKey!);
+
+    if (!avatarPath) return '';
+
+    // Si une fonction de transformation est fournie, l'utiliser
+    if (column.avatarTransform) {
+      return column.avatarTransform(avatarPath);
+    }
+
+    return avatarPath;
+  }
+
 
   onSort(column: TableColumn<T>): void {
     if (!column.sortable) return;

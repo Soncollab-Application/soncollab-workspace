@@ -1,1 +1,38 @@
 <p>admin-dashboard works!</p>
+
+
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="mb-4">Test Filter Bar & Data Table</h1>
+
+      <lib-filter-bar
+        [filters]="filters()"
+        [sortOptions]="sortOptions()"
+        [selectedCount]="selectedCount()"
+        [showSearch]="true"
+        (searchChange)="onSearchChange($event)"
+        (filterChange)="onFilterChange($event)"
+        (sortChange)="onSortChange($event)"
+      />
+
+      <br>
+
+      <lib-data-table
+        [data]="filteredData()"
+        [columns]="columns()"
+        [actions]="actions()"
+        [loading]="loading()"
+        [pagination]="pagination()"
+        [currentSort]="currentSort()"
+        [selectable]="true"
+        [clickable]="true"
+        (sortChange)="onSortChange($event)"
+        (pageChange)="onPageChange($event)"
+        (actionClick)="onActionClick($event)"
+        (rowClick)="onRowClick($event)"
+        (selectionChange)="onSelectionChange($event)"
+      />
+    </div>
+  </div>
+</div>

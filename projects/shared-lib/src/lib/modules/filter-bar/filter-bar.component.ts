@@ -1,4 +1,4 @@
-import {Component, inject, input, OnInit, output, signal} from '@angular/core';
+import {Component, inject, input, OnInit, output, signal, viewChild, effect} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {TranslateModule, TranslateService} from '@ngx-translate/core';
@@ -36,13 +36,26 @@ export class FilterBarComponent implements OnInit {
   filterValues = signal<FilterValue>({});
   currentSort = signal<SortConfig>({ field: '', direction: 'asc' });
 
+  // ViewChilds pour les Choice de tri
+  sortChoice = viewChild<Choice>('sortChoice');
+  sortChoiceMobile = viewChild<Choice>('sortChoiceMobile');
+
+  // Signal pour forcer le re-render des options
+  private sortOptionsVersion = signal(0);
+
+  constructor() {
+    // Effect pour détecter les changements d'options de tri
+    effect(() => {
+      const options = this.sortOptions();
+      if (options.length > 0 && this.currentSort().field === '') {
+        this.currentSort.set({ field: options[0].value, direction: 'asc' });
+      }
+    });
+  }
+
   ngOnInit(): void {
     this.translate.setTranslation('en', { filterBar: enTranslations.filterBar }, true);
     this.translate.setTranslation('fr', { filterBar: frTranslations.filterBar }, true);
-
-    if (this.sortOptions().length > 0) {
-      this.currentSort.set({ field: this.sortOptions()[0].value, direction: 'asc' });
-    }
   }
 
   selectedText(): string {
@@ -68,8 +81,10 @@ export class FilterBarComponent implements OnInit {
   }
 
   onSortFieldChangeFromChoice(field: any): void {
-    this.currentSort.update(s => ({ ...s, field }));
-    this.sortChange.emit(this.currentSort());
+    if (field && field !== this.currentSort().field) {
+      this.currentSort.update(s => ({ ...s, field }));
+      this.sortChange.emit(this.currentSort());
+    }
   }
 
   toggleSortDirection(): void {
@@ -99,10 +114,10 @@ export class FilterBarComponent implements OnInit {
     this.searchTerm.set('');
     this.filterValues.set({});
 
-    // Reset sort to default
     if (this.sortOptions().length > 0) {
-      this.currentSort.set({ field: this.sortOptions()[0].value, direction: 'asc' });
-      this.sortChange.emit(this.currentSort());
+      const defaultSort = { field: this.sortOptions()[0].value, direction: 'asc' as const };
+      this.currentSort.set(defaultSort);
+      this.sortChange.emit(defaultSort);
     }
 
     this.searchChange.emit('');
@@ -115,11 +130,11 @@ export class FilterBarComponent implements OnInit {
   }
 
   getSortChoiceOptions(): ChoiceOption[] {
-    const currentField = this.currentSort().field;
+    // Forcer la création d'un nouveau tableau à chaque appel
     return this.sortOptions().map(option => ({
       value: option.value,
       label: option.label,
-      selected: option.value === currentField
+      selected: option.value === this.currentSort().field
     }));
   }
 

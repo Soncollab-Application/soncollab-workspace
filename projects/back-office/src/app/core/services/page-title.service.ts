@@ -100,14 +100,18 @@ export class PageTitleService {
   }
 
   private updatePageInfo(url: string): void {
-    // Met à jour le titre
+    if (!url.includes(this.currentUrl.split('?')[0])) {
+      this.hasCustomBreadcrumbs.set(false);
+    }
+
     const titleKey = this.routeTitleMap[url] || 'header.pages.default';
     this.translate.get(titleKey).subscribe(title => {
       this.currentTitle.set(title);
     });
 
-    // Génère les breadcrumbs
-    this.generateBreadcrumbs(url);
+    if (!this.hasCustomBreadcrumbs()) {
+      this.generateBreadcrumbs(url);
+    }
   }
 
   private generateBreadcrumbs(url: string): void {
