@@ -4,7 +4,7 @@ export interface TableColumn<T = any> {
   sortable?: boolean;
   width?: string;
   colspan?: number;
-  type?: 'text' | 'date' | 'badge' | 'image' | 'user' | 'phone' | 'email' | 'custom';
+  type?: 'text' | 'date' | 'badge' | 'image' | 'user' | 'phone' | 'email' | 'custom' | 'custom-badge';
   render?: (row: T) => string;
   cellClass?: string | ((row: T) => string);
   // Pour le type 'user'

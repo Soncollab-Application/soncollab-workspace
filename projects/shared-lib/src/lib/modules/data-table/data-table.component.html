@@ -109,9 +109,15 @@
                       <div class="d-flex align-items-center">
                         @if (column.avatarKey) {
                           <div class="avatar">
-                            <img class="avatar-img"
-                                 [src]="getNestedValue(row, column.avatarKey)"
-                                 [alt]="getCellValue(row, column)">
+                            @if (getNestedValue(row, column.avatarKey)) {
+                              <img class="avatar-img"
+                                   [src]="getNestedValue(row, column.avatarKey)"
+                                   [alt]="getCellValue(row, column)">
+                            } @else {
+                              <div class="avatar-placeholder bg-secondary text-white d-flex align-items-center justify-content-center">
+                                {{ getInitials(getCellValue(row, column)) }}
+                              </div>
+                            }
                           </div>
                         }
                         <div class="ms-4">
@@ -139,13 +145,24 @@
                         {{ getCellValue(row, column) }}
                       </a>
                     }
+                    @case ('custom-badge') {
+                      <div class="d-flex align-items-center">
+                        <span class="badge" [class]="getCellClass(row, column)">
+                          {{ getCellValue(row, column) }}
+                        </span>
+                      </div>
+                    }
                     @case ('badge') {
-                      <span class="badge" [class]="getCellValue(row, column)">
-                        {{ getCellValue(row, column) }}
-                      </span>
+                      <div class="d-flex align-items-center">
+                        <span [class]="getCellValue(row, column)">
+                          {{ getCellValue(row, column) }}
+                        </span>
+                      </div>
                     }
                     @case ('date') {
-                      {{ getCellValue(row, column) | date:'short' }}
+                      <div class="d-flex align-items-center">
+                        {{ getCellValue(row, column) | date:'short' }}
+                      </div>
                     }
                     @case ('image') {
                       <div class="avatar">
@@ -155,7 +172,9 @@
                       </div>
                     }
                     @default {
-                      {{ getCellValue(row, column) }}
+                      <div class="d-flex align-items-center">
+                        <span [innerHTML]="getCellValue(row, column)"></span>
+                      </div>
                     }
                   }
                 </td>

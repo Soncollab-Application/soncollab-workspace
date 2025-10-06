@@ -14,7 +14,8 @@ export interface FilterConfig {
 export interface FilterOption {
   label: string;
   value: any;
-  avatarSrc?: string; // Pour les avatars
+  avatarSrc?: string;
+  placeholder?: boolean;
 }
 
 export interface FilterValue {

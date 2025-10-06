@@ -8,6 +8,7 @@ import {PaginationState} from './pagination.model';
 import {SortConfig} from '../filter-bar/filter.model';
 import {DropdownSingleDirective} from '../../directives/dropdown-single.directive';
 import {EmptyStateComponent} from '../empty-state';
+import {getInitialsByParamsName} from '../../utils/user.utils';
 
 @Component({
   selector: 'lib-data-table',
@@ -17,6 +18,7 @@ import {EmptyStateComponent} from '../empty-state';
   styleUrls: ['./data-table.component.css']
 })
 export class DataTableComponent<T = any> implements OnInit {
+
   private translate = inject(TranslateService);
 
   // Inputs
@@ -49,6 +51,10 @@ export class DataTableComponent<T = any> implements OnInit {
   ngOnInit(): void {
     this.translate.setTranslation('en', { dataTable: enTranslations.dataTable }, true);
     this.translate.setTranslation('fr', { dataTable: frTranslations.dataTable }, true);
+  }
+
+  getInitials(name: any): string {
+    return getInitialsByParamsName(name);
   }
 
   getTotalColspan(): number {

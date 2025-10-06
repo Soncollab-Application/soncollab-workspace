@@ -5,3 +5,53 @@
 .table th {
   user-select: none;
 }
+
+.table-select tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.table-round {
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-placeholder {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.table-active {
+  --fn-table-bg-state: rgba(var(--fn-primary-rgb), 0.1) !important;
+  background-color: var(--fn-table-bg-state);
+}
+
+.table-active:hover {
+  --fn-table-bg-state: rgba(var(--fn-primary-rgb), 0.15) !important;
+}
+
+/* FIX: Empêcher le background de déborder sur les badges */
+.table tbody td {
+  background-color: transparent !important;
+}
+
+
+.table-active td {
+  background-color: rgba(var(--fn-primary-rgb), 0.1) !important;
+}
