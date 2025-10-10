@@ -1,13 +1,7 @@
-import {AfterViewInit, Component, OnInit, OnDestroy} from '@angular/core';
-import {RouterOutlet} from '@angular/router';
-import {from, Subject} from 'rxjs';
-import {
-  AosService,
-  LanguageOrchestratorService,
-  LanguageService,
-  ThemeService,
-  Toast
-} from 'shared-lib';
+import { AfterViewInit, Component, OnInit, OnDestroy } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { Subject } from 'rxjs';
+import { AosService, LanguageService, ThemeService, Toast } from 'shared-lib';
 
 @Component({
   selector: 'app-root',
@@ -17,19 +11,15 @@ import {
   styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
-
   private destroy$ = new Subject<void>();
 
   constructor(
     private themeService: ThemeService,
     private aosService: AosService,
-    private languageService: LanguageService,
-    private languageOrchestrator: LanguageOrchestratorService
-  ) {
-    this.initializeServices();
+    private languageService: LanguageService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.aosService.initializeAOS();
   }
 
@@ -41,17 +31,5 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
   }
-
-  /**
-   * Initialise les services de base
-   */
-  private initializeServices(): void {
-    // Configuration du thème
-    const storedTheme = this.themeService.getStoredTheme();
-    this.themeService.applyPreferences();
-    this.themeService.setTheme(storedTheme);
-  }
-
-
 
 }

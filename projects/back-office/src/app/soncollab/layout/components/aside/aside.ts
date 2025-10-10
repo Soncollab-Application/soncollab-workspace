@@ -1,26 +1,22 @@
-import {Component, computed, inject, OnDestroy, OnInit, signal} from '@angular/core';
-import {Subject, takeUntil} from 'rxjs';
-import {NavigationConfig, NavigationItem} from '../../../../core/models/navigation-config.model';
-import {NavigationService} from '../../../../core/services/navigation.service';
-import {AuthService} from '../../../../core/services/auth.service';
-import {Router, RouterLink, RouterLinkActive} from '@angular/router';
+import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Subject } from 'rxjs';
+import { NavigationConfig, NavigationItem } from '../../../../core/models/navigation-config.model';
+import { NavigationService } from '../../../../core/services/navigation.service';
+import { AuthService } from '../../../../core/services/auth.service';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { LanguageService, Theme, ThemeService, getUserInitials } from 'shared-lib';
-import {TranslatePipe} from '@ngx-translate/core';
-import {PageTitleService} from '../../../../core/services/page-title.service';
+import { TranslatePipe } from '@ngx-translate/core';
+import { PageTitleService } from '../../../../core/services/page-title.service';
+import {SonCollabRoleType} from '../../../../core/models/auth.model';
 
 @Component({
   selector: 'app-aside',
-  imports: [
-    RouterLink,
-    TranslatePipe,
-    RouterLinkActive
-  ],
+  imports: [RouterLink, TranslatePipe, RouterLinkActive],
   templateUrl: './aside.html',
   styleUrl: './aside.css'
 })
 export class Aside implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
-
   private navigationService = inject(NavigationService);
   private authService = inject(AuthService);
   private languageService = inject(LanguageService);
@@ -28,17 +24,19 @@ export class Aside implements OnInit, OnDestroy {
   private router = inject(Router);
   private pageTitleService = inject(PageTitleService);
 
-  currentLogo: string = '/assets/images/logo/soncollablightlogo.svg';
-  isDarkTheme: boolean = false;
-  currentTheme: Theme = 'light';
-
   navigationSections = signal<NavigationConfig[]>([]);
   currentUser = computed(() => this.authService.currentUser);
 
+  currentTheme = computed(() => this.themeService.getCurrentTheme());
+  isDarkTheme = computed(() => this.themeService.isDark());
+  currentLogo = computed(() =>
+    this.isDarkTheme()
+      ? '/assets/images/logo/soncollablightlogo.svg'
+      : '/assets/images/logo/soncollabdarklogo.svg'
+  );
+
   ngOnInit(): void {
     this.loadNavigation();
-    this.setupLanguageListener();
-    this.setupThemeListener();
   }
 
   ngOnDestroy(): void {
@@ -50,58 +48,26 @@ export class Aside implements OnInit, OnDestroy {
     this.navigationSections.set(this.navigationService.getNavigationForCurrentUser());
   }
 
-  private setupLanguageListener(): void {
-    this.languageService.languageChanged$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-
-      });
+  hasActiveChild(item: NavigationItem): boolean {
+    if (!item.children) return false;
+    return item.children.some(child => this.isActiveRoute(child.route || ''));
   }
 
-  private updateLogoBasedOnTheme(): void {
-    this.isDarkTheme = this.themeService.isDarkTheme();
-
-    if (this.isDarkTheme) {
-      this.currentLogo = '/assets/images/logo/soncollablightlogo.svg';
-    } else {
-      this.currentLogo = '/assets/images/logo/soncollabdarklogo.svg';
-    }
+  isActiveRoute(route: string): boolean {
+    if (!route) return false;
+    return this.router.url.startsWith(route);
   }
 
-  private setupThemeListener(): void {
-    this.themeService.theme$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.updateLogoBasedOnTheme();
-        this.updateCurrentTheme();
-      });
+  getHomeRoute(): string {
+    const role = this.authService.currentRole;
+    return this.pageTitleService.getDashboardRoute(role as SonCollabRoleType);
   }
-
-  private updateCurrentTheme(): void {
-    this.currentTheme = this.themeService.getCurrentTheme();
-  }
-
 
   getInitials(): string {
     return getUserInitials(this.currentUser());
   }
 
-  isActiveRoute(route: string): boolean {
-    return this.router.url.startsWith(route);
-  }
-
-  hasActiveChild(item: NavigationItem): boolean {
-    if (!item.children) return false;
-    return item.children.some(child => child.route && this.isActiveRoute(child.route));
-  }
-
   logout(): void {
     this.authService.logout();
   }
-
-  getHomeRoute(): string {
-    const currentRole = this.authService.currentRole;
-    return this.pageTitleService.getDashboardRoute(currentRole);
-  }
-
 }

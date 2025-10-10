@@ -1,48 +1,46 @@
-import {Component, computed, inject, OnDestroy, OnInit, signal} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {Router, RouterModule} from '@angular/router';
-import { TranslateModule} from '@ngx-translate/core';
-import {Subject, takeUntil} from 'rxjs';
-import {NavigationService} from '../../../../core/services/navigation.service';
-import {AuthService} from '../../../../core/services/auth.service';
-import {LanguageService, ThemeService, getUserInitials, TooltipDirective , Language } from 'shared-lib';
-import {NavigationConfig} from '../../../../core/models/navigation-config.model';
-import {PageTitleService} from '../../../../core/services/page-title.service';
+import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router, RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
+import { Subject } from 'rxjs';
+import { NavigationService } from '../../../../core/services/navigation.service';
+import { AuthService } from '../../../../core/services/auth.service';
+import { LanguageService, ThemeService, getUserInitials, TooltipDirective, Theme } from 'shared-lib';
+import { NavigationConfig, NavigationItem } from '../../../../core/models/navigation-config.model';
+import { PageTitleService } from '../../../../core/services/page-title.service';
 
 @Component({
   selector: 'app-header',
-  imports: [
-    CommonModule,
-    RouterModule,
-    TranslateModule,
-    TooltipDirective,
-  ],
+  imports: [CommonModule, RouterModule, TranslateModule, TooltipDirective],
   templateUrl: './header.html',
   styleUrl: './header.css'
 })
 export class Header implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
-
   private navigationService = inject(NavigationService);
   private authService = inject(AuthService);
   private languageService = inject(LanguageService);
   private themeService = inject(ThemeService);
   private router = inject(Router);
   private pageTitleService = inject(PageTitleService);
-  currentTitle = this.pageTitleService.currentTitle;
 
+  currentTitle = this.pageTitleService.currentTitle;
   navigationSections = signal<NavigationConfig[]>([]);
   currentUser = computed(() => this.authService.currentUser);
-  currentLanguage = signal('fr');
-  supportedLanguages: Language[] = [];
-  isDarkTheme = signal(false);
-  currentLogo: string = '/assets/images/logo/soncollablightlogo.svg';
 
+  currentTheme = computed(() => this.themeService.getCurrentTheme());
+  isDarkTheme = computed(() => this.themeService.isDark());
+  currentLogo = computed(() =>
+    this.isDarkTheme()
+      ? '/assets/images/logo/soncollablightlogo.svg'
+      : '/assets/images/logo/soncollabdarklogo.svg'
+  );
+
+  currentLanguage = computed(() => this.languageService.currentLanguage());
+  supportedLanguages = computed(() => this.languageService.availableLanguages);
 
   ngOnInit(): void {
     this.loadNavigation();
-    this.setupListeners();
-    this.initializeLanguage();
   }
 
   ngOnDestroy(): void {
@@ -54,56 +52,30 @@ export class Header implements OnInit, OnDestroy {
     this.navigationSections.set(this.navigationService.getNavigationForCurrentUser());
   }
 
-  private setupListeners(): void {
-    // Language listener
-    this.languageService.currentLanguage$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(lang => this.currentLanguage.set(lang));
-
-    // Theme listener
-    this.themeService.theme$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(theme => {
-        this.isDarkTheme.set(theme === 'dark');
-        this.updateLogo();
-      });
+  toggleTheme(): void {
+    const newTheme: Theme = this.isDarkTheme() ? 'light' : 'dark';
+    this.themeService.setTheme(newTheme);
   }
-
-  private initializeLanguage(): void {
-    this.supportedLanguages = this.languageService.getSupportedLanguages();
-    this.currentLanguage.set(this.languageService.getCurrentLanguage());
-  }
-
-
 
   setLanguage(lang: string): void {
-    this.languageService.setLanguage(lang);
+    if (lang && lang !== this.currentLanguage()) {
+      this.languageService.changeLanguage(lang);
+    }
   }
 
-  private updateLogo(): void {
-    this.currentLogo = this.isDarkTheme()
-      ? '/assets/images/logo/soncollablightlogo.svg'
-      : '/assets/images/logo/soncollabdarklogo.svg';
+  hasActiveChild(item: NavigationItem): boolean {
+    if (!item.children) return false;
+    return item.children.some(child => this.isActiveRoute(child.route || ''));
   }
-
 
   isActiveRoute(route: string): boolean {
+    if (!route) return false;
     return this.router.url.startsWith(route);
-  }
-
-  hasActiveChild(item: any): boolean {
-    if (!item.children) return false;
-    return item.children.some((child: any) => child.route && this.isActiveRoute(child.route));
   }
 
   getInitials(): string {
     return getUserInitials(this.currentUser());
   }
-
-  toggleTheme(): void {
-    this.themeService.toggleTheme();
-  }
-
 
   logout(): void {
     this.authService.logout();

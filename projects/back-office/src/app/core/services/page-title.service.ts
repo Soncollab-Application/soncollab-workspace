@@ -1,10 +1,10 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject, signal, effect } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { filter, map } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 import { AuthService } from './auth.service';
-import {Subject, takeUntil} from 'rxjs';
-import {LanguageService} from 'shared-lib';
+import { LanguageService } from 'shared-lib';
+import {SonCollabRoleType} from '../models/auth.model';
 
 export interface BreadcrumbItem {
   label: string;
@@ -16,13 +16,11 @@ export interface BreadcrumbItem {
   providedIn: 'root'
 })
 export class PageTitleService {
-
   private router = inject(Router);
   private translate = inject(TranslateService);
   private authService = inject(AuthService);
   private languageService = inject(LanguageService);
 
-  private destroy$ = new Subject<void>();
   private currentUrl = '';
 
   // Signals pour la réactivité
@@ -62,108 +60,114 @@ export class PageTitleService {
     '/content/categories': 'header.pages.content.categories',
     '/content/pending': 'header.pages.content.pending',
     '/content/newsletter': 'header.pages.content.newsletter',
-    '/content/analytics': 'header.pages.content.analytics',
 
     // Profile
-    '/profile/settings': 'header.pages.profile.settings',
+    '/profile/overview': 'header.pages.profile.overview',
     '/profile/security': 'header.pages.profile.security',
     '/profile/notifications': 'header.pages.profile.notifications'
   };
 
   constructor() {
-    this.setupRouterListener();
-    this.setupLanguageListener();
+    this.initializeTitleTracking();
+    this.setupLanguageEffect();
   }
 
-
-  private setupRouterListener(): void {
+  private initializeTitleTracking(): void {
     this.router.events
-      .pipe(
-        filter(event => event instanceof NavigationEnd),
-        map(event => (event as NavigationEnd).url),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(url => {
-        this.currentUrl = url;
-        this.updatePageInfo(url);
-      });
-  }
-
-  private setupLanguageListener(): void {
-    this.languageService.languageChanged$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        this.currentUrl = event.urlAfterRedirects;
         if (!this.hasCustomBreadcrumbs()) {
-          this.updatePageInfo(this.currentUrl);
+          this.updateTitleFromRoute(this.currentUrl);
         }
       });
   }
 
-  private updatePageInfo(url: string): void {
-    if (!url.includes(this.currentUrl.split('?')[0])) {
-      this.hasCustomBreadcrumbs.set(false);
-    }
-
-    const titleKey = this.routeTitleMap[url] || 'header.pages.default';
-    this.translate.get(titleKey).subscribe(title => {
-      this.currentTitle.set(title);
+  private setupLanguageEffect(): void {
+    effect(() => {
+      const lang = this.languageService.currentLanguage();
+      if (this.currentUrl) {
+        this.updateTitleFromRoute(this.currentUrl);
+      }
     });
+  }
 
-    if (!this.hasCustomBreadcrumbs()) {
-      this.generateBreadcrumbs(url);
+  private updateTitleFromRoute(url: string): void {
+    const matchedRoute = this.findMatchingRoute(url);
+    if (matchedRoute) {
+      this.translate.get(matchedRoute).subscribe(title => {
+        this.currentTitle.set(title);
+        this.generateBreadcrumbs(url);
+      });
     }
+  }
+
+  private findMatchingRoute(url: string): string | null {
+    const cleanUrl = url.split('?')[0];
+    return this.routeTitleMap[cleanUrl] || null;
   }
 
   private generateBreadcrumbs(url: string): void {
     const segments = url.split('/').filter(s => s);
-    const breadcrumbs: BreadcrumbItem[] = [];
-
-    // Dashboard principal selon le rôle
     const role = this.authService.currentRole;
-    if (role) {
-      const dashboardRoute = this.getDashboardRoute(role);
-      breadcrumbs.push({
-        label: this.translate.instant('header.breadcrumbs.dashboard'),
-        route: dashboardRoute,
-        active: url === dashboardRoute
-      });
-    }
+    const dashboardRoute = this.getDashboardRoute(role as SonCollabRoleType);
 
-    // Construit les breadcrumbs selon les segments
-    if (segments.length > 2) {
-      let currentRoute = '';
+    const breadcrumbItems: BreadcrumbItem[] = [
+      { label: 'Home', route: dashboardRoute, active: false }
+    ];
 
-      segments.slice(1).forEach((segment, index) => {
-        currentRoute += `/${segments[0]}/${segment}`;
-        const isLast = index === segments.length - 2;
+    let currentPath = '';
+    segments.forEach((segment, index) => {
+      currentPath += `/${segment}`;
+      const titleKey = this.routeTitleMap[currentPath];
 
-        breadcrumbs.push({
-          label: this.translate.instant(`header.breadcrumbs.${segment}`),
-          route: isLast ? undefined : currentRoute,
-          active: isLast
+      if (titleKey) {
+        this.translate.get(titleKey).subscribe(label => {
+          breadcrumbItems.push({
+            label,
+            route: currentPath,
+            active: index === segments.length - 1
+          });
         });
-      });
-    }
+      }
+    });
 
-    this.breadcrumbs.set(breadcrumbs);
+    this.breadcrumbs.set(breadcrumbItems);
   }
 
-  public getDashboardRoute(role: string|null): string {
-    switch (role) {
-      case 'soncollab_admin': return '/admin/dashboard';
-      case 'soncollab_sales': return '/sales/dashboard';
-      case 'soncollab_content': return '/content/dashboard';
-      default: return '/';
-    }
+  // Méthode pour obtenir la route du dashboard selon le rôle
+  getDashboardRoute(role: string): string {
+    const dashboardRoutes: Record<string, string> = {
+      'soncollab_admin': '/admin/dashboard',
+      'soncollab_sales': '/sales/dashboard',
+      'soncollab_content': '/content/dashboard'
+    };
+    return dashboardRoutes[role] || '/admin/dashboard';
   }
 
-  setCustomBreadcrumbs(breadcrumbs: BreadcrumbItem[]): void {
-    this.breadcrumbs.set(breadcrumbs);
+  // Méthode pour définir un titre personnalisé
+  setCustomTitle(titleKey: string, params?: any): void {
+    this.translate.get(titleKey, params).subscribe(title => {
+      this.currentTitle.set(title);
+    });
+  }
+
+  // Méthode pour définir des breadcrumbs personnalisés
+  setCustomBreadcrumbs(items: BreadcrumbItem[]): void {
+    this.breadcrumbs.set(items);
     this.hasCustomBreadcrumbs.set(true);
   }
 
+  // Méthode pour réinitialiser les breadcrumbs
   resetBreadcrumbs(): void {
     this.hasCustomBreadcrumbs.set(false);
-    this.generateBreadcrumbs(this.currentUrl);
+    if (this.currentUrl) {
+      this.updateTitleFromRoute(this.currentUrl);
+    }
+  }
+
+  // Alias pour compatibilité
+  clearCustomBreadcrumbs(): void {
+    this.resetBreadcrumbs();
   }
 }

@@ -1,10 +1,9 @@
-<div class="container pt-5 pt-md-5" style="margin-top: 5rem!important;">
-
-  @if (!isLoading && hero) {
+<div class="container pt-5 pt-md-5 mt-5 mt-md-8 mt-lg-8">
+@if (!isLoading && hero) {
     <section class="text-center py-3 mb-3">
       <div class="row justify-content-center">
         <div class="col-lg-8">
-          <h2 class="display-5 fw-lighter position-relative z-2 mb-4 for-inter-font">{{ hero.title }}</h2>
+          <h2 class=" fw-lighter position-relative z-2 mb-3 for-inter-font">{{ hero.title }}</h2>
 
           <p class="hero-subtitle mb-5 fs-4 text-muted-custom">
             {{ hero.title }}
@@ -15,8 +14,8 @@
           </div>-->
 
           <div class="mb-5">
-            <div class="placeholder-glow">
-              <div class="placeholder bg-secondary rounded" style="height: 507px; width: 100%;"></div>
+            <div class="ratio ratio-1976x1014 mb-5">
+              <div class="placeholder bg-secondary rounded"></div>
             </div>
           </div>
 
@@ -39,7 +38,7 @@
     <section class="text-center py-3 mb-3">
       <div class="row justify-content-center">
         <div class="col-lg-8">
-          <h2 class="display-5 fw-lighter position-relative z-2 mb-4 for-inter-font">
+          <h2 class="fw-lighter position-relative z-2 mb-3 for-inter-font">
             {{ 'home.heroFallback.title' | translate }}
           </h2>
 
@@ -52,8 +51,8 @@
           </div>-->
 
           <div class="mb-5">
-            <div class="placeholder-glow">
-              <div class="placeholder bg-secondary rounded" style="height: 507px; width: 100%;"></div>
+            <div class="ratio ratio-1976x1014 mb-5">
+              <div class="placeholder bg-secondary rounded"></div>
             </div>
           </div>
 
@@ -72,19 +71,21 @@
     </section>
   }
 
+
+
   <hr class="border-custom my-5">
 
   <section class="py-1 pb-1">
     <div class="row g-4 mb-1">
       @for (feature of features; track feature.key; let i = $index){
         <div class="col-md-6">
-          <div class="card card-custom h-100 border">
+          <div class="card  h-100 border">
             <div class="card-body p-4">
               <div class="d-flex align-items-center mb-3">
                 <i class="{{ feature.icon }} fs-3 me-2 text-warning"></i>
               </div>
               <h3 class="section-title mb-3 h4 ">{{ feature.titleKey | translate }}</h3>
-              <p class="text-muted-custom mb-4">{{ feature.descriptionKey | translate }}</p>
+              <p class="text-muted-custom fw-lighter mb-4">{{ feature.descriptionKey | translate }}</p>
               <div class="placeholder-glow">
                 <div class="placeholder bg-secondary rounded" style="height: 296px; width: 100%;"></div>
               </div>
@@ -106,8 +107,8 @@
           <h2 class="display-5 fw-lighter text-center text-lg-start for-inter-font
         mb-4"
               [ngClass]="{
-              'text-warning': isDarkTheme,
-              'text-primary': !isDarkTheme
+              'text-warning': isDarkTheme(),
+              'text-primary': !isDarkTheme()
             }">
             {{ 'home.whiteLabel.title' | translate }}
           </h2>
@@ -202,8 +203,8 @@
           <h2 class="display-3 fw-lighter for-inter-font
         mb-4"
               [ngClass]="{
-              'text-warning': isDarkTheme,
-              'text-primary': !isDarkTheme
+              'text-warning': isDarkTheme(),
+              'text-primary': !isDarkTheme()
             }">
             {{ 'home.benefits.title' | translate }}
           </h2>

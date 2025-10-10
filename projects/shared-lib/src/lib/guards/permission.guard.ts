@@ -1,4 +1,4 @@
-import {CanActivateFn} from '@angular/router';
+import {CanActivateFn, Router} from '@angular/router';
 import {inject} from '@angular/core';
 import {map} from 'rxjs';
 import {PermissionCheck, PermissionDeniedToastOptions, PermissionMode} from '../models';
@@ -18,6 +18,7 @@ export function pluginPermissionGuard(
     const config = inject(PERMISSION_CONFIG);
     const translate = inject(TranslateService);
     const toastService = inject(TOAST_SERVICE, { optional: true });
+    const router = inject(Router);
 
     if (config.roleId === 0) {
       return false;
@@ -28,7 +29,7 @@ export function pluginPermissionGuard(
         map(() => {
           const hasAccess = permissionService.hasPluginPermission(plugin, controller, action);
           if (!hasAccess) {
-            showPermissionDeniedToast(toastService, translate, toastOptions);
+            showPermissionDeniedToast(toastService, translate, toastOptions, router);
           }
           return hasAccess;
         })
@@ -37,10 +38,24 @@ export function pluginPermissionGuard(
 
     const hasAccess = permissionService.hasPluginPermission(plugin, controller, action);
     if (!hasAccess) {
-      showPermissionDeniedToast(toastService, translate, toastOptions);
+      showPermissionDeniedToast(toastService, translate, toastOptions, router);
     }
     return hasAccess;
   };
+}
+
+
+export function apiPermissionGuard(
+  api: string,
+  controller: string,
+  action: string,
+  toastOptions?: PermissionDeniedToastOptions
+): CanActivateFn {
+  return multiplePermissionsGuard(
+    [{ api, controller, action }],
+    'all',
+    toastOptions
+  );
 }
 
 export function multiplePermissionsGuard(
@@ -53,6 +68,7 @@ export function multiplePermissionsGuard(
     const config = inject(PERMISSION_CONFIG);
     const translate = inject(TranslateService);
     const toastService = inject(TOAST_SERVICE, { optional: true });
+    const router = inject(Router);
 
     if (config.roleId === 0) {
       return false;
@@ -63,7 +79,7 @@ export function multiplePermissionsGuard(
         map(() => {
           const hasAccess = checkMultiplePermissions(permissionService, permissions, mode);
           if (!hasAccess) {
-            showPermissionDeniedToast(toastService, translate, toastOptions);
+            showPermissionDeniedToast(toastService, translate, toastOptions, router);
           }
           return hasAccess;
         })
@@ -72,7 +88,7 @@ export function multiplePermissionsGuard(
 
     const hasAccess = checkMultiplePermissions(permissionService, permissions, mode);
     if (!hasAccess) {
-      showPermissionDeniedToast(toastService, translate, toastOptions);
+      showPermissionDeniedToast(toastService, translate, toastOptions, router);
     }
     return hasAccess;
   };
@@ -98,13 +114,14 @@ function checkMultiplePermissions(
 function showPermissionDeniedToast(
   toastService: any,
   translate: TranslateService,
-  options?: PermissionDeniedToastOptions
+  options: PermissionDeniedToastOptions | undefined,
+  router: Router
 ) {
   if (!toastService || options?.showToast === false) {
+    router.navigate(['/']);
     return;
   }
 
-  // Configuration par défaut
   const defaultConfig = {
     type: 'danger',
     variant: 'header',
@@ -120,14 +137,15 @@ function showPermissionDeniedToast(
   if (options?.customToastConfigFactory) {
     const config = options.customToastConfigFactory(translate);
     toastService.show(config);
+    router.navigate(['/']);
     return;
   }
 
   if (options?.customToastConfig) {
     toastService.show(options.customToastConfig);
+    router.navigate(['/']);
     return;
   }
-
 
   const title = options?.title ||
     (options?.translateKey ? translate.instant(`${options.translateKey}.title`, options.translateParams) : defaultConfig.title);
@@ -140,4 +158,6 @@ function showPermissionDeniedToast(
     title,
     message
   });
+
+  router.navigate(['/']);
 }

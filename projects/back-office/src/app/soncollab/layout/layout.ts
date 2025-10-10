@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {Content} from './components/content/content';
 import {Aside} from './components/aside/aside';
 import {Header} from './components/header/header';
+
 
 @Component({
   selector: 'app-layout',

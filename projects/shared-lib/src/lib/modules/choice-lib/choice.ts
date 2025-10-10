@@ -57,6 +57,11 @@ export class Choice implements AfterViewInit, OnDestroy, ControlValueAccessor {
     if (this._initialized() && hasChanged && value.length > 0) {
       this._isReady.set(false);
       setTimeout(() => {
+        const instance = this.choiceDirective?.getInstance();
+        if (instance) {
+          instance.clearStore();
+          instance.clearChoices();
+        }
         this.updateChoicesOptions();
         setTimeout(() => this._isReady.set(true), 100);
       }, 0);
@@ -70,6 +75,11 @@ export class Choice implements AfterViewInit, OnDestroy, ControlValueAccessor {
     if (this._initialized() && hasChanged && value.length > 0) {
       this._isReady.set(false);
       setTimeout(() => {
+        const instance = this.choiceDirective?.getInstance();
+        if (instance) {
+          instance.clearStore();
+          instance.clearChoices();
+        }
         this.updateChoicesOptions();
         setTimeout(() => this._isReady.set(true), 100);
       }, 0);

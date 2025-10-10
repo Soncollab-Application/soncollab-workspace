@@ -60,7 +60,7 @@
             (click)="onRowClick(row)">
 
             @if (selectable()) {
-              <td style="width: 0px" (click)="$event.stopPropagation()">
+              <td style="width: 0" (click)="$event.stopPropagation()">
                 <div class="form-check">
                   <input
                     class="form-check-input"
@@ -87,7 +87,7 @@
                     }
                   }
                 </td>
-                <td style="width: 0px">
+                <td style="width: 0">
                   <div class="dropdown" libDropdownSingle (click)="$event.stopPropagation()">
                     <button
                       class="btn btn-sm btn-link"

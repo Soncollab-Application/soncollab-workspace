@@ -26,6 +26,11 @@
               {
                 "glob": "**/*",
                 "input": "projects/client/public"
+              },
+              {
+                "glob": "**/*",
+                "input": "dist/shared-lib/assets",
+                "output": "shared-lib/assets"
               }
             ],
             "styles": [
@@ -159,6 +164,11 @@
               {
                 "glob": "**/*",
                 "input": "projects/back-office/public"
+              },
+              {
+                "glob": "**/*",
+                "input": "dist/shared-lib/assets",
+                "output": "shared-lib/assets"
               }
             ],
             "styles": [

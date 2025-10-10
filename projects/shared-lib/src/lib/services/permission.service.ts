@@ -37,7 +37,7 @@ export class PermissionService {
     );
   }
 
-  // Nouvelle méthode pour recharger avec un nouveau roleId
+
   reloadPermissions(roleId: number): Observable<any> {
     this.config.roleId = roleId;
     this.isLoaded.set(false);

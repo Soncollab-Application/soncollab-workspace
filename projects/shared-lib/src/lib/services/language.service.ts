@@ -1,128 +1,85 @@
-import { Injectable } from '@angular/core';
-import { TranslateService} from '@ngx-translate/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import {Language} from '../models';
+import { Injectable, signal } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import {AVAILABLE_LANGUAGES, Language} from '../models';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class LanguageService {
-
-
-  private readonly supportedLanguages: Language[] = [
-    { code: 'fr', name: 'Français' },
-    { code: 'en', name: 'English' }
-  ];
-
-
-  private currentLanguageSubject = new BehaviorSubject<string>('fr');
-  public currentLanguage$ = this.currentLanguageSubject.asObservable();
-
-
-  private languageChangedSubject = new BehaviorSubject<string>('fr');
-  public languageChanged$ = this.languageChangedSubject.asObservable();
+  readonly currentLanguage = signal<string>('fr');
+  readonly availableLanguages: Language[] = AVAILABLE_LANGUAGES;
+  private isInitialized = false;
 
   constructor(private translate: TranslateService) {
     this.initializeLanguage();
   }
 
-  /**
-   * Initialise la langue au démarrage de l'application
-   */
   private initializeLanguage(): void {
+    if (this.isInitialized) return;
+    this.isInitialized = true;
+
     let savedLang = localStorage.getItem('lang');
 
     if (!savedLang) {
-      // Détection automatique de la langue du navigateur
       const browserLang = navigator.language?.split('-')[0] || 'fr';
-      savedLang = this.supportedLanguages.some(lang => lang.code === browserLang) ? browserLang : 'fr';
-      this.saveLanguage(savedLang);
+      savedLang = this.availableLanguages.some(l => l.code === browserLang)
+        ? browserLang
+        : 'fr';
     }
 
-    this.setLanguage(savedLang, false); // false = ne pas émettre d'événement de changement
+    this.translate.addLangs(this.availableLanguages.map(l => l.code));
+    this.translate.setDefaultLang(savedLang);
+    this.translate.use(savedLang).subscribe(() => {
+      this.currentLanguage.set(savedLang!);
+      localStorage.setItem('lang', savedLang!);
+      document.documentElement.lang = savedLang!;
+      this.preloadOtherLanguages(savedLang!);
+    });
   }
 
-  /**
-   * Change la langue actuelle
-   */
-  setLanguage(langCode: string, emitChange: boolean = true): void {
-    if (!this.isLanguageSupported(langCode)) {
-      langCode = 'fr';
+  private preloadOtherLanguages(currentLang: string): void {
+    const otherLangs = this.availableLanguages
+      .map(l => l.code)
+      .filter(code => code !== currentLang);
+
+    if (otherLangs.length === 0) return;
+
+    setTimeout(() => {
+      otherLangs.forEach(lang => {
+        this.translate.getTranslation(lang).subscribe();
+      });
+    }, 500);
+  }
+
+  changeLanguage(code: string): void {
+    if (!this.availableLanguages.some(l => l.code === code)) {
+      code = 'fr';
     }
 
-    // Configurer ngx-translate
-    this.translate.setDefaultLang('fr');
-    this.translate.use(langCode);
-
-    // Sauvegarder dans localStorage
-    this.saveLanguage(langCode);
-
-    // Mettre à jour les BehaviorSubjects
-    this.currentLanguageSubject.next(langCode);
-
-    if (emitChange) {
-      this.languageChangedSubject.next(langCode);
+    if (this.currentLanguage() === code) {
+      return;
     }
+
+    this.translate.use(code).subscribe({
+      next: () => {
+        this.currentLanguage.set(code);
+        localStorage.setItem('lang', code);
+        document.documentElement.lang = code;
+      },
+      error: (err) => {
+        console.error(`Erreur changement de langue vers ${code}:`, err);
+      }
+    });
   }
 
-  /**
-   * Obtient la langue actuelle
-   */
-  getCurrentLanguage(): string {
-    return this.currentLanguageSubject.value;
-  }
-
-  /**
-   * Obtient le nom de la langue actuelle
-   */
-  getCurrentLanguageName(): string {
-    return this.getLanguageName(this.getCurrentLanguage());
-  }
-
-  /**
-   * Obtient le nom d'une langue par son code
-   */
-  getLanguageName(langCode: string): string {
-    const language = this.supportedLanguages.find(lang => lang.code === langCode);
-    return language?.name || langCode.toUpperCase();
-  }
-
-  /**
-   * Obtient toutes les langues supportées
-   */
   getSupportedLanguages(): Language[] {
-    return [...this.supportedLanguages];
+    return this.availableLanguages;
   }
 
-  /**
-   * Vérifie si une langue est supportée
-   */
-  isLanguageSupported(langCode: string): boolean {
-    return this.supportedLanguages.some(lang => lang.code === langCode);
+  getCurrentLanguage(): string {
+    return this.currentLanguage();
   }
 
-  /**
-   * Sauvegarde la langue dans localStorage
-   */
-  private saveLanguage(langCode: string): void {
-    try {
-      localStorage.setItem('lang', langCode);
-    } catch (error) {
-      console.warn('Impossible de sauvegarder la langue dans localStorage:', error);
-    }
-  }
-
-  /**
-   * Observable pour écouter les changements de langue
-   */
-  onLanguageChange(): Observable<string> {
-    return this.languageChanged$;
-  }
-
-  /**
-   * Force un rafraîchissement des données dépendantes de la langue
-   */
-  refreshLanguageDependentData(): void {
-    this.languageChangedSubject.next(this.getCurrentLanguage());
+  getLanguageName(code: string): string {
+    const lang = this.availableLanguages.find(l => l.code === code);
+    return lang?.name || code.toUpperCase();
   }
 }

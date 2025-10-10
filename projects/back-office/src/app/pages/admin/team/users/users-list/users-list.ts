@@ -2,6 +2,7 @@ import {Component, computed, effect, inject, OnDestroy, OnInit, signal, untracke
 import { Router } from '@angular/router';
 import { UserFilters, UserListItem } from '../../../../../core/models/admin/user-list.model';
 import { AdminService } from '../../../../../core/services/admin/admin.service';
+import { AuthService } from '../../../../../core/services/auth.service';
 import {
   FilterConfig,
   FilterValue,
@@ -30,6 +31,7 @@ import {environment} from '../../../../../../environments/environment';
 })
 export class UsersList implements OnInit, OnDestroy {
   private adminService = inject(AdminService);
+  private authService = inject(AuthService);
   protected router = inject(Router);
   private permissionsService = inject(PermissionService);
   private pageTitleService = inject(PageTitleService);
@@ -62,8 +64,18 @@ export class UsersList implements OnInit, OnDestroy {
   }));
 
   canManageUsers = computed(() =>
-    this.permissionsService.hasPermission('users-permissions', 'user', 'update')
+    this.permissionsService.canUpdateUser()
   );
+
+  canCreateUser = computed(() =>
+    this.permissionsService.canCreateUser()
+  );
+
+  canManageRoles = computed(() =>
+    this.permissionsService.canManageRoles()
+  );
+
+  currentUserId = computed(() => this.authService.currentUser?.documentId);
 
   filters = signal<FilterConfig[]>([]);
   sortOptions = signal<SortOption[]>([]);
@@ -94,9 +106,6 @@ export class UsersList implements OnInit, OnDestroy {
       () => this.onLanguageChange()
     );
   }
-
-
-
 
   private initializeConfig(): void {
     this.filters.set([
@@ -159,7 +168,7 @@ export class UsersList implements OnInit, OnDestroy {
         label: this.translate.instant('users-list.columns.role'),
         type: 'text',
         sortable: true,
-        render: (user) => this.translateRole(user.role.type)  // ← Utiliser translateRole
+        render: (user) => this.translateRole(user.role.type)
       },
       {
         key: 'confirmed',
@@ -191,28 +200,31 @@ export class UsersList implements OnInit, OnDestroy {
       {
         label: this.translate.instant('users-list.actions.edit'),
         icon: 'pencil',
-        condition: () => this.canManageUsers(),
+        condition: (user) => this.canManageUsers() && user.documentId !== this.currentUserId(),
         handler: (user) => this.editUser(user)
       },
       {
         label: this.translate.instant('users-list.actions.block'),
         icon: 'lock',
-        condition: (user) => this.canManageUsers() && !user.blocked,
+        condition: (user) => this.canManageUsers() && !user.blocked && user.documentId !== this.currentUserId(),
         handler: (user) => this.blockUser(user)
       },
       {
         label: this.translate.instant('users-list.actions.unblock'),
         icon: 'unlock',
-        condition: (user) => this.canManageUsers() && user.blocked,
+        condition: (user) => this.canManageUsers() && user.blocked && user.documentId !== this.currentUserId(),
         handler: (user) => this.unblockUser(user)
       }
     ]);
   }
 
   private loadRoles(): void {
+    if (!this.canManageRoles()) {
+      return;
+    }
+
     this.adminService.getRoles().subscribe({
       next: (response) => {
-        // Filtrer les rôles public et authenticated
         const roleOptions = response.roles
           .filter((role: any) => role.type !== 'public' && role.type !== 'authenticated')
           .map((role: any) => ({
@@ -251,6 +263,7 @@ export class UsersList implements OnInit, OnDestroy {
       this.loadRoles();
     }, 150);
   }
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
@@ -307,8 +320,11 @@ export class UsersList implements OnInit, OnDestroy {
 
     this.adminService.getUsers(page, pageSize, filters, sortField, sortDirection).subscribe({
       next: (response) => {
-        this.users.set(response.data);
-        this.totalUsers.set(response.meta.pagination.total);
+        const currentUserId = this.currentUserId();
+        const filteredUsers = response.data.filter(user => user.documentId !== currentUserId);
+
+        this.users.set(filteredUsers);
+        this.totalUsers.set(response.meta.pagination.total - (response.data.length - filteredUsers.length));
         this.pageCount.set(response.meta.pagination.pageCount);
         this.loading.set(false);
       },
@@ -358,7 +374,7 @@ export class UsersList implements OnInit, OnDestroy {
     const message = this.translate.instant('users-list.confirmBlock', { name: username });
 
     if (confirm(message)) {
-      this.adminService.blockUser(user.id).subscribe(() => {
+      this.adminService.blockUser(user.documentId).subscribe(() => {
         const sort = this.currentSort();
         this.loadUsers(
           this.currentPage(),
@@ -372,7 +388,7 @@ export class UsersList implements OnInit, OnDestroy {
   }
 
   unblockUser(user: UserListItem): void {
-    this.adminService.unblockUser(user.id).subscribe(() => {
+    this.adminService.unblockUser(user.documentId).subscribe(() => {
       const sort = this.currentSort();
       this.loadUsers(
         this.currentPage(),

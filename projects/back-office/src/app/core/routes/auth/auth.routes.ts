@@ -1,12 +1,12 @@
 import {Routes} from '@angular/router';
 import {guestGuard} from '../../guards/guest.guard';
-import {Auth} from '../../layout/auth/auth';
+import {AuthLayout} from '../../layout/auth/auth';
 
 export const authRoutes: Routes = [
 
   {
     path: '',
-    component: Auth,
+    component: AuthLayout,
     children: [
       {
         path: 'login',

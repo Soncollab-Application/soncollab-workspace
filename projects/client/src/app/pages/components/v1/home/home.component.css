@@ -5,6 +5,16 @@
 }
 
 
+.mt-md-8 {
+  @media (min-width: 768px) {
+    margin-top: 8rem !important;
+  }
+}
+.mt-lg-8 {
+  @media (min-width: 992px) {
+    margin-top: 8rem !important;
+  }
+}
 
 /* Animation des statistiques */
 @keyframes countUp {

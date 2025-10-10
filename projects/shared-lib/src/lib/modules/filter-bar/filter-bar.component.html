@@ -1,7 +1,7 @@
 <div class="card  for-inter-font  border-transparent mb-7">
   <div class="card-body p-4">
     <!-- Version Desktop (lg et plus) -->
-    <div class="d-none d-lg-block">
+    <div class="d-none d-xl-block">
       <div class="row align-items-center">
         <div class="col-12 col-lg-auto mb-3 mb-lg-0">
           <div class="text-body-secondary">{{ selectedText() }}</div>
@@ -148,7 +148,7 @@
     </div>
 
     <!-- Version Mobile (md et moins) -->
-    <div class="d-lg-none">
+    <div class="d-xl-none">
       <div class="row g-3">
         <div class="col-12">
           <div class="text-body-secondary small">{{ selectedText() }}</div>
@@ -171,7 +171,7 @@
         }
 
         <div class="col-12">
-          <div class="d-flex gap-2">
+          <div class="d-flex gap-2 flex-wrap flex-sm-wrap">
             @if (filters().length > 0) {
               <div class="dropdown flex-fill">
                 <button
@@ -202,14 +202,14 @@
                       } @else if (filter.type === 'date') {
                         <input
                           type="date"
-                          class="form-control"
+                          class="form-control w-100"
                           [id]="'mobile-' + filter.key"
                           [value]="getFilterValue(filter.key)"
                           (change)="onFilterChange(filter.key, $any($event.target).value)">
                       } @else {
                         <input
                           type="text"
-                          class="form-control"
+                          class="form-control w-100"
                           [id]="'mobile-' + filter.key"
                           [placeholder]="filter.placeholder || filter.label"
                           [value]="getFilterValue(filter.key)"

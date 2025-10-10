@@ -1,6 +1,6 @@
 import {Routes} from '@angular/router';
 import {Layout} from '../../../soncollab/layout/layout';
-import { pluginPermissionGuard } from "shared-lib";
+import { pluginPermissionGuard, ApiPermissions } from "shared-lib";
 
 export const adminRoutes: Routes = [
   {

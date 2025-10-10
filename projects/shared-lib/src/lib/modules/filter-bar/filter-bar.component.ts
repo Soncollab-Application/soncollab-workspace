@@ -35,6 +35,7 @@ export class FilterBarComponent implements OnInit {
   searchTerm = signal<string>('');
   filterValues = signal<FilterValue>({});
   currentSort = signal<SortConfig>({ field: '', direction: 'asc' });
+  sortOptionsKey = signal(0);
 
   // ViewChilds pour les Choice de tri
   sortChoice = viewChild<Choice>('sortChoice');
@@ -44,11 +45,23 @@ export class FilterBarComponent implements OnInit {
   private sortOptionsVersion = signal(0);
 
   constructor() {
-    // Effect pour détecter les changements d'options de tri
     effect(() => {
       const options = this.sortOptions();
       if (options.length > 0 && this.currentSort().field === '') {
         this.currentSort.set({ field: options[0].value, direction: 'asc' });
+      }
+    });
+
+    // Effect pour synchroniser quand sortOptions change (traduction)
+    effect(() => {
+      const options = this.sortOptions();
+      if (options.length > 0 && this.currentSort().field) {
+        // Attendre que Choice soit prêt
+        setTimeout(() => {
+          const field = this.currentSort().field;
+          this.sortChoice()?.setChoiceByValue(field);
+          this.sortChoiceMobile()?.setChoiceByValue(field);
+        }, 150);
       }
     });
   }
@@ -86,6 +99,7 @@ export class FilterBarComponent implements OnInit {
       this.sortChange.emit(this.currentSort());
     }
   }
+
 
   toggleSortDirection(): void {
     this.currentSort.update(s => ({
@@ -129,12 +143,11 @@ export class FilterBarComponent implements OnInit {
     return this.filterValues()[key] || '';
   }
 
+
   getSortChoiceOptions(): ChoiceOption[] {
-    // Forcer la création d'un nouveau tableau à chaque appel
     return this.sortOptions().map(option => ({
       value: option.value,
-      label: option.label,
-      selected: option.value === this.currentSort().field
+      label: option.label
     }));
   }
 

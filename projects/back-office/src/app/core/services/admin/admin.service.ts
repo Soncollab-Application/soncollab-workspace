@@ -11,7 +11,7 @@ export class AdminService {
 
   private readonly ADMIN_ENDPOINTS = {
     users: `${this.API_URL}/users`,
-    userById: (id: number) => `${this.API_URL}/users/${id}`,
+    userByDocumentId: (documentId: string) => `${this.API_URL}/users/${documentId}`,
     roles: `${this.API_URL}/users-permissions/roles`,
   };
 
@@ -70,19 +70,24 @@ export class AdminService {
     return this.http.get(this.ADMIN_ENDPOINTS.roles);
   }
 
-  updateUser(userId: number, data: Partial<UserListItem>): Observable<UserListItem> {
-    return this.http.put<UserListItem>(this.ADMIN_ENDPOINTS.userById(userId), data);
+  getUserByDocumentId(documentId: string): Observable<UserListItem> {
+    return this.http.get<UserListItem>(this.ADMIN_ENDPOINTS.userByDocumentId(documentId));
   }
 
-  blockUser(userId: number): Observable<UserListItem> {
-    return this.updateUser(userId, { blocked: true });
+  updateUser(documentId: string, data: Partial<UserListItem>): Observable<UserListItem> {
+    return this.http.put<UserListItem>(this.ADMIN_ENDPOINTS.userByDocumentId(documentId), data);
   }
 
-  unblockUser(userId: number): Observable<UserListItem> {
-    return this.updateUser(userId, { blocked: false });
+  blockUser(documentId: string): Observable<UserListItem> {
+    return this.updateUser(documentId, { blocked: true });
   }
 
-  deleteUser(userId: number): Observable<void> {
-    return this.http.delete<void>(this.ADMIN_ENDPOINTS.userById(userId));
+  unblockUser(documentId: string): Observable<UserListItem> {
+    return this.updateUser(documentId, { blocked: false });
+  }
+
+
+  deleteUser(documentId: string): Observable<void> {
+    return this.http.delete<void>(this.ADMIN_ENDPOINTS.userByDocumentId(documentId));
   }
 }

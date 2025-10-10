@@ -1,5 +1,5 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Subject, Subscription, takeUntil} from 'rxjs';
+import {Component, OnDestroy, OnInit, computed} from '@angular/core';
+import {Subject, takeUntil} from 'rxjs';
 import {PageService} from '../../../services/page.service';
 import {Hero} from '../../../models/hero.model';
 import {TranslatePipe} from '@ngx-translate/core';
@@ -7,18 +7,7 @@ import {NgClass} from '@angular/common';
 import {ContactModalService} from '../../../../core/services/contact-modal.service';
 import {LanguageOrchestratorService, ThemeService} from 'shared-lib';
 
-// Types
 type FeatureType = 'catalog' | 'distribution' | 'royalties' | 'payment' | 'analytics' | 'teams';
-
-interface GradientStyle {
-  background: string;
-}
-
-interface ButtonGradientStyle {
-  background: string;
-  color: string;
-  border: string;
-}
 
 interface FeatureData {
   key: FeatureType;
@@ -27,12 +16,10 @@ interface FeatureData {
   imageSrc: string;
   imageAlt: string;
   link: string;
-  reversed: boolean; // Pour alterner la disposition
+  reversed: boolean;
   icon: string;
 }
 
-type BackgroundGradients = Record<FeatureType, GradientStyle>;
-type ButtonGradients = Record<FeatureType, ButtonGradientStyle>;
 
 @Component({
   selector: 'app-home',
@@ -43,7 +30,7 @@ type ButtonGradients = Record<FeatureType, ButtonGradientStyle>;
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
-export class HomeComponent implements OnInit ,OnDestroy {
+export class HomeComponent implements OnInit, OnDestroy {
 
   hero: Hero | null = null;
   isLoading = true;
@@ -103,10 +90,7 @@ export class HomeComponent implements OnInit ,OnDestroy {
     },
   ];
 
-
-
-  private themeSubscription!: Subscription;
-  isDarkTheme = false;
+  isDarkTheme = computed(() => this.themeService.isDark());
   private hasInitialLoad = false;
 
   constructor(
@@ -124,14 +108,7 @@ export class HomeComponent implements OnInit ,OnDestroy {
     );
 
     this.loadHeroData();
-
-    this.themeSubscription = this.themeService.theme$.subscribe(() => {
-      this.isDarkTheme = this.themeService.isDarkTheme();
-    });
-
-    this.isDarkTheme = this.themeService.isDarkTheme();
   }
-
 
   private onLanguageChange(): void {
     if (this.hasInitialLoad) {
@@ -139,12 +116,9 @@ export class HomeComponent implements OnInit ,OnDestroy {
     }
   }
 
-
   openContactModal(): void {
     this.contactModalService.openContactModal().subscribe()
   }
-
-
 
   private loadHeroData(): void {
     this.isLoading = true;
@@ -169,95 +143,5 @@ export class HomeComponent implements OnInit ,OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
     this.languageOrchestrator.unregisterComponent(this.componentId);
-    if (this.themeSubscription) {
-      this.themeSubscription.unsubscribe();
-    }
   }
-
-
-  private getLightGradients(): BackgroundGradients {
-    return {
-      // Catalog - Bleu doux
-      catalog: {
-        background: 'linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%)'
-      },
-      // Distribution - Vert émeraude (votre couleur principale)
-      distribution: {
-        background: 'linear-gradient(135deg, #E8F5F0 0%, #D1E7DD 100%)'
-      },
-      // Royalties - Violet élégant
-      royalties: {
-        background: 'linear-gradient(135deg, #F3E5F5 0%, #E1BEE7 100%)'
-      },
-      // Payment - Orange chaleureux
-      payment: {
-        background: 'linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%)'
-      },
-      // Analytics - Rose moderne
-      analytics: {
-        background: 'linear-gradient(135deg, #FCE4EC 0%, #F8BBD9 100%)'
-      },
-      // Teams - Cyan frais
-      teams: {
-        background: 'linear-gradient(135deg, #E0F2F1 0%, #B2DFDB 100%)'
-      }
-    };
-  }
-
-// Gradients pour le thème DARK - Version colorée
-  private getDarkGradients(): BackgroundGradients {
-    return {
-      // Catalog - Gris-bleu très subtil
-      catalog: {
-        background: 'linear-gradient(135deg, #2A2D32 0%, #353A42 100%)'
-      },
-      // Distribution - Gris-vert très doux
-      distribution: {
-        background: 'linear-gradient(135deg, #2A3530 0%, #354240 100%)'
-      },
-      // Royalties - Gris-violet imperceptible
-      royalties: {
-        background: 'linear-gradient(135deg, #322A35 0%, #423542 100%)'
-      },
-      // Payment - Gris-orange très léger
-      payment: {
-        background: 'linear-gradient(135deg, #352A20 0%, #453520 100%)'
-      },
-      // Analytics - Gris-rose à peine visible
-      analytics: {
-        background: 'linear-gradient(135deg, #32282A 0%, #423538 100%)'
-      },
-      // Teams - Gris-cyan très subtil
-      teams: {
-        background: 'linear-gradient(135deg, #252F2D 0%, #354240 100%)'
-      }
-    };
-  }
-
-
-  private getDarkGradientsMonochrome(): BackgroundGradients {
-    return {
-      catalog: { background: 'linear-gradient(135deg, #2C2C2E 0%, #3A3A3C 100%)' },
-      distribution: { background: 'linear-gradient(135deg, #2D2F2C 0%, #3B3D3A 100%)' },
-      royalties: { background: 'linear-gradient(135deg, #2E2C2F 0%, #3C3A3D 100%)' },
-      payment: { background: 'linear-gradient(135deg, #2F2D2A 0%, #3D3B38 100%)' },
-      analytics: { background: 'linear-gradient(135deg, #2E2B2C 0%, #3C393A 100%)' },
-      teams: { background: 'linear-gradient(135deg, #2B2E2D 0%, #393C3B 100%)' }
-    };
-  }
-
-
-
-  // Méthodes publiques
-  getBackgroundGradient(feature: FeatureType): GradientStyle {
-    const gradients = this.isDarkTheme ? this.getDarkGradients() : this.getLightGradients();
-    return gradients[feature];
-  }
-
-
-  getButtonClass(): string {
-    return this.isDarkTheme ? 'btn-dark' : 'btn-primary';
-  }
-
-
 }

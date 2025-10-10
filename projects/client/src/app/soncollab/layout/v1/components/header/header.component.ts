@@ -1,51 +1,43 @@
-import {Component, HostListener, OnInit, OnDestroy} from '@angular/core';
-import { Router, RouterLink, RouterLinkActive} from '@angular/router';
+import { Component, HostListener, OnDestroy, inject, computed, effect } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import {NgClass} from '@angular/common';
-import { Subject, takeUntil } from 'rxjs';
-import {ContactModalService} from '../../../../../core/services/contact-modal.service';
-import {Language, LanguageService, Theme, ThemeService} from 'shared-lib';
+import { NgClass } from '@angular/common';
+import { Subject } from 'rxjs';
+import { ContactModalService } from '../../../../../core/services/contact-modal.service';
+import { LanguageService, Theme, ThemeService } from 'shared-lib';
 
 @Component({
   selector: 'app-header',
-  imports: [
-    RouterLink,
-    RouterLinkActive,
-    TranslateModule,
-    NgClass
-  ],
+  imports: [RouterLink, RouterLinkActive, TranslateModule, NgClass],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
-export class HeaderComponent implements OnInit, OnDestroy {
+export class HeaderComponent implements OnDestroy {
+  private router = inject(Router);
+  private themeService = inject(ThemeService);
+  private contactModalService = inject(ContactModalService);
+  languageService = inject(LanguageService);
 
-  private ticking: boolean = false;
-  isScrolled: boolean = false;
-
-  // Theme properties
-  currentLogo: string = '/assets/images/logo/soncollablightlogo.svg';
-  isDarkTheme: boolean = false;
-  currentTheme: Theme = 'light';
-
-  // Language properties
-  supportedLanguages: Language[] = [];
-  currentLanguage: string = 'fr';
-
+  private ticking = false;
+  isScrolled = false;
   private destroy$ = new Subject<void>();
 
-  constructor(
-    private router: Router,
-    private themeService: ThemeService,
-    private contactModalService: ContactModalService,
-    private languageService: LanguageService
-  ) {}
+  currentTheme = computed(() => this.themeService.getCurrentTheme());
+  isDarkTheme = computed(() => this.themeService.isDark());
+  currentLogo = computed(() =>
+    this.isDarkTheme()
+      ? '/assets/images/logo/soncollablightlogo.svg'
+      : '/assets/images/logo/soncollabdarklogo.svg'
+  );
 
-  ngOnInit(): void {
-    this.setupThemeListener();
-    this.setupLanguageListener();
-    this.initializeLanguage();
-    this.updateLogoBasedOnTheme();
-    this.updateCurrentTheme();
+  currentLanguage = computed(() => this.languageService.currentLanguage());
+  supportedLanguages = computed(() => this.languageService.availableLanguages);
+
+  constructor() {
+    effect(() => {
+      this.isDarkTheme();
+      this.currentTheme();
+    });
   }
 
   ngOnDestroy(): void {
@@ -53,213 +45,105 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  // ======= THEME METHODS =======
-  private setupThemeListener(): void {
-    this.themeService.theme$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.updateLogoBasedOnTheme();
-        this.updateCurrentTheme();
-      });
-  }
-
-  private updateCurrentTheme(): void {
-    this.currentTheme = this.themeService.getCurrentTheme();
-  }
-
-  openContactModal(): void {
-    this.closeMenu();
-    this.contactModalService.openContactModal().subscribe()
-  }
-
-
-  private updateLogoBasedOnTheme(): void {
-    this.isDarkTheme = this.themeService.isDarkTheme();
-
-    if (this.isDarkTheme) {
-      this.currentLogo = '/assets/images/logo/soncollablightlogo.svg';
-    } else {
-      this.currentLogo = '/assets/images/logo/soncollabdarklogo.svg';
-    }
-  }
-
   setTheme(theme: Theme): void {
-    window.scroll(0,0);
+    window.scroll(0, 0);
     this.themeService.setTheme(theme);
     this.closeThemeDropdown();
   }
 
   isThemeActive(theme: Theme): boolean {
-    return this.currentTheme === theme;
-  }
-
-  private closeThemeDropdown(): void {
-    const dropdownElement = document.querySelector('.theme-switcher[data-bs-toggle="dropdown"]') as HTMLElement;
-    if (dropdownElement) {
-      try {
-        const bsDropdown = (window as any).bootstrap?.Dropdown?.getInstance(dropdownElement);
-        if (bsDropdown) {
-          bsDropdown.hide();
-        }
-      } catch (error) {
-        console.warn('Bootstrap Dropdown instance not found, using fallback method');
-      }
-      dropdownElement.blur();
-    }
+    return this.currentTheme() === theme;
   }
 
   getActiveThemeIcon(): string {
-    switch (this.currentTheme) {
-      case 'light':
-        return 'fi-sun';
-      case 'dark':
-        return 'fi-moon';
-      case 'auto':
-        return 'fi-monitor';
-      default:
-        return 'fi-sun';
-    }
+    const icons = { light: 'fi-sun', dark: 'fi-moon', auto: 'fi-monitor' };
+    return icons[this.currentTheme()] || 'fi-sun';
   }
 
   getActiveThemeLabel(): string {
-    switch (this.currentTheme) {
-      case 'light':
-        return 'Light';
-      case 'dark':
-        return 'Dark';
-      case 'auto':
-        return 'Auto';
-      default:
-        return 'Light';
+    const labels = { light: 'Light', dark: 'Dark', auto: 'Auto' };
+    return labels[this.currentTheme()] || 'Light';
+  }
+
+  private closeThemeDropdown(): void {
+    const el = document.querySelector('.theme-switcher[data-bs-toggle="dropdown"]') as HTMLElement;
+    if (el) {
+      try {
+        (window as any).bootstrap?.Dropdown?.getInstance(el)?.hide();
+      } catch {}
+      el.blur();
     }
   }
 
-  // ======= LANGUAGE METHODS =======
-  private initializeLanguage(): void {
-    this.supportedLanguages = this.languageService.getSupportedLanguages();
-    this.currentLanguage = this.languageService.getCurrentLanguage();
-  }
-
-  private setupLanguageListener(): void {
-    this.languageService.currentLanguage$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((language: string) => {
-        this.currentLanguage = language;
-      });
-  }
-
-  setLanguage(languageCode: string): void {
-    if (languageCode && languageCode !== this.currentLanguage) {
-      this.languageService.setLanguage(languageCode);
+  setLanguage(code: string): void {
+    if (code && code !== this.currentLanguage()) {
+      this.languageService.changeLanguage(code);
       window.scroll(0, 0);
       this.closeLanguageDropdown();
     }
   }
 
-  isLanguageActive(languageCode: string): boolean {
-    return this.currentLanguage === languageCode;
+  isLanguageActive(code: string): boolean {
+    return this.currentLanguage() === code;
   }
 
   getCurrentLanguageName(): string {
-    const language = this.supportedLanguages.find(lang => lang.code === this.currentLanguage);
-    return language?.name || this.currentLanguage.toUpperCase();
-  }
-
-  getCurrentLanguageFlag(): string {
-    // Vous pouvez ajouter des drapeaux si nécessaire
-    const flags: { [key: string]: string } = {
-      'fr': '🇫🇷',
-      'en': '🇺🇸'
-    };
-    return flags[this.currentLanguage] || '🌐';
+    return this.languageService.getLanguageName(this.currentLanguage());
   }
 
   private closeLanguageDropdown(): void {
-    const dropdownElement = document.querySelector('.language-switcher[data-bs-toggle="dropdown"]') as HTMLElement;
-    if (dropdownElement) {
+    const el = document.querySelector('.language-switcher[data-bs-toggle="dropdown"]') as HTMLElement;
+    if (el) {
       try {
-        const bsDropdown = (window as any).bootstrap?.Dropdown?.getInstance(dropdownElement);
-        if (bsDropdown) {
-          bsDropdown.hide();
-        }
-      } catch (error) {
-        console.warn('Bootstrap Dropdown instance not found');
-      }
-      dropdownElement.blur();
+        (window as any).bootstrap?.Dropdown?.getInstance(el)?.hide();
+      } catch {}
+      el.blur();
     }
   }
 
-  // ======= SCROLL & NAVIGATION METHODS =======
-  @HostListener('window:scroll', ['$event'])
-  onWindowScroll(event: Event): void {
+  @HostListener('window:scroll')
+  onWindowScroll(): void {
     if (!this.ticking) {
       requestAnimationFrame(() => {
-        this.updateScrollState();
+        const scrollY = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+        this.isScrolled = scrollY > 50;
         this.ticking = false;
       });
       this.ticking = true;
     }
   }
 
-  private updateScrollState(): void {
-    const scrollY = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-    this.isScrolled = scrollY > 50;
+  openContactModal(): void {
+    this.closeMenu();
+    this.contactModalService.openContactModal().subscribe();
   }
 
-  public closeMenu(): void {
-    // Fermer le menu offcanvas mobile (votre code existant)
+  closeMenu(): void {
     if (window.innerWidth < 992) {
-      const offcanvasElement = document.getElementById('navbarNav');
-      if (offcanvasElement) {
-        const closeButton = offcanvasElement.querySelector('.btn-close');
-        if (closeButton) {
-          (closeButton as HTMLElement).click();
-        }
+      const offcanvas = document.getElementById('navbarNav');
+      if (offcanvas) {
+        offcanvas.querySelector('.btn-close')?.dispatchEvent(new Event('click'));
       }
     }
-
     this.closeAllDropdowns();
   }
 
   private closeAllDropdowns(): void {
     try {
-      // Méthode 1: Utiliser Bootstrap pour fermer tous les dropdowns
-      const dropdownElements = document.querySelectorAll('[data-bs-toggle="dropdown"]');
-      dropdownElements.forEach((element) => {
-        const bsDropdown = (window as any).bootstrap?.Dropdown?.getInstance(element);
-        if (bsDropdown) {
-          bsDropdown.hide();
-        }
-        (element as HTMLElement).blur();
+      document.querySelectorAll('[data-bs-toggle="dropdown"]').forEach(el => {
+        (window as any).bootstrap?.Dropdown?.getInstance(el)?.hide();
+        (el as HTMLElement).blur();
       });
-
-      // Méthode 2: Fallback - supprimer les classes 'show' manuellement
-      const openDropdowns = document.querySelectorAll('.dropdown-menu.show');
-      openDropdowns.forEach(dropdown => {
-        dropdown.classList.remove('show');
-      });
-
-      const activeToggles = document.querySelectorAll('[aria-expanded="true"]');
-      activeToggles.forEach(toggle => {
-        toggle.setAttribute('aria-expanded', 'false');
-      });
-
-    } catch (error) {
-      console.warn('Erreur lors de la fermeture des dropdowns:', error);
-      document.body.click();
-    }
+      document.querySelectorAll('.dropdown-menu.show').forEach(d => d.classList.remove('show'));
+      document.querySelectorAll('[aria-expanded="true"]').forEach(t => t.setAttribute('aria-expanded', 'false'));
+    } catch {}
   }
 
-  private isHomePage(url: string): boolean {
-    const cleanUrl = url.split('#')[0].split('?')[0];
-    return cleanUrl === '/' || cleanUrl === '';
+  isSectionActive(route: string): boolean {
+    return this.router.url.startsWith(route);
   }
 
-  isSectionActive(baseRoute: string): boolean {
-    return this.router.url.startsWith(baseRoute);
-  }
-
-  isSectionActiveMany(baseRoutes: string[]): boolean {
-    return baseRoutes.some(route => this.router.url.startsWith(route));
+  isSectionActiveMany(routes: string[]): boolean {
+    return routes.some(r => this.router.url.startsWith(r));
   }
 }

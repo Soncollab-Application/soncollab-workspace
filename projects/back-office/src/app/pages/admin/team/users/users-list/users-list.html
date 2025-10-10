@@ -5,7 +5,7 @@
     </h2>
     <app-breadcrumb/>
   </div>
-  @if (canManageUsers()) {
+  @if (canCreateUser()) {
     <div class="col-auto">
       <button class="btn btn-primary" (click)="router.navigate(['/admin/team/users/new'])">
         <i class="bi bi-plus-lg me-2"></i>

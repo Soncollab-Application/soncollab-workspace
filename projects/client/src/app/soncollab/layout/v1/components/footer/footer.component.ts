@@ -1,74 +1,50 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, computed, effect, viewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
-import { FormsModule } from '@angular/forms';
-import {TranslatePipe} from '@ngx-translate/core';
-import {Language, LanguageService} from 'shared-lib';
+import { TranslatePipe } from '@ngx-translate/core';
+import { LanguageService, Choice } from 'shared-lib';
+import type { ChoiceOption } from 'shared-lib';
 
 @Component({
   selector: 'app-footer',
-  imports: [
-    RouterLink,
-    FormsModule,
-    TranslatePipe
-  ],
+  imports: [RouterLink, TranslatePipe, Choice],
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.css'
 })
-export class FooterComponent implements OnInit, OnDestroy {
+export class FooterComponent {
+  languageService = inject(LanguageService);
+  choiceRef = viewChild<Choice>(Choice);
 
-  supportedLanguages: Language[] = [];
-  currentLanguage: string = 'fr';
-  private destroy$ = new Subject<void>();
+  currentLanguage = computed(() => this.languageService.currentLanguage());
 
-  constructor(private languageService: LanguageService) {}
+  languageOptions = computed<ChoiceOption[]>(() =>
+    this.languageService.availableLanguages.map(lang => ({
+      value: lang.code,
+      label: lang.name,
+      selected: lang.code === this.currentLanguage()
+    }))
+  );
 
-  ngOnInit(): void {
-    this.initializeLanguageSelector();
-    this.setupLanguageListener();
+  constructor() {
+    effect(() => {
+      const lang = this.currentLanguage();
+      const choice = this.choiceRef();
+      if (choice) {
+        choice.writeValue(lang);
+      }
+    });
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  /**
-   * Initialise le sélecteur de langue
-   */
-  private initializeLanguageSelector(): void {
-    this.supportedLanguages = this.languageService.getSupportedLanguages();
-    this.currentLanguage = this.languageService.getCurrentLanguage();
-  }
-
-  /**
-   * Écoute les changements de langue venant d'autres composants
-   */
-  private setupLanguageListener(): void {
-    this.languageService.currentLanguage$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((language: string) => {
-        this.currentLanguage = language;
-      });
-  }
-
-  /**
-   * Gestionnaire de changement de langue depuis le select
-   */
-  onLanguageChange(event: Event): void {
-    const target = event.target as HTMLSelectElement;
-    const newLanguage = target.value;
-    window.scroll(0,0);
-    if (newLanguage && newLanguage !== this.currentLanguage) {
-      this.languageService.setLanguage(newLanguage);
+  onLanguageChange(languageCode: string): void {
+    if (languageCode && languageCode !== this.currentLanguage()) {
+      this.languageService.changeLanguage(languageCode);
+      window.scroll(0, 0);
     }
   }
 
   getCurrentLogo(): string {
-    const currentTheme = document.documentElement.getAttribute('data-bs-theme');
-    return currentTheme === 'dark'
+    const theme = document.documentElement.getAttribute('data-bs-theme');
+    return theme === 'dark'
       ? '/assets/images/logo/soncollablightlogo.svg'
       : '/assets/images/logo/soncollabdarklogo.svg';
   }
-
 }

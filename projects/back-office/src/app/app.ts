@@ -1,14 +1,7 @@
-import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
-import {Subject} from 'rxjs';
-import {RouterOutlet} from '@angular/router';
-import {
-  AosService,
-  LanguageOrchestratorService,
-  LanguageService,
-  ThemeService,
-  Toast,
-  Language
-} from 'shared-lib';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { Subject } from 'rxjs';
+import { RouterOutlet } from '@angular/router';
+import { AosService, LanguageService, ThemeService, Toast } from 'shared-lib';
 
 @Component({
   selector: 'app-root',
@@ -19,21 +12,15 @@ import {
 })
 export class App implements OnInit, AfterViewInit, OnDestroy {
   private destroy$ = new Subject<void>();
-  supportedLanguages: Language[] = [];
-  currentLanguage: string = 'fr';
 
   constructor(
     private themeService: ThemeService,
     private aosService: AosService,
-    private languageService: LanguageService,
-    private languageOrchestrator: LanguageOrchestratorService
-  ) {
-    this.initializeServices();
+    private languageService: LanguageService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.aosService.initializeAOS();
-    this.initializeLanguageSelector();
   }
 
   ngAfterViewInit(): void {
@@ -44,22 +31,5 @@ export class App implements OnInit, AfterViewInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
   }
-
-  private initializeLanguageSelector(): void {
-    this.supportedLanguages = this.languageService.getSupportedLanguages();
-    this.currentLanguage = this.languageService.getCurrentLanguage();
-  }
-
-  /**
-   * Initialise les services de base
-   */
-  private initializeServices(): void {
-    // Configuration du thème
-    const storedTheme = this.themeService.getStoredTheme();
-    this.themeService.applyPreferences();
-    this.themeService.setTheme(storedTheme);
-  }
-
-
 
 }

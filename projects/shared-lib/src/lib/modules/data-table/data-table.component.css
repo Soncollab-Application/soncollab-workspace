@@ -37,6 +37,7 @@
   font-weight: 600;
 }
 
+
 .table-active {
   --fn-table-bg-state: rgba(var(--fn-primary-rgb), 0.1) !important;
   background-color: var(--fn-table-bg-state);
@@ -46,7 +47,6 @@
   --fn-table-bg-state: rgba(var(--fn-primary-rgb), 0.15) !important;
 }
 
-/* FIX: Empêcher le background de déborder sur les badges */
 .table tbody td {
   background-color: transparent !important;
 }
@@ -54,4 +54,10 @@
 
 .table-active td {
   background-color: rgba(var(--fn-primary-rgb), 0.1) !important;
+}
+
+.dropdown-menu {
+  position: fixed !important;
+  z-index: 99999 !important;
+  margin: 0 !important;
 }

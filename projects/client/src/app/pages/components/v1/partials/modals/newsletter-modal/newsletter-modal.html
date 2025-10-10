@@ -1,3 +1,4 @@
+<script src="../../../../../../../../../back-office/src/app/app.ts"></script>
 <div class="modal-header border-0 pb-0">
   <button
     type="button"
@@ -55,6 +56,7 @@
           formControlName="email"
           [placeholder]="'newsletter.form.email' | translate"
           autocomplete="email"
+          [email]="true"
           required>
         <div class="invalid-feedback text-center">
           {{ getFieldError('email') }}

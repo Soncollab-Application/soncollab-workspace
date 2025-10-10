@@ -3,8 +3,8 @@
   <!-- Header Sidebar -->
   <div class="p-3 flex-shrink-0">
     <a [routerLink]="getHomeRoute()" class="text-decoration-none text-body fw-normal fs-5 d-flex align-items-center">
-      <img [alt]="'Soncollab Logo - ' + (isDarkTheme ? 'Dark Theme' : 'Light Theme')"
-           [src]="currentLogo"
+      <img [alt]="'Soncollab Logo - ' + (isDarkTheme() ? 'Dark Theme' : 'Light Theme')"
+           [src]="currentLogo()"
            width="160">
     </a>
   </div>

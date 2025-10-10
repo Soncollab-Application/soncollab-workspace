@@ -1,22 +1,19 @@
-import {Component, inject, Input, OnDestroy, OnInit, signal} from '@angular/core';
-import {TranslatePipe, TranslateService} from '@ngx-translate/core';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
-import {Subject, takeUntil} from 'rxjs';
+import { Component, inject, Input, OnDestroy, OnInit, signal, computed, effect } from '@angular/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { Subject, takeUntil } from 'rxjs';
 import {
   NewsletterModalService,
   NewsletterResponse,
   NewsletterSubscriptionData
 } from '../../../../../../core/services/newsletter-modal.service';
-import {ToastService, LanguageService} from 'shared-lib';
-import {RecaptchaActionService} from '../../../../../services/recaptcha-action.service';
+import { ToastService, LanguageService } from 'shared-lib';
+import { RecaptchaActionService } from '../../../../../services/recaptcha-action.service';
 
 @Component({
   selector: 'app-newsletter-modal',
-  imports: [
-    TranslatePipe,
-    ReactiveFormsModule
-  ],
+  imports: [TranslatePipe, ReactiveFormsModule],
   templateUrl: './newsletter-modal.html',
   styleUrl: './newsletter-modal.css'
 })
@@ -34,16 +31,14 @@ export class NewsletterModal implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
-  // Signaux réactifs
-  isSubmitting = signal(false);
-  currentLang = signal('fr');
 
-  // Formulaire
+  isSubmitting = signal(false);
+  currentLang = computed(() => this.languageService.currentLanguage());
+
   newsletterForm!: FormGroup;
 
   ngOnInit(): void {
     this.setupForm();
-    this.setupLanguageListener();
   }
 
   ngOnDestroy(): void {
@@ -51,9 +46,6 @@ export class NewsletterModal implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  /**
-   * Configuration du formulaire
-   */
   private setupForm(): void {
     this.newsletterForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -62,23 +54,6 @@ export class NewsletterModal implements OnInit, OnDestroy {
     });
   }
 
-  /**
-   * Configuration de l'écoute des changements de langue
-   */
-  private setupLanguageListener(): void {
-    this.languageService.onLanguageChange()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((newLanguage: string) => {
-        this.currentLang.set(newLanguage);
-      });
-
-    // Définir la langue actuelle
-    this.currentLang.set(this.languageService.getCurrentLanguage());
-  }
-
-  /**
-   * Soumission du formulaire
-   */
   async onSubmit(): Promise<void> {
     if (this.newsletterForm.valid && !this.isSubmitting()) {
       this.isSubmitting.set(true);
@@ -116,21 +91,14 @@ export class NewsletterModal implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Gestion du succès de l'abonnement
-   */
   private handleSuccess(response: NewsletterResponse): void {
     const successKey = this.getSuccessMessageKey();
-
     this.translateService.get(successKey).subscribe((message: string) => {
       this.toastService.showSuccess(message);
       this.activeModal.close(response);
     });
   }
 
-  /**
-   * Gestion des erreurs
-   */
   private handleError(error: any): void {
     let errorMessageKey = 'newsletter.errors.generic';
 
@@ -151,19 +119,12 @@ export class NewsletterModal implements OnInit, OnDestroy {
     });
   }
 
-  /**
-   * Marque tous les champs comme touchés pour afficher les erreurs
-   */
   private markFormGroupTouched(): void {
     Object.keys(this.newsletterForm.controls).forEach(key => {
-      const control = this.newsletterForm.get(key);
-      control?.markAsTouched();
+      this.newsletterForm.get(key)?.markAsTouched();
     });
   }
 
-  /**
-   * Récupère la source basée sur le type d'abonnement
-   */
   private getSourceFromType(): string {
     const sourceMap = {
       'blog': 'blog_page',
@@ -174,9 +135,6 @@ export class NewsletterModal implements OnInit, OnDestroy {
     return sourceMap[this.subscriptionType] || 'modal';
   }
 
-  /**
-   * Récupère la clé de message de succès selon le type
-   */
   private getSuccessMessageKey(): string {
     const messageMap = {
       'blog': 'newsletter.success.blog',
@@ -187,9 +145,6 @@ export class NewsletterModal implements OnInit, OnDestroy {
     return messageMap[this.subscriptionType] || 'newsletter.success.general';
   }
 
-  /**
-   * Récupère la clé de titre selon le type
-   */
   getTitleKey(): string {
     const titleMap = {
       'blog': 'newsletter.titles.blog',
@@ -200,9 +155,6 @@ export class NewsletterModal implements OnInit, OnDestroy {
     return titleMap[this.subscriptionType] || 'newsletter.titles.general';
   }
 
-  /**
-   * Récupère la clé de description selon le type
-   */
   getDescriptionKey(): string {
     const descriptionMap = {
       'blog': 'newsletter.descriptions.blog',
@@ -213,17 +165,11 @@ export class NewsletterModal implements OnInit, OnDestroy {
     return descriptionMap[this.subscriptionType] || 'newsletter.descriptions.general';
   }
 
-  /**
-   * Vérifie si un champ a une erreur et a été touché
-   */
   hasFieldError(fieldName: string): boolean {
     const field = this.newsletterForm.get(fieldName);
     return !!(field && field.invalid && field.touched);
   }
 
-  /**
-   * Récupère le message d'erreur pour un champ
-   */
   getFieldError(fieldName: string): string {
     const field = this.newsletterForm.get(fieldName);
     if (field && field.errors && field.touched) {
@@ -240,9 +186,6 @@ export class NewsletterModal implements OnInit, OnDestroy {
     return '';
   }
 
-  /**
-   * Ferme le modal
-   */
   close(): void {
     this.activeModal.dismiss('closed');
   }

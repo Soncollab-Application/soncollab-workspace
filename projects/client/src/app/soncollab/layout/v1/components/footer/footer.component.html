@@ -15,21 +15,13 @@
         </p>
 
         <!-- Language Selector -->
-        <div class="mb-4">
-          <select
-            id="languageSelect"
-            [attr.aria-label]="'footer.language.select' | translate"
-            class="form-select form-select-lg w-auto"
-            [value]="currentLanguage"
-            (change)="onLanguageChange($event)">
-            @for (language of supportedLanguages; track language.code) {
-              <option
-                [value]="language.code"
-                [selected]="language.code === currentLanguage">
-                {{ language.name }}
-              </option>
-            }
-          </select>
+        <div class="mb-4 w-50">
+          <lib-choice
+            [type]="'select-one'"
+            [config]="{ searchEnabled: false }"
+            [options]="languageOptions()"
+            (valueChange)="onLanguageChange($any($event))"
+          />
         </div>
 
         <!-- Social Links -->

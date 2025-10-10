@@ -1,168 +1,62 @@
-import {Component, OnDestroy, OnInit, signal} from '@angular/core';
+import { Component, inject, computed, OnDestroy } from '@angular/core';
 import {RouterLink, RouterOutlet} from '@angular/router';
-import {Language, LanguageService, Theme, ThemeService} from 'shared-lib';
-import {Subject, takeUntil} from 'rxjs';
-import {TranslatePipe} from '@ngx-translate/core';
+import { Subject } from 'rxjs';
+import { LanguageService, ThemeService, Theme } from 'shared-lib';
+import { TranslateModule } from '@ngx-translate/core';
+import { CommonModule } from '@angular/common';
 import {environment} from '../../../../environments/environment';
 
 @Component({
-  selector: 'app-auth',
-  imports: [
-    RouterLink,
-    TranslatePipe,
-    RouterOutlet
-  ],
+  selector: 'app-auth-layout',
+  standalone: true,
+  imports: [RouterOutlet, TranslateModule, CommonModule, RouterLink],
   templateUrl: './auth.html',
   styleUrl: './auth.css'
 })
-export class Auth implements OnInit, OnDestroy {
-
-  // Theme properties
-  currentLogo: string = '/assets/images/logo/soncollablightlogo.svg';
-  isDarkTheme: boolean = false;
-  currentTheme: Theme = 'light';
-  currentYear = new Date().getFullYear();
-
-  // Language properties
-  supportedLanguages: Language[] = [];
-  currentLanguage: string = 'fr';
-
+export class AuthLayout implements OnDestroy {
+  private languageService = inject(LanguageService);
+  private themeService = inject(ThemeService);
   private destroy$ = new Subject<void>();
 
+  currentYear = new Date().getFullYear();
 
+  currentTheme = computed(() => this.themeService.getCurrentTheme());
+  isDarkTheme = computed(() => this.themeService.isDark());
+  currentLogo = computed(() =>
+    this.isDarkTheme()
+      ? '/assets/images/logo/soncollablightlogo.svg'
+      : '/assets/images/logo/soncollabdarklogo.svg'
+  );
 
-  constructor(private themeService: ThemeService,
-              private languageService: LanguageService) {
-  }
-
-
-
-  ngOnInit(): void {
-    this.setupThemeListener();
-    this.setupLanguageListener();
-  }
-
+  currentLanguage = computed(() => this.languageService.currentLanguage());
+  supportedLanguages = computed(() => this.languageService.availableLanguages);
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
 
-
-  private setupThemeListener(): void {
-    this.themeService.theme$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.updateLogoBasedOnTheme();
-        this.updateCurrentTheme();
-      });
-  }
-
-  private setupLanguageListener(): void {
-    this.languageService.currentLanguage$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((language: string) => {
-        this.currentLanguage = language;
-      });
-  }
-
   setLanguage(languageCode: string): void {
-    if (languageCode && languageCode !== this.currentLanguage) {
-      this.languageService.setLanguage(languageCode);
-      window.scroll(0, 0);
-      this.closeLanguageDropdown();
+    if (languageCode && languageCode !== this.currentLanguage()) {
+      this.languageService.changeLanguage(languageCode);
     }
   }
 
-  private updateCurrentTheme(): void {
-    this.currentTheme = this.themeService.getCurrentTheme();
-  }
-
-  private updateLogoBasedOnTheme(): void {
-    this.isDarkTheme = this.themeService.isDarkTheme();
-
-    if (this.isDarkTheme) {
-      this.currentLogo = '/assets/images/logo/soncollablightlogo.svg';
-    } else {
-      this.currentLogo = '/assets/images/logo/soncollabdarklogo.svg';
-    }
-  }
-
-
-  private closeLanguageDropdown(): void {
-    const dropdownElement = document.querySelector('.language-switcher[data-bs-toggle="dropdown"]') as HTMLElement;
-    if (dropdownElement) {
-      try {
-        const bsDropdown = (window as any).bootstrap?.Dropdown?.getInstance(dropdownElement);
-        if (bsDropdown) {
-          bsDropdown.hide();
-        }
-      } catch (error) {
-        console.warn('Bootstrap Dropdown instance not found');
-      }
-      dropdownElement.blur();
-    }
-  }
-
-  isLanguageActive(languageCode: string): boolean {
-    return this.currentLanguage === languageCode;
-  }
-
-
-  getActiveThemeIcon(): string {
-    switch (this.currentTheme) {
-      case 'light':
-        return 'fi-sun';
-      case 'dark':
-        return 'fi-moon';
-      case 'auto':
-        return 'fi-monitor';
-      default:
-        return 'fi-sun';
-    }
-  }
-
-  getActiveThemeLabel(): string {
-    switch (this.currentTheme) {
-      case 'light':
-        return 'Light';
-      case 'dark':
-        return 'Dark';
-      case 'auto':
-        return 'Auto';
-      default:
-        return 'Light';
-    }
+  isLanguageActive(code: string): boolean {
+    return this.currentLanguage() === code;
   }
 
   setTheme(theme: Theme): void {
-    window.scroll(0,0);
     this.themeService.setTheme(theme);
-    this.closeThemeDropdown();
   }
 
   isThemeActive(theme: Theme): boolean {
-    return this.currentTheme === theme;
+    return this.currentTheme() === theme;
   }
 
-  getCurrentLanguageName(): string {
-    const language = this.supportedLanguages.find(lang => lang.code === this.currentLanguage);
-    return language?.name || this.currentLanguage.toUpperCase();
-  }
-
-  private closeThemeDropdown(): void {
-    const dropdownElement = document.querySelector('.theme-switcher[data-bs-toggle="dropdown"]') as HTMLElement;
-    if (dropdownElement) {
-      try {
-        const bsDropdown = (window as any).bootstrap?.Dropdown?.getInstance(dropdownElement);
-        if (bsDropdown) {
-          bsDropdown.hide();
-        }
-      } catch (error) {
-        console.warn('Bootstrap Dropdown instance not found, using fallback method');
-      }
-      dropdownElement.blur();
-    }
+  getActiveThemeIcon(): string {
+    const icons = { light: 'fi-sun', dark: 'fi-moon', auto: 'fi-monitor' };
+    return icons[this.currentTheme()] || 'fi-sun';
   }
 
   protected readonly environment = environment;
