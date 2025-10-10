@@ -23,6 +23,15 @@ export const adminRoutes: Routes = [
         )]
       },
       {
+        path: 'team/users/:documentId',
+        loadComponent: () => import('../../../pages/admin/team/users/user-detail/user-detail').then(c => c.UserDetail),
+        canActivate: [pluginPermissionGuard(
+          'users-permissions',
+          'user',
+          'findOne'
+        )]
+      },
+      {
         path: 'team/invitations',
         loadComponent: () => import('../../../pages/admin/team/invitations/invitations-list/invitations-list').then(c => c.InvitationsList)
       },

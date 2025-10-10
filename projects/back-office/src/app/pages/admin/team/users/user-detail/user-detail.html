@@ -1,1 +1,248 @@
-<p>user-detail works!</p>
+<app-breadcrumb [showAvatar]="!!user()" [avatarContent]="user() ? getUserInitials(user()!) : ''">
+  <!-- Actions Desktop -->
+  <div breadcrumb-actions>
+    @if (canEdit() && user()) {
+      @if (isEditMode()) {
+        <button class="btn btn-outline-secondary me-2" (click)="toggleEditMode()">
+          {{ 'common.cancel' | translate }}
+        </button>
+        <button class="btn btn-primary" (click)="onSubmit()" [disabled]="!userForm.valid || saving()">
+          @if (saving()) {
+            <span class="spinner-border spinner-border-sm me-2"></span>
+          }
+          {{ 'common.save' | translate }}
+        </button>
+      } @else {
+        <button class="btn btn-primary" (click)="toggleEditMode()">
+          <i class="bi bi-pencil me-2"></i>
+          {{ 'common.edit' | translate }}
+        </button>
+      }
+    }
+  </div>
+
+  <!-- Actions Mobile (sticky bottom) -->
+  <div breadcrumb-actions-mobile class="d-flex gap-2">
+    @if (canEdit() && user()) {
+      @if (isEditMode()) {
+        <button class="btn btn-outline-secondary flex-fill" (click)="toggleEditMode()">
+          {{ 'common.cancel' | translate }}
+        </button>
+        <button class="btn btn-primary flex-fill" (click)="onSubmit()" [disabled]="!userForm.valid || saving()">
+          @if (saving()) {
+            <span class="spinner-border spinner-border-sm me-2"></span>
+          }
+          {{ 'common.save' | translate }}
+        </button>
+      } @else {
+        <button class="btn btn-primary w-100" (click)="toggleEditMode()">
+          <i class="bi bi-pencil me-2"></i>
+          {{ 'common.edit' | translate }}
+        </button>
+      }
+    }
+  </div>
+</app-breadcrumb>
+
+
+
+@if (loading()) {
+  <div class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
+    </div>
+  </div>
+} @else if (user()) {
+  <div class="row pb-5">
+    <div class="col-lg-4">
+      <div class="card mb-4">
+        <div class="card-body text-center">
+          <div class="avatar mb-3">
+            @if (user()!.avatar && user()!.avatar.url) {
+              <img [src]="apiBaseUrl + user()!.avatar.url" alt="Avatar" class="avatar-img rounded-circle">
+            } @else {
+              <div class="avatar-placeholder">
+                {{ getUserInitials(user()!) }}
+              </div>
+            }
+          </div>
+          <h4 class="mb-1">{{ getUserFullName(user()!) }}</h4>
+          <p class="text-muted mb-2">{{ user()!.email }}</p>
+          <span class="badge" [ngClass]="{
+              'bg-success': !user()!.blocked,
+              'bg-danger': user()!.blocked
+            }">
+              {{ user()!.blocked ? ('users-list.badges.blocked' | translate) : ('users-list.badges.active' | translate) }}
+            </span>
+
+          @if (canEdit() && !isEditMode()) {
+            <hr class="my-4">
+            <div class="d-grid gap-2">
+              @if (user()!.blocked) {
+                <button class="btn btn-success" (click)="unblockUser()">
+                  <i class="bi bi-unlock me-2"></i>
+                  {{ 'users-list.actions.unblock' | translate }}
+                </button>
+              } @else {
+                <button class="btn btn-warning" (click)="blockUser()">
+                  <i class="bi bi-lock me-2"></i>
+                  {{ 'users-list.actions.block' | translate }}
+                </button>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h6 class="mb-0">{{ 'user-detail.information' | translate }}</h6>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <small class="text-muted">{{ 'user-detail.role' | translate }}</small>
+            <p class="mb-0">{{ translateRole(user()!.role.type) }}</p>
+          </div>
+          <div class="mb-3">
+            <small class="text-muted">{{ 'user-detail.confirmed' | translate }}</small>
+            <p class="mb-0">
+                <span class="badge" [ngClass]="{
+                  'bg-success': user()!.confirmed,
+                  'bg-warning': !user()!.confirmed
+                }">
+                  {{ user()!.confirmed ? ('users-list.badges.confirmed' | translate) : ('users-list.badges.notConfirmed' | translate) }}
+                </span>
+            </p>
+          </div>
+          <div class="mb-3">
+            <small class="text-muted">{{ 'user-detail.createdAt' | translate }}</small>
+            <p class="mb-0">{{ user()!.createdAt | date:'short' }}</p>
+          </div>
+          <div>
+            <small class="text-muted">{{ 'user-detail.updatedAt' | translate }}</small>
+            <p class="mb-0">{{ user()!.updatedAt | date:'short' }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="card-header">
+          <h6 class="mb-0">{{ 'user-detail.details' | translate }}</h6>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="userForm">
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label">{{ 'user-detail.username' | translate }}</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="username"
+                  [readonly]="!isEditMode()">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">{{ 'user-detail.email' | translate }}</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  formControlName="email"
+                  readonly>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label">{{ 'user-detail.firstName' | translate }}</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="first_name"
+                  [readonly]="!isEditMode()">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">{{ 'user-detail.lastName' | translate }}</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="last_name"
+                  [readonly]="!isEditMode()">
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label">{{ 'user-detail.phone' | translate }}</label>
+                <input
+                  type="tel"
+                  class="form-control"
+                  formControlName="phone"
+                  [readonly]="!isEditMode()">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">{{ 'user-detail.role' | translate }}</label>
+                @if (isEditMode()) {
+                  <lib-choice
+                    type="select-one"
+                    [options]="getRoleOptions()"
+                    [config]="{
+                        searchEnabled: true,
+                        searchPlaceholderValue: 'Search roles...',
+                        itemSelectText: ''
+                      }"
+                    formControlName="role"
+                  />
+                } @else {
+                  <input
+                    type="text"
+                    class="form-control"
+                    [value]="translateRole(user()!.role.type)"
+                    readonly>
+                }
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">{{ 'user-detail.bio' | translate }}</label>
+              <textarea
+                class="form-control"
+                rows="4"
+                formControlName="bio"
+                [readonly]="!isEditMode()"></textarea>
+            </div>
+
+            @if (isEditMode()) {
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      formControlName="confirmed"
+                      id="confirmed">
+                    <label class="form-check-label" for="confirmed">
+                      {{ 'user-detail.emailConfirmed' | translate }}
+                    </label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      formControlName="blocked"
+                      id="blocked">
+                    <label class="form-check-label" for="blocked">
+                      {{ 'user-detail.accountBlocked' | translate }}
+                    </label>
+                  </div>
+                </div>
+              </div>
+            }
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+}

@@ -51,6 +51,8 @@ export interface BackofficeUser {
   avatar: Image;
   home_country: Country;
   territory: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface UserRole {

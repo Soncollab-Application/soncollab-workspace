@@ -1,3 +1,5 @@
+// projects/back-office/src/app/core/services/page-title.service.ts
+
 import { Injectable, inject, signal, effect } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -27,6 +29,9 @@ export class PageTitleService {
   currentTitle = signal<string>('');
   breadcrumbs = signal<BreadcrumbItem[]>([]);
   private hasCustomBreadcrumbs = signal<boolean>(false);
+
+  private customBreadcrumbsSource = signal<BreadcrumbItem[]>([]);
+  private customTitleSource = signal<string>('');
 
   // Mapping des routes vers les titres
   private routeTitleMap: Record<string, string> = {
@@ -86,10 +91,27 @@ export class PageTitleService {
   private setupLanguageEffect(): void {
     effect(() => {
       const lang = this.languageService.currentLanguage();
-      if (this.currentUrl) {
+
+      // Si on a des breadcrumbs custom, les retraduire
+      if (this.hasCustomBreadcrumbs()) {
+        this.refreshCustomBreadcrumbs();
+      } else if (this.currentUrl) {
         this.updateTitleFromRoute(this.currentUrl);
       }
     });
+  }
+
+  // Retraduire les breadcrumbs custom
+  private refreshCustomBreadcrumbs(): void {
+    const items = this.customBreadcrumbsSource();
+    if (items.length > 0) {
+      this.breadcrumbs.set([...items]);
+    }
+
+    const titleSource = this.customTitleSource();
+    if (titleSource) {
+      this.currentTitle.set(titleSource);
+    }
   }
 
   private updateTitleFromRoute(url: string): void {
@@ -112,30 +134,31 @@ export class PageTitleService {
     const role = this.authService.currentRole;
     const dashboardRoute = this.getDashboardRoute(role as SonCollabRoleType);
 
-    const breadcrumbItems: BreadcrumbItem[] = [
-      { label: 'Home', route: dashboardRoute, active: false }
-    ];
+    this.translate.get('common.home').subscribe(homeLabel => {
+      const breadcrumbItems: BreadcrumbItem[] = [
+        { label: homeLabel, route: dashboardRoute, active: false }
+      ];
 
-    let currentPath = '';
-    segments.forEach((segment, index) => {
-      currentPath += `/${segment}`;
-      const titleKey = this.routeTitleMap[currentPath];
+      let currentPath = '';
+      segments.forEach((segment, index) => {
+        currentPath += `/${segment}`;
+        const titleKey = this.routeTitleMap[currentPath];
 
-      if (titleKey) {
-        this.translate.get(titleKey).subscribe(label => {
-          breadcrumbItems.push({
-            label,
-            route: currentPath,
-            active: index === segments.length - 1
+        if (titleKey) {
+          this.translate.get(titleKey).subscribe(label => {
+            breadcrumbItems.push({
+              label,
+              route: currentPath,
+              active: index === segments.length - 1
+            });
           });
-        });
-      }
-    });
+        }
+      });
 
-    this.breadcrumbs.set(breadcrumbItems);
+      this.breadcrumbs.set(breadcrumbItems);
+    });
   }
 
-  // Méthode pour obtenir la route du dashboard selon le rôle
   getDashboardRoute(role: string): string {
     const dashboardRoutes: Record<string, string> = {
       'soncollab_admin': '/admin/dashboard',
@@ -145,28 +168,34 @@ export class PageTitleService {
     return dashboardRoutes[role] || '/admin/dashboard';
   }
 
-  // Méthode pour définir un titre personnalisé
   setCustomTitle(titleKey: string, params?: any): void {
     this.translate.get(titleKey, params).subscribe(title => {
       this.currentTitle.set(title);
     });
   }
 
-  // Méthode pour définir des breadcrumbs personnalisés
+  //  Stocker les breadcrumbs pour retraduction
   setCustomBreadcrumbs(items: BreadcrumbItem[]): void {
+    this.customBreadcrumbsSource.set(items);
     this.breadcrumbs.set(items);
     this.hasCustomBreadcrumbs.set(true);
   }
 
-  // Méthode pour réinitialiser les breadcrumbs
+  // Stocker le titre pour retraduction
+  setTitle(title: string): void {
+    this.customTitleSource.set(title);
+    this.currentTitle.set(title);
+  }
+
   resetBreadcrumbs(): void {
     this.hasCustomBreadcrumbs.set(false);
+    this.customBreadcrumbsSource.set([]);
+    this.customTitleSource.set('');
     if (this.currentUrl) {
       this.updateTitleFromRoute(this.currentUrl);
     }
   }
 
-  // Alias pour compatibilité
   clearCustomBreadcrumbs(): void {
     this.resetBreadcrumbs();
   }

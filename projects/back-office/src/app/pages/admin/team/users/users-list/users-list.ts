@@ -198,12 +198,6 @@ export class UsersList implements OnInit, OnDestroy {
         handler: (user) => this.viewUser(user)
       },
       {
-        label: this.translate.instant('users-list.actions.edit'),
-        icon: 'pencil',
-        condition: (user) => this.canManageUsers() && user.documentId !== this.currentUserId(),
-        handler: (user) => this.editUser(user)
-      },
-      {
         label: this.translate.instant('users-list.actions.block'),
         icon: 'lock',
         condition: (user) => this.canManageUsers() && !user.blocked && user.documentId !== this.currentUserId(),
@@ -362,9 +356,6 @@ export class UsersList implements OnInit, OnDestroy {
     this.router.navigate(['/admin/team/users', user.documentId]);
   }
 
-  editUser(user: UserListItem): void {
-    this.router.navigate(['/admin/team/users', user.documentId, 'edit']);
-  }
 
   blockUser(user: UserListItem): void {
     const username = user.first_name && user.last_name

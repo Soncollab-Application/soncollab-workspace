@@ -1,21 +1,16 @@
-<div class="row align-items-center py-3 mb-5">
-  <div class="col">
-    <h2 class="fs-5 for-inter-font fw-lighter mb-0">
-      {{ currentTitle() }}
-    </h2>
-    <app-breadcrumb/>
-  </div>
-  @if (canCreateUser()) {
-    <div class="col-auto">
-      <button class="btn btn-primary" (click)="router.navigate(['/admin/team/users/new'])">
+<app-breadcrumb [showAvatar]="true" [icon]="'bi-people-fill'">
+  <div breadcrumb-actions class="col-12 col-sm-auto mt-4 mt-sm-0 pb-5">
+    @if (canCreateUser()) {
+      <button class="btn btn-primary w-100 w-sm-auto" (click)="router.navigate(['/admin/team/users/new'])">
         <i class="bi bi-plus-lg me-2"></i>
         {{ 'users-list.newUser' | translate }}
       </button>
-    </div>
-  }
-</div>
+    }
+  </div>
+</app-breadcrumb>
 
-<div class="mb-5">
+
+<div class="mb-5 pt-2">
   <lib-filter-bar
     [filters]="filters()"
     [sortOptions]="sortOptions()"
@@ -37,7 +32,7 @@
     [pagination]="pagination()"
     [currentSort]="currentSort()"
     [selectable]="false"
-    [clickable]="false"
+    [clickable]="true"
     (sortChange)="onSortChange($any($event))"
     (pageChange)="onPageChange($any($event))"
     (actionClick)="onActionClick($any($event))"

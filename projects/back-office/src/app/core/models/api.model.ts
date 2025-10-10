@@ -23,5 +23,5 @@ export interface ApiError {
 
 export interface Image {
   documentId: string;
-  url: string;
+  url?: string;
 }

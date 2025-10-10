@@ -46,7 +46,7 @@
                           [class.active]="isLanguageActive(lang.code)"
                           (click)="setLanguage(lang.code)"
                           style="white-space: nowrap;">
-                    <img [src]="lang.flagPath" width="16" height="16" class="me-2">
+                    <img [src]="lang.flagPath" width="16" height="16" class="me-2" alt="{{ lang.name }} Flag">
                     <span class="flex-grow-1">{{ lang.name }}</span>
                     @if (isLanguageActive(lang.code)) {
                       <i class="fi-check ms-2" style="flex-shrink: 0;"></i>

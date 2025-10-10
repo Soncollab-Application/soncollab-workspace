@@ -1360,3 +1360,9 @@ body {
 .ratio-1976x1014 {
   --fn-aspect-ratio: 51.32%;
 }
+
+
+.form-control:disabled {
+  color: var(--fn-secondary-color) !important;
+  opacity: 1;
+}

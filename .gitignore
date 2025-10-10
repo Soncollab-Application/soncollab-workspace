@@ -45,3 +45,9 @@ Thumbs.db
 
 yarn.lock
 package-lock.json
+
+# i18n
+projects/back-office/public/assets/i18n/en.json
+projects/back-office/public/assets/i18n/fr.json
+projects/client/src/assets/i18n/en.json
+projects/client/src/assets/i18n/fr.json
