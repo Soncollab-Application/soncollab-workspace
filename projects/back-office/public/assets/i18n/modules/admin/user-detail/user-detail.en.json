@@ -15,6 +15,9 @@
     "updatedAt": "Last Updated",
     "emailConfirmed": "Email confirmed",
     "accountBlocked": "Account blocked",
-    "confirmBlock": "Block {{name}}?"
+    "confirmBlock": "Block {{name}}?",
+    "blockTitle": "Block User",
+    "unblockTitle": "Unblock User",
+    "confirmUnblock": "Unblock {{name}}?"
   }
 }

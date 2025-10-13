@@ -1,21 +1,27 @@
 import {Component, computed, inject, OnDestroy, OnInit, signal} from '@angular/core';
 import {Breadcrumb} from '../../../../../core/components/breadcrumb/breadcrumb';
 import {TranslatePipe, TranslateService} from '@ngx-translate/core';
-import {DatePipe, NgClass} from '@angular/common';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {Subject, takeUntil} from 'rxjs';
-import {UserListItem} from '../../../../../core/models/admin/user-list.model';
-import {AdminService} from '../../../../../core/services/admin/admin.service';
+import {
+  Choice,
+  ConfirmDialogService,
+  getUserInitials,
+  LanguageOrchestratorService,
+  PermissionService, RelativeDatePipe,
+} from "shared-lib";
+import { NgClass } from "@angular/common";
+import { AdminService } from "../../../../../core/services/admin/admin.service";
 import {AuthService} from '../../../../../core/services/auth.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {PageTitleService} from '../../../../../core/services/page-title.service';
-import {Choice, LanguageOrchestratorService, PermissionService, getUserInitials} from 'shared-lib';
+import {UserListItem} from '../../../../../core/models/admin/user-list.model';
+import {Subject, takeUntil} from 'rxjs';
 import {environment} from '../../../../../../environments/environment';
 
 @Component({
   selector: 'app-user-detail',
   standalone: true,
-  imports: [Breadcrumb, TranslatePipe, DatePipe, NgClass, ReactiveFormsModule, Choice],
+  imports: [Breadcrumb, TranslatePipe, NgClass, ReactiveFormsModule, Choice, RelativeDatePipe],
   templateUrl: './user-detail.html',
   styleUrl: './user-detail.css'
 })
@@ -29,6 +35,7 @@ export class UserDetail implements OnInit, OnDestroy {
   private languageOrchestrator = inject(LanguageOrchestratorService);
   private permissionsService = inject(PermissionService);
   private fb = inject(FormBuilder);
+  private confirmDialog = inject(ConfirmDialogService);
 
   private destroy$ = new Subject<void>();
   private componentId = 'user-detail';
@@ -222,29 +229,51 @@ export class UserDetail implements OnInit, OnDestroy {
     const username = this.getUserFullName(this.user()!);
     const message = this.translate.instant('user-detail.confirmBlock', { name: username });
 
-    if (confirm(message)) {
-      this.adminService.blockUser(this.user()!.documentId)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: (updated) => {
-            this.user.set(updated);
-            this.patchForm(updated);
-          }
-        });
-    }
+    this.confirmDialog.open({
+      title: this.translate.instant('user-detail.blockTitle'),
+      message: message,
+      confirmText: this.translate.instant('users-list.actions.block'),
+      confirmClass: 'btn-danger',
+      icon: 'lock',
+      iconClass: 'text-danger'
+    }).then((confirmed) => {
+      if (confirmed) {
+        this.adminService.blockUser(this.user()!.documentId)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe({
+            next: (updated) => {
+              this.user.set(updated);
+              this.patchForm(updated);
+            }
+          });
+      }
+    });
   }
 
   unblockUser() {
     if (!this.user()) return;
 
-    this.adminService.unblockUser(this.user()!.documentId)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (updated) => {
-          this.user.set(updated);
-          this.patchForm(updated);
-        }
-      });
+    const username = this.getUserFullName(this.user()!);
+
+    this.confirmDialog.open({
+      title: this.translate.instant('user-detail.unblockTitle'),
+      message: this.translate.instant('user-detail.confirmUnblock', { name: username }),
+      confirmText: this.translate.instant('users-list.actions.unblock'),
+      confirmClass: 'btn-success',
+      icon: 'unlock',
+      iconClass: 'text-success'
+    }).then((confirmed) => {
+      if (confirmed) {
+        this.adminService.unblockUser(this.user()!.documentId)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe({
+            next: (updated) => {
+              this.user.set(updated);
+              this.patchForm(updated);
+            }
+          });
+      }
+    });
   }
 
   getUserInitials(user: UserListItem): string {

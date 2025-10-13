@@ -14,8 +14,8 @@
   <lib-filter-bar
     [filters]="filters()"
     [sortOptions]="sortOptions()"
-    [selectedCount]="selectedCount()"
     [showSearch]="true"
+    [selectedCount]="-1"
     (searchChange)="onSearchChange($any($event))"
     (filterChange)="onFilterChange($any($event))"
     (sortChange)="onSortChange($any($event))"

@@ -73,6 +73,11 @@ export class FilterBarComponent implements OnInit {
 
   selectedText(): string {
     const count = this.selectedCount();
+
+    if (count < 0) {
+      return '';
+    }
+
     if (count > 0) {
       return this.translate.instant(this.selectionText(), { count });
     }

@@ -55,72 +55,74 @@
 } @else if (user()) {
   <div class="row pb-5">
     <div class="col-lg-4">
-      <div class="card mb-4">
-        <div class="card-body text-center">
-          <div class="avatar mb-3">
-            @if (user()!.avatar && user()!.avatar.url) {
-              <img [src]="apiBaseUrl + user()!.avatar.url" alt="Avatar" class="avatar-img rounded-circle">
-            } @else {
-              <div class="avatar-placeholder">
-                {{ getUserInitials(user()!) }}
-              </div>
-            }
-          </div>
-          <h4 class="mb-1">{{ getUserFullName(user()!) }}</h4>
-          <p class="text-muted mb-2">{{ user()!.email }}</p>
-          <span class="badge" [ngClass]="{
+
+      <div class="position-sticky mb-8" style="top: 40px">
+        <div class="card mb-4">
+          <div class="card-body text-center">
+            <div class="avatar mb-3">
+              @if (user()!.avatar && user()!.avatar.url) {
+                <img [src]="apiBaseUrl + user()!.avatar.url" alt="Avatar" class="avatar-img rounded-circle">
+              } @else {
+                <div class="avatar-placeholder">
+                  {{ getUserInitials(user()!) }}
+                </div>
+              }
+            </div>
+            <h4 class="mb-1">{{ getUserFullName(user()!) }}</h4>
+            <p class="text-muted mb-2">{{ user()!.email }}</p>
+            <span class="badge" [ngClass]="{
               'bg-success': !user()!.blocked,
               'bg-danger': user()!.blocked
             }">
               {{ user()!.blocked ? ('users-list.badges.blocked' | translate) : ('users-list.badges.active' | translate) }}
             </span>
 
-          @if (canEdit() && !isEditMode()) {
-            <hr class="my-4">
-            <div class="d-grid gap-2">
-              @if (user()!.blocked) {
-                <button class="btn btn-success" (click)="unblockUser()">
-                  <i class="bi bi-unlock me-2"></i>
-                  {{ 'users-list.actions.unblock' | translate }}
-                </button>
-              } @else {
-                <button class="btn btn-warning" (click)="blockUser()">
-                  <i class="bi bi-lock me-2"></i>
-                  {{ 'users-list.actions.block' | translate }}
-                </button>
-              }
-            </div>
-          }
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <h6 class="mb-0">{{ 'user-detail.information' | translate }}</h6>
-        </div>
-        <div class="card-body">
-          <div class="mb-3">
-            <small class="text-muted">{{ 'user-detail.role' | translate }}</small>
-            <p class="mb-0">{{ translateRole(user()!.role.type) }}</p>
+            @if (canEdit() && !isEditMode()) {
+              <hr class="my-4">
+              <div class="d-grid gap-2">
+                @if (user()!.blocked) {
+                  <button class="btn btn-success" (click)="unblockUser()">
+                    <i class="bi bi-unlock me-2"></i>
+                    {{ 'users-list.actions.unblock' | translate }}
+                  </button>
+                } @else {
+                  <button class="btn btn-warning" (click)="blockUser()">
+                    <i class="bi bi-lock me-2"></i>
+                    {{ 'users-list.actions.block' | translate }}
+                  </button>
+                }
+              </div>
+            }
           </div>
-          <div class="mb-3">
-            <small class="text-muted">{{ 'user-detail.confirmed' | translate }}</small>
-            <p class="mb-0">
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h6 class="mb-0">{{ 'user-detail.information' | translate }}</h6>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <small class="text-muted">{{ 'user-detail.role' | translate }}</small>
+              <p class="mb-0">{{ translateRole(user()!.role.type) }}</p>
+            </div>
+            <div class="mb-3">
+              <small class="text-muted">{{ 'user-detail.confirmed' | translate }}</small>
+              <p class="mb-0">
                 <span class="badge" [ngClass]="{
                   'bg-success': user()!.confirmed,
                   'bg-warning': !user()!.confirmed
                 }">
                   {{ user()!.confirmed ? ('users-list.badges.confirmed' | translate) : ('users-list.badges.notConfirmed' | translate) }}
                 </span>
-            </p>
-          </div>
-          <div class="mb-3">
-            <small class="text-muted">{{ 'user-detail.createdAt' | translate }}</small>
-            <p class="mb-0">{{ user()!.createdAt | date:'short' }}</p>
-          </div>
-          <div>
-            <small class="text-muted">{{ 'user-detail.updatedAt' | translate }}</small>
-            <p class="mb-0">{{ user()!.updatedAt | date:'short' }}</p>
+              </p>
+            </div>
+            <div class="mb-3">
+              <small class="text-muted">{{ 'user-detail.createdAt' | translate }}</small>
+              <p class="mb-0">{{ user()!.createdAt | relativeDate }}</p>
+            </div>
+            <div>
+              <small class="text-muted">{{ 'user-detail.updatedAt' | translate }}</small>
+              <p class="mb-0">{{ user()!.updatedAt | relativeDate }}</p>
+            </div>
           </div>
         </div>
       </div>

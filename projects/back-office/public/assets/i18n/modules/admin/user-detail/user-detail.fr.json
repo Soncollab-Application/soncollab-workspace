@@ -15,6 +15,9 @@
     "updatedAt": "Mis à jour le",
     "emailConfirmed": "Email confirmé",
     "accountBlocked": "Compte bloqué",
-    "confirmBlock": "Bloquer {{name}} ?"
+    "confirmBlock": "Bloquer {{name}} ?",
+    "blockTitle": "Bloquer l'utilisateur",
+    "unblockTitle": "Débloquer l'utilisateur",
+    "confirmUnblock": "Débloquer {{name}} ?"
   }
 }

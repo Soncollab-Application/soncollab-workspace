@@ -3,9 +3,12 @@
     <!-- Version Desktop (lg et plus) -->
     <div class="d-none d-xl-block">
       <div class="row align-items-center">
-        <div class="col-12 col-lg-auto mb-3 mb-lg-0">
-          <div class="text-body-secondary">{{ selectedText() }}</div>
-        </div>
+
+        @if (selectedText()) {
+          <div class="col-auto d-none d-xl-block">
+            <div class="text-body-secondary small">{{ selectedText() }}</div>
+          </div>
+        }
 
         <div class="col-12 col-lg">
           <div class="row gx-3">
@@ -150,9 +153,11 @@
     <!-- Version Mobile (md et moins) -->
     <div class="d-xl-none">
       <div class="row g-3">
-        <div class="col-12">
-          <div class="text-body-secondary small">{{ selectedText() }}</div>
-        </div>
+        @if (selectedText()) {
+          <div class="col-12">
+            <div class="text-body-secondary small">{{ selectedText() }}</div>
+          </div>
+        }
 
         @if (showSearch()) {
           <div class="col-12">
