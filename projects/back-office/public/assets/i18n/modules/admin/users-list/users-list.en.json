@@ -46,6 +46,11 @@
       "client_artist": "Independent Artist",
       "client_manager": "Artist Manager",
       "client_publisher": "Music Publisher"
-    }
+    },
+    "blockTitle": "Block User",
+    "block": "Block",
+    "unblockTitle": "Unblock User",
+    "confirmUnblock": "Unblock {{name}}?",
+    "unblock": "Unblock"
   }
 }

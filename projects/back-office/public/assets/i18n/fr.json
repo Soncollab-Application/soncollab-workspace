@@ -64,7 +64,12 @@
       "client_artist": "Artiste indépendant",
       "client_manager": "Manager d'artistes",
       "client_publisher": "Éditeur musical"
-    }
+    },
+    "blockTitle": "Bloquer l'utilisateur",
+    "block": "Bloquer",
+    "unblockTitle": "Débloquer l'utilisateur",
+    "confirmUnblock": "Débloquer {{name}} ?",
+    "unblock": "Débloquer"
   },
   "aside": {
     "sections": {

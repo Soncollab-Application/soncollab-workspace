@@ -14,7 +14,8 @@ import {
   TableAction,
   PaginationState,
   PermissionService,
-  LanguageOrchestratorService
+  LanguageOrchestratorService,
+  ConfirmDialogService
 } from 'shared-lib';
 import {PageTitleService} from '../../../../../core/services/page-title.service';
 import {Breadcrumb} from '../../../../../core/components/breadcrumb/breadcrumb';
@@ -37,6 +38,7 @@ export class UsersList implements OnInit, OnDestroy {
   private pageTitleService = inject(PageTitleService);
   private translate = inject(TranslateService);
   private languageOrchestrator = inject(LanguageOrchestratorService);
+  private confirmDialog = inject(ConfirmDialogService);
 
   private destroy$ = new Subject<void>();
   private componentId = 'users-list';
@@ -253,6 +255,7 @@ export class UsersList implements OnInit, OnDestroy {
   onLanguageChange(): void {
     setTimeout(() => {
       this.setBreadcrumbs();
+      this.updatePageTitle();
       this.initializeConfig();
       this.loadRoles();
     }, 150);
@@ -279,6 +282,10 @@ export class UsersList implements OnInit, OnDestroy {
         active: true
       }
     ]);
+  }
+
+  private updatePageTitle(): void {
+    this.pageTitleService.setTitle(this.translate.instant('header.pages.admin.team.users'));
   }
 
   private buildUserFilters(search: string, filterValues: FilterValue): UserFilters {
@@ -356,7 +363,6 @@ export class UsersList implements OnInit, OnDestroy {
     this.router.navigate(['/admin/team/users', user.documentId]);
   }
 
-
   blockUser(user: UserListItem): void {
     const username = user.first_name && user.last_name
       ? `${user.first_name} ${user.last_name}`
@@ -364,30 +370,54 @@ export class UsersList implements OnInit, OnDestroy {
 
     const message = this.translate.instant('users-list.confirmBlock', { name: username });
 
-    if (confirm(message)) {
-      this.adminService.blockUser(user.documentId).subscribe(() => {
-        const sort = this.currentSort();
-        this.loadUsers(
-          this.currentPage(),
-          this.pageSize(),
-          this.buildUserFilters(this.searchTerm(), this.filterValues()),
-          sort.field,
-          sort.direction
-        );
-      });
-    }
+    this.confirmDialog.open({
+      title: this.translate.instant('users-list.blockTitle'),
+      message: message,
+      confirmText: this.translate.instant('users-list.block'),
+      confirmClass: 'btn-danger',
+      icon: 'lock',
+      iconClass: 'text-danger'
+    }).then((confirmed) => {
+      if (confirmed) {
+        this.adminService.blockUser(user.documentId).subscribe(() => {
+          const sort = this.currentSort();
+          this.loadUsers(
+            this.currentPage(),
+            this.pageSize(),
+            this.buildUserFilters(this.searchTerm(), this.filterValues()),
+            sort.field,
+            sort.direction
+          );
+        });
+      }
+    });
   }
 
   unblockUser(user: UserListItem): void {
-    this.adminService.unblockUser(user.documentId).subscribe(() => {
-      const sort = this.currentSort();
-      this.loadUsers(
-        this.currentPage(),
-        this.pageSize(),
-        this.buildUserFilters(this.searchTerm(), this.filterValues()),
-        sort.field,
-        sort.direction
-      );
+    const username = user.first_name && user.last_name
+      ? `${user.first_name} ${user.last_name}`
+      : user.username;
+
+    this.confirmDialog.open({
+      title: this.translate.instant('users-list.unblockTitle'),
+      message: this.translate.instant('users-list.confirmUnblock', { name: username }),
+      confirmText: this.translate.instant('users-list.unblock'),
+      confirmClass: 'btn-success',
+      icon: 'unlock',
+      iconClass: 'text-success'
+    }).then((confirmed) => {
+      if (confirmed) {
+        this.adminService.unblockUser(user.documentId).subscribe(() => {
+          const sort = this.currentSort();
+          this.loadUsers(
+            this.currentPage(),
+            this.pageSize(),
+            this.buildUserFilters(this.searchTerm(), this.filterValues()),
+            sort.field,
+            sort.direction
+          );
+        });
+      }
     });
   }
 }
