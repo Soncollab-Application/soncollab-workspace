@@ -18,7 +18,8 @@
     "confirmBlock": "Block {{name}}?",
     "blockTitle": "Block User",
     "unblockTitle": "Unblock User",
-    "confirmUnblock": "Unblock {{name}}?"
+    "confirmUnblock": "Unblock {{name}}?",
+    "successUpdate": "User successfully updated"
   },
   "users-list": {
     "title": "Users",

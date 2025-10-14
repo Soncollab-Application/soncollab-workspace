@@ -3,13 +3,13 @@ import {Breadcrumb} from '../../../../../core/components/breadcrumb/breadcrumb';
 import {TranslatePipe, TranslateService} from '@ngx-translate/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {
+  Badge,
   Choice,
   ConfirmDialogService,
   getUserInitials,
   LanguageOrchestratorService,
-  PermissionService, RelativeDatePipe,
+  PermissionService, RelativeDatePipe, ToastService,
 } from "shared-lib";
-import { NgClass } from "@angular/common";
 import { AdminService } from "../../../../../core/services/admin/admin.service";
 import {AuthService} from '../../../../../core/services/auth.service';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -21,7 +21,7 @@ import {environment} from '../../../../../../environments/environment';
 @Component({
   selector: 'app-user-detail',
   standalone: true,
-  imports: [Breadcrumb, TranslatePipe, NgClass, ReactiveFormsModule, Choice, RelativeDatePipe],
+  imports: [Breadcrumb, TranslatePipe, ReactiveFormsModule, Choice, Badge, RelativeDatePipe],
   templateUrl: './user-detail.html',
   styleUrl: './user-detail.css'
 })
@@ -36,6 +36,7 @@ export class UserDetail implements OnInit, OnDestroy {
   private permissionsService = inject(PermissionService);
   private fb = inject(FormBuilder);
   private confirmDialog = inject(ConfirmDialogService);
+  private toastService = inject(ToastService);
 
   private destroy$ = new Subject<void>();
   private componentId = 'user-detail';
@@ -186,6 +187,10 @@ export class UserDetail implements OnInit, OnDestroy {
     if (this.isEditMode()) {
       this.userForm.enable();
       this.userForm.get('email')?.disable();
+      this.userForm.get('role')?.disable();
+      this.userForm.get('confirmed')?.disable();
+      this.userForm.get('username')?.disable();
+      this.userForm.get('bio')?.disable();
     } else {
       this.userForm.disable();
       const user = this.user();
@@ -208,6 +213,14 @@ export class UserDetail implements OnInit, OnDestroy {
           this.isEditMode.set(false);
           this.userForm.disable();
           this.saving.set(false);
+          this.toastService.showSuccess(
+            this.translate.instant('user-detail.successUpdate'),
+            {
+              position: 'top-end',
+              delay: 2000,
+              autohide: true,
+            }
+          );
         },
         error: () => {
           this.saving.set(false);

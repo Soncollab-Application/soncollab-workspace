@@ -54,7 +54,7 @@
   </div>
 } @else if (user()) {
   <div class="row pb-5">
-    <div class="col-lg-4">
+    <div class="col-xl-4 mb-3">
 
       <div class="position-sticky mb-8" style="top: 40px">
         <div class="card mb-4">
@@ -70,12 +70,11 @@
             </div>
             <h4 class="mb-1">{{ getUserFullName(user()!) }}</h4>
             <p class="text-muted mb-2">{{ user()!.email }}</p>
-            <span class="badge" [ngClass]="{
-              'bg-success': !user()!.blocked,
-              'bg-danger': user()!.blocked
-            }">
-              {{ user()!.blocked ? ('users-list.badges.blocked' | translate) : ('users-list.badges.active' | translate) }}
-            </span>
+            <lib-badge
+              [type]="!user()!.blocked ? 'success' : 'danger'"
+              variant="solid"
+              [text]="user()!.blocked ? ('users-list.badges.blocked' | translate) : ('users-list.badges.active' | translate)"
+            />
 
             @if (canEdit() && !isEditMode()) {
               <hr class="my-4">
@@ -107,12 +106,11 @@
             <div class="mb-3">
               <small class="text-muted">{{ 'user-detail.confirmed' | translate }}</small>
               <p class="mb-0">
-                <span class="badge" [ngClass]="{
-                  'bg-success': user()!.confirmed,
-                  'bg-warning': !user()!.confirmed
-                }">
-                  {{ user()!.confirmed ? ('users-list.badges.confirmed' | translate) : ('users-list.badges.notConfirmed' | translate) }}
-                </span>
+                <lib-badge
+                  [type]="user()!.confirmed ? 'success' : 'warning'"
+                  [variant]="'subtle'"
+                  [text]="user()!.confirmed ? ('users-list.badges.confirmed' | translate) : ('users-list.badges.notConfirmed' | translate)"
+                />
               </p>
             </div>
             <div class="mb-3">
@@ -128,15 +126,15 @@
       </div>
     </div>
 
-    <div class="col-lg-8">
+    <div class="col-xl-8">
       <div class="card">
         <div class="card-header">
           <h6 class="mb-0">{{ 'user-detail.details' | translate }}</h6>
         </div>
         <div class="card-body">
           <form [formGroup]="userForm">
-            <div class="row mb-3">
-              <div class="col-md-6">
+            <div class="row mb-2">
+              <div class="col-md-6 mb-2">
                 <label class="form-label">{{ 'user-detail.username' | translate }}</label>
                 <input
                   type="text"
@@ -144,7 +142,7 @@
                   formControlName="username"
                   [readonly]="!isEditMode()">
               </div>
-              <div class="col-md-6">
+              <div class="col-md-6 mb-2">
                 <label class="form-label">{{ 'user-detail.email' | translate }}</label>
                 <input
                   type="email"
@@ -154,8 +152,8 @@
               </div>
             </div>
 
-            <div class="row mb-3">
-              <div class="col-md-6">
+            <div class="row mb-2">
+              <div class="col-md-6 mb-2">
                 <label class="form-label">{{ 'user-detail.firstName' | translate }}</label>
                 <input
                   type="text"
@@ -163,7 +161,7 @@
                   formControlName="first_name"
                   [readonly]="!isEditMode()">
               </div>
-              <div class="col-md-6">
+              <div class="col-md-6 mb-2">
                 <label class="form-label">{{ 'user-detail.lastName' | translate }}</label>
                 <input
                   type="text"
@@ -173,8 +171,8 @@
               </div>
             </div>
 
-            <div class="row mb-3">
-              <div class="col-md-6">
+            <div class="row mb-2">
+              <div class="col-md-6 mb-2">
                 <label class="form-label">{{ 'user-detail.phone' | translate }}</label>
                 <input
                   type="tel"
@@ -182,17 +180,18 @@
                   formControlName="phone"
                   [readonly]="!isEditMode()">
               </div>
-              <div class="col-md-6">
+              <div class="col-md-6 mb-2">
                 <label class="form-label">{{ 'user-detail.role' | translate }}</label>
                 @if (isEditMode()) {
                   <lib-choice
                     type="select-one"
                     [options]="getRoleOptions()"
+                    [cssClass]="'form-select text-muted'"
                     [config]="{
-                        searchEnabled: true,
-                        searchPlaceholderValue: 'Search roles...',
-                        itemSelectText: ''
-                      }"
+                      searchEnabled: true,
+                      searchPlaceholderValue: 'Search roles...',
+                      itemSelectText: ''
+                    }"
                     formControlName="role"
                   />
                 } @else {

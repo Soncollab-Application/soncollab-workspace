@@ -18,6 +18,7 @@
     "confirmBlock": "Bloquer {{name}} ?",
     "blockTitle": "Bloquer l'utilisateur",
     "unblockTitle": "Débloquer l'utilisateur",
-    "confirmUnblock": "Débloquer {{name}} ?"
+    "confirmUnblock": "Débloquer {{name}} ?",
+    "successUpdate": "Utilisateur mis à jour avec succès"
   }
 }

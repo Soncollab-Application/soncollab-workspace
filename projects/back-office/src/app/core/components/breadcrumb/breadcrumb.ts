@@ -21,9 +21,14 @@ export class Breadcrumb {
 
   getPreviousBreadcrumb() {
     const crumbs = this.breadcrumbs();
-    if (crumbs.length > 1) {
-      return crumbs[crumbs.length - 2];
+    if (crumbs.length <= 1) return null;
+
+    for (let i = crumbs.length - 2; i >= 0; i--) {
+      if (crumbs[i].route) {
+        return crumbs[i];
+      }
     }
+
     return null;
   }
 }
