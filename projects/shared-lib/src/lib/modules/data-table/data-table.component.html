@@ -10,7 +10,7 @@
       <thead>
       <tr>
         @if (selectable()) {
-          <th style="width: 0px">
+          <th style="width: 0">
             <div class="form-check">
               <input
                 class="form-check-input"
@@ -43,9 +43,9 @@
           <tr>
             <td [attr.colspan]="getTotalColspan()" class="p-0">
               <lib-empty-state
-                [icon]="'inbox'"
-                [title]="'dataTable.noDataTitle' | translate"
-                [message]="'dataTable.noDataMessage' | translate"
+                [icon]="emptyStateIcon()"
+                [title]="emptyStateTitle()"
+                [message]="emptyStateMessage()"
               />
             </td>
           </tr>
@@ -193,11 +193,11 @@
     </table>
   </div>
 
-  @if (pagination()) {
+  @if (pagination() && pagination()!.total > 0) {
     <div class="row for-inter-font align-items-center mt-4">
       <div class="col">
         <p class="text-body-secondary mb-0">
-          {{ (pagination()!.currentPage - 1) * pagination()!.pageSize + 1 }} –
+          {{ (pagination()!.currentPage - 1) * pagination()!.pageSize + 1 }} —
           {{ Math.min(pagination()!.currentPage * pagination()!.pageSize, pagination()!.total) }}
           ({{ pagination()!.total }} {{ 'dataTable.total' | translate }})
         </p>

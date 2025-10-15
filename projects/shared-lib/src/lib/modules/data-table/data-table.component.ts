@@ -32,6 +32,10 @@ export class DataTableComponent<T = any> implements OnInit {
   selectable = input<boolean>(false);
   clickable = input<boolean>(false);
 
+  emptyStateTitle = input.required<string>();
+  emptyStateMessage = input.required<string>();
+  emptyStateIcon = input<string>('inbox');
+
   // Outputs
   sortChange = output<SortConfig>();
   pageChange = output<number>();
@@ -75,14 +79,12 @@ export class DataTableComponent<T = any> implements OnInit {
 
     if (!avatarPath) return '';
 
-    // Si une fonction de transformation est fournie, l'utiliser
     if (column.avatarTransform) {
       return column.avatarTransform(avatarPath);
     }
 
     return avatarPath;
   }
-
 
   onSort(column: TableColumn<T>): void {
     if (!column.sortable) return;

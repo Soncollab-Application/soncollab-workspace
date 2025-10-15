@@ -9,7 +9,7 @@
         "dashboard": "Tableau de bord Admin",
         "team": {
           "users": "Gestion des utilisateurs",
-          "invitations": "Invitations en cours",
+          "invitations": "Gestion des invitations",
           "statistics": "Statistiques équipe"
         },
         "commercial": {

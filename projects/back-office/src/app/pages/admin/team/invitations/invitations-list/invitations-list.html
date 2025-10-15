@@ -1,1 +1,41 @@
-<p>invitations-list works!</p>
+<app-breadcrumb [showAvatar]="true" [icon]="'bi-envelope-fill'">
+  <div breadcrumb-actions class="col-12 col-sm-auto mt-4 mt-sm-0 pb-5">
+    @if (canCreateInvitation()) {
+      <button class="btn btn-primary w-100 w-sm-auto" (click)="router.navigate(['/admin/team/invitations/invite'])">
+        <i class="bi bi-plus-lg me-2"></i>
+        {{ 'invitations.invite_member' | translate }}
+      </button>
+    }
+  </div>
+</app-breadcrumb>
+
+<div class="mb-5 pt-2">
+  <lib-filter-bar
+    [filters]="filters()"
+    [sortOptions]="sortOptions()"
+    [showSearch]="true"
+    [selectedCount]="-1"
+    (searchChange)="onSearchChange($any($event))"
+    (filterChange)="onFilterChange($any($event))"
+    (sortChange)="onSortChange($any($event))"
+  />
+</div>
+
+<div>
+  <lib-data-table
+    [data]="invitations()"
+    [columns]="columns()"
+    [actions]="actions()"
+    [loading]="loading()"
+    [pagination]="pagination()"
+    [currentSort]="currentSort()"
+    [selectable]="false"
+    [clickable]="true"
+    [emptyStateTitle]="emptyTitle()"
+    [emptyStateMessage]="emptyMessage()"
+    (sortChange)="onSortChange($any($event))"
+    (pageChange)="onPageChange($any($event))"
+    (actionClick)="onActionClick($any($event))"
+    (rowClick)="onRowClick($any($event))"
+  />
+</div>

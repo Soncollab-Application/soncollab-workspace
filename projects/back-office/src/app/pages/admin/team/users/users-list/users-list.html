@@ -33,6 +33,8 @@
     [currentSort]="currentSort()"
     [selectable]="false"
     [clickable]="true"
+    [emptyStateTitle]="emptyTitle()"
+    [emptyStateMessage]="emptyMessage()"
     (sortChange)="onSortChange($any($event))"
     (pageChange)="onPageChange($any($event))"
     (actionClick)="onActionClick($any($event))"

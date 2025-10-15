@@ -51,6 +51,8 @@
     "block": "Block",
     "unblockTitle": "Unblock User",
     "confirmUnblock": "Unblock {{name}}?",
-    "unblock": "Unblock"
+    "unblock": "Unblock",
+    "no_users": "No users found",
+    "no_users_message": "There are no users to display"
   }
 }

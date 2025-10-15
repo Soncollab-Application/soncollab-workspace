@@ -9,7 +9,7 @@
         "dashboard": "Admin Dashboard",
         "team": {
           "users": "User Management",
-          "invitations": "Pending Invitations",
+          "invitations": "Invitation Management",
           "statistics": "Team Statistics"
         },
         "commercial": {

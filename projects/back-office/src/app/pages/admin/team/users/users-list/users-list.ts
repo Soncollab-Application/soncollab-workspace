@@ -80,6 +80,9 @@ export class UsersList implements OnInit, OnDestroy {
 
   currentUserId = computed(() => this.authService.currentUser?.documentId);
 
+  emptyTitle = signal('');
+  emptyMessage = signal('');
+
   filters = signal<FilterConfig[]>([]);
   sortOptions = signal<SortOption[]>([]);
   columns = signal<TableColumn<UserListItem>[]>([]);
@@ -213,6 +216,9 @@ export class UsersList implements OnInit, OnDestroy {
         handler: (user) => this.unblockUser(user)
       }
     ]);
+
+    this.emptyTitle.set(this.translate.instant('users-list.no_users'));
+    this.emptyMessage.set(this.translate.instant('users-list.no_users_message'));
   }
 
   private loadRoles(): void {

@@ -4,6 +4,13 @@
       "dashboard": "Dashboard",
       "team": "Team",
       "users": "Users"
+    },
+    "invitations": {
+      "dashboard": "Dashboard",
+      "team": "Team",
+      "invitations": "Invitations",
+      "invite": "Invite Member",
+      "detail": "Invitation Details"
     }
   }
 }

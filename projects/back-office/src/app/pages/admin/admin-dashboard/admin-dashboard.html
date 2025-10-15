@@ -27,6 +27,8 @@
         [currentSort]="currentSort()"
         [selectable]="true"
         [clickable]="true"
+        [emptyStateTitle]="'No Data Available'"
+        [emptyStateMessage]="'There is no data to display at the moment.'"
         (sortChange)="onSortChange($event)"
         (pageChange)="onPageChange($event)"
         (actionClick)="onActionClick($event)"

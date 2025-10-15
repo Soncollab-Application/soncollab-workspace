@@ -1,6 +1,6 @@
 import {Routes} from '@angular/router';
 import {Layout} from '../../../soncollab/layout/layout';
-import { pluginPermissionGuard, ApiPermissions } from "shared-lib";
+import {pluginPermissionGuard, apiPermissionGuard} from "shared-lib";
 
 export const adminRoutes: Routes = [
   {
@@ -33,8 +33,32 @@ export const adminRoutes: Routes = [
       },
       {
         path: 'team/invitations',
-        loadComponent: () => import('../../../pages/admin/team/invitations/invitations-list/invitations-list').then(c => c.InvitationsList)
+        loadComponent: () => import('../../../pages/admin/team/invitations/invitations-list/invitations-list').then(c => c.InvitationsList),
+        canActivate: [apiPermissionGuard(
+          'soncollab-invitation',
+          'soncollab-invitation',
+          'find'
+        )]
       },
+      {
+        path: 'team/invitations/:documentId',
+        loadComponent: () => import('../../../pages/admin/team/invitations/invitation-detail/invitation-detail').then(c => c.InvitationDetail),
+        canActivate: [apiPermissionGuard(
+          'soncollab-invitation',
+          'soncollab-invitation',
+          'findOne'
+        )]
+      },
+      {
+        path: 'team/invitations/invite',
+        loadComponent: () => import('../../../pages/admin/team/invitations/invite/invite').then(c => c.Invite),
+        canActivate: [apiPermissionGuard(
+          'soncollab-invitation',
+          'soncollab-invitation',
+          'invite'
+        )]
+      },
+
       {
         path: 'team/statistics',
         loadComponent: () => import('../../../pages/admin/team/statistics/team-statistics/team-statistics').then(c => c.TeamStatistics)

@@ -51,6 +51,8 @@
     "block": "Bloquer",
     "unblockTitle": "Débloquer l'utilisateur",
     "confirmUnblock": "Débloquer {{name}} ?",
-    "unblock": "Débloquer"
+    "unblock": "Débloquer",
+    "no_users": "Aucun utilisateur trouvé",
+    "no_users_message": "Il n'y a aucun utilisateur à afficher"
   }
 }

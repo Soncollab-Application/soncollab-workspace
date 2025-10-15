@@ -9,14 +9,12 @@ import {CommonModule} from '@angular/common';
   styleUrls: ['./empty-state.component.css']
 })
 export class EmptyStateComponent {
-  // Inputs
   icon = input<string>('inbox');
   title = input.required<string>();
   message = input<string>('');
   actionLabel = input<string>('');
   actionIcon = input<string>('');
 
-  // Outputs
   action = output<void>();
 
   onAction(): void {

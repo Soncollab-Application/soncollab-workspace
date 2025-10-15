@@ -1,0 +1,67 @@
+{
+  "invitations": {
+    "title": "Invitations",
+    "subtitle": "Manage Soncollab team member invitations",
+    "invite_member": "Invite Member",
+    "no_invitations": "No invitations found",
+    "no_invitations_message": "There are no invitations to display",
+    "filters": {
+      "status": "Status",
+      "role": "Role"
+    },
+    "status": {
+      "pending": "Pending",
+      "sent": "Sent",
+      "accepted": "Accepted",
+      "expired": "Expired",
+      "cancelled": "Cancelled"
+    },
+    "sort": {
+      "newest": "Newest",
+      "oldest": "Oldest",
+      "email": "Email (A-Z)"
+    },
+    "columns": {
+      "email": "Email",
+      "name": "Name",
+      "role": "Role",
+      "status": "Status",
+      "invited_by": "Invited by",
+      "sent_at": "Sent at",
+      "expires_at": "Expires at"
+    },
+    "actions": {
+      "resend": "Resend",
+      "cancel": "Cancel"
+    },
+    "confirm": {
+      "resend": {
+        "title": "Resend Invitation",
+        "message": "Are you sure you want to resend the invitation to {{name}}?"
+      },
+      "cancel": {
+        "title": "Cancel Invitation",
+        "message": "Are you sure you want to cancel the invitation for {{name}}?"
+      }
+    },
+    "badges": {
+      "pending": "Pending",
+      "sent": "Sent",
+      "accepted": "Accepted",
+      "expired": "Expired",
+      "cancelled": "Cancelled"
+    },
+    "roles": {
+      "soncollab_admin": "Administrator",
+      "soncollab_sales": "Sales Representative",
+      "soncollab_content": "Content Manager"
+    },
+    "departments": {
+      "admin": "Administration",
+      "sales": "Sales",
+      "marketing": "Marketing",
+      "content": "Content",
+      "support": "Support"
+    }
+  }
+}

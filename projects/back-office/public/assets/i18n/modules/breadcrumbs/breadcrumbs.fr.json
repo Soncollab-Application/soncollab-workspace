@@ -4,6 +4,13 @@
       "dashboard": "Tableau de bord",
       "team": "Équipe",
       "users": "Utilisateurs"
+    },
+    "invitations": {
+      "dashboard": "Tableau de bord",
+      "team": "Équipe",
+      "invitations": "Invitations",
+      "invite": "Inviter un membre",
+      "detail": "Détail de l'invitation"
     }
   }
 }
