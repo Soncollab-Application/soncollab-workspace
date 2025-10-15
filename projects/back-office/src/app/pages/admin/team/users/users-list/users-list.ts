@@ -52,7 +52,6 @@ export class UsersList implements OnInit, OnDestroy {
   loading = signal(false);
   selectedCount = signal(0);
 
-
   currentPage = signal(1);
   pageSize = signal(10);
   totalUsers = signal(0);
@@ -118,15 +117,14 @@ export class UsersList implements OnInit, OnDestroy {
   }
 
   private initializeConfig(): void {
+    // Plus d'option vide, uniquement le placeholder
     this.filters.set([
       {
         key: 'role',
         type: 'select',
         label: this.translate.instant('users-list.filters.role'),
         placeholder: this.translate.instant('users-list.filters.allRoles'),
-        options: [
-          { value: '', label: this.translate.instant('users-list.filters.allRoles') }
-        ]
+        options: [] // Sera rempli par loadRoles()
       },
       {
         key: 'blocked',
@@ -134,7 +132,6 @@ export class UsersList implements OnInit, OnDestroy {
         label: this.translate.instant('users-list.filters.state'),
         placeholder: this.translate.instant('users-list.filters.allStates'),
         options: [
-          { value: '', label: this.translate.instant('users-list.filters.allStates') },
           { value: 'false', label: this.translate.instant('users-list.filters.active') },
           { value: 'true', label: this.translate.instant('users-list.filters.blocked') }
         ]
@@ -145,7 +142,6 @@ export class UsersList implements OnInit, OnDestroy {
         label: this.translate.instant('users-list.filters.confirmation'),
         placeholder: this.translate.instant('users-list.filters.allStates'),
         options: [
-          { value: '', label: this.translate.instant('users-list.filters.allStates') },
           { value: 'true', label: this.translate.instant('users-list.filters.confirmed') },
           { value: 'false', label: this.translate.instant('users-list.filters.notConfirmed') }
         ]
@@ -259,15 +255,13 @@ export class UsersList implements OnInit, OnDestroy {
             label: this.translateRole(role.type)
           }));
 
+        // Mettre à jour uniquement les options sans ajouter d'option vide
         this.filters.update(filters =>
           filters.map(filter =>
             filter.key === 'role'
               ? {
                 ...filter,
-                options: [
-                  { value: '', label: this.translate.instant('users-list.filters.allRoles') },
-                  ...roleOptions
-                ]
+                options: roleOptions
               }
               : filter
           )

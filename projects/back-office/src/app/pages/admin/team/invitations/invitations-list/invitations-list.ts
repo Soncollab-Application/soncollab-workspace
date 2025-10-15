@@ -20,11 +20,13 @@ import {
 import {Subject, takeUntil} from 'rxjs';
 import {InvitationListItem, InvitationStatus, TargetRole} from '../../../../../core/models/admin/invitation.model';
 import {Breadcrumb} from '../../../../../core/components/breadcrumb/breadcrumb';
+import {InviteOffcanvas} from '../../../../../core/components/admin/invite-offcanvas/invite-offcanvas';
+import {InviteOffcanvasService} from '../../../../../core/services/admin/invite-offcanvas.service';
 
 @Component({
   selector: 'app-invitations-list',
   standalone: true,
-  imports: [FilterBarComponent, DataTableComponent, Breadcrumb, TranslatePipe],
+  imports: [FilterBarComponent, DataTableComponent, Breadcrumb, TranslatePipe, InviteOffcanvas],
   templateUrl: './invitations-list.html',
   styleUrl: './invitations-list.css'
 })
@@ -38,6 +40,7 @@ export class InvitationsList implements OnInit, OnDestroy {
   private confirmDialog = inject(ConfirmDialogService);
   private route = inject(ActivatedRoute);
   private urlState = inject(UrlStateService);
+  private inviteOffcanvasService = inject(InviteOffcanvasService);
 
   private destroy$ = new Subject<void>();
   private componentId = 'invitations-list';
@@ -125,6 +128,7 @@ export class InvitationsList implements OnInit, OnDestroy {
   }
 
   private initializeConfig(): void {
+    // Plus besoin d'option vide, le placeholder suffit
     this.filters.set([
       {
         key: 'status',
@@ -132,7 +136,6 @@ export class InvitationsList implements OnInit, OnDestroy {
         label: this.translate.instant('invitations.filters.status'),
         placeholder: this.translate.instant('common.all'),
         options: [
-          { value: '', label: this.translate.instant('common.all') },
           { value: 'pending', label: this.translate.instant('invitations.status.pending') },
           { value: 'sent', label: this.translate.instant('invitations.status.sent') },
           { value: 'accepted', label: this.translate.instant('invitations.status.accepted') },
@@ -146,7 +149,6 @@ export class InvitationsList implements OnInit, OnDestroy {
         label: this.translate.instant('invitations.filters.role'),
         placeholder: this.translate.instant('common.all'),
         options: [
-          { value: '', label: this.translate.instant('common.all') },
           { value: 'soncollab_admin', label: this.translate.instant('invitations.roles.soncollab_admin') },
           { value: 'soncollab_sales', label: this.translate.instant('invitations.roles.soncollab_sales') },
           { value: 'soncollab_content', label: this.translate.instant('invitations.roles.soncollab_content') }
@@ -333,6 +335,19 @@ export class InvitationsList implements OnInit, OnDestroy {
         active: true
       }
     ]);
+  }
+
+  openInviteOffcanvas(): void {
+    this.inviteOffcanvasService.open(() => {
+      const sort = this.currentSort();
+      this.loadInvitations(
+        this.currentPage(),
+        this.pageSize(),
+        this.filterValues(),
+        sort.field,
+        sort.direction
+      );
+    });
   }
 
   private updatePageTitle(): void {

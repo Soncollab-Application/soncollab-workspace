@@ -54,7 +54,7 @@
     "roles": {
       "soncollab_admin": "Administrateur",
       "soncollab_sales": "Commercial",
-      "soncollab_content": "Content Manager"
+      "soncollab_content": "Gestionnaire de Contenu"
     },
     "departments": {
       "admin": "Administration",
@@ -62,6 +62,46 @@
       "marketing": "Marketing",
       "content": "Contenu",
       "support": "Support"
+    }
+  },
+  "invite": {
+    "title": "Inviter un Membre",
+    "subtitle": "Envoyer une invitation pour rejoindre Soncollab",
+    "send": "Envoyer l'invitation",
+    "personal_info": "Informations Personnelles",
+    "first_name": "Prénom",
+    "first_name_placeholder": "Jean",
+    "first_name_required": "Le prénom est requis",
+    "last_name": "Nom",
+    "last_name_placeholder": "Dupont",
+    "last_name_required": "Le nom est requis",
+    "email": "Email",
+    "email_placeholder": "jean.dupont@entreprise.com",
+    "email_invalid": "Veuillez entrer une adresse email valide",
+    "language": "Langue Préférée",
+    "role_permissions": "Rôle et Permissions",
+    "role": "Rôle",
+    "role_placeholder": "Sélectionner un rôle",
+    "role_required": "Veuillez sélectionner un rôle",
+    "department": "Département",
+    "department_placeholder": "Sélectionner un département",
+    "department_required": "Le département est requis",
+    "territory": "Territoire",
+    "territory_placeholder": "Sélectionner un territoire",
+    "country": "Pays",
+    "country_placeholder": "Sélectionner un pays",
+    "territory_hint": "Au moins un territoire ou un pays est requis",
+    "territory_country_required": "Veuillez sélectionner un territoire ou un pays",
+    "notes": "Notes Additionnelles",
+    "notes_placeholder": "Ajouter des notes pertinentes...",
+    "notes_hint": "À usage interne uniquement",
+    "success": {
+      "title": "Invitation Envoyée !",
+      "message": "Une invitation a été envoyée à {{name}}"
+    },
+    "error": {
+      "title": "Erreur",
+      "message": "Impossible d'envoyer l'invitation. Veuillez réessayer."
     }
   },
   "user-detail": {

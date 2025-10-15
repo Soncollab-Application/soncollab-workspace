@@ -4,16 +4,18 @@ import { environment } from '../../../../environments/environment';
 import { UserFilters, UserListItem, UsersListResponse } from '../../models/admin/user-list.model';
 import { Observable } from 'rxjs';
 import {
+  Country,
   InvitationListItem,
   InvitationListResponse,
   InvitationStats,
-  InviteRequest,
-  RoleInfo
+  InviteRequest, RolesResponse, Territory
 } from '../../models/admin/invitation.model';
+import {TranslateService} from '@ngx-translate/core';
 
 @Injectable({ providedIn: 'root' })
 export class AdminService {
   private http = inject(HttpClient);
+  private translate = inject(TranslateService);
   private readonly API_URL = environment.api.fullUrl;
 
   private readonly ADMIN_ENDPOINTS = {
@@ -21,6 +23,10 @@ export class AdminService {
     users: `${this.API_URL}/users`,
     userByDocumentId: (documentId: string) => `${this.API_URL}/users/${documentId}`,
     roles: `${this.API_URL}/users-permissions/roles`,
+
+    // Countries & Territories
+    countries: '/countries',
+    territories: '/sales-territories',
 
     // Invitations
     invitations: '/soncollab-invitations',
@@ -170,9 +176,11 @@ export class AdminService {
     );
   }
 
-  getAvailableRoles(): Observable<{ data: RoleInfo[] }> {
-    return this.http.get<{ data: RoleInfo[] }>(
-      `${this.API_URL}${this.ADMIN_ENDPOINTS.invitations_roles}`
+  getAvailableRoles(lang?: string): Observable<RolesResponse> {
+    const language = lang || this.translate.currentLang || 'fr';
+    return this.http.get<RolesResponse>(
+      `${this.API_URL}${this.ADMIN_ENDPOINTS.invitations_roles}`,
+      { params: { lang: language } }
     );
   }
 
@@ -210,5 +218,16 @@ export class AdminService {
     );
   }
 
+  getCountries(): Observable<{ data: Country[] }> {
+    return this.http.get<{ data: Country[] }>(
+      `${this.API_URL}${this.ADMIN_ENDPOINTS.countries}`
+    );
+  }
+
+  getTerritories(): Observable<{ data: Territory[] }> {
+    return this.http.get<{ data: Territory[] }>(
+      `${this.API_URL}${this.ADMIN_ENDPOINTS.territories}`
+    );
+  }
 
 }

@@ -92,12 +92,14 @@ export interface InvitationStats {
 }
 
 export interface RoleInfo {
-  role: TargetRole;
+  value: TargetRole;
   label: string;
   description: string;
-  requiresTerritory: boolean;
-  requiresDepartment: boolean;
-  requiresCountry: boolean;
+  departments: string[];
+  permissions: string[];
+  can_invite: boolean;
+  territory_required: boolean;
+  department_required: boolean;
 }
 
 export interface InviteRequest {
@@ -110,4 +112,22 @@ export interface InviteRequest {
   target_country?: number;
   notes?: string;
   preferred_language?: 'fr' | 'en';
+}
+
+
+export interface DepartmentInfo {
+  label: string;
+  description: string;
+  compatible_roles: string[];
+}
+
+export interface RolesData {
+  roles: RoleInfo[];
+  departments: {
+    [key: string]: DepartmentInfo;
+  };
+}
+
+export interface RolesResponse {
+  data: RolesData;
 }

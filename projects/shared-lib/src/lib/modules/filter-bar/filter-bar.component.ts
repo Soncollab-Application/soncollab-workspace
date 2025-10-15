@@ -1,4 +1,14 @@
-import {Component, inject, input, OnInit, output, signal, viewChild, effect} from '@angular/core';
+import {
+  Component,
+  inject,
+  input,
+  OnInit,
+  output,
+  signal,
+  viewChild,
+  effect,
+  untracked,
+} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {TranslateModule, TranslateService} from '@ngx-translate/core';
@@ -13,7 +23,7 @@ import {UrlStateService} from '../../services';
   standalone: true,
   imports: [CommonModule, FormsModule, TranslateModule, Choice],
   templateUrl: './filter-bar.component.html',
-  styleUrls: ['./filter-bar.component.css']
+  styleUrls: ['./filter-bar.component.css'],
 })
 export class FilterBarComponent implements OnInit {
   private translate = inject(TranslateService);
@@ -39,10 +49,13 @@ export class FilterBarComponent implements OnInit {
   filterValues = signal<FilterValue>({});
   currentSort = signal<SortConfig>({ field: '', direction: 'asc' });
 
+  protected choiceRefreshKey = signal(0);
+
   sortChoice = viewChild<Choice>('sortChoice');
   sortChoiceMobile = viewChild<Choice>('sortChoiceMobile');
 
   private initialized = signal(false);
+  private isResetting = signal(false); // NOUVEAU : Flag pour éviter les conflits
 
   constructor() {
     // Initialiser depuis URL au premier chargement
@@ -66,7 +79,12 @@ export class FilterBarComponent implements OnInit {
       const filters = this.filterValues();
       const sort = this.currentSort();
 
-      this.urlState.syncToUrl({ search, filters, sort });
+      // Ne pas sync pendant le reset
+      untracked(() => {
+        if (!this.isResetting()) {
+          this.urlState.syncToUrl({ search, filters, sort });
+        }
+      });
     });
 
     // Initialiser sort par défaut
@@ -88,11 +106,26 @@ export class FilterBarComponent implements OnInit {
         }, 150);
       }
     });
+
+    // Détecter changements de filtres SAUF pendant reset
+    effect(() => {
+      const filters = this.filters();
+
+      untracked(() => {
+        if (this.initialized() && filters.length > 0 && !this.isResetting()) {
+          this.choiceRefreshKey.update(v => v + 1);
+        }
+      });
+    });
   }
 
   ngOnInit(): void {
     this.translate.setTranslation('en', { filterBar: enTranslations.filterBar }, true);
     this.translate.setTranslation('fr', { filterBar: frTranslations.filterBar }, true);
+  }
+
+  getChoiceKey(filterKey: string): string {
+    return `${filterKey}-${this.choiceRefreshKey()}`;
   }
 
   selectedText(): string {
@@ -144,22 +177,50 @@ export class FilterBarComponent implements OnInit {
   }
 
   onClearFilters(): void {
+    this.isResetting.set(true);
+
+    // 1. Sauvegarder les valeurs par défaut
+    const defaultSort = this.sortOptions().length > 0
+      ? { field: this.sortOptions()[0].value, direction: 'asc' as const }
+      : this.currentSort();
+
+    // 2. Réinitialiser les valeurs
     this.searchTerm.set('');
     this.filterValues.set({});
+    this.currentSort.set(defaultSort);
 
-    if (this.sortOptions().length > 0) {
-      const defaultSort = { field: this.sortOptions()[0].value, direction: 'asc' as const };
-      this.currentSort.set(defaultSort);
-      this.sortChange.emit(defaultSort);
-    }
-
-    if (this.enableUrlSync()) {
-      this.urlState.clearUrl();
-    }
-
+    // 3. Émettre les événements
     this.searchChange.emit('');
     this.filterChange.emit({});
+    this.sortChange.emit(defaultSort);
     this.clearFilters.emit();
+
+    // 4. Détruire les Choice
+    this.choiceRefreshKey.set(-1);
+
+    setTimeout(() => {
+      // 5. Recréer les Choice
+      this.choiceRefreshKey.set(0);
+
+      setTimeout(() => {
+        // 6. Réinitialiser le sort
+        if (this.sortOptions().length > 0) {
+          const sortValue = this.sortOptions()[0].value;
+          this.sortChoice()?.setChoiceByValue(sortValue);
+          this.sortChoiceMobile()?.setChoiceByValue(sortValue);
+        }
+
+        // 7. Sync URL après tout
+        if (this.enableUrlSync()) {
+          this.urlState.clearUrl();
+        }
+
+        // 8. NOUVEAU : Désactiver le flag de reset
+        setTimeout(() => {
+          this.isResetting.set(false);
+        }, 50);
+      }, 100);
+    }, 0);
   }
 
   getFilterValue(key: string): any {

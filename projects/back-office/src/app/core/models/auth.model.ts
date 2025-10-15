@@ -1,5 +1,5 @@
 import {Image} from './api.model';
-import {Country} from './country.model';
+import {Country} from './admin/invitation.model';
 
 export interface LoginRequest {
   identifier: string;

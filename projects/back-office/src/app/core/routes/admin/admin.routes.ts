@@ -41,21 +41,21 @@ export const adminRoutes: Routes = [
         )]
       },
       {
-        path: 'team/invitations/:documentId',
-        loadComponent: () => import('../../../pages/admin/team/invitations/invitation-detail/invitation-detail').then(c => c.InvitationDetail),
-        canActivate: [apiPermissionGuard(
-          'soncollab-invitation',
-          'soncollab-invitation',
-          'findOne'
-        )]
-      },
-      {
         path: 'team/invitations/invite',
         loadComponent: () => import('../../../pages/admin/team/invitations/invite/invite').then(c => c.Invite),
         canActivate: [apiPermissionGuard(
           'soncollab-invitation',
           'soncollab-invitation',
           'invite'
+        )]
+      },
+      {
+        path: 'team/invitations/:documentId',
+        loadComponent: () => import('../../../pages/admin/team/invitations/invitation-detail/invitation-detail').then(c => c.InvitationDetail),
+        canActivate: [apiPermissionGuard(
+          'soncollab-invitation',
+          'soncollab-invitation',
+          'findOne'
         )]
       },
 
@@ -126,6 +126,10 @@ export const adminRoutes: Routes = [
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full'
+      },
+      {
+        path: '**',
+        loadComponent: () => import('../../../core/components/not-found/not-found').then(c => c.NotFound)
       }
     ]
   }

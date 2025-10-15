@@ -1,7 +1,16 @@
 <app-breadcrumb [showAvatar]="true" [icon]="'bi-envelope-fill'">
-  <div breadcrumb-actions class="col-12 col-sm-auto mt-4 mt-sm-0 pb-5">
+  <div breadcrumb-actions>
     @if (canCreateInvitation()) {
-      <button class="btn btn-primary w-100 w-sm-auto" (click)="router.navigate(['/admin/team/invitations/invite'])">
+      <button class="btn btn-primary w-100" (click)="openInviteOffcanvas()">
+        <i class="bi bi-plus-lg me-2"></i>
+        {{ 'invitations.invite_member' | translate }}
+      </button>
+    }
+  </div>
+
+  <div breadcrumb-actions-mobile>
+    @if (canCreateInvitation()) {
+      <button class="btn btn-primary w-100" (click)="openInviteOffcanvas()">
         <i class="bi bi-plus-lg me-2"></i>
         {{ 'invitations.invite_member' | translate }}
       </button>
@@ -39,3 +48,5 @@
     (rowClick)="onRowClick($any($event))"
   />
 </div>
+
+<app-invite-offcanvas />
