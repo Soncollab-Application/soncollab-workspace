@@ -11,6 +11,7 @@ export * from './lib/services/recaptcha.service';
 export * from './lib/services/base-crud.service';
 export * from './lib/services/filter.service';
 export * from './lib/services/permission.service';
+export * from './lib/services/url-state.service';
 
 // Mixins
 export * from './lib/mixins/language-aware.mixin';

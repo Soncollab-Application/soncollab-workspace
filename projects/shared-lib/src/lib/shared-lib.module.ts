@@ -6,7 +6,7 @@ import {
   LanguageOrchestratorService,
   LanguageService, PermissionService,
   RecaptchaService,
-  ThemeService
+  ThemeService, UrlStateService
 } from './services';
 import {ToastService} from './modules/toast';
 import {DataTableModule} from './modules/data-table';
@@ -45,6 +45,7 @@ import {TruncatePipe} from './pipes/truncate.pipe';
     FilterService,
     AosService,
     PermissionService,
+    UrlStateService
   ],
   exports: [
     ToastModule,

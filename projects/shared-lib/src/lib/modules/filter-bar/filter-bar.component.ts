@@ -6,6 +6,7 @@ import enTranslations from './i18n/en.json';
 import frTranslations from './i18n/fr.json';
 import {FilterConfig, FilterValue, SortConfig, SortOption} from './filter.model';
 import {Choice, ChoiceOption} from '../choice-lib';
+import {UrlStateService} from '../../services';
 
 @Component({
   selector: 'lib-filter-bar',
@@ -16,6 +17,7 @@ import {Choice, ChoiceOption} from '../choice-lib';
 })
 export class FilterBarComponent implements OnInit {
   private translate = inject(TranslateService);
+  private urlState = inject(UrlStateService);
 
   // Inputs
   filters = input<FilterConfig[]>([]);
@@ -24,6 +26,7 @@ export class FilterBarComponent implements OnInit {
   showSearch = input<boolean>(true);
   noSelectionText = input<string>('filterBar.noSelection');
   selectionText = input<string>('filterBar.selected');
+  enableUrlSync = input<boolean>(true);
 
   // Outputs
   searchChange = output<string>();
@@ -35,28 +38,49 @@ export class FilterBarComponent implements OnInit {
   searchTerm = signal<string>('');
   filterValues = signal<FilterValue>({});
   currentSort = signal<SortConfig>({ field: '', direction: 'asc' });
-  sortOptionsKey = signal(0);
 
-  // ViewChilds pour les Choice de tri
   sortChoice = viewChild<Choice>('sortChoice');
   sortChoiceMobile = viewChild<Choice>('sortChoiceMobile');
 
-  // Signal pour forcer le re-render des options
-  private sortOptionsVersion = signal(0);
+  private initialized = signal(false);
 
   constructor() {
+    // Initialiser depuis URL au premier chargement
+    effect(() => {
+      if (!this.initialized() && this.enableUrlSync()) {
+        const urlState = this.urlState.getStateFromUrl();
+
+        if (urlState.search) this.searchTerm.set(urlState.search);
+        if (urlState.filters) this.filterValues.set(urlState.filters);
+        if (urlState.sort) this.currentSort.set(urlState.sort);
+
+        this.initialized.set(true);
+      }
+    });
+
+    // Sync vers URL quand état change
+    effect(() => {
+      if (!this.initialized() || !this.enableUrlSync()) return;
+
+      const search = this.searchTerm();
+      const filters = this.filterValues();
+      const sort = this.currentSort();
+
+      this.urlState.syncToUrl({ search, filters, sort });
+    });
+
+    // Initialiser sort par défaut
     effect(() => {
       const options = this.sortOptions();
-      if (options.length > 0 && this.currentSort().field === '') {
+      if (options.length > 0 && this.currentSort().field === '' && this.initialized()) {
         this.currentSort.set({ field: options[0].value, direction: 'asc' });
       }
     });
 
-    // Effect pour synchroniser quand sortOptions change (traduction)
+    // Sync Choice avec sort
     effect(() => {
       const options = this.sortOptions();
-      if (options.length > 0 && this.currentSort().field) {
-        // Attendre que Choice soit prêt
+      if (options.length > 0 && this.currentSort().field && this.initialized()) {
         setTimeout(() => {
           const field = this.currentSort().field;
           this.sortChoice()?.setChoiceByValue(field);
@@ -73,14 +97,8 @@ export class FilterBarComponent implements OnInit {
 
   selectedText(): string {
     const count = this.selectedCount();
-
-    if (count < 0) {
-      return '';
-    }
-
-    if (count > 0) {
-      return this.translate.instant(this.selectionText(), { count });
-    }
+    if (count < 0) return '';
+    if (count > 0) return this.translate.instant(this.selectionText(), { count });
     return this.translate.instant(this.noSelectionText());
   }
 
@@ -105,7 +123,6 @@ export class FilterBarComponent implements OnInit {
     }
   }
 
-
   toggleSortDirection(): void {
     this.currentSort.update(s => ({
       ...s,
@@ -117,15 +134,12 @@ export class FilterBarComponent implements OnInit {
   hasActiveFilters(): boolean {
     const values = this.filterValues();
     const hasFilters = Object.keys(values).some(key =>
-      values[key] !== null &&
-      values[key] !== undefined &&
-      values[key] !== ''
+      values[key] !== null && values[key] !== undefined && values[key] !== ''
     );
     const hasSearch = this.searchTerm() !== '';
     const hasSortChanged = this.sortOptions().length > 0 &&
       (this.currentSort().field !== this.sortOptions()[0].value ||
         this.currentSort().direction !== 'asc');
-
     return hasFilters || hasSearch || hasSortChanged;
   }
 
@@ -139,6 +153,10 @@ export class FilterBarComponent implements OnInit {
       this.sortChange.emit(defaultSort);
     }
 
+    if (this.enableUrlSync()) {
+      this.urlState.clearUrl();
+    }
+
     this.searchChange.emit('');
     this.filterChange.emit({});
     this.clearFilters.emit();
@@ -147,7 +165,6 @@ export class FilterBarComponent implements OnInit {
   getFilterValue(key: string): any {
     return this.filterValues()[key] || '';
   }
-
 
   getSortChoiceOptions(): ChoiceOption[] {
     return this.sortOptions().map(option => ({

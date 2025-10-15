@@ -1,6 +1,6 @@
 import {Component, computed, effect, inject, OnDestroy, OnInit, signal, untracked} from '@angular/core';
 import {AdminService} from '../../../../../core/services/admin/admin.service';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {PageTitleService} from '../../../../../core/services/page-title.service';
 import {TranslateService, TranslatePipe} from '@ngx-translate/core';
 import {
@@ -15,7 +15,7 @@ import {
   SortOption,
   TableAction,
   TableColumn,
-  ConfirmDialogService
+  ConfirmDialogService, UrlStateService
 } from "shared-lib";
 import {Subject, takeUntil} from 'rxjs';
 import {InvitationListItem, InvitationStatus, TargetRole} from '../../../../../core/models/admin/invitation.model';
@@ -36,6 +36,8 @@ export class InvitationsList implements OnInit, OnDestroy {
   private translate = inject(TranslateService);
   private languageOrchestrator = inject(LanguageOrchestratorService);
   private confirmDialog = inject(ConfirmDialogService);
+  private route = inject(ActivatedRoute);
+  private urlState = inject(UrlStateService);
 
   private destroy$ = new Subject<void>();
   private componentId = 'invitations-list';
@@ -108,6 +110,7 @@ export class InvitationsList implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.setBreadcrumbs();
     this.initializeConfig();
+    this.initializeFromUrl();
     this.languageOrchestrator.registerComponent(
       this.componentId,
       () => this.onLanguageChange()
@@ -286,6 +289,26 @@ export class InvitationsList implements OnInit, OnDestroy {
 
     this.emptyTitle.set(this.translate.instant('invitations.no_invitations'));
     this.emptyMessage.set(this.translate.instant('invitations.no_invitations_message'));
+  }
+
+  private initializeFromUrl(): void {
+    const urlState = this.urlState.getStateFromUrl(this.route);
+
+    if (urlState.search) {
+      this.searchTerm.set(urlState.search);
+    }
+
+    if (urlState.filters) {
+      this.filterValues.set(urlState.filters);
+    }
+
+    if (urlState.sort) {
+      this.currentSort.set(urlState.sort);
+    }
+
+    if (urlState.page) {
+      this.currentPage.set(urlState.page);
+    }
   }
 
   private onLanguageChange(): void {

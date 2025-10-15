@@ -1,4 +1,4 @@
-import {Component, input, output, signal, computed, OnInit, inject} from '@angular/core';
+import {Component, input, output, signal, computed, OnInit, inject, effect} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {TranslatePipe, TranslateService} from '@ngx-translate/core';
 import enTranslations from './i18n/en.json';
@@ -10,6 +10,7 @@ import {DropdownSingleDirective} from '../../directives/dropdown-single.directiv
 import {EmptyStateComponent} from '../empty-state';
 import {getInitialsByParamsName} from '../../utils/user.utils';
 import {RelativeDatePipe} from '../../pipes/relative-date.pipe';
+import {UrlStateService} from '../../services';
 
 @Component({
   selector: 'lib-data-table',
@@ -21,6 +22,7 @@ import {RelativeDatePipe} from '../../pipes/relative-date.pipe';
 export class DataTableComponent<T = any> implements OnInit {
 
   private translate = inject(TranslateService);
+  private urlState = inject(UrlStateService);
 
   // Inputs
   data = input.required<T[]>();
@@ -31,6 +33,7 @@ export class DataTableComponent<T = any> implements OnInit {
   currentSort = input<SortConfig | null>(null);
   selectable = input<boolean>(false);
   clickable = input<boolean>(false);
+  enableUrlSync = input<boolean>(true);
 
   emptyStateTitle = input.required<string>();
   emptyStateMessage = input.required<string>();
@@ -45,6 +48,7 @@ export class DataTableComponent<T = any> implements OnInit {
 
   // State
   selectedRows = signal<Set<string>>(new Set());
+  private initialized = signal(false);
 
   // Computed
   hasActions = computed(() => (this.actions()?.length ?? 0) > 0);
@@ -52,6 +56,28 @@ export class DataTableComponent<T = any> implements OnInit {
     const dataLength = this.data().length;
     return dataLength > 0 && this.selectedRows().size === dataLength;
   });
+
+  constructor() {
+    // Initialiser page depuis URL
+    effect(() => {
+      if (!this.initialized() && this.enableUrlSync()) {
+        const urlState = this.urlState.getStateFromUrl();
+        if (urlState.page) {
+          this.pageChange.emit(urlState.page);
+        }
+        this.initialized.set(true);
+      }
+    });
+
+    // Sync page vers URL
+    effect(() => {
+      if (!this.initialized() || !this.enableUrlSync()) return;
+      const page = this.pagination()?.currentPage;
+      if (page) {
+        this.urlState.syncToUrl({ page });
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.translate.setTranslation('en', { dataTable: enTranslations.dataTable }, true);

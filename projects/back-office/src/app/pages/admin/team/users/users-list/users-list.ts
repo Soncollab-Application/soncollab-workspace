@@ -1,5 +1,5 @@
 import {Component, computed, effect, inject, OnDestroy, OnInit, signal, untracked} from '@angular/core';
-import { Router } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import { UserFilters, UserListItem } from '../../../../../core/models/admin/user-list.model';
 import { AdminService } from '../../../../../core/services/admin/admin.service';
 import { AuthService } from '../../../../../core/services/auth.service';
@@ -15,7 +15,8 @@ import {
   PaginationState,
   PermissionService,
   LanguageOrchestratorService,
-  ConfirmDialogService
+  ConfirmDialogService,
+  UrlStateService
 } from 'shared-lib';
 import {PageTitleService} from '../../../../../core/services/page-title.service';
 import {Breadcrumb} from '../../../../../core/components/breadcrumb/breadcrumb';
@@ -39,6 +40,8 @@ export class UsersList implements OnInit, OnDestroy {
   private translate = inject(TranslateService);
   private languageOrchestrator = inject(LanguageOrchestratorService);
   private confirmDialog = inject(ConfirmDialogService);
+  private urlState = inject(UrlStateService);
+  private route = inject(ActivatedRoute);
 
   private destroy$ = new Subject<void>();
   private componentId = 'users-list';
@@ -107,6 +110,7 @@ export class UsersList implements OnInit, OnDestroy {
     this.setBreadcrumbs();
     this.initializeConfig();
     this.loadRoles();
+    this.initializeFromUrl();
     this.languageOrchestrator.registerComponent(
       this.componentId,
       () => this.onLanguageChange()
@@ -219,6 +223,26 @@ export class UsersList implements OnInit, OnDestroy {
 
     this.emptyTitle.set(this.translate.instant('users-list.no_users'));
     this.emptyMessage.set(this.translate.instant('users-list.no_users_message'));
+  }
+
+  private initializeFromUrl(): void {
+    const urlState = this.urlState.getStateFromUrl(this.route);
+
+    if (urlState.search) {
+      this.searchTerm.set(urlState.search);
+    }
+
+    if (urlState.filters) {
+      this.filterValues.set(urlState.filters);
+    }
+
+    if (urlState.sort) {
+      this.currentSort.set(urlState.sort);
+    }
+
+    if (urlState.page) {
+      this.currentPage.set(urlState.page);
+    }
   }
 
   private loadRoles(): void {
