@@ -1,0 +1,15 @@
+{
+  "dataTableShared": {
+    "noData": "Aucune donnée disponible",
+    "loading": "Chargement...",
+    "noDataTitle": "Aucune donnée trouvée",
+    "noDataMessage": "Il n'y a aucun élément à afficher",
+    "total": "total",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "showing": "Affichage de",
+    "to": "à",
+    "of": "sur",
+    "results": "résultats"
+  }
+}

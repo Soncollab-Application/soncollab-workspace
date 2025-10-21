@@ -13,6 +13,7 @@ export class Breadcrumb {
   @Input() icon?: string;
   @Input() showAvatar: boolean = false;
   @Input() avatarContent?: string;
+  @Input() hasMobileActions: boolean = false;
 
   private pageTitleService = inject(PageTitleService);
 

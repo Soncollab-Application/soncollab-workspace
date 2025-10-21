@@ -13,7 +13,7 @@ import {environment} from '../environments/environment';
 import {RECAPTCHA_CONFIG, RecaptchaConfig , SharedLibModule} from 'shared-lib';
 
 export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http, '/assets/i18n/', '.json');
+  return new TranslateHttpLoader(http, '/assets/i18n/lang/', '.json');
 }
 
 const recaptchaConfig: RecaptchaConfig = {

@@ -5,9 +5,9 @@
         @if (avatarContent) {
           <span class="fs-5 text-primary fw-semibold">{{ avatarContent }}</span>
         } @else if (icon) {
-          <i class="bi {{ icon }} fs-3 text-primary"></i>
+          <span class="material-symbols-outlined fs-3 text-primary">{{ icon }}</span>
         } @else {
-          <i class="bi bi-person fs-3 text-primary"></i>
+          <span class="material-symbols-outlined fs-3 text-primary">person</span>
         }
       </div>
     </div>
@@ -39,7 +39,7 @@
         @if (breadcrumbs().length > 1) {
           @if (getPreviousBreadcrumb(); as previous) {
             <a [routerLink]="previous.route" class="btn btn-link text-body-secondary text-decoration-none p-0">
-              <i class="bi bi-chevron-left me-1"></i>
+              <span class="material-symbols-outlined me-1">chevron_left</span>
               {{ previous.label }}
             </a>
           }
@@ -58,7 +58,9 @@
   </div>
 </div>
 
-<!-- Actions Mobile (en bas sticky) -->
-<div class="d-lg-none position-fixed bottom-0 start-0 end-0 bg-body border-top p-3" style="z-index: 1020;">
-  <ng-content select="[breadcrumb-actions-mobile]"></ng-content>
-</div>
+<!-- Actions Mobile (en bas sticky) - Afficher seulement si hasMobileActions est true -->
+@if (hasMobileActions) {
+  <div class="d-lg-none position-fixed bottom-0 start-0 end-0 bg-body border-top p-3" style="z-index: 1020;">
+    <ng-content select="[breadcrumb-actions-mobile]"></ng-content>
+  </div>
+}

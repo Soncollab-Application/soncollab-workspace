@@ -35,7 +35,9 @@
                    [attr.data-bs-target]="'#' + item.key + 'Submenu'"
                    aria-expanded="false"
                    [attr.aria-controls]="item.key + 'Submenu'">
-                  <i [class]="item.icon + ' me-3'"></i>
+                    <span class="material-symbols-outlined me-3">
+                      {{item.icon}}
+                    </span>
                   {{ 'aside.navigation.' + item.key | translate }}
                   <i class="bi bi-chevron-down ms-auto small"></i>
                 </a>
@@ -62,7 +64,9 @@
                  [routerLink]="item.route"
                  [routerLinkActive]="['active', 'bg-primary', 'bg-opacity-10', 'text-primary']"
                  [routerLinkActiveOptions]="{exact: false}">
-                <i [class]="item.icon + ' me-3'"></i>
+                <span class="material-symbols-outlined me-3">
+                  {{item.icon}}
+                </span>
                 {{ 'aside.navigation.' + item.key | translate }}
               </a>
             }
@@ -95,27 +99,27 @@
           <a class="dropdown-item d-flex align-items-center"
              [routerLink]="['/profile/settings']"
              [routerLinkActive]="['active']">
-            <i class="bi bi-person me-2"></i>{{ 'aside.profile.settings' | translate }}
+            <span class="material-symbols-outlined me-2 fs-5">person</span>{{ 'aside.profile.settings' | translate }}
           </a>
         </li>
         <li>
           <a class="dropdown-item d-flex align-items-center"
              [routerLink]="['/profile/security']"
              [routerLinkActive]="['active']">
-            <i class="bi bi-shield-lock me-2"></i>{{ 'aside.profile.security' | translate }}
+            <span class="material-symbols-outlined me-2 fs-5">lock</span>{{ 'aside.profile.security' | translate }}
           </a>
         </li>
         <li>
           <a class="dropdown-item d-flex align-items-center"
              [routerLink]="['/profile/notifications']"
              [routerLinkActive]="['active']">
-            <i class="bi bi-bell me-2"></i>{{ 'aside.profile.notifications' | translate }}
+            <span class="material-symbols-outlined me-2 fs-5">notifications</span>{{ 'aside.profile.notifications' | translate }}
           </a>
         </li>
         <li><hr class="dropdown-divider"></li>
         <li>
           <button class="dropdown-item d-flex align-items-center text-danger" (click)="logout()">
-            <i class="bi bi-box-arrow-right me-2"></i>{{ 'aside.profile.logout' | translate }}
+            <span class="material-symbols-outlined me-2 fs-5">logout</span>{{ 'aside.profile.logout' | translate }}
           </button>
         </li>
       </ul>

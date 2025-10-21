@@ -1,0 +1,14 @@
+{
+  "filterBarShared": {
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "reset": "Reset",
+    "yes": "Yes",
+    "no": "No",
+    "noSelection": "No items selected",
+    "selected": "{{count}} items selected",
+    "ascending": "Ascending",
+    "descending": "Descending"
+  }
+}

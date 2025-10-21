@@ -1,4 +1,4 @@
-<app-breadcrumb [showAvatar]="!!user()" [avatarContent]="user() ? getUserInitials(user()!) : ''">
+<app-breadcrumb [showAvatar]="!!user()" [avatarContent]="user() ? getUserInitials(user()!) : ''"  [hasMobileActions]="true">
   <!-- Actions Desktop -->
   <div breadcrumb-actions>
     @if (canEdit() && user()) {
@@ -14,7 +14,7 @@
         </button>
       } @else {
         <button class="btn btn-primary" (click)="toggleEditMode()">
-          <i class="bi bi-pencil me-2"></i>
+          <span class="material-symbols-outlined fs-6 me-2">edit_square</span>
           {{ 'common.edit' | translate }}
         </button>
       }
@@ -36,15 +36,13 @@
         </button>
       } @else {
         <button class="btn btn-primary w-100" (click)="toggleEditMode()">
-          <i class="bi bi-pencil me-2"></i>
+          <span class="material-symbols-outlined fs-6 me-2">edit_square</span>
           {{ 'common.edit' | translate }}
         </button>
       }
     }
   </div>
 </app-breadcrumb>
-
-
 
 @if (loading()) {
   <div class="text-center py-5">
@@ -55,7 +53,6 @@
 } @else if (user()) {
   <div class="row pb-5">
     <div class="col-xl-4 mb-3">
-
       <div class="position-sticky mb-8" style="top: 40px">
         <div class="card mb-4">
           <div class="card-body text-center">
@@ -72,7 +69,7 @@
             <p class="text-muted mb-2">{{ user()!.email }}</p>
             <lib-badge
               [type]="!user()!.blocked ? 'success' : 'danger'"
-              variant="solid"
+              [variant]="'solid'"
               [text]="user()!.blocked ? ('users-list.badges.blocked' | translate) : ('users-list.badges.active' | translate)"
             />
 
@@ -81,12 +78,12 @@
               <div class="d-grid gap-2">
                 @if (user()!.blocked) {
                   <button class="btn btn-success" (click)="unblockUser()">
-                    <i class="bi bi-unlock me-2"></i>
+                    <span class="material-symbols-outlined fs-5 me-2">lock_open</span>
                     {{ 'users-list.actions.unblock' | translate }}
                   </button>
                 } @else {
                   <button class="btn btn-warning" (click)="blockUser()">
-                    <i class="bi bi-lock me-2"></i>
+                    <span class="material-symbols-outlined fs-5 me-2">lock</span>
                     {{ 'users-list.actions.block' | translate }}
                   </button>
                 }
@@ -96,7 +93,10 @@
         </div>
         <div class="card">
           <div class="card-header">
-            <h6 class="mb-0">{{ 'user-detail.information' | translate }}</h6>
+            <h6 class="mb-0">
+              <span class="material-symbols-outlined me-2 align-middle text-info">info</span>
+              {{ 'user-detail.information' | translate }}
+            </h6>
           </div>
           <div class="card-body">
             <div class="mb-3">
@@ -127,9 +127,12 @@
     </div>
 
     <div class="col-xl-8">
-      <div class="card">
+      <div class="card mb-4">
         <div class="card-header">
-          <h6 class="mb-0">{{ 'user-detail.details' | translate }}</h6>
+          <h6 class="mb-0">
+            <span class="material-symbols-outlined me-2 align-middle text-primary">description</span>
+            {{ 'user-detail.details' | translate }}
+          </h6>
         </div>
         <div class="card-body">
           <form [formGroup]="userForm">
@@ -244,6 +247,105 @@
           </form>
         </div>
       </div>
+
+      <!-- Section Permissions -->
+      @if (showPermissionsSection() && !isEditMode() && user()) {
+        <div class="card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h6 class="mb-0">
+              <span class="material-symbols-outlined me-2 align-middle text-success">verified_user</span>
+              {{ 'user-detail.permissions' | translate }}
+            </h6>
+            @if (canEdit()) {
+              <button class="btn btn-sm btn-outline-primary" (click)="showPermissionsModal()">
+                <span class="material-symbols-outlined fs-6 me-1">edit</span>
+                {{ 'user-detail.edit_permissions' | translate }}
+              </button>
+            }
+          </div>
+          <div class="card-body">
+            <div class="row g-2">
+              @if (user()!.custom_permissions?.['all']?.enabled) {
+                <div class="col-12">
+                  <div class="p-2 rounded bg-info-subtle">
+                    <span class="material-symbols-outlined me-2 text-info">verified_user</span>
+                    <small class="fw-medium">{{ 'user-detail.all_permissions' | translate }}</small>
+                  </div>
+                </div>
+              } @else if (getAllPermissionsWithStatus().length > 0) {
+                @for (perm of getAllPermissionsWithStatus(); track perm.key) {
+                  <div class="col-md-6">
+                    <div class="p-2 rounded " [class.bg-success-subtle]="perm.enabled" [class.bg-warning-subtle]="!perm.enabled">
+                      <span class="material-symbols-outlined me-2" [class.text-success]="perm.enabled" [class.text-muted]="!perm.enabled">
+                        {{ perm.enabled ? 'check_circle' : 'cancel' }}
+                      </span>
+                      <small>{{ 'invitations-list.invite.permissions_list.' + perm.key | translate }}</small>
+                    </div>
+                  </div>
+                }
+              } @else {
+                <div class="col-12">
+                  <small class="text-muted">{{ 'user-detail.no_permissions' | translate }}</small>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      }
     </div>
   </div>
 }
+
+<div class="modal fade" #permissionsModal tabindex="-1" aria-labelledby="permissionsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="permissionsModalLabel">
+          <span class="material-symbols-outlined me-2 align-middle">verified_user</span>
+          {{ 'user-detail.manage_permissions' | translate }}
+        </h5>
+        <button type="button" class="btn-close" (click)="closePermissionsModal()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        @if (user()) {
+          <div class="mb-3">
+            <p class="text-muted mb-3">
+              <small>{{ 'user-detail.permissions_modal_description' | translate }}</small>
+            </p>
+
+            <div class="row g-3">
+              @for (option of permissionOptions(); track option.value) {
+                <div class="col-md-6">
+                  <div class="permission-item p-3 border rounded cursor-pointer"
+                       [class.border-primary]="userForm.value.custom_permissions?.includes(option.value)"
+                       [class.bg-primary-subtle]="userForm.value.custom_permissions?.includes(option.value)"
+                       (click)="togglePermission(option.value)">
+                    <div class="d-flex align-items-center">
+                      <span class="material-symbols-outlined me-2 fs-4"
+                            [class.text-primary]="userForm.value.custom_permissions?.includes(option.value)"
+                            [class.text-muted]="!userForm.value.custom_permissions?.includes(option.value)">
+                        {{ userForm.value.custom_permissions?.includes(option.value) ? 'check_circle' : 'radio_button_unchecked' }}
+                      </span>
+                      <span class="fw-medium">{{ option.label }}</span>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" (click)="closePermissionsModal()">
+          {{ 'common.cancel' | translate }}
+        </button>
+        <button type="button" class="btn btn-primary" (click)="savePermissions()" [disabled]="saving()">
+          @if (saving()) {
+            <span class="spinner-border spinner-border-sm me-2"></span>
+          }
+          {{ 'common.save' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

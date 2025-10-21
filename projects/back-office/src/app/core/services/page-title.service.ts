@@ -39,7 +39,6 @@ export class PageTitleService {
     '/admin/dashboard': 'header.pages.admin.dashboard',
     '/admin/team/users': 'header.pages.admin.team.users',
     '/admin/team/invitations': 'header.pages.admin.team.invitations',
-    '/admin/team/statistics': 'header.pages.admin.team.statistics',
     '/admin/commercial/contacts': 'header.pages.admin.commercial.contacts',
     '/admin/commercial/unassigned': 'header.pages.admin.commercial.unassigned',
     '/admin/commercial/pipeline': 'header.pages.admin.commercial.pipeline',

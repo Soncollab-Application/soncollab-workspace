@@ -32,6 +32,8 @@ export interface ResetPasswordResponse {
   user: BackofficeUser;
 }
 
+export type CustomPermissions = Record<CustomPermission, { enabled: boolean }>;
+
 
 export interface BackofficeUser {
   id: number;
@@ -51,6 +53,7 @@ export interface BackofficeUser {
   avatar: Image;
   home_country: Country;
   territory: string;
+  custom_permissions?: Partial<CustomPermissions>;
   createdAt: string;
   updatedAt: string;
 }
@@ -76,6 +79,28 @@ export type PreferredLanguage =
   | 'fr'
   | 'en';
 
+export type CustomPermission =
+  | 'all'
+  | 'blog'
+  | 'help'
+  | 'newsletter'
+  | 'analytics_read'
+  | 'sales_contacts'
+  | 'sales_interactions'
+  | 'sales_quotas'
+  | 'releases'
+  | 'catalog'
+  | 'analytics'
+  | 'revenues'
+  | 'my_releases'
+  | 'analytics_limited'
+  | 'artist_management'
+  | 'bookings'
+  | 'works'
+  | 'rights'
+  | 'sync'
+  | 'multi_catalog';
+
 export interface AuthState {
   isAuthenticated: boolean;
   user: BackofficeUser | null;
@@ -89,4 +114,25 @@ export interface AuthState {
 export interface RefreshTokenResponse {
   jwt: string;
   refreshToken: string;
+}
+
+
+export interface ActivateInvitationRequest {
+  token: string;
+  password: string;
+}
+
+export interface ActivateInvitationResponse {
+  data: {
+    user: {
+      documentId: string;
+      email: string;
+      role: string;
+    };
+    invitation: {
+      target_role: string;
+      department?: string;
+    };
+  };
+  message: string;
 }

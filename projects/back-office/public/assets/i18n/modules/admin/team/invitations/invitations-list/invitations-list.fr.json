@@ -1,0 +1,150 @@
+{
+  "invitations-list": {
+    "title": "Invitations",
+    "subtitle": "Gérer les invitations des membres de l'équipe Soncollab",
+    "invite_member": "Inviter un membre",
+    "no_invitations": "Aucune invitation trouvée",
+    "no_invitations_message": "Il n'y a aucune invitation à afficher",
+    "filters": {
+      "status": "Statut",
+      "role": "Rôle"
+    },
+    "kpi": {
+      "total": "Total",
+      "pending": "En attente",
+      "sent": "Envoyées",
+      "accepted": "Acceptées",
+      "success_rate": "Taux de succès"
+    },
+    "status": {
+      "pending": "En attente",
+      "sent": "Envoyé",
+      "accepted": "Accepté",
+      "expired": "Expiré",
+      "cancelled": "Annulé"
+    },
+    "sort": {
+      "newest": "Plus récent",
+      "oldest": "Plus ancien",
+      "email": "Email (A-Z)"
+    },
+    "columns": {
+      "email": "Email",
+      "name": "Nom",
+      "role": "Rôle",
+      "status": "Statut",
+      "invited_by": "Invité par",
+      "sent_at": "Envoyé le",
+      "expires_at": "Expire le"
+    },
+    "actions": {
+      "resend": "Renvoyer",
+      "cancel": "Annuler"
+    },
+    "confirm": {
+      "resend": {
+        "title": "Renvoyer l'invitation",
+        "message": "Êtes-vous sûr de vouloir renvoyer l'invitation à {{name}} ?"
+      },
+      "cancel": {
+        "title": "Annuler l'invitation",
+        "message": "Êtes-vous sûr de vouloir annuler l'invitation de {{name}} ?"
+      }
+    },
+    "badges": {
+      "pending": "En attente",
+      "sent": "Envoyé",
+      "accepted": "Accepté",
+      "expired": "Expiré",
+      "cancelled": "Annulé"
+    },
+    "roles": {
+      "soncollab_admin": "Administrateur",
+      "soncollab_sales": "Commercial",
+      "soncollab_content": "Gestionnaire de Contenu"
+    },
+    "departments": {
+      "admin": "Administration",
+      "sales": "Ventes",
+      "marketing": "Marketing",
+      "content": "Contenu",
+      "support": "Support"
+    },
+    "toast": {
+      "resend_success": "Invitation renvoyée à {{name}}",
+      "resend_error": "Erreur lors du renvoi de l'invitation à {{name}}",
+      "cancel_success": "Invitation de {{name}} annulée",
+      "cancel_error": "Erreur lors de l'annulation de l'invitation",
+      "delete_success": "Invitation de {{name}} supprimée",
+      "delete_error": "Erreur lors de la suppression de l'invitation"
+    },
+    "invite": {
+      "loading": "Chargement des données...",
+      "title": "Inviter un Membre",
+      "subtitle": "Envoyer une invitation pour rejoindre Soncollab",
+      "send": "Envoyer l'invitation",
+      "personal_info": "Informations Personnelles",
+      "first_name": "Prénom",
+      "first_name_placeholder": "Jean",
+      "first_name_required": "Le prénom est requis",
+      "last_name": "Nom",
+      "last_name_placeholder": "Dupont",
+      "last_name_required": "Le nom est requis",
+      "email": "Email",
+      "email_placeholder": "jean.dupont@entreprise.com",
+      "email_invalid": "Veuillez entrer une adresse email valide",
+      "language": "Langue Préférée",
+      "role_permissions": "Rôle et Permissions",
+      "role": "Rôle",
+      "role_placeholder": "Sélectionner un rôle",
+      "role_required": "Veuillez sélectionner un rôle",
+      "department": "Département",
+      "department_placeholder": "Sélectionner un département",
+      "department_required": "Le département est requis",
+      "territory": "Territoire",
+      "territory_placeholder": "Sélectionner un territoire",
+      "country": "Pays",
+      "country_placeholder": "Sélectionner un pays",
+      "territory_hint": "Au moins un territoire ou un pays est requis",
+      "territory_country_required": "Veuillez sélectionner un territoire ou un pays",
+      "notes": "Notes Additionnelles",
+      "notes_placeholder": "Ajouter des notes pertinentes...",
+      "notes_hint": "À usage interne uniquement",
+      "success": {
+        "title": "Invitation Envoyée !",
+        "message": "Une invitation a été envoyée à {{name}}"
+      },
+      "error": {
+        "title": "Erreur",
+        "message": "Impossible d'envoyer l'invitation. Veuillez réessayer."
+      },
+      "permissions": "Permissions",
+      "permissions_placeholder": "Sélectionner les permissions",
+      "permissions_hint": "Choisir les permissions spécifiques pour cet utilisateur",
+      "no_permissions_available": "Aucune permission disponible",
+      "select_permission": "Sélectionner",
+      "permissions_list": {
+        "all": "Tous les accès",
+        "sales_contacts": "Gestion des contacts",
+        "sales_interactions": "Interactions commerciales",
+        "sales_quotas": "Quotas de vente",
+        "blog": "Gestion du blog",
+        "help": "Centre d'aide",
+        "newsletter": "Newsletter",
+        "analytics_read": "Lecture des analytiques",
+        "releases": "Gestion des sorties",
+        "catalog": "Gestion du catalogue",
+        "analytics": "Analytiques complètes",
+        "revenues": "Revenus",
+        "my_releases": "Mes sorties",
+        "analytics_limited": "Analytiques limitées",
+        "artist_management": "Gestion d'artistes",
+        "bookings": "Réservations",
+        "works": "Œuvres",
+        "rights": "Droits",
+        "sync": "Synchronisation",
+        "multi_catalog": "Multi-catalogues"
+      }
+    }
+  }
+}

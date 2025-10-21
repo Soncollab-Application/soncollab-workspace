@@ -64,7 +64,7 @@ export class Badge {
   }
 
   getIconClasses(): string {
-    const classes = [`fi-${this.icon()}`, 'fs-sm'];
+    const classes = ['material-symbols-outlined', 'fs-sm'];
 
     if (this.text()) {
       if (this.iconPosition() === 'left') {

@@ -28,7 +28,7 @@ import {PERMISSION_CONFIG, PermissionService, SharedLibModule, TOAST_SERVICE, To
 
 
 export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+  return new TranslateHttpLoader(http, './assets/i18n/lang/', '.json');
 }
 
 export const appConfig: ApplicationConfig = {

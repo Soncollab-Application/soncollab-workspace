@@ -16,7 +16,7 @@
       required>
 
     @if (emailError) {
-      <div class="invalid-tooltip bg-transparent py-0">{{ emailError }}</div>
+      <div class="invalid-tooltip py-0">{{ emailError }}</div>
     }
   </div>
 
@@ -32,7 +32,7 @@
         required>
 
       @if (passwordError) {
-        <div class="invalid-tooltip bg-transparent py-0">{{ passwordError }}</div>
+        <div class="invalid-tooltip py-0">{{ passwordError }}</div>
       }
 
       <label class="password-toggle-button fs-lg" [attr.aria-label]="'auth.login.password.toggleVisibility' | translate">

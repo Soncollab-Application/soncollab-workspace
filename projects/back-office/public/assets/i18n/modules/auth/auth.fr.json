@@ -66,8 +66,12 @@
       "password": {
         "placeholder": "Nouveau mot de passe",
         "required": "Nouveau mot de passe requis",
-        "minLength": "Minimum 6 caractères",
-        "toggleVisibility": "Afficher/masquer le mot de passe"
+        "toggleVisibility": "Afficher/masquer le mot de passe",
+        "minLength": "Au moins 6 caractères",
+        "uppercase": "Au moins une majuscule",
+        "lowercase": "Au moins une minuscule",
+        "number": "Au moins un chiffre",
+        "special": "Au moins un caractère spécial"
       },
       "passwordConfirm": {
         "placeholder": "Confirmer le nouveau mot de passe",
@@ -88,6 +92,28 @@
         "invalidPassword": "Mot de passe invalide",
         "invalidCode": "Code de réinitialisation invalide ou expiré",
         "validation": "Données invalides",
+        "badRequest": "Requête invalide",
+        "serverError": "Erreur serveur, veuillez réessayer"
+      }
+    },
+    "activateInvitation": {
+      "title": "Activer votre compte",
+      "instructions": "Choisissez un mot de passe pour activer votre compte Soncollab.",
+      "password": {
+        "placeholder": "Mot de passe",
+        "required": "Mot de passe requis",
+        "minLength": "Le mot de passe doit contenir au moins 8 caractères",
+        "toggleVisibility": "Afficher/masquer le mot de passe"
+      },
+      "activateAccount": "Activer mon compte",
+      "backToLogin": "Retour à la connexion",
+      "success": {
+        "title": "Compte activé !",
+        "message": "Votre compte Soncollab a été activé avec succès. Vous allez être redirigé vers la connexion."
+      },
+      "errors": {
+        "activationFailed": "Erreur lors de l'activation",
+        "invalidToken": "Token invalide ou expiré",
         "badRequest": "Requête invalide",
         "serverError": "Erreur serveur, veuillez réessayer"
       }

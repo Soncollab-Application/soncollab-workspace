@@ -2,8 +2,6 @@ import { Injectable, inject } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogComponent, ConfirmDialogData } from './confirm-dialog.component';
-import enTranslations from './i18n/en.json';
-import frTranslations from './i18n/fr.json';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +11,6 @@ export class ConfirmDialogService {
   private translate = inject(TranslateService);
 
   constructor() {
-    this.translate.setTranslation('en', { confirmDialog: enTranslations.confirmDialog }, true);
-    this.translate.setTranslation('fr', { confirmDialog: frTranslations.confirmDialog }, true);
   }
 
   open(data: ConfirmDialogData): Promise<boolean> {
@@ -32,12 +28,12 @@ export class ConfirmDialogService {
   }
 
   confirmDelete(itemName?: string): Promise<boolean> {
-    const title = this.translate.instant('confirmDialog.delete.title');
+    const title = this.translate.instant('confirmDialogShared.delete.title');
     const message = itemName
-      ? this.translate.instant('confirmDialog.delete.messageWithName', { name: itemName })
-      : this.translate.instant('confirmDialog.delete.message');
-    const confirmText = this.translate.instant('confirmDialog.delete.confirm');
-    const cancelText = this.translate.instant('confirmDialog.cancel');
+      ? this.translate.instant('confirmDialogShared.delete.messageWithName', { name: itemName })
+      : this.translate.instant('confirmDialogShared.delete.message');
+    const confirmText = this.translate.instant('confirmDialogShared.delete.confirm');
+    const cancelText = this.translate.instant('confirmDialogShared.cancel');
 
     return this.open({
       title,
@@ -45,7 +41,7 @@ export class ConfirmDialogService {
       confirmText,
       cancelText,
       confirmClass: 'btn-danger',
-      icon: 'trash',
+      icon: 'delete',
       iconClass: 'text-danger'
     });
   }

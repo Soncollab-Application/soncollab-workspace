@@ -288,10 +288,14 @@ export class Choice implements AfterViewInit, OnDestroy, ControlValueAccessor {
       const currentValue = instance.getValue(true);
 
       let actualValue: any;
-      if (Array.isArray(currentValue)) {
-        actualValue = currentValue.length > 0 ? currentValue[0] : '';
+      if (this.isMultiple()) {
+        actualValue = Array.isArray(currentValue) ? currentValue : [];
       } else {
-        actualValue = currentValue || '';
+        if (Array.isArray(currentValue)) {
+          actualValue = currentValue.length > 0 ? currentValue[0] : '';
+        } else {
+          actualValue = currentValue || '';
+        }
       }
 
       this._value.set(actualValue);

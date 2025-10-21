@@ -21,24 +21,23 @@ export class NavigationService {
         type: 'nav',
         navId: 'sidebarNav',
         items: [
-          { key: 'dashboard', icon: 'bi-speedometer2', route: '/admin/dashboard' },
+          { key: 'dashboard', icon: 'dashboard_2', route: '/admin/dashboard' },
           {
             key: 'team',
-            icon: 'bi-people',
+            icon: 'group',
             children: [
-              { key: 'users', icon: 'bi-person', route: '/admin/team/users' },
-              { key: 'invitations', icon: 'bi-envelope', route: '/admin/team/invitations' },
-              { key: 'team-stats', icon: 'bi-bar-chart', route: '/admin/team/statistics' }
+              { key: 'users', icon: 'person', route: '/admin/team/users' },
+              { key: 'invitations', icon: 'mail', route: '/admin/team/invitations' },
             ]
           },
           {
             key: 'commercial',
-            icon: 'bi-graph-up-arrow',
+            icon: 'trending_up',
             children: [
-              { key: 'all-contacts', icon: 'bi-list-ul', route: '/admin/commercial/contacts' },
-              { key: 'unassigned', icon: 'bi-question-circle', route: '/admin/commercial/unassigned' },
-              { key: 'pipeline', icon: 'bi-funnel', route: '/admin/commercial/pipeline' },
-              { key: 'quotas-territories', icon: 'bi-target', route: '/admin/commercial/quotas' }
+              { key: 'all-contacts', icon: 'list', route: '/admin/commercial/contacts' },
+              { key: 'unassigned', icon: 'help_outline', route: '/admin/commercial/unassigned' },
+              { key: 'pipeline', icon: 'filter_list', route: '/admin/commercial/pipeline' },
+              { key: 'quotas-territories', icon: 'track_changes', route: '/admin/commercial/quotas' }
             ]
           }
         ]
@@ -52,11 +51,11 @@ export class NavigationService {
         items: [
           {
             key: 'content',
-            icon: 'bi-pencil-square',
+            icon: 'edit_note',
             children: [
-              { key: 'blog-articles', icon: 'bi-file-text', route: '/admin/content/blog' },
-              { key: 'help-articles', icon: 'bi-question-diamond', route: '/admin/content/help' },
-              { key: 'categories-tags', icon: 'bi-tags', route: '/admin/content/categories' }
+              { key: 'blog-articles', icon: 'article', route: '/admin/content/blog' },
+              { key: 'help-articles', icon: 'help', route: '/admin/content/help' },
+              { key: 'categories-tags', icon: 'label', route: '/admin/content/categories' }
             ]
           }
         ]
@@ -71,11 +70,11 @@ export class NavigationService {
         items: [
           {
             key: 'system',
-            icon: 'bi-gear',
+            icon: 'settings',
             children: [
-              { key: 'configuration', icon: 'bi-globe', route: '/admin/system/config' },
-              { key: 'billing', icon: 'bi-credit-card', route: '/admin/system/billing' },
-              { key: 'maintenance', icon: 'bi-wrench', route: '/admin/system/maintenance' }
+              { key: 'configuration', icon: 'public', route: '/admin/system/config' },
+              { key: 'billing', icon: 'credit_card', route: '/admin/system/billing' },
+              { key: 'maintenance', icon: 'build', route: '/admin/system/maintenance' }
             ]
           }
         ]
@@ -91,10 +90,10 @@ export class NavigationService {
         type: 'nav',
         navId: 'sidebarNav',
         items: [
-          { key: 'dashboard', icon: 'bi-speedometer2', route: '/sales/dashboard' },
-          { key: 'my-contacts', icon: 'bi-person-lines-fill', route: '/sales/contacts' },
-          { key: 'my-pipeline', icon: 'bi-funnel', route: '/sales/pipeline' },
-          { key: 'my-proposals', icon: 'bi-file-earmark-richtext', route: '/sales/proposals' }
+          { key: 'dashboard', icon: 'dashboard', route: '/sales/dashboard' },
+          { key: 'my-contacts', icon: 'contacts', route: '/sales/contacts' },
+          { key: 'my-pipeline', icon: 'filter_list', route: '/sales/pipeline' },
+          { key: 'my-proposals', icon: 'description', route: '/sales/proposals' }
         ]
       },
       {
@@ -108,8 +107,8 @@ export class NavigationService {
         type: 'nav',
         navId: 'sidebarNavPerformance',
         items: [
-          { key: 'my-quotas', icon: 'bi-bullseye', route: '/sales/quotas' },
-          { key: 'my-performance', icon: 'bi-graph-up', route: '/sales/performance' }
+          { key: 'my-quotas', icon: 'adjust', route: '/sales/quotas' },
+          { key: 'my-performance', icon: 'show_chart', route: '/sales/performance' }
         ]
       }
     ],
@@ -123,10 +122,10 @@ export class NavigationService {
         type: 'nav',
         navId: 'sidebarNav',
         items: [
-          { key: 'dashboard', icon: 'bi-speedometer2', route: '/content/dashboard' },
-          { key: 'my-blog-articles', icon: 'bi-file-text', route: '/content/blog' },
-          { key: 'my-help-articles', icon: 'bi-question-diamond', route: '/content/help' },
-          { key: 'categories-tags', icon: 'bi-tags', route: '/content/categories' }
+          { key: 'dashboard', icon: 'dashboard', route: '/content/dashboard' },
+          { key: 'my-blog-articles', icon: 'article', route: '/content/blog' },
+          { key: 'my-help-articles', icon: 'help', route: '/content/help' },
+          { key: 'categories-tags', icon: 'label', route: '/content/categories' }
         ]
       },
       {
@@ -140,9 +139,9 @@ export class NavigationService {
         type: 'nav',
         navId: 'sidebarNavWorkflow',
         items: [
-          { key: 'pending-validation', icon: 'bi-hourglass-split', route: '/content/pending' },
-          { key: 'newsletter', icon: 'bi-envelope-paper', route: '/content/newsletter' },
-          { key: 'content-analytics', icon: 'bi-bar-chart-line', route: '/content/analytics' }
+          { key: 'pending-validation', icon: 'pending', route: '/content/pending' },
+          { key: 'newsletter', icon: 'email', route: '/content/newsletter' },
+          { key: 'content-analytics', icon: 'analytics', route: '/content/analytics' }
         ]
       }
     ]

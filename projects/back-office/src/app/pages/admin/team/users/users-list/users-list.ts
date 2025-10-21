@@ -16,18 +16,22 @@ import {
   PermissionService,
   LanguageOrchestratorService,
   ConfirmDialogService,
-  UrlStateService
+  UrlStateService,
+  ToastService,
+  KpiData,
+  KpiCardComponent
 } from 'shared-lib';
 import {PageTitleService} from '../../../../../core/services/page-title.service';
 import {Breadcrumb} from '../../../../../core/components/breadcrumb/breadcrumb';
 import {TranslatePipe, TranslateService} from '@ngx-translate/core';
-import {Subject} from 'rxjs';
+import {Subject, takeUntil} from 'rxjs';
 import {environment} from '../../../../../../environments/environment';
+import {initializeFromUrl} from '../../../../../core/utils/url-state.utils';
 
 @Component({
   selector: 'app-users-list',
   standalone: true,
-  imports: [FilterBarComponent, DataTableComponent, Breadcrumb, TranslatePipe],
+  imports: [FilterBarComponent, DataTableComponent, Breadcrumb, TranslatePipe, KpiCardComponent],
   templateUrl: './users-list.html',
   styleUrl: './users-list.css'
 })
@@ -42,6 +46,7 @@ export class UsersList implements OnInit, OnDestroy {
   private confirmDialog = inject(ConfirmDialogService);
   private urlState = inject(UrlStateService);
   private route = inject(ActivatedRoute);
+  private toastService = inject(ToastService);
 
   private destroy$ = new Subject<void>();
   private componentId = 'users-list';
@@ -60,6 +65,7 @@ export class UsersList implements OnInit, OnDestroy {
   searchTerm = signal('');
   filterValues = signal<FilterValue>({});
   currentSort = signal<SortConfig>({ field: 'username', direction: 'asc' });
+  private urlInitialized = signal(false);
 
   pagination = computed<PaginationState>(() => ({
     currentPage: this.currentPage(),
@@ -67,6 +73,10 @@ export class UsersList implements OnInit, OnDestroy {
     total: this.totalUsers(),
     pageCount: this.pageCount()
   }));
+
+  canFindUsers = computed(() =>
+    this.permissionsService.canFindUsers()
+  );
 
   canManageUsers = computed(() =>
     this.permissionsService.canUpdateUser()
@@ -90,6 +100,10 @@ export class UsersList implements OnInit, OnDestroy {
   columns = signal<TableColumn<UserListItem>[]>([]);
   actions = signal<TableAction<UserListItem>[]>([]);
 
+  stats = signal<any>(null);
+  loadingStats = signal(false);
+  private languageChange = signal(0);
+
   constructor() {
     effect(() => {
       const page = this.currentPage();
@@ -97,6 +111,8 @@ export class UsersList implements OnInit, OnDestroy {
       const search = this.searchTerm();
       const filters = this.filterValues();
       const sort = this.currentSort();
+
+      if (!this.urlInitialized()) return;
 
       untracked(() => {
         const userFilters = this.buildUserFilters(search, filters);
@@ -107,14 +123,70 @@ export class UsersList implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.setBreadcrumbs();
+    initializeFromUrl(
+      this.route,
+      this.urlState,
+      this.searchTerm,
+      this.filterValues,
+      this.currentSort,
+      this.currentPage
+    );
     this.initializeConfig();
     this.loadRoles();
-    this.initializeFromUrl();
+    this.loadStats();
     this.languageOrchestrator.registerComponent(
       this.componentId,
       () => this.onLanguageChange()
     );
+    this.urlInitialized.set(true);
   }
+
+
+  kpiCards = computed<KpiData[]>(() => {
+    const statsData = this.stats();
+    this.languageChange();
+
+    if (!statsData) return [];
+
+    return [
+      {
+        label: this.translate.instant('users-list.kpi.total'),
+        value: statsData.total || 0,
+        icon: 'group',
+        iconClass: 'text-primary',
+        bgClass: 'bg-primary bg-opacity-10'
+      },
+      {
+        label: this.translate.instant('users-list.kpi.active'),
+        value: statsData.by_status?.active || 0,
+        icon: 'check_circle',
+        iconClass: 'text-success',
+        bgClass: 'bg-success bg-opacity-10'
+      },
+      {
+        label: this.translate.instant('users-list.kpi.blocked'),
+        value: statsData.by_status?.blocked || 0,
+        icon: 'block',
+        iconClass: 'text-danger',
+        bgClass: 'bg-danger bg-opacity-10'
+      },
+      {
+        label: this.translate.instant('users-list.kpi.confirmed'),
+        value: statsData.by_confirmation?.confirmed || 0,
+        icon: 'verified',
+        iconClass: 'text-info',
+        bgClass: 'bg-info bg-opacity-10'
+      },
+      {
+        label: this.translate.instant('users-list.kpi.activation_rate'),
+        value: `${statsData.activation_rate || 0}%`,
+        icon: 'trending_up',
+        iconClass: 'text-success',
+        bgClass: 'bg-success bg-opacity-10'
+      }
+    ];
+  });
+
 
   private initializeConfig(): void {
     // Plus d'option vide, uniquement le placeholder
@@ -200,7 +272,7 @@ export class UsersList implements OnInit, OnDestroy {
     this.actions.set([
       {
         label: this.translate.instant('users-list.actions.view'),
-        icon: 'eye',
+        icon: 'visibility',
         handler: (user) => this.viewUser(user)
       },
       {
@@ -211,7 +283,7 @@ export class UsersList implements OnInit, OnDestroy {
       },
       {
         label: this.translate.instant('users-list.actions.unblock'),
-        icon: 'unlock',
+        icon: 'lock_open',
         condition: (user) => this.canManageUsers() && user.blocked && user.documentId !== this.currentUserId(),
         handler: (user) => this.unblockUser(user)
       }
@@ -219,26 +291,6 @@ export class UsersList implements OnInit, OnDestroy {
 
     this.emptyTitle.set(this.translate.instant('users-list.no_users'));
     this.emptyMessage.set(this.translate.instant('users-list.no_users_message'));
-  }
-
-  private initializeFromUrl(): void {
-    const urlState = this.urlState.getStateFromUrl(this.route);
-
-    if (urlState.search) {
-      this.searchTerm.set(urlState.search);
-    }
-
-    if (urlState.filters) {
-      this.filterValues.set(urlState.filters);
-    }
-
-    if (urlState.sort) {
-      this.currentSort.set(urlState.sort);
-    }
-
-    if (urlState.page) {
-      this.currentPage.set(urlState.page);
-    }
   }
 
   private loadRoles(): void {
@@ -271,6 +323,22 @@ export class UsersList implements OnInit, OnDestroy {
     });
   }
 
+  private loadStats(): void {
+    this.loadingStats.set(true);
+    this.adminService.getUserStats()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.stats.set(response.data);
+          this.loadingStats.set(false);
+        },
+        error: (err) => {
+          console.error('Error loading stats:', err);
+          this.loadingStats.set(false);
+        }
+      });
+  }
+
   private translateRole(roleType: string): string {
     const key = `users-list.roles.${roleType}`;
     const translated = this.translate.instant(key);
@@ -283,6 +351,7 @@ export class UsersList implements OnInit, OnDestroy {
       this.updatePageTitle();
       this.initializeConfig();
       this.loadRoles();
+      this.languageChange.update(v => v + 1);
     }, 150);
   }
 
@@ -404,16 +473,28 @@ export class UsersList implements OnInit, OnDestroy {
       iconClass: 'text-danger'
     }).then((confirmed) => {
       if (confirmed) {
-        this.adminService.blockUser(user.documentId).subscribe(() => {
-          const sort = this.currentSort();
-          this.loadUsers(
-            this.currentPage(),
-            this.pageSize(),
-            this.buildUserFilters(this.searchTerm(), this.filterValues()),
-            sort.field,
-            sort.direction
-          );
-        });
+        this.adminService.blockUser(user.documentId)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe({
+            next: () => {
+              this.toastService.showSuccess(
+                this.translate.instant('users-list.toast.block_success', { name: username })
+              );
+              const sort = this.currentSort();
+              this.loadUsers(
+                this.currentPage(),
+                this.pageSize(),
+                this.buildUserFilters(this.searchTerm(), this.filterValues()),
+                sort.field,
+                sort.direction
+              );
+            },
+            error: () => {
+              this.toastService.showError(
+                this.translate.instant('users-list.toast.block_error', { name: username })
+              );
+            }
+          });
       }
     });
   }
@@ -428,20 +509,32 @@ export class UsersList implements OnInit, OnDestroy {
       message: this.translate.instant('users-list.confirmUnblock', { name: username }),
       confirmText: this.translate.instant('users-list.unblock'),
       confirmClass: 'btn-success',
-      icon: 'unlock',
+      icon: 'lock_open',
       iconClass: 'text-success'
     }).then((confirmed) => {
       if (confirmed) {
-        this.adminService.unblockUser(user.documentId).subscribe(() => {
-          const sort = this.currentSort();
-          this.loadUsers(
-            this.currentPage(),
-            this.pageSize(),
-            this.buildUserFilters(this.searchTerm(), this.filterValues()),
-            sort.field,
-            sort.direction
-          );
-        });
+        this.adminService.unblockUser(user.documentId)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe({
+            next: () => {
+              this.toastService.showSuccess(
+                this.translate.instant('users-list.toast.unblock_success', { name: username })
+              );
+              const sort = this.currentSort();
+              this.loadUsers(
+                this.currentPage(),
+                this.pageSize(),
+                this.buildUserFilters(this.searchTerm(), this.filterValues()),
+                sort.field,
+                sort.direction
+              );
+            },
+            error: () => {
+              this.toastService.showError(
+                this.translate.instant('users-list.toast.unblock_error', { name: username })
+              );
+            }
+          });
       }
     });
   }

@@ -1,0 +1,88 @@
+{
+  "header": {
+    "theme": {
+      "toggle": "Toggle theme"
+    },
+    "pages": {
+      "default": "Dashboard",
+      "admin": {
+        "dashboard": "Admin Dashboard",
+        "team": {
+          "users": "User Management",
+          "invitations": "Invitation Management"
+        },
+        "commercial": {
+          "contacts": "All Contacts",
+          "unassigned": "Unassigned Contacts",
+          "pipeline": "Global Pipeline",
+          "quotas": "Quotas & Territories",
+          "statistics": "Sales Statistics"
+        },
+        "content": {
+          "blog": "Blog Articles",
+          "help": "Help Articles",
+          "categories": "Categories & Tags",
+          "workflow": "Validation Workflow",
+          "analytics": "Content Analytics"
+        },
+        "system": {
+          "config": "System Configuration",
+          "billing": "Billing Management",
+          "maintenance": "System Maintenance"
+        }
+      },
+      "sales": {
+        "dashboard": "My Sales Dashboard",
+        "contacts": "My Contacts",
+        "pipeline": "My Pipeline",
+        "proposals": "My Proposals",
+        "quotas": "My Quotas",
+        "performance": "My Performance"
+      },
+      "content": {
+        "dashboard": "My Editorial Dashboard",
+        "blog": "My Blog Articles",
+        "help": "My Help Articles",
+        "categories": "Categories & Tags",
+        "pending": "Pending Validation",
+        "newsletter": "Newsletter Management",
+        "analytics": "Content Analytics"
+      },
+      "profile": {
+        "settings": "Profile Settings",
+        "security": "Security Settings",
+        "notifications": "Notification Settings"
+      }
+    },
+    "breadcrumbs": {
+      "dashboard": "Dashboard",
+      "team": "Team",
+      "users": "Users",
+      "invitations": "Invitations",
+      "statistics": "Statistics",
+      "commercial": "Sales",
+      "contacts": "Contacts",
+      "unassigned": "Unassigned",
+      "pipeline": "Pipeline",
+      "quotas": "Quotas",
+      "content": "Content",
+      "blog": "Blog",
+      "help": "Help",
+      "categories": "Categories",
+      "workflow": "Workflow",
+      "analytics": "Analytics",
+      "system": "System",
+      "config": "Configuration",
+      "billing": "Billing",
+      "maintenance": "Maintenance",
+      "proposals": "Proposals",
+      "performance": "Performance",
+      "pending": "Pending",
+      "newsletter": "Newsletter",
+      "profile": "Profile",
+      "settings": "Settings",
+      "security": "Security",
+      "notifications": "Notifications"
+    }
+  }
+}

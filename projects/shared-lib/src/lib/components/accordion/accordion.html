@@ -11,7 +11,7 @@
           [attr.aria-controls]="'collapse-' + item.id"
           (click)="onToggle(item.id)">
           @if (item.icon) {
-            <i [class]="'fi-' + item.icon + ' fs-lg pe-1 me-2'"></i>
+            <span class="material-symbols-outlined fs-lg pe-1 me-2">{{ item.icon }}</span>
           }
           <span class="hover-effect-underline stretched-link me-2">{{ item.title }}</span>
         </button>

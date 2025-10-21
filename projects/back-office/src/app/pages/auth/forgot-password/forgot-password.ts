@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../../core/services/auth.service';
+import { CustomValidators } from 'shared-lib';
 
 @Component({
   selector: 'app-forgot-password',
@@ -25,7 +26,7 @@ export class ForgotPassword {
 
   // Form
   forgotPasswordForm = this.fb.group({
-    email: ['', [Validators.required, Validators.email]]
+    email: ['', [Validators.required, CustomValidators.email()]],
   });
 
   // Getter pour les erreurs avec traductions

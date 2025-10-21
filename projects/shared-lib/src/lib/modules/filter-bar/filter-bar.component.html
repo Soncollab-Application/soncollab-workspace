@@ -1,28 +1,30 @@
-<div class="card  for-inter-font  border-transparent mb-7">
+<div class="card for-inter-font border-transparent mb-7">
   <div class="card-body p-4">
-    <!-- Version Desktop (lg et plus) -->
+
+    <!-- Version Desktop (xl et plus) -->
     <div class="d-none d-xl-block">
       <div class="row align-items-center">
 
         @if (selectedText()) {
-          <div class="col-auto d-none d-xl-block">
+          <div class="col-auto">
             <div class="text-body-secondary small">{{ selectedText() }}</div>
           </div>
         }
 
         <div class="col-12 col-lg">
-          <div class="row gx-3">
+          <div class="row gx-3 justify-content-end">
+
             @if (showSearch()) {
-              <div class="col col-lg-auto ms-auto">
+              <div class="col col-lg-auto">
                 <div class="input-group bg-body">
                   <input
                     type="text"
                     class="form-control"
-                    [placeholder]="'filterBar.search' | translate"
+                    [placeholder]="'filterBarShared.search' | translate"
                     [value]="searchTerm()"
                     (input)="onSearchInput($event)">
                   <span class="input-group-text">
-                    <i class="bi bi-search"></i>
+                    <span class="material-symbols-outlined fs-5">search</span>
                   </span>
                 </div>
               </div>
@@ -36,98 +38,97 @@
                     type="button"
                     data-bs-toggle="dropdown"
                     data-bs-auto-close="outside"
+                    data-bs-display="static"
                     aria-expanded="false">
-                    <i class="bi bi-funnel"></i>
+                    <span class="material-symbols-outlined fs-5">filter_list</span>
                   </button>
-                  <div class="dropdown-menu dropdown-menu-end rounded-3 p-6">
-                    <h4 class="fs-lg mb-4">{{ 'filterBar.filter' | translate }}</h4>
-                    <div style="width: 350px">
-                      @for (filter of filters(); track filter.key) {
-                        <div class="row align-items-center mb-3">
-                          <div class="col-3">
-                            <label class="form-label mb-0" [for]="filter.key">
-                              {{ filter.label }}
-                            </label>
-                          </div>
-                          <div class="col-9">
-                            @if (filter.type === 'select' || filter.type === 'boolean') {
-                              @if (choiceRefreshKey() >= 0) {
-                                <lib-choice
-                                  type="select-one"
-                                  [options]="filter.options || []"
-                                  [groups]="filter.groups || []"
-                                  [placeholder]="filter.placeholder || filter.label"
-                                  [config]="getChoiceConfig(filter)"
-                                  (valueChange)="onFilterChange(filter.key, $event)"
-                                />
-                              }
-                            } @else if (filter.type === 'date') {
-                              <input
-                                type="date"
-                                class="form-control"
-                                [id]="filter.key"
-                                [placeholder]="filter.placeholder || filter.label"
-                                [value]="getFilterValue(filter.key)"
-                                (change)="onFilterChange(filter.key, $any($event.target).value)">
-                            } @else {
-                              <input
-                                type="text"
-                                class="form-control"
-                                [id]="filter.key"
-                                [placeholder]="filter.placeholder || filter.label"
-                                [value]="getFilterValue(filter.key)"
-                                (input)="onFilterChange(filter.key, $any($event.target).value)">
-                            }
-                          </div>
-                        </div>
-                      }
-                    </div>
+
+                  <div class="dropdown-menu dropdown-menu-end rounded-3 p-6" style="width: 400px;">
+                    <h4 class="fs-lg mb-4">{{ 'filterBarShared.filter' | translate }}</h4>
+
+                    @for (filter of filters(); track filter.key) {
+                      <div class="mb-3">
+                        <label class="form-label d-block mb-2" [for]="filter.key">
+                          {{ filter.label }}
+                        </label>
+
+                        @if (filter.type === 'select' || filter.type === 'boolean') {
+                          @if (choiceRefreshKey() >= 0) {
+                            <lib-choice
+                              type="select-one"
+                              [options]="filter.options || []"
+                              [groups]="filter.groups || []"
+                              [placeholder]="filter.placeholder || filter.label"
+                              [config]="getChoiceConfig(filter)"
+                              (valueChange)="onFilterChange(filter.key, $event)"
+                            />
+                          }
+                        } @else if (filter.type === 'date') {
+                          <input
+                            type="date"
+                            class="form-control"
+                            [id]="filter.key"
+                            [placeholder]="filter.placeholder || filter.label"
+                            [value]="getFilterValue(filter.key)"
+                            (change)="onFilterChange(filter.key, $any($event.target).value)">
+                        } @else {
+                          <input
+                            type="text"
+                            class="form-control"
+                            [id]="filter.key"
+                            [placeholder]="filter.placeholder || filter.label"
+                            [value]="getFilterValue(filter.key)"
+                            (input)="onFilterChange(filter.key, $any($event.target).value)">
+                        }
+                      </div>
+                    }
                   </div>
                 </div>
               </div>
             }
 
             @if (sortOptions().length > 0) {
-              <div class="col-auto ms-n2">
+              <div class="col-auto">
                 <div class="dropdown">
                   <button
                     class="btn btn-dark px-3"
                     type="button"
                     data-bs-toggle="dropdown"
                     data-bs-auto-close="outside"
+                    data-bs-display="static"
                     aria-expanded="false">
-                    <i class="bi bi-sort-alpha-down"></i>
+                    <span class="material-symbols-outlined fs-5">sort</span>
                   </button>
-                  <div class="dropdown-menu dropdown-menu-end rounded-3 p-6">
-                    <h4 class="fs-lg mb-4">{{ 'filterBar.sort' | translate }}</h4>
-                    <div style="width: 350px">
-                      <div class="row gx-3">
-                        <div class="col">
-                          <lib-choice
-                            #sortChoice
-                            type="select-one"
-                            [options]="getSortChoiceOptions()"
-                            [config]="getSortChoiceConfig()"
-                            (valueChange)="onSortFieldChangeFromChoice($event)"
-                          />
-                        </div>
-                        <div class="col-auto">
-                          <div class="btn-group">
-                            <button
-                              type="button"
-                              class="btn btn-light"
-                              [class.active]="currentSort().direction === 'asc'"
-                              (click)="currentSort().direction === 'desc' && toggleSortDirection()">
-                              <i class="bi bi-arrow-up"></i>
-                            </button>
-                            <button
-                              type="button"
-                              class="btn btn-light"
-                              [class.active]="currentSort().direction === 'desc'"
-                              (click)="currentSort().direction === 'asc' && toggleSortDirection()">
-                              <i class="bi bi-arrow-down"></i>
-                            </button>
-                          </div>
+
+                  <div class="dropdown-menu dropdown-menu-end rounded-3 p-6" style="width: 420px;">
+                    <h4 class="fs-lg mb-4">{{ 'filterBarShared.sort' | translate }}</h4>
+
+                    <div class="row g-3 align-items-end">
+                      <div class="col">
+                        <lib-choice
+                          #sortChoice
+                          type="select-one"
+                          [options]="getSortChoiceOptions()"
+                          [config]="getSortChoiceConfig()"
+                          (valueChange)="onSortFieldChangeFromChoice($event)"
+                        />
+                      </div>
+                      <div class="col-auto">
+                        <div class="btn-group">
+                          <button
+                            type="button"
+                            class="btn btn-light px-3 py-2"
+                            [class.active]="currentSort().direction === 'asc'"
+                            (click)="currentSort().direction === 'desc' && toggleSortDirection()">
+                            <span class="material-symbols-outlined">arrow_upward</span>
+                          </button>
+                          <button
+                            type="button"
+                            class="btn btn-light px-3 py-2"
+                            [class.active]="currentSort().direction === 'desc'"
+                            (click)="currentSort().direction === 'asc' && toggleSortDirection()">
+                            <span class="material-symbols-outlined">arrow_downward</span>
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -142,19 +143,21 @@
                   type="button"
                   class="btn btn-outline-secondary"
                   (click)="onClearFilters()">
-                  <i class="bi bi-x-circle me-1"></i>
-                  {{ 'filterBar.reset' | translate }}
+                  <span class="material-symbols-outlined fs-5 me-1">cancel</span>
+                  {{ 'filterBarShared.reset' | translate }}
                 </button>
               </div>
             }
+
           </div>
         </div>
+
       </div>
     </div>
 
     <!-- Version Mobile (md et moins) -->
     <div class="d-xl-none">
-      <div class="row g-3">
+      <div class="row">
         @if (selectedText()) {
           <div class="col-12">
             <div class="text-body-secondary small">{{ selectedText() }}</div>
@@ -167,124 +170,140 @@
               <input
                 type="text"
                 class="form-control"
-                [placeholder]="'filterBar.search' | translate"
+                [placeholder]="'filterBarShared.search' | translate"
                 [value]="searchTerm()"
                 (input)="onSearchInput($event)">
               <span class="input-group-text">
-                <i class="bi bi-search"></i>
+                <span class="material-symbols-outlined fs-5">search</span>
               </span>
             </div>
           </div>
         }
 
-        <div class="col-12">
-          <div class="d-flex gap-2 flex-wrap flex-sm-wrap">
-            @if (filters().length > 0) {
-              <div class="dropdown flex-fill">
-                <button
-                  class="btn btn-dark w-100"
-                  type="button"
-                  data-bs-toggle="dropdown"
-                  data-bs-auto-close="outside"
-                  aria-expanded="false">
-                  <i class="bi bi-funnel me-2"></i>
-                  {{ 'filterBar.filter' | translate }}
-                </button>
-                <div class="dropdown-menu dropdown-menu-center rounded-3 p-4 w-100">
-                  <h5 class="mb-3">{{ 'filterBar.filter' | translate }}</h5>
-                  @for (filter of filters(); track filter.key) {
-                    <div class="mb-3 w-100">
-                      <label class="form-label small" [for]="'mobile-' + filter.key">
-                        {{ filter.label }}
-                      </label>
-                      @if (filter.type === 'select' || filter.type === 'boolean') {
-                        @if (choiceRefreshKey() >= 0) {
-                          <lib-choice
-                            type="select-one"
-                            [options]="filter.options || []"
-                            [groups]="filter.groups || []"
-                            [placeholder]="filter.placeholder || filter.label"
-                            [config]="getChoiceConfig(filter)"
-                            (valueChange)="onFilterChange(filter.key, $event)"
-                          />
-                        }
-                      } @else if (filter.type === 'date') {
-                        <input
-                          type="date"
-                          class="form-control w-100"
-                          [id]="'mobile-' + filter.key"
-                          [value]="getFilterValue(filter.key)"
-                          (change)="onFilterChange(filter.key, $any($event.target).value)">
-                      } @else {
-                        <input
-                          type="text"
-                          class="form-control w-100"
-                          [id]="'mobile-' + filter.key"
-                          [placeholder]="filter.placeholder || filter.label"
-                          [value]="getFilterValue(filter.key)"
-                          (input)="onFilterChange(filter.key, $any($event.target).value)">
-                      }
-                    </div>
-                  }
-                </div>
-              </div>
-            }
+      </div>
 
-            @if (sortOptions().length > 0) {
-              <div class="dropdown flex-fill">
-                <button
-                  class="btn btn-dark w-100"
-                  type="button"
-                  data-bs-toggle="dropdown"
-                  data-bs-auto-close="outside"
-                  aria-expanded="false">
-                  <i class="bi bi-sort-alpha-down me-2"></i>
-                  {{ 'filterBar.sort' | translate }}
-                </button>
-                <div class="dropdown-menu dropdown-menu-center rounded-3 p-4">
-                  <h5 class="mb-3">{{ 'filterBar.sort' | translate }}</h5>
-                  <div class="mb-3">
-                    <lib-choice
-                      #sortChoiceMobile
-                      type="select-one"
-                      [options]="getSortChoiceOptions()"
-                      [config]="getSortChoiceConfig()"
-                      (valueChange)="onSortFieldChangeFromChoice($event)"
-                    />
-                  </div>
-                  <div class="btn-group w-100">
-                    <button
-                      type="button"
-                      class="btn btn-outline-secondary"
-                      [class.active]="currentSort().direction === 'asc'"
-                      (click)="currentSort().direction === 'desc' && toggleSortDirection()">
-                      <i class="bi bi-arrow-up me-2"></i>
-                      {{ 'filterBar.ascending' | translate }}
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-outline-secondary"
-                      [class.active]="currentSort().direction === 'desc'"
-                      (click)="currentSort().direction === 'asc' && toggleSortDirection()">
-                      <i class="bi bi-arrow-down me-2"></i>
-                      {{ 'filterBar.descending' | translate }}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            }
 
-            @if (hasActiveFilters()) {
+      <div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 mt-3 d-md-flex justify-content-md-end">
+
+        <div class="col mb-2">
+          @if (filters().length > 0) {
+            <div class="dropdown flex-fill">
               <button
+                class="btn btn-dark w-100"
                 type="button"
-                class="btn btn-outline-secondary"
-                (click)="onClearFilters()">
-                <i class="bi bi-x-circle"></i>
+                data-bs-toggle="dropdown"
+                data-bs-auto-close="outside"
+                data-bs-display="static"
+                aria-expanded="false">
+                <span class="material-symbols-outlined fs-5 me-2">filter_list</span>
+                {{ 'filterBarShared.filter' | translate }}
               </button>
-            }
-          </div>
+
+              <div class="dropdown-menu dropdown-menu-center rounded-3 p-4 w-100">
+                <h5 class="mb-3">{{ 'filterBarShared.filter' | translate }}</h5>
+
+                @for (filter of filters(); track filter.key) {
+                  <div class="mb-3 w-100">
+                    <label class="form-label small d-block mb-2" [for]="'mobile-' + filter.key">
+                      {{ filter.label }}
+                    </label>
+
+                    @if (filter.type === 'select' || filter.type === 'boolean') {
+                      @if (choiceRefreshKey() >= 0) {
+                        <lib-choice
+                          type="select-one"
+                          [options]="filter.options || []"
+                          [groups]="filter.groups || []"
+                          [placeholder]="filter.placeholder || filter.label"
+                          [config]="getChoiceConfig(filter)"
+                          (valueChange)="onFilterChange(filter.key, $event)"
+                        />
+                      }
+                    } @else if (filter.type === 'date') {
+                      <input
+                        type="date"
+                        class="form-control w-100"
+                        [id]="'mobile-' + filter.key"
+                        [value]="getFilterValue(filter.key)"
+                        (change)="onFilterChange(filter.key, $any($event.target).value)">
+                    } @else {
+                      <input
+                        type="text"
+                        class="form-control w-100"
+                        [id]="'mobile-' + filter.key"
+                        [placeholder]="filter.placeholder || filter.label"
+                        [value]="getFilterValue(filter.key)"
+                        (input)="onFilterChange(filter.key, $any($event.target).value)">
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          }
         </div>
+
+        <div class="col mb-2">
+          @if (sortOptions().length > 0) {
+            <div class="dropdown flex-fill">
+              <button
+                class="btn btn-dark w-100"
+                type="button"
+                data-bs-toggle="dropdown"
+                data-bs-auto-close="outside"
+                data-bs-display="static"
+                aria-expanded="false">
+                <span class="material-symbols-outlined fs-5 me-2">sort</span>
+                {{ 'filterBarShared.sort' | translate }}
+              </button>
+
+              <div class="dropdown-menu dropdown-menu-center rounded-3 p-4 w-100">
+                <h5 class="mb-3">{{ 'filterBarShared.sort' | translate }}</h5>
+
+                <lib-choice
+                  #sortChoiceMobile
+                  type="select-one"
+                  [options]="getSortChoiceOptions()"
+                  [config]="getSortChoiceConfig()"
+                  (valueChange)="onSortFieldChangeFromChoice($event)"
+                />
+
+                <div class="btn-group w-100 mt-3">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    [class.active]="currentSort().direction === 'asc'"
+                    (click)="currentSort().direction === 'desc' && toggleSortDirection()">
+                    <span class="material-symbols-outlined fs-5 me-2">arrow_upward</span>
+                    {{ 'filterBarShared.ascending' | translate }}
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    [class.active]="currentSort().direction === 'desc'"
+                    (click)="currentSort().direction === 'asc' && toggleSortDirection()">
+                    <span class="material-symbols-outlined fs-5 me-2">arrow_downward</span>
+                    {{ 'filterBarShared.descending' | translate }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="col ">
+          @if (hasActiveFilters()) {
+            <button
+              type="button"
+              class="btn btn-outline-secondary w-100"
+              (click)="onClearFilters()">
+              <span class="material-symbols-outlined fs-5 me-2">cancel</span>
+              {{ 'filterBarShared.reset' | translate }}
+            </button>
+          }
+        </div>
+
       </div>
     </div>
+
   </div>
 </div>

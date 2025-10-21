@@ -4,6 +4,7 @@ import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../../core/services/auth.service';
+import { CustomValidators } from 'shared-lib';
 
 @Component({
   selector: 'app-reset-password',
@@ -29,11 +30,11 @@ export class ResetPassword implements OnInit {
   // Code de reset depuis l'URL
   resetCode = signal<string | null>(null);
 
-  // Form
+  // Form avec CustomValidators
   resetPasswordForm = this.fb.group({
-    password: ['', [Validators.required, Validators.minLength(6)]],
-    passwordConfirmation: ['', [Validators.required]]
-  }, { validators: this.passwordMatchValidator });
+    password: ['', [Validators.required, CustomValidators.strongPassword()]],
+    passwordConfirmation: ['', [Validators.required, CustomValidators.passwordMatch('password')]]
+  });
 
   ngOnInit() {
     // Récupérer le code depuis les query params
@@ -47,17 +48,6 @@ export class ResetPassword implements OnInit {
     });
   }
 
-  // Validator personnalisé pour vérifier que les mots de passe correspondent
-  private passwordMatchValidator(form: any) {
-    const password = form.get('password');
-    const passwordConfirmation = form.get('passwordConfirmation');
-
-    if (password && passwordConfirmation && password.value !== passwordConfirmation.value) {
-      return { passwordMismatch: true };
-    }
-    return null;
-  }
-
   // Getters pour les erreurs avec traductions
   get passwordError() {
     const control = this.resetPasswordForm.get('password');
@@ -65,8 +55,27 @@ export class ResetPassword implements OnInit {
       if (control.errors?.['required']) {
         return this.translate.instant('auth.resetPassword.password.required');
       }
-      if (control.errors?.['minlength']) {
-        return this.translate.instant('auth.resetPassword.password.minLength');
+      if (control.errors?.['weakPassword']) {
+        const weakPassword = control.errors['weakPassword'];
+        const errors = [];
+
+        if (!weakPassword.hasMinLength) {
+          errors.push(this.translate.instant('auth.resetPassword.password.minLength'));
+        }
+        if (!weakPassword.hasUpperCase) {
+          errors.push(this.translate.instant('auth.resetPassword.password.uppercase'));
+        }
+        if (!weakPassword.hasLowerCase) {
+          errors.push(this.translate.instant('auth.resetPassword.password.lowercase'));
+        }
+        if (!weakPassword.hasNumber) {
+          errors.push(this.translate.instant('auth.resetPassword.password.number'));
+        }
+        if (!weakPassword.hasSpecialChar) {
+          errors.push(this.translate.instant('auth.resetPassword.password.special'));
+        }
+
+        return errors.join(', ');
       }
     }
     return null;
@@ -74,13 +83,12 @@ export class ResetPassword implements OnInit {
 
   get passwordConfirmError() {
     const control = this.resetPasswordForm.get('passwordConfirmation');
-    const formErrors = this.resetPasswordForm.errors;
 
-    if (control?.touched) {
-      if (control.invalid && control.errors?.['required']) {
+    if (control?.touched && control?.invalid) {
+      if (control.errors?.['required']) {
         return this.translate.instant('auth.resetPassword.passwordConfirm.required');
       }
-      if (formErrors?.['passwordMismatch']) {
+      if (control.errors?.['passwordMismatch']) {
         return this.translate.instant('auth.resetPassword.passwordConfirm.mismatch');
       }
     }
@@ -123,13 +131,12 @@ export class ResetPassword implements OnInit {
         this.success.set(true);
         this.loading.set(false);
 
-        // Redirection automatique après succès
+        // Redirection automatique après 3 secondes
         setTimeout(() => {
-          this.router.navigate(['/']);
-        }, 2000);
+          this.router.navigate(['/auth/login']);
+        }, 3000);
       },
       error: (err: any) => {
-        // Gestion spécifique des erreurs backend
         let errorMessage = this.translate.instant('auth.resetPassword.errors.resetFailed');
 
         if (err?.error?.error) {
@@ -137,15 +144,11 @@ export class ResetPassword implements OnInit {
 
           switch (backendError.name) {
             case 'ValidationError':
-              if (backendError.message.includes('password')) {
-                errorMessage = this.translate.instant('auth.resetPassword.errors.invalidPassword');
-              } else {
-                errorMessage = this.translate.instant('auth.resetPassword.errors.validation');
-              }
+              errorMessage = this.translate.instant('auth.resetPassword.errors.validation');
               break;
             case 'ApplicationError':
-              if (backendError.message.includes('code')) {
-                errorMessage = this.translate.instant('auth.resetPassword.errors.invalidCode');
+              if (backendError.message.includes('token')) {
+                errorMessage = this.translate.instant('auth.resetPassword.errors.invalidToken');
               }
               break;
             default:
@@ -155,9 +158,6 @@ export class ResetPassword implements OnInit {
           switch (err.status) {
             case 400:
               errorMessage = this.translate.instant('auth.resetPassword.errors.badRequest');
-              break;
-            case 404:
-              errorMessage = this.translate.instant('auth.resetPassword.errors.invalidCode');
               break;
             case 500:
               errorMessage = this.translate.instant('auth.resetPassword.errors.serverError');
@@ -173,9 +173,5 @@ export class ResetPassword implements OnInit {
 
   goBackToLogin() {
     this.router.navigate(['/auth/login']);
-  }
-
-  goToForgotPassword() {
-    this.router.navigate(['/auth/forgot-password']);
   }
 }

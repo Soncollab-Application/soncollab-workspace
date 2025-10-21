@@ -1,0 +1,21 @@
+{
+  "invitation-detail": {
+    "title": "Invitation Details",
+    "details": "Details",
+    "first_name": "First Name",
+    "last_name": "Last Name",
+    "email": "Email",
+    "language": "Preferred Language",
+    "territory": "Territory",
+    "country": "Country",
+    "created": "Created",
+    "sent_at": "Sent",
+    "accepted_at": "Accepted",
+    "expires_at": "Expires",
+    "invited_by": "Invited By",
+    "accepted_user": "User Account",
+    "notes": "Notes",
+    "permissions": "Permissions",
+    "actions": "Actions"
+  }
+}

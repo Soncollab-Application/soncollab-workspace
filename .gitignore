@@ -47,7 +47,7 @@ yarn.lock
 package-lock.json
 
 # i18n
-projects/back-office/public/assets/i18n/en.json
-projects/back-office/public/assets/i18n/fr.json
-projects/client/src/assets/i18n/en.json
-projects/client/src/assets/i18n/fr.json
+projects/back-office/public/assets/i18n/lang
+projects/client/public/assets/i18n/lang
+projects/back-office/public/assets/i18n/modules/shared-autogerated
+projects/client/public/assets/i18n/modules/shared-autogerated

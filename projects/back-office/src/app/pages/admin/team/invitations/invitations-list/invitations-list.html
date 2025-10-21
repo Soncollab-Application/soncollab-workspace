@@ -1,9 +1,9 @@
-<app-breadcrumb [showAvatar]="true" [icon]="'bi-envelope-fill'">
+<app-breadcrumb [showAvatar]="true" [icon]="'mail'" [hasMobileActions]="true">
   <div breadcrumb-actions>
     @if (canCreateInvitation()) {
       <button class="btn btn-primary w-100" (click)="openInviteOffcanvas()">
-        <i class="bi bi-plus-lg me-2"></i>
-        {{ 'invitations.invite_member' | translate }}
+        <span class="material-symbols-outlined me-2">add</span>
+        {{ 'invitations-list.invite_member' | translate }}
       </button>
     }
   </div>
@@ -11,12 +11,23 @@
   <div breadcrumb-actions-mobile>
     @if (canCreateInvitation()) {
       <button class="btn btn-primary w-100" (click)="openInviteOffcanvas()">
-        <i class="bi bi-plus-lg me-2"></i>
-        {{ 'invitations.invite_member' | translate }}
+        <span class="material-symbols-outlined me-2">add</span>
+        {{ 'invitations-list.invite_member' | translate }}
       </button>
     }
   </div>
 </app-breadcrumb>
+
+<div class="row g-3 mb-4 pb-3">
+  @for (kpi of kpiCards(); track kpi.label) {
+    <div class="col-12 col-sm-6 col-lg-4 col-xl">
+      <lib-kpi-card
+        [data]="kpi"
+        [loading]="loadingStats()"
+      />
+    </div>
+  }
+</div>
 
 <div class="mb-5 pt-2">
   <lib-filter-bar
@@ -30,7 +41,7 @@
   />
 </div>
 
-<div>
+<div class="pb-5">
   <lib-data-table
     [data]="invitations()"
     [columns]="columns()"

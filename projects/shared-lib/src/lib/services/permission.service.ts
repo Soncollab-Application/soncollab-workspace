@@ -3,6 +3,7 @@ import {catchError, Observable, of, tap} from 'rxjs';
 import {PermissionsConfig, RolePermissionsResponse} from '../models';
 import {HttpClient} from '@angular/common/http';
 import {PERMISSION_CONFIG} from '../config/permission.config';
+import {toObservable} from '@angular/core/rxjs-interop';
 
 @Injectable({ providedIn: 'root' })
 export class PermissionService {
@@ -14,6 +15,7 @@ export class PermissionService {
 
   readonly permissions = computed(() => this.permissionsConfig());
   readonly loaded = computed(() => this.isLoaded());
+  readonly loaded$ = toObservable(this.loaded);
 
   loadPermissions(): Observable<any> {
     if (this.config.roleId === 0) {
@@ -36,7 +38,6 @@ export class PermissionService {
       })
     );
   }
-
 
   reloadPermissions(roleId: number): Observable<any> {
     this.config.roleId = roleId;
@@ -77,7 +78,7 @@ export class PermissionService {
     return mode === 'all' ? results.every(r => r) : results.some(r => r);
   }
 
-  canAccessUserManagement(): boolean {
+  canFindUsers(): boolean {
     return this.hasPluginPermission('users-permissions', 'user', 'find');
   }
 

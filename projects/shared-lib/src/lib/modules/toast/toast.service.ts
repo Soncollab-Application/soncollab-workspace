@@ -30,7 +30,7 @@ export class ToastService {
       style: 'border',
       variant: 'tiny-icon',
       message,
-      icon: config?.icon ?? 'fi-check-circle',
+      icon: config?.icon ?? 'check_circle',
       title: config?.title ?? 'Success',
       ...config
     });
@@ -38,11 +38,11 @@ export class ToastService {
 
   showError(message: string, config?: ToastConfig): void {
     this.show({
-      type: 'error',
+      type: 'danger',
       style: 'border',
       variant: 'tiny-icon',
       message,
-      icon: config?.icon ?? 'fi-banned',
+      icon: config?.icon ?? 'cancel',
       title: config?.title ?? 'Error',
       ...config
     });
@@ -54,7 +54,7 @@ export class ToastService {
       style: 'border',
       variant: 'tiny-icon',
       message,
-      icon: config?.icon ?? 'fi-alert-triangle',
+      icon: config?.icon ?? 'warning',
       title: config?.title ?? 'Warning',
       ...config
     });
@@ -66,7 +66,7 @@ export class ToastService {
       style: 'border',
       variant: 'tiny-icon',
       message,
-      icon: config?.icon ?? 'fi-info',
+      icon: config?.icon ?? 'info',
       title: config?.title ?? 'Info',
       ...config
     });
@@ -76,7 +76,7 @@ export class ToastService {
     this.show({
       type: 'default',
       message,
-      icon: config?.icon ?? 'fi-bell',
+      icon: config?.icon ?? 'notifications',
       title: config?.title,
       ...config
     });

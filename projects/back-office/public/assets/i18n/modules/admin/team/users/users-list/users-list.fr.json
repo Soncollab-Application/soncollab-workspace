@@ -1,0 +1,71 @@
+{
+  "users-list": {
+    "title": "Utilisateurs",
+    "newUser": "Nouvel utilisateur",
+    "filters": {
+      "role": "Rôle",
+      "allRoles": "Tous les rôles",
+      "state": "État",
+      "allStates": "Tous",
+      "active": "Actifs",
+      "blocked": "Bloqués",
+      "confirmation": "Confirmation",
+      "confirmed": "Confirmés",
+      "notConfirmed": "Non confirmés"
+    },
+    "kpi": {
+      "total": "Total",
+      "active": "Actifs",
+      "blocked": "Bloqués",
+      "confirmed": "Confirmés",
+      "activation_rate": "Taux d'activation"
+    },
+    "sort": {
+      "username": "Nom d'utilisateur",
+      "email": "Email",
+      "createdAt": "Date de création"
+    },
+    "columns": {
+      "user": "Utilisateur",
+      "role": "Rôle",
+      "confirmation": "Confirmation",
+      "state": "État"
+    },
+    "badges": {
+      "confirmed": "Confirmé",
+      "notConfirmed": "Non confirmé",
+      "active": "Actif",
+      "blocked": "Bloqué"
+    },
+    "actions": {
+      "view": "Voir",
+      "edit": "Modifier",
+      "block": "Bloquer",
+      "unblock": "Débloquer"
+    },
+    "confirmBlock": "Bloquer {{name}} ?",
+    "roles": {
+      "soncollab_admin": "Admin Soncollab",
+      "soncollab_sales": "Commercial Soncollab",
+      "soncollab_content": "Gestionnaire de contenu Soncollab",
+      "client_label": "Label musical",
+      "client_distributor": "Distributeur",
+      "client_artist": "Artiste indépendant",
+      "client_manager": "Manager d'artistes",
+      "client_publisher": "Éditeur musical"
+    },
+    "toast": {
+      "block_success": "{{name}} a été bloqué avec succès",
+      "block_error": "Erreur lors du blocage de {{name}}",
+      "unblock_success": "{{name}} a été débloqué avec succès",
+      "unblock_error": "Erreur lors du déblocage de {{name}}"
+    },
+    "blockTitle": "Bloquer l'utilisateur",
+    "block": "Bloquer",
+    "unblockTitle": "Débloquer l'utilisateur",
+    "confirmUnblock": "Débloquer {{name}} ?",
+    "unblock": "Débloquer",
+    "no_users": "Aucun utilisateur trouvé",
+    "no_users_message": "Il n'y a aucun utilisateur à afficher"
+  }
+}

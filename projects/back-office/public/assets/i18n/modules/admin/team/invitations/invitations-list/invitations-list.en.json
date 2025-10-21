@@ -1,0 +1,151 @@
+{
+  "invitations-list": {
+    "title": "Invitations",
+    "subtitle": "Manage Soncollab team member invitations",
+    "invite_member": "Invite Member",
+    "no_invitations": "No invitations found",
+    "no_invitations_message": "There are no invitations to display",
+    "filters": {
+      "status": "Status",
+      "role": "Role"
+    },
+    "kpi": {
+      "total": "Total",
+      "pending": "Pending",
+      "sent": "Sent",
+      "accepted": "Accepted",
+      "success_rate": "Success Rate"
+    },
+    "status": {
+      "pending": "Pending",
+      "sent": "Sent",
+      "accepted": "Accepted",
+      "expired": "Expired",
+      "cancelled": "Cancelled"
+    },
+    "sort": {
+      "newest": "Newest",
+      "oldest": "Oldest",
+      "email": "Email (A-Z)"
+    },
+    "columns": {
+      "email": "Email",
+      "name": "Name",
+      "role": "Role",
+      "status": "Status",
+      "invited_by": "Invited by",
+      "sent_at": "Sent at",
+      "expires_at": "Expires at"
+    },
+    "actions": {
+      "resend": "Resend",
+      "cancel": "Cancel"
+    },
+    "confirm": {
+      "resend": {
+        "title": "Resend Invitation",
+        "message": "Are you sure you want to resend the invitation to {{name}}?"
+      },
+      "cancel": {
+        "title": "Cancel Invitation",
+        "message": "Are you sure you want to cancel the invitation for {{name}}?"
+      }
+    },
+    "badges": {
+      "pending": "Pending",
+      "sent": "Sent",
+      "accepted": "Accepted",
+      "expired": "Expired",
+      "cancelled": "Cancelled"
+    },
+    "roles": {
+      "soncollab_admin": "Administrator",
+      "soncollab_sales": "Sales Representative",
+      "soncollab_content": "Content Manager"
+    },
+    "departments": {
+      "admin": "Administration",
+      "sales": "Sales",
+      "marketing": "Marketing",
+      "content": "Content",
+      "support": "Support"
+    },
+    "toast": {
+      "resend_success": "Invitation resent to {{name}}",
+      "resend_error": "Error resending invitation to {{name}}",
+      "cancel_success": "Invitation for {{name}} cancelled",
+      "cancel_error": "Error cancelling invitation",
+      "delete_success": "Invitation for {{name}} deleted",
+      "delete_error": "Error deleting invitation"
+    },
+    "invite": {
+      "loading": "Loading data...",
+      "title": "Invite Team Member",
+      "subtitle": "Send invitation to join Soncollab",
+      "send": "Send Invitation",
+      "personal_info": "Personal Information",
+      "first_name": "First Name",
+      "first_name_placeholder": "John",
+      "first_name_required": "First name is required",
+      "last_name": "Last Name",
+      "last_name_placeholder": "Doe",
+      "last_name_required": "Last name is required",
+      "email": "Email",
+      "email_placeholder": "john.doe@company.com",
+      "email_invalid": "Please enter a valid email address",
+      "language": "Preferred Language",
+      "role_permissions": "Role & Permissions",
+      "role": "Role",
+      "role_placeholder": "Select a role",
+      "role_required": "Please select a role",
+      "department": "Department",
+      "department_placeholder": "Select a department",
+      "department_required": "Department is required",
+      "territory": "Territory",
+      "territory_placeholder": "Select a territory",
+      "country": "Country",
+      "country_placeholder": "Select a country",
+      "territory_hint": "At least one of Territory or Country is required",
+      "territory_country_required": "Please select a territory or a country",
+      "notes": "Additional Notes",
+      "notes_placeholder": "Add any relevant notes...",
+      "notes_hint": "Internal use only",
+      "success": {
+        "title": "Invitation Sent!",
+        "message": "An invitation has been sent to {{name}}"
+      },
+      "error": {
+        "title": "Error",
+        "message": "Unable to send the invitation. Please try again."
+      },
+      "permissions": "Permissions",
+      "permissions_placeholder": "Select permissions",
+      "permissions_hint": "Choose specific permissions for this user",
+      "no_permissions_available": "No permissions available",
+      "select_permission": "Select",
+      "permissions_list": {
+        "all": "All access",
+        "sales_contacts": "Contact management",
+        "sales_interactions": "Sales interactions",
+        "sales_quotas": "Sales quotas",
+        "blog": "Blog management",
+        "help": "Help center",
+        "newsletter": "Newsletter",
+        "analytics_read": "Analytics read",
+        "releases": "Releases management",
+        "catalog": "Catalog management",
+        "analytics": "Full analytics",
+        "revenues": "Revenues",
+        "my_releases": "My releases",
+        "analytics_limited": "Limited analytics",
+        "artist_management": "Artist management",
+        "bookings": "Bookings",
+        "works": "Works",
+        "rights": "Rights",
+        "sync": "Sync",
+        "multi_catalog": "Multi-catalog"
+      }
+    }
+  }
+
+}

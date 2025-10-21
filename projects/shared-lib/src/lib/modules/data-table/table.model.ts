@@ -10,6 +10,7 @@ export interface TableColumn<T = any> {
   avatarKey?: string;
   subtitleKey?: string;
   avatarTransform?: (url: string) => string;
+  format?: (value: any) => string;
 }
 
 export interface TableAction<T = any> {

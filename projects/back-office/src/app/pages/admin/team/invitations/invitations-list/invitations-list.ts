@@ -15,18 +15,22 @@ import {
   SortOption,
   TableAction,
   TableColumn,
-  ConfirmDialogService, UrlStateService
+  ConfirmDialogService, UrlStateService,
+  ToastService,
+  KpiCardComponent,
+  KpiData
 } from "shared-lib";
 import {Subject, takeUntil} from 'rxjs';
 import {InvitationListItem, InvitationStatus, TargetRole} from '../../../../../core/models/admin/invitation.model';
 import {Breadcrumb} from '../../../../../core/components/breadcrumb/breadcrumb';
 import {InviteOffcanvas} from '../../../../../core/components/admin/invite-offcanvas/invite-offcanvas';
 import {InviteOffcanvasService} from '../../../../../core/services/admin/invite-offcanvas.service';
+import {initializeFromUrl} from '../../../../../core/utils/url-state.utils';
 
 @Component({
   selector: 'app-invitations-list',
   standalone: true,
-  imports: [FilterBarComponent, DataTableComponent, Breadcrumb, TranslatePipe, InviteOffcanvas],
+  imports: [FilterBarComponent, DataTableComponent, Breadcrumb, TranslatePipe, InviteOffcanvas, KpiCardComponent ],
   templateUrl: './invitations-list.html',
   styleUrl: './invitations-list.css'
 })
@@ -41,6 +45,8 @@ export class InvitationsList implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private urlState = inject(UrlStateService);
   private inviteOffcanvasService = inject(InviteOffcanvasService);
+  private toastService = inject(ToastService);
+
 
   private destroy$ = new Subject<void>();
   private componentId = 'invitations-list';
@@ -58,6 +64,7 @@ export class InvitationsList implements OnInit, OnDestroy {
   searchTerm = signal('');
   filterValues = signal<FilterValue>({});
   currentSort = signal<SortConfig>({ field: 'createdAt', direction: 'desc' });
+  private urlInitialized = signal(false);
 
   pagination = computed<PaginationState>(() => ({
     currentPage: this.currentPage(),
@@ -94,6 +101,11 @@ export class InvitationsList implements OnInit, OnDestroy {
   emptyTitle = signal<string>('');
   emptyMessage = signal<string>('');
 
+  stats = signal<any>(null);
+  loadingStats = signal(false);
+  private languageChange = signal(0);
+
+
   constructor() {
     effect(() => {
       const page = this.currentPage();
@@ -113,7 +125,15 @@ export class InvitationsList implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.setBreadcrumbs();
     this.initializeConfig();
-    this.initializeFromUrl();
+    initializeFromUrl(
+      this.route,
+      this.urlState,
+      this.searchTerm,
+      this.filterValues,
+      this.currentSort,
+      this.currentPage
+    );
+    this.loadStats();
     this.languageOrchestrator.registerComponent(
       this.componentId,
       () => this.onLanguageChange()
@@ -127,130 +147,155 @@ export class InvitationsList implements OnInit, OnDestroy {
     this.pageTitleService.resetBreadcrumbs();
   }
 
+  private loadStats(): void {
+    this.loadingStats.set(true);
+    this.adminService.getInvitationStats()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.stats.set(response.data);
+          this.loadingStats.set(false);
+        },
+        error: (err) => {
+          console.error('Error loading stats:', err);
+          this.loadingStats.set(false);
+        }
+      });
+  }
+
+
+  kpiCards = computed<KpiData[]>(() => {
+    const statsData = this.stats();
+    if (!statsData) return [];
+    this.languageChange();
+    return [
+      {
+        label: this.translate.instant('invitations-list.kpi.total'),
+        value: statsData.total || 0,
+        icon: 'mail',
+        iconClass: 'text-primary',
+        bgClass: 'bg-primary bg-opacity-10'
+      },
+      {
+        label: this.translate.instant('invitations-list.kpi.pending'),
+        value: statsData.pending || 0,
+        icon: 'schedule',
+        iconClass: 'text-warning',
+        bgClass: 'bg-warning bg-opacity-10'
+      },
+      {
+        label: this.translate.instant('invitations-list.kpi.sent'),
+        value: statsData.sent || 0,
+        icon: 'send',
+        iconClass: 'text-info',
+        bgClass: 'bg-info bg-opacity-10'
+      },
+      {
+        label: this.translate.instant('invitations-list.kpi.accepted'),
+        value: statsData.accepted || 0,
+        icon: 'check_circle',
+        iconClass: 'text-success',
+        bgClass: 'bg-success bg-opacity-10'
+      },
+      {
+        label: this.translate.instant('invitations-list.kpi.success_rate'),
+        value: `${statsData.success_rate || 0}%`,
+        icon: 'trending_up',
+        iconClass: 'text-success',
+        bgClass: 'bg-success bg-opacity-10'
+      }
+    ];
+  });
+
+
+
   private initializeConfig(): void {
     // Plus besoin d'option vide, le placeholder suffit
     this.filters.set([
       {
         key: 'status',
         type: 'select',
-        label: this.translate.instant('invitations.filters.status'),
+        label: this.translate.instant('invitations-list.filters.status'),
         placeholder: this.translate.instant('common.all'),
         options: [
-          { value: 'pending', label: this.translate.instant('invitations.status.pending') },
-          { value: 'sent', label: this.translate.instant('invitations.status.sent') },
-          { value: 'accepted', label: this.translate.instant('invitations.status.accepted') },
-          { value: 'expired', label: this.translate.instant('invitations.status.expired') },
-          { value: 'cancelled', label: this.translate.instant('invitations.status.cancelled') }
+          { value: 'pending', label: this.translate.instant('invitations-list.status.pending') },
+          { value: 'sent', label: this.translate.instant('invitations-list.status.sent') },
+          { value: 'accepted', label: this.translate.instant('invitations-list.status.accepted') },
+          { value: 'expired', label: this.translate.instant('invitations-list.status.expired') },
+          { value: 'cancelled', label: this.translate.instant('invitations-list.status.cancelled') }
         ]
       },
       {
         key: 'role',
         type: 'select',
-        label: this.translate.instant('invitations.filters.role'),
+        label: this.translate.instant('invitations-list.filters.role'),
         placeholder: this.translate.instant('common.all'),
         options: [
-          { value: 'soncollab_admin', label: this.translate.instant('invitations.roles.soncollab_admin') },
-          { value: 'soncollab_sales', label: this.translate.instant('invitations.roles.soncollab_sales') },
-          { value: 'soncollab_content', label: this.translate.instant('invitations.roles.soncollab_content') }
+          { value: 'soncollab_admin', label: this.translate.instant('invitations-list.roles.soncollab_admin') },
+          { value: 'soncollab_sales', label: this.translate.instant('invitations-list.roles.soncollab_sales') },
+          { value: 'soncollab_content', label: this.translate.instant('invitations-list.roles.soncollab_content') }
         ]
       }
     ]);
 
     this.sortOptions.set([
-      { value: 'createdAt:desc', label: this.translate.instant('invitations.sort.newest') },
-      { value: 'createdAt:asc', label: this.translate.instant('invitations.sort.oldest') },
-      { value: 'email:asc', label: this.translate.instant('invitations.sort.email') }
+      { value: 'createdAt:desc', label: this.translate.instant('invitations-list.sort.newest') },
+      { value: 'createdAt:asc', label: this.translate.instant('invitations-list.sort.oldest') },
+      { value: 'email:asc', label: this.translate.instant('invitations-list.sort.email') }
     ]);
 
     this.columns.set([
       {
         key: 'email',
-        label: this.translate.instant('invitations.columns.email'),
+        label: this.translate.instant('invitations-list.columns.email'),
         sortable: true,
-        render: (row: InvitationListItem) => `
-          <div class="d-flex align-items-center">
-            <i class="bi bi-envelope me-2 text-muted"></i>
-            <span>${row.email}</span>
-          </div>
-        `
+        type: 'email'
       },
       {
-        key: 'name',
-        label: this.translate.instant('invitations.columns.name'),
+        key: 'first_name',
+        label: this.translate.instant('invitations-list.columns.name'),
         sortable: true,
-        render: (row: InvitationListItem) => `
-          <strong>${row.first_name} ${row.last_name}</strong>
-        `
+        type: 'text',
+        render: (row: InvitationListItem) => `${row.first_name} ${row.last_name}`
       },
       {
         key: 'target_role',
-        label: this.translate.instant('invitations.columns.role'),
-        sortable: true,
+        label: this.translate.instant('invitations-list.columns.role'),
         type: 'custom-badge',
-        render: (row: InvitationListItem) => {
-          const badgeType = this.getRoleBadgeType(row.target_role);
-          const roleText = this.translate.instant(`invitations.roles.${row.target_role}`);
-          let html = `<span class="badge bg-${badgeType}">${roleText}</span>`;
-          if (row.department) {
-            html += `<small class="d-block text-muted mt-1">${this.translate.instant(`invitations.departments.${row.department}`)}</small>`;
-          }
-          return html;
-        }
+        render: (row: InvitationListItem) => this.translateRole(row.target_role),
+        cellClass: 'bg-primary-subtle text-primary'
       },
       {
         key: 'invitation_status',
-        label: this.translate.instant('invitations.columns.status'),
-        sortable: true,
+        label: this.translate.instant('invitations-list.columns.status'),
         type: 'custom-badge',
-        render: (row: InvitationListItem) => {
-          const badgeType = this.getStatusBadgeType(row.invitation_status);
-          const statusText = this.translate.instant(`invitations.status.${row.invitation_status}`);
-          return `<span class="badge bg-${badgeType}">${statusText}</span>`;
-        }
+        render: (row: InvitationListItem) => this.translateStatus(row.invitation_status),
+        cellClass: (row: InvitationListItem) => this.getStatusClass(row.invitation_status)
       },
       {
         key: 'invited_by',
-        label: this.translate.instant('invitations.columns.invited_by'),
+        label: this.translate.instant('invitations-list.columns.invited_by'),
+        type: 'text',
         render: (row: InvitationListItem) => {
-          if (row.invited_by) {
-            return `<small>${row.invited_by.first_name} ${row.invited_by.last_name}</small>`;
+          if (row.invited_by?.first_name && row.invited_by?.last_name) {
+            return `${row.invited_by.first_name} ${row.invited_by.last_name}`;
           }
-          return '<span class="text-muted">-</span>';
+          return row.invited_by?.username || '-';
         }
       },
       {
         key: 'sent_at',
-        label: this.translate.instant('invitations.columns.sent_at'),
+        label: this.translate.instant('invitations-list.columns.sent_at'),
         sortable: true,
-        render: (row: InvitationListItem) => {
-          if (row.sent_at) {
-            return `<small>${new Date(row.sent_at).toLocaleString()}</small>`;
-          }
-          return '<span class="text-muted">-</span>';
-        }
-      },
-      {
-        key: 'expires_at',
-        label: this.translate.instant('invitations.columns.expires_at'),
-        sortable: true,
-        render: (row: InvitationListItem) => {
-          if (row.expires_at) {
-            const isExpiring = this.isExpiringSoon(row.expires_at);
-            const dateStr = new Date(row.expires_at).toLocaleString();
-            if (isExpiring) {
-              return `<small class="text-danger"><i class="bi bi-exclamation-triangle me-1"></i>${dateStr}</small>`;
-            }
-            return `<small>${dateStr}</small>`;
-          }
-          return '<span class="text-muted">-</span>';
-        }
+        type: 'date',
+        colspan: 2
       }
     ]);
 
     const baseActions: TableAction<InvitationListItem>[] = [
       {
         label: this.translate.instant('common.view'),
-        icon: 'eye',
+        icon: 'visibility',
         class: 'btn-outline-secondary',
         handler: (row: InvitationListItem) => this.viewInvitation(row)
       }
@@ -258,7 +303,7 @@ export class InvitationsList implements OnInit, OnDestroy {
 
     if (this.canResend()) {
       baseActions.push({
-        label: this.translate.instant('invitations.actions.resend'),
+        label: this.translate.instant('invitations-list.actions.resend'),
         icon: 'send',
         class: 'btn-outline-primary',
         condition: (row: InvitationListItem) =>
@@ -269,8 +314,8 @@ export class InvitationsList implements OnInit, OnDestroy {
 
     if (this.canCancel()) {
       baseActions.push({
-        label: this.translate.instant('invitations.actions.cancel'),
-        icon: 'x-circle',
+        label: this.translate.instant('invitations-list.actions.cancel'),
+        icon: 'cancel',
         class: 'btn-outline-warning',
         condition: (row: InvitationListItem) =>
           row.invitation_status === 'pending' || row.invitation_status === 'sent',
@@ -281,7 +326,7 @@ export class InvitationsList implements OnInit, OnDestroy {
     if (this.canDelete()) {
       baseActions.push({
         label: this.translate.instant('common.delete'),
-        icon: 'trash',
+        icon: 'delete',
         class: 'btn-outline-danger',
         handler: (row: InvitationListItem) => this.deleteInvitation(row)
       });
@@ -289,49 +334,54 @@ export class InvitationsList implements OnInit, OnDestroy {
 
     this.actions.set(baseActions);
 
-    this.emptyTitle.set(this.translate.instant('invitations.no_invitations'));
-    this.emptyMessage.set(this.translate.instant('invitations.no_invitations_message'));
+    this.emptyTitle.set(this.translate.instant('invitations-list.no_invitations'));
+    this.emptyMessage.set(this.translate.instant('invitations-list.no_invitations_message'));
   }
 
-  private initializeFromUrl(): void {
-    const urlState = this.urlState.getStateFromUrl(this.route);
 
-    if (urlState.search) {
-      this.searchTerm.set(urlState.search);
-    }
-
-    if (urlState.filters) {
-      this.filterValues.set(urlState.filters);
-    }
-
-    if (urlState.sort) {
-      this.currentSort.set(urlState.sort);
-    }
-
-    if (urlState.page) {
-      this.currentPage.set(urlState.page);
-    }
+  private translateRole(role: TargetRole): string {
+    const roleKey = `invitations-list.roles.${role}`;
+    return this.translate.instant(roleKey);
   }
+
+  private translateStatus(status: InvitationStatus): string {
+    const statusKey = `invitations-list.status.${status}`;
+    return this.translate.instant(statusKey);
+  }
+
+  private getStatusClass(status: InvitationStatus): string {
+    const classes = {
+      pending: 'bg-warning-subtle text-warning',
+      sent: 'bg-info-subtle text-info',
+      accepted: 'bg-success-subtle text-success',
+      expired: 'bg-danger-subtle text-danger',
+      cancelled: 'bg-secondary-subtle text-secondary'
+    };
+    return classes[status] || 'bg-secondary-subtle text-secondary';
+  }
+
+
 
   private onLanguageChange(): void {
     setTimeout(() => {
       this.setBreadcrumbs();
       this.updatePageTitle();
       this.initializeConfig();
+      this.languageChange.update(v => v + 1);
     }, 150);
   }
 
   private setBreadcrumbs(): void {
     this.pageTitleService.setCustomBreadcrumbs([
       {
-        label: this.translate.instant('breadcrumbs.invitations.dashboard'),
+        label: this.translate.instant('breadcrumbs.invitations-list.dashboard'),
         route: '/admin/dashboard'
       },
       {
-        label: this.translate.instant('breadcrumbs.invitations.team')
+        label: this.translate.instant('breadcrumbs.invitations-list.team')
       },
       {
-        label: this.translate.instant('breadcrumbs.invitations.invitations'),
+        label: this.translate.instant('breadcrumbs.invitations-list.invitations'),
         active: true
       }
     ]);
@@ -368,6 +418,11 @@ export class InvitationsList implements OnInit, OnDestroy {
       pageSize,
       sort: `${sortField}:${sortDirection}`
     };
+
+    // Ajouter la recherche
+    if (this.searchTerm()) {
+      params.search = this.searchTerm();
+    }
 
     if (filters['status']) {
       params.status = filters['status'];
@@ -429,9 +484,9 @@ export class InvitationsList implements OnInit, OnDestroy {
     const inviteeName = `${invitation.first_name} ${invitation.last_name}`;
 
     this.confirmDialog.open({
-      title: this.translate.instant('invitations.confirm.resend.title'),
-      message: this.translate.instant('invitations.confirm.resend.message', { name: inviteeName }),
-      confirmText: this.translate.instant('invitations.actions.resend'),
+      title: this.translate.instant('invitations-list.confirm.resend.title'),
+      message: this.translate.instant('invitations-list.confirm.resend.message', { name: inviteeName }),
+      confirmText: this.translate.instant('invitations-list.actions.resend'),
       confirmClass: 'btn-primary',
       icon: 'send',
       iconClass: 'text-primary'
@@ -441,6 +496,9 @@ export class InvitationsList implements OnInit, OnDestroy {
           .pipe(takeUntil(this.destroy$))
           .subscribe({
             next: () => {
+              this.toastService.showSuccess(
+                this.translate.instant('invitations-list.toast.resend_success', { name: inviteeName })
+              );
               const sort = this.currentSort();
               this.loadInvitations(
                 this.currentPage(),
@@ -450,8 +508,10 @@ export class InvitationsList implements OnInit, OnDestroy {
                 sort.direction
               );
             },
-            error: (err) => {
-              console.error('Error resending invitation:', err);
+            error: () => {
+              this.toastService.showError(
+                this.translate.instant('invitations-list.toast.resend_error', { name: inviteeName })
+              );
             }
           });
       }
@@ -464,11 +524,11 @@ export class InvitationsList implements OnInit, OnDestroy {
     const inviteeName = `${invitation.first_name} ${invitation.last_name}`;
 
     this.confirmDialog.open({
-      title: this.translate.instant('invitations.confirm.cancel.title'),
-      message: this.translate.instant('invitations.confirm.cancel.message', { name: inviteeName }),
-      confirmText: this.translate.instant('invitations.actions.cancel'),
+      title: this.translate.instant('invitations-list.confirm.cancel.title'),
+      message: this.translate.instant('invitations-list.confirm.cancel.message', { name: inviteeName }),
+      confirmText: this.translate.instant('invitations-list.actions.cancel'),
       confirmClass: 'btn-warning',
-      icon: 'x-circle',
+      icon: 'cancel',
       iconClass: 'text-warning'
     }).then((confirmed) => {
       if (confirmed) {
@@ -476,6 +536,9 @@ export class InvitationsList implements OnInit, OnDestroy {
           .pipe(takeUntil(this.destroy$))
           .subscribe({
             next: () => {
+              this.toastService.showSuccess(
+                this.translate.instant('invitations-list.toast.cancel_success', { name: inviteeName })
+              );
               const sort = this.currentSort();
               this.loadInvitations(
                 this.currentPage(),
@@ -485,8 +548,10 @@ export class InvitationsList implements OnInit, OnDestroy {
                 sort.direction
               );
             },
-            error: (err) => {
-              console.error('Error canceling invitation:', err);
+            error: () => {
+              this.toastService.showError(
+                this.translate.instant('invitations-list.toast.cancel_error', { name: inviteeName })
+              );
             }
           });
       }
@@ -504,6 +569,9 @@ export class InvitationsList implements OnInit, OnDestroy {
           .pipe(takeUntil(this.destroy$))
           .subscribe({
             next: () => {
+              this.toastService.showSuccess(
+                this.translate.instant('invitations-list.toast.delete_success', { name: inviteeName })
+              );
               const sort = this.currentSort();
               this.loadInvitations(
                 this.currentPage(),
@@ -513,8 +581,10 @@ export class InvitationsList implements OnInit, OnDestroy {
                 sort.direction
               );
             },
-            error: (err) => {
-              console.error('Error deleting invitation:', err);
+            error: () => {
+              this.toastService.showError(
+                this.translate.instant('invitations-list.toast.delete_error', { name: inviteeName })
+              );
             }
           });
       }

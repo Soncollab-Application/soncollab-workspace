@@ -1,0 +1,71 @@
+
+.material-symbols-outlined {
+  text-decoration: none !important;
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' -25,
+    'opsz' 48 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  vertical-align: middle !important;
+  line-height: 1 !important;
+}
+
+/* Dans les contextes flex */
+.d-flex .material-symbols-outlined,
+.d-inline-flex .material-symbols-outlined {
+  align-self: center !important;
+}
+
+/* Dans les boutons - alignement parfait */
+button .material-symbols-outlined,
+.btn .material-symbols-outlined,
+a .material-symbols-outlined {
+  vertical-align: middle !important;
+  margin-top: -0.125em !important;
+}
+
+/* Dans les titres */
+h1 .material-symbols-outlined,
+h2 .material-symbols-outlined,
+h3 .material-symbols-outlined,
+h4 .material-symbols-outlined,
+h5 .material-symbols-outlined,
+h6 .material-symbols-outlined {
+  vertical-align: middle !important;
+  margin-top: -0.1em !important;
+}
+
+/* Dans le texte normal et small */
+p .material-symbols-outlined,
+span .material-symbols-outlined,
+small .material-symbols-outlined {
+  vertical-align: middle !important;
+  margin-top: -0.15em !important;
+}
+
+/* Badges et labels */
+.badge .material-symbols-outlined,
+.label .material-symbols-outlined {
+  vertical-align: middle !important;
+  margin-top: -0.1em !important;
+}
+
+
+/* Toasts et alertes */
+.toast .material-symbols-outlined,
+.alert .material-symbols-outlined,
+.notification .material-symbols-outlined {
+  vertical-align: middle !important;
+  margin-top: 0 !important;
+  transform: translateY(0) !important;
+}
+
+/* Si l'icône est dans un conteneur flex du toast */
+.toast .d-flex .material-symbols-outlined {
+  align-self: center !important;
+  flex-shrink: 0 !important;
+}
+

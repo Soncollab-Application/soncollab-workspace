@@ -51,6 +51,7 @@
     "bootstrap": "5.3.7",
     "choices.js": "^11.0.2",
     "dlx": "^0.2.1",
+    "fs-extra": "^11.3.2",
     "global": "^4.4.0",
     "ng-recaptcha-2": "^16.0.1",
     "ngx-markdown": "^20.0.0",

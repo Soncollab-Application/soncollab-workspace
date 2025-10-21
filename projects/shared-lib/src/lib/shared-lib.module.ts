@@ -5,7 +5,7 @@ import {
   FilterService,
   LanguageOrchestratorService,
   LanguageService, PermissionService,
-  RecaptchaService,
+  RecaptchaService, RelativeDateService,
   ThemeService, UrlStateService
 } from './services';
 import {ToastService} from './modules/toast';
@@ -23,6 +23,7 @@ import {Badge} from './components/badge/badge';
 import {DropdownSingleDirective} from './directives/dropdown-single.directive';
 import {HasPermissionDirective, TooltipDirective} from './directives';
 import {TruncatePipe} from './pipes/truncate.pipe';
+import {CustomValidators} from './validators/custom-validators';
 
 @NgModule({
   imports: [
@@ -45,7 +46,9 @@ import {TruncatePipe} from './pipes/truncate.pipe';
     FilterService,
     AosService,
     PermissionService,
-    UrlStateService
+    UrlStateService,
+    RelativeDateService,
+    CustomValidators
   ],
   exports: [
     ToastModule,

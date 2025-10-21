@@ -94,7 +94,7 @@ export class Toast {
   }
 
   getHeaderIconClasses(toast: ToastItem): string {
-    const classes: string[] = [toast.icon || '', 'fs-base', 'me-2'];
+    const classes: string[] = ['material-symbols-outlined', 'fs-base', 'me-2'];
 
     if (toast.style === 'border') {
       const colorMap: Record<string, string> = {

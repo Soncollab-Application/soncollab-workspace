@@ -1,8 +1,15 @@
-import {Component, computed, effect, inject, OnDestroy, OnInit, signal, viewChild} from '@angular/core';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {Component, computed, effect, inject, OnDestroy, OnInit, signal, untracked} from '@angular/core';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators
+} from '@angular/forms';
 import {AdminService} from '../../../services/admin/admin.service';
 import {TranslatePipe, TranslateService} from '@ngx-translate/core';
-import {Choice, ChoiceOption, LanguageService, ToastService} from 'shared-lib';
+import {Choice, ChoiceOption, CustomValidators, LanguageService, ToastService} from 'shared-lib';
 import {InviteOffcanvasService} from '../../../services/admin/invite-offcanvas.service';
 import {
   Country,
@@ -33,7 +40,6 @@ export class InviteOffcanvas implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
-  // Rôles autorisés pour l'invitation
   private readonly ALLOWED_ROLES: TargetRole[] = [
     'soncollab_admin',
     'soncollab_sales',
@@ -42,6 +48,7 @@ export class InviteOffcanvas implements OnInit, OnDestroy {
 
   inviteForm!: FormGroup;
   submitting = signal(false);
+  loading = signal(false);
 
   availableRoles = signal<RoleInfo[]>([]);
   rolesData = signal<RolesData | null>(null);
@@ -49,24 +56,55 @@ export class InviteOffcanvas implements OnInit, OnDestroy {
   territories = signal<Territory[]>([]);
 
   selectedRole = signal<RoleInfo | null>(null);
+  selectedTerritoryCode = signal<string | null>(null);
 
   isOpen = computed(() => this.offcanvasService.getState().isOpen);
+
+
 
   roleOptions = signal<ChoiceOption[]>([]);
   departmentOptions = signal<ChoiceOption[]>([]);
   languageOptions = signal<ChoiceOption[]>([]);
   countryOptions = signal<ChoiceOption[]>([]);
   territoryOptions = signal<ChoiceOption[]>([]);
+  permissionOptions = signal<ChoiceOption[]>([]);
 
-  // Computed
   showDepartment = computed(() => this.selectedRole()?.department_required ?? false);
   showTerritory = computed(() => this.selectedRole()?.territory_required ?? false);
   showCountry = computed(() => this.selectedRole()?.territory_required ?? false);
+  showPermissions = computed(() => {
+    const role = this.selectedRole();
+    return role &&
+      role.permissions &&
+      role.permissions.length > 0 &&
+      !role.permissions.includes('all') &&
+      this.permissionOptions().length > 0;
+  });
+
+  permissionsConfig = computed(() => ({
+    searchEnabled: false,
+    shouldSort: false,
+    removeItemButton: true,
+    noResultsText: this.translate.instant('invitations-list.invite.no_permissions_available'),
+    noChoicesText: this.translate.instant('invitations-list.invite.no_permissions_available'),
+    itemSelectText: this.translate.instant('invitations-list.invite.select_permission'),
+    classNames: { containerInner: ['form-select'] }
+  }));
+
+  constructor() {
+    effect(() => {
+      if (this.isOpen()) {
+        untracked(() => {
+          this.loadData();
+        });
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.initializeForm();
-    this.loadData();
     this.setupRoleChangeListener();
+    this.setupTerritoryChangeListener();
   }
 
   ngOnDestroy(): void {
@@ -74,15 +112,17 @@ export class InviteOffcanvas implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+
   private initializeForm(): void {
     this.inviteForm = this.fb.group({
       first_name: ['', [Validators.required, Validators.minLength(2)]],
       last_name: ['', [Validators.required, Validators.minLength(2)]],
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.required, CustomValidators.email()]],
       target_role: ['', Validators.required],
       department: [''],
       territory: [''],
       target_country: [''],
+      permissions: [],
       preferred_language: ['fr', Validators.required],
       notes: ['', Validators.maxLength(500)]
     });
@@ -96,7 +136,18 @@ export class InviteOffcanvas implements OnInit, OnDestroy {
   }
 
   private loadData(): void {
-    // Load roles
+    this.loading.set(true);
+
+    let rolesLoaded = false;
+    let countriesLoaded = false;
+    let territoriesLoaded = false;
+
+    const checkAllLoaded = () => {
+      if (rolesLoaded && countriesLoaded && territoriesLoaded) {
+        this.loading.set(false);
+      }
+    };
+
     this.adminService.getAvailableRoles()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -109,29 +160,32 @@ export class InviteOffcanvas implements OnInit, OnDestroy {
 
           this.availableRoles.set(filteredRoles);
           this.updateRoleOptions();
+          rolesLoaded = true;
+          checkAllLoaded();
         },
-        error: (err) => console.error('Error loading roles:', err)
+        error: (err) => {
+          console.error('Error loading roles:', err);
+          rolesLoaded = true;
+          checkAllLoaded();
+        }
       });
 
-    // Load countries
     this.adminService.getCountries()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
           this.countries.set(response.data);
-          this.countryOptions.set(
-            response.data
-              .filter(c => c.is_active)
-              .map(country => ({
-                value: country.id.toString(),
-                label: `${country.flag || ''} ${country.name}`.trim()
-              }))
-          );
+          this.updateCountryOptions();
+          countriesLoaded = true;
+          checkAllLoaded();
         },
-        error: (err) => console.error('Error loading countries:', err)
+        error: (err) => {
+          console.error('Error loading countries:', err);
+          countriesLoaded = true;
+          checkAllLoaded();
+        }
       });
 
-    // Load territories
     this.adminService.getTerritories()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -141,13 +195,37 @@ export class InviteOffcanvas implements OnInit, OnDestroy {
             response.data
               .filter(t => t.is_active)
               .map(territory => ({
-                value: territory.id.toString(),
+                value: territory.territory_code,
                 label: `${territory.territory_name} (${territory.territory_code})`
               }))
           );
+          territoriesLoaded = true;
+          checkAllLoaded();
         },
-        error: (err) => console.error('Error loading territories:', err)
+        error: (err) => {
+          console.error('Error loading territories:', err);
+          territoriesLoaded = true;
+          checkAllLoaded();
+        }
       });
+  }
+
+  private updateCountryOptions(territoryCode?: string): void {
+    const allCountries = this.countries();
+    let filteredCountries = allCountries.filter(c => c.is_active);
+
+    if (territoryCode) {
+      filteredCountries = filteredCountries.filter(
+        c => c.sales_territory?.territory_code === territoryCode
+      );
+    }
+
+    this.countryOptions.set(
+      filteredCountries.map(country => ({
+        value: country.code,
+        label: `${country.flag || ''} ${country.name}`.trim()
+      }))
+    );
   }
 
   private updateRoleOptions(): void {
@@ -166,15 +244,32 @@ export class InviteOffcanvas implements OnInit, OnDestroy {
         const role = this.availableRoles().find(r => r.value === roleValue);
         this.selectedRole.set(role || null);
 
-        // Reset champs conditionnels
         this.inviteForm.patchValue({
           department: '',
           territory: '',
-          target_country: ''
+          target_country: '',
+          permissions: []
         }, { emitEvent: false });
 
-        // Configurer validations selon le rôle
         this.updateValidations(role);
+        this.updateDepartmentOptionsForRole(roleValue);
+        this.updatePermissionOptionsForRole(roleValue);
+      });
+  }
+
+  private setupTerritoryChangeListener(): void {
+    this.inviteForm.get('territory')?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((territoryCode: string) => {
+        this.selectedTerritoryCode.set(territoryCode);
+
+        this.inviteForm.patchValue({ target_country: '' }, { emitEvent: false });
+
+        if (territoryCode) {
+          this.updateCountryOptions(territoryCode);
+        } else {
+          this.updateCountryOptions();
+        }
       });
   }
 
@@ -183,62 +278,81 @@ export class InviteOffcanvas implements OnInit, OnDestroy {
     const territoryControl = this.inviteForm.get('territory');
     const countryControl = this.inviteForm.get('target_country');
 
-    // Reset validators
-    departmentControl?.clearValidators();
-    territoryControl?.clearValidators();
-    countryControl?.clearValidators();
-
-    if (role) {
-      // Department
-      if (role.department_required) {
-        departmentControl?.setValidators(Validators.required);
-        this.updateDepartmentOptions(role.value);
-      }
-
-      // Territory ou Country (au moins un requis)
-      if (role.territory_required) {
-        territoryControl?.setValidators(this.atLeastOneValidator.bind(this));
-        countryControl?.setValidators(this.atLeastOneValidator.bind(this));
-      }
+    if (role?.department_required) {
+      departmentControl?.setValidators([Validators.required]);
+    } else {
+      departmentControl?.clearValidators();
+      this.departmentOptions.set([]);
     }
 
-    departmentControl?.updateValueAndValidity();
-    territoryControl?.updateValueAndValidity();
-    countryControl?.updateValueAndValidity();
-  }
-
-  private atLeastOneValidator(control: any): { [key: string]: any } | null {
-    const territory = this.inviteForm?.get('territory')?.value;
-    const country = this.inviteForm?.get('target_country')?.value;
-
-    if (!territory && !country) {
-      return { atLeastOne: true };
+    if (role?.territory_required) {
+      territoryControl?.setValidators([Validators.required]);
+      countryControl?.setValidators([Validators.required]);
+    } else {
+      territoryControl?.clearValidators();
+      countryControl?.clearValidators();
     }
-    return null;
+
+    departmentControl?.updateValueAndValidity({ emitEvent: false });
+    territoryControl?.updateValueAndValidity({ emitEvent: false });
+    countryControl?.updateValueAndValidity({ emitEvent: false });
   }
 
-  private updateDepartmentOptions(roleValue: TargetRole): void {
-    const role = this.availableRoles().find(r => r.value === roleValue);
-    if (!role) return;
-
+  private updateDepartmentOptionsForRole(roleValue: TargetRole): void {
     const rolesData = this.rolesData();
     if (!rolesData) return;
 
-    // Créer les options de département basées sur role.departments
-    this.departmentOptions.set(
-      role.departments.map(deptKey => {
-        const deptInfo = rolesData.departments[deptKey];
-        return {
-          value: deptKey,
-          label: deptInfo ? deptInfo.label : deptKey
-        };
-      })
-    );
+    const role = rolesData.roles.find(r => r.value === roleValue);
 
-    // Auto-sélectionner si un seul département disponible
-    if (role.departments.length === 1) {
-      this.inviteForm.patchValue({ department: role.departments[0] }, { emitEvent: false });
+    if (!role || !role.departments || role.departments.length === 0) {
+      this.departmentOptions.set([]);
+      return;
     }
+
+    setTimeout(() => {
+      this.departmentOptions.set(
+        role.departments.map(deptKey => {
+          const deptInfo = rolesData.departments[deptKey];
+          return {
+            value: deptKey,
+            label: deptInfo ? deptInfo.label : deptKey
+          };
+        })
+      );
+
+      if (role.departments.length === 1) {
+        this.inviteForm.patchValue({ department: role.departments[0] }, { emitEvent: false });
+      }
+    }, 0);
+  }
+
+  private updatePermissionOptionsForRole(roleValue: TargetRole): void {
+    const rolesData = this.rolesData();
+    if (!rolesData) return;
+
+    const role = rolesData.roles.find(r => r.value === roleValue);
+
+    if (!role || !role.permissions || role.permissions.length === 0 || role.permissions.includes('all')) {
+      this.permissionOptions.set([]);
+      return;
+    }
+
+    setTimeout(() => {
+      this.permissionOptions.set(
+        role.permissions.map(perm => ({
+          value: perm,
+          label: this.translate.instant(`invitations-list.invite.permissions_list.${perm}`) || this.formatPermissionLabel(perm),
+          selected: true
+        }))
+      );
+    }, 0);
+  }
+
+  private formatPermissionLabel(permission: string): string {
+    return permission
+      .split('_')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
   }
 
   onSubmit(): void {
@@ -254,16 +368,41 @@ export class InviteOffcanvas implements OnInit, OnDestroy {
       preferred_language: this.inviteForm.value.preferred_language
     };
 
-    // Ajouter champs conditionnels
     if (this.inviteForm.value.department) {
       formData.department = this.inviteForm.value.department;
     }
     if (this.inviteForm.value.territory) {
-      formData.territory = parseInt(this.inviteForm.value.territory);
+      formData.territory = this.inviteForm.value.territory;
     }
     if (this.inviteForm.value.target_country) {
-      formData.target_country = parseInt(this.inviteForm.value.target_country);
+      formData.target_country = this.inviteForm.value.target_country;
     }
+
+    // Construction de l'objet permissions avec enabled: true/false
+    const role = this.selectedRole();
+    if (role && role.permissions && role.permissions.length > 0 && !role.permissions.includes('all')) {
+      let selectedPermissions: any = this.inviteForm.value.permissions || [];
+
+      if (typeof selectedPermissions === 'string') {
+        selectedPermissions = selectedPermissions.split(',').map((p: string) => p.trim());
+      }
+
+      if (!Array.isArray(selectedPermissions)) {
+        selectedPermissions = [];
+      }
+
+      const permissionsObject: Record<string, { enabled: boolean }> = {};
+
+      role.permissions.forEach(perm => {
+        const isEnabled = selectedPermissions.includes(perm);
+        permissionsObject[perm] = {
+          enabled: isEnabled
+        };
+      });
+
+      formData.permissions = permissionsObject;
+    }
+
     if (this.inviteForm.value.notes) {
       formData.notes = this.inviteForm.value.notes;
     }
@@ -273,8 +412,8 @@ export class InviteOffcanvas implements OnInit, OnDestroy {
       .subscribe({
         next: () => {
           this.toastService.showSuccess(
-            this.translate.instant('invite.success.title'),
-            this.translate.instant('invite.success.message', {
+            this.translate.instant('invitations-list.invite.success.title'),
+            this.translate.instant('invitations-list.invite.success.message', {
               name: `${formData.first_name} ${formData.last_name}`
             })
           );
@@ -285,14 +424,13 @@ export class InviteOffcanvas implements OnInit, OnDestroy {
           }
 
           this.close();
-          this.inviteForm.reset({ preferred_language: 'fr' });
           this.submitting.set(false);
         },
         error: (err) => {
           console.error('Error sending invitation:', err);
           this.toastService.showError(
-            this.translate.instant('invite.error.title'),
-            this.translate.instant('invite.error.message')
+            this.translate.instant('invitations-list.invite.error.title'),
+            this.translate.instant('invitations-list.invite.error.message')
           );
           this.submitting.set(false);
         }
@@ -301,14 +439,16 @@ export class InviteOffcanvas implements OnInit, OnDestroy {
 
   close(): void {
     this.offcanvasService.close();
-    this.inviteForm.reset();
+    this.inviteForm.reset({ preferred_language: 'fr' });
+    this.selectedRole.set(null);
+    this.selectedTerritoryCode.set(null);
   }
 
   getRoleIcon(role: TargetRole): string {
     const icons: Record<string, string> = {
-      'soncollab_admin': 'shield-check',
-      'soncollab_sales': 'graph-up-arrow',
-      'soncollab_content': 'pencil-square'
+      'soncollab_admin': 'admin_panel_settings',
+      'soncollab_sales': 'trending_up',
+      'soncollab_content': 'edit_note'
     };
     return icons[role] || 'person';
   }

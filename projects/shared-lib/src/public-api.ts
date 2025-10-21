@@ -12,6 +12,8 @@ export * from './lib/services/base-crud.service';
 export * from './lib/services/filter.service';
 export * from './lib/services/permission.service';
 export * from './lib/services/url-state.service';
+export * from './lib/services/relative-date.service';
+export * from './lib/validators/custom-validators';
 
 // Mixins
 export * from './lib/mixins/language-aware.mixin';

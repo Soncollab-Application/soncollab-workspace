@@ -26,6 +26,7 @@ export interface Country {
   flag?: string;
   languages: string[];
   continent?: string;
+  sales_territory?: Territory;
   is_active: boolean;
   createdAt: string;
   updatedAt: string;
@@ -87,9 +88,9 @@ export interface InvitationStats {
   accepted: number;
   expired: number;
   cancelled: number;
-  byRole: Record<TargetRole, number>;
-  byDepartment: Record<Department, number>;
+  success_rate: number;
 }
+
 
 export interface RoleInfo {
   value: TargetRole;
@@ -108,8 +109,9 @@ export interface InviteRequest {
   last_name: string;
   target_role: TargetRole;
   department?: Department;
-  territory?: number;
-  target_country?: number;
+  territory?: string;
+  target_country?: string;
+  permissions?: Record<string, { enabled: boolean }>;
   notes?: string;
   preferred_language?: 'fr' | 'en';
 }

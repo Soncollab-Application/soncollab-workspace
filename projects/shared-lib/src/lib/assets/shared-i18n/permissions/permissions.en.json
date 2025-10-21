@@ -1,0 +1,8 @@
+{
+  "permissionShared": {
+    "denied": {
+      "title": "Access Denied",
+      "message": "You don't have permission to access this resource."
+    }
+  }
+}

@@ -6,3 +6,4 @@ export * from './recaptcha.service';
 export * from './permission.service';
 export * from './filter.service';
 export * from './url-state.service';
+export * from './relative-date.service';

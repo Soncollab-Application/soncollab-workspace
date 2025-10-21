@@ -2,8 +2,22 @@ import { Routes } from '@angular/router';
 import {guestGuard} from './core/guards/guest.guard';
 import {authGuard} from './core/guards/auth.guard';
 import {roleGuard} from './core/guards/role.guard';
+import {AuthLayout} from './core/layout/auth/auth';
 
 export const routes: Routes = [
+
+
+  {
+    path: 'activate-invitation',
+    component: AuthLayout,
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./pages/auth/activate-invitation/activate-invitation').then(c => c.ActivateInvitation)
+      }
+    ]
+  },
+
   // Routes publiques (invités uniquement)
   {
     path: 'auth',

@@ -6,14 +6,13 @@ import {
   output,
   signal,
   viewChild,
+  viewChildren,
   effect,
   untracked,
 } from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {TranslateModule, TranslateService} from '@ngx-translate/core';
-import enTranslations from './i18n/en.json';
-import frTranslations from './i18n/fr.json';
 import {FilterConfig, FilterValue, SortConfig, SortOption} from './filter.model';
 import {Choice, ChoiceOption} from '../choice-lib';
 import {UrlStateService} from '../../services';
@@ -34,8 +33,8 @@ export class FilterBarComponent implements OnInit {
   sortOptions = input<SortOption[]>([]);
   selectedCount = input<number>(0);
   showSearch = input<boolean>(true);
-  noSelectionText = input<string>('filterBar.noSelection');
-  selectionText = input<string>('filterBar.selected');
+  noSelectionText = input<string>('filterBarShared.noSelection');
+  selectionText = input<string>('filterBarShared.selected');
   enableUrlSync = input<boolean>(true);
 
   // Outputs
@@ -49,13 +48,17 @@ export class FilterBarComponent implements OnInit {
   filterValues = signal<FilterValue>({});
   currentSort = signal<SortConfig>({ field: '', direction: 'asc' });
 
+
   protected choiceRefreshKey = signal(0);
+  private filtersFingerprint = signal<string>('');
 
   sortChoice = viewChild<Choice>('sortChoice');
   sortChoiceMobile = viewChild<Choice>('sortChoiceMobile');
+  filterChoices = viewChildren<Choice>(Choice);
 
   private initialized = signal(false);
-  private isResetting = signal(false); // NOUVEAU : Flag pour éviter les conflits
+  private isResetting = signal(false);
+  private isSyncing = signal(false);
 
   constructor() {
     // Initialiser depuis URL au premier chargement
@@ -79,9 +82,8 @@ export class FilterBarComponent implements OnInit {
       const filters = this.filterValues();
       const sort = this.currentSort();
 
-      // Ne pas sync pendant le reset
       untracked(() => {
-        if (!this.isResetting()) {
+        if (!this.isResetting() && !this.isSyncing()) {
           this.urlState.syncToUrl({ search, filters, sort });
         }
       });
@@ -107,21 +109,80 @@ export class FilterBarComponent implements OnInit {
       }
     });
 
-    // Détecter changements de filtres SAUF pendant reset
+    // Sync Choice des filtres avec filterValues
+    effect(() => {
+      const filterValues = this.filterValues();
+      const filterChoices = this.filterChoices();
+
+      if (this.initialized() && !this.isResetting() && filterChoices.length > 0) {
+        setTimeout(() => {
+          this.isSyncing.set(true);
+
+          this.filters().forEach((filter) => {
+            if ((filter.type === 'select' || filter.type === 'boolean') && filterValues[filter.key]) {
+              const filterChoiceIndex = this.findFilterChoiceIndex(filter.key);
+              if (filterChoiceIndex >= 0 && filterChoiceIndex < filterChoices.length) {
+                filterChoices[filterChoiceIndex]?.setChoiceByValue(filterValues[filter.key]);
+              }
+            }
+          });
+
+          setTimeout(() => {
+            this.isSyncing.set(false);
+          }, 50);
+        }, 200);
+      }
+    });
+
+    // Détecter les changements RÉELS de filtres
     effect(() => {
       const filters = this.filters();
 
+      const fingerprint = JSON.stringify(
+        filters.map(f => ({
+          key: f.key,
+          label: f.label,
+          placeholder: f.placeholder,
+          optionsCount: f.options?.length || 0,
+          optionsLabels: f.options?.map(o => o.label).join(',') || ''
+        }))
+      );
+
       untracked(() => {
-        if (this.initialized() && filters.length > 0 && !this.isResetting()) {
-          this.choiceRefreshKey.update(v => v + 1);
+        const previousFingerprint = this.filtersFingerprint();
+
+        if (this.initialized() &&
+          filters.length > 0 &&
+          !this.isResetting() &&
+          fingerprint !== previousFingerprint) {
+
+          this.choiceRefreshKey.set(-1);
+
+          setTimeout(() => {
+            this.choiceRefreshKey.set(Date.now());
+            this.filtersFingerprint.set(fingerprint);
+          }, 50);
+        } else if (!this.initialized() && filters.length > 0) {
+          this.filtersFingerprint.set(fingerprint);
         }
       });
     });
   }
 
   ngOnInit(): void {
-    this.translate.setTranslation('en', { filterBar: enTranslations.filterBar }, true);
-    this.translate.setTranslation('fr', { filterBar: frTranslations.filterBar }, true);
+  }
+
+  private findFilterChoiceIndex(filterKey: string): number {
+    let index = 0;
+    for (const filter of this.filters()) {
+      if (filter.type === 'select' || filter.type === 'boolean') {
+        if (filter.key === filterKey) {
+          return index;
+        }
+        index++;
+      }
+    }
+    return -1;
   }
 
   getChoiceKey(filterKey: string): string {
@@ -142,6 +203,8 @@ export class FilterBarComponent implements OnInit {
   }
 
   onFilterChange(key: string, value: any): void {
+    if (this.isSyncing()) return;
+
     this.filterValues.update(current => ({
       ...current,
       [key]: value
@@ -179,43 +242,35 @@ export class FilterBarComponent implements OnInit {
   onClearFilters(): void {
     this.isResetting.set(true);
 
-    // 1. Sauvegarder les valeurs par défaut
     const defaultSort = this.sortOptions().length > 0
       ? { field: this.sortOptions()[0].value, direction: 'asc' as const }
       : this.currentSort();
 
-    // 2. Réinitialiser les valeurs
     this.searchTerm.set('');
     this.filterValues.set({});
     this.currentSort.set(defaultSort);
 
-    // 3. Émettre les événements
     this.searchChange.emit('');
     this.filterChange.emit({});
     this.sortChange.emit(defaultSort);
     this.clearFilters.emit();
 
-    // 4. Détruire les Choice
     this.choiceRefreshKey.set(-1);
 
     setTimeout(() => {
-      // 5. Recréer les Choice
-      this.choiceRefreshKey.set(0);
+      this.choiceRefreshKey.set(Date.now());
 
       setTimeout(() => {
-        // 6. Réinitialiser le sort
         if (this.sortOptions().length > 0) {
           const sortValue = this.sortOptions()[0].value;
           this.sortChoice()?.setChoiceByValue(sortValue);
           this.sortChoiceMobile()?.setChoiceByValue(sortValue);
         }
 
-        // 7. Sync URL après tout
         if (this.enableUrlSync()) {
           this.urlState.clearUrl();
         }
 
-        // 8. NOUVEAU : Désactiver le flag de reset
         setTimeout(() => {
           this.isResetting.set(false);
         }, 50);
@@ -251,7 +306,7 @@ export class FilterBarComponent implements OnInit {
       shouldSort: false,
       removeItemButton: false,
       classNames: {
-        containerInner: ['form-select']
+        containerInner: ['form-select'],
       }
     };
 

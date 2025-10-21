@@ -1,5 +1,5 @@
 @for (position of activePositions(); track position) {
-  <div [class]="'toast-container p-3 position-fixed ' + getPositionClass(position)">
+  <div [class]="'toast-container p-3 py-2 position-fixed ' + getPositionClass(position)">
     @for (toast of getToastsByPosition(position); track toast.id) {
 
       <!-- Tiny variant -->
@@ -36,7 +36,7 @@
           aria-atomic="true">
           <div class="d-flex">
             @if (toast.icon) {
-              <i [class]="toast.icon + ' fs-base mt-1 me-2'"></i>
+              <span [class]="'material-symbols-outlined fs-base mt-1 me-2'">{{ toast.icon }}</span>
             }
             <div class="toast-body me-2">
               {{ toast.message }}
@@ -47,7 +47,7 @@
                 class="btn btn-sm fs-base opacity-75 border-0 p-0 ms-auto"
                 (click)="remove(toast.id)"
                 aria-label="Close">
-                <i class="fi-close"></i>
+                <span class="material-symbols-outlined">close</span>
               </button>
             } @else {
               <button
@@ -72,7 +72,7 @@
           aria-atomic="true">
           <div class="toast-header" [class.text-dark]="toast.type === 'light'">
             @if (toast.icon) {
-              <i [class]="getHeaderIconClasses(toast)"></i>
+              <span [class]="getHeaderIconClasses(toast)">{{ toast.icon }}</span>
             }
             <span class="fw-semibold">{{ toast.title || 'Notification' }}</span>
             @if (toast.timestamp) {
@@ -84,7 +84,7 @@
                 class="btn btn-sm fs-base opacity-75 border-0 p-0"
                 (click)="remove(toast.id)"
                 aria-label="Close">
-                <i class="fi-close"></i>
+                <span class="material-symbols-outlined">close</span>
               </button>
             } @else {
               <button

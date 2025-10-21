@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
-import { UserFilters, UserListItem, UsersListResponse } from '../../models/admin/user-list.model';
+import {UserFilters, UserListItem, UsersListResponse, UserStats} from '../../models/admin/user-list.model';
 import { Observable } from 'rxjs';
 import {
   Country,
@@ -11,6 +11,7 @@ import {
   InviteRequest, RolesResponse, Territory
 } from '../../models/admin/invitation.model';
 import {TranslateService} from '@ngx-translate/core';
+import {CustomPermissions} from '../../models/auth.model';
 
 @Injectable({ providedIn: 'root' })
 export class AdminService {
@@ -23,20 +24,21 @@ export class AdminService {
     users: `${this.API_URL}/users`,
     userByDocumentId: (documentId: string) => `${this.API_URL}/users/${documentId}`,
     roles: `${this.API_URL}/users-permissions/roles`,
+    user_stats:`${this.API_URL}/soncollab-users/stats`,
 
     // Countries & Territories
-    countries: '/countries',
-    territories: '/sales-territories',
+    countries: `${this.API_URL}/countries`,
+    territories: `${this.API_URL}/sales-territories`,
 
     // Invitations
-    invitations: '/soncollab-invitations',
-    invitations_pending: '/soncollab-invitations/pending',
-    invitations_stats: '/soncollab-invitations/stats',
-    invitations_roles: '/soncollab-invitations/roles',
-    invitations_invite: '/soncollab-invitations/invite',
-    invitations_by_id: (documentId: string) => `/soncollab-invitations/${documentId}`,
-    invitations_resend: (documentId: string) => `/soncollab-invitations/${documentId}/resend`,
-    invitations_cancel: (documentId: string) => `/soncollab-invitations/${documentId}/cancel`,
+    invitations:`${this.API_URL}/soncollab-invitations`,
+    invitations_pending:`${this.API_URL}/soncollab-invitations/pending`,
+    invitations_stats: `${this.API_URL}/soncollab-invitations/stats`,
+    invitations_roles: `${this.API_URL}/soncollab-invitations/roles`,
+    invitations_invite: `${this.API_URL}/soncollab-invitations/invite`,
+    invitations_by_id: (documentId: string) => `${this.API_URL}/soncollab-invitations/${documentId}`,
+    invitations_resend: (documentId: string) => `${this.API_URL}/soncollab-invitations/${documentId}/resend`,
+    invitations_cancel: (documentId: string) => `${this.API_URL}/soncollab-invitations/${documentId}/cancel`,
   };
 
   getUsers(
@@ -63,13 +65,27 @@ export class AdminService {
       params = params.set('sort[0]', `${mappedField}:${sortDirection}`);
     }
 
-    // Recherche
     if (filters?.search) {
-      params = params
-        .set('filters[$or][0][username][$containsi]', filters.search)
-        .set('filters[$or][1][email][$containsi]', filters.search)
-        .set('filters[$or][2][first_name][$containsi]', filters.search)
-        .set('filters[$or][3][last_name][$containsi]', filters.search);
+      const searchTerms = filters.search.trim().split(' ').filter(term => term.length > 0);
+
+      if (searchTerms.length === 1) {
+        params = params.set('filters[$or][0][username][$containsi]', searchTerms[0]);
+        params = params.set('filters[$or][1][email][$containsi]', searchTerms[0]);
+        params = params.set('filters[$or][2][first_name][$containsi]', searchTerms[0]);
+        params = params.set('filters[$or][3][last_name][$containsi]', searchTerms[0]);
+      } else if (searchTerms.length === 2) {
+        params = params.set('filters[$or][0][$and][0][first_name][$containsi]', searchTerms[0]);
+        params = params.set('filters[$or][0][$and][1][last_name][$containsi]', searchTerms[1]);
+
+        params = params.set('filters[$or][1][$and][0][first_name][$containsi]', searchTerms[1]);
+        params = params.set('filters[$or][1][$and][1][last_name][$containsi]', searchTerms[0]);
+
+        params = params.set('filters[$or][2][username][$containsi]', filters.search);
+        params = params.set('filters[$or][3][email][$containsi]', filters.search);
+      } else {
+        params = params.set('filters[$or][0][username][$containsi]', filters.search);
+        params = params.set('filters[$or][1][email][$containsi]', filters.search);
+      }
     }
 
     // Filtre par rôle
@@ -89,6 +105,7 @@ export class AdminService {
 
     return this.http.get<UsersListResponse>(this.ADMIN_ENDPOINTS.users, { params });
   }
+
 
   getRoles(): Observable<any> {
     return this.http.get(this.ADMIN_ENDPOINTS.roles);
@@ -110,9 +127,12 @@ export class AdminService {
     return this.updateUser(documentId, { blocked: false });
   }
 
-
   deleteUser(documentId: string): Observable<void> {
     return this.http.delete<void>(this.ADMIN_ENDPOINTS.userByDocumentId(documentId));
+  }
+
+  getUserStats(): Observable<{ data: UserStats }> {
+    return this.http.get<{ data: UserStats }>(this.ADMIN_ENDPOINTS.user_stats);
   }
 
 
@@ -121,6 +141,7 @@ export class AdminService {
     pageSize?: number;
     status?: string;
     role?: string;
+    search?: string;
     sort?: string;
   }): Observable<InvitationListResponse> {
     let httpParams = new HttpParams();
@@ -131,14 +152,33 @@ export class AdminService {
     if (params?.role) httpParams = httpParams.set('filters[target_role][$eq]', params.role);
     if (params?.sort) httpParams = httpParams.set('sort', params.sort);
 
+    if (params?.search) {
+      const searchTerms = params.search.trim().split(' ').filter(term => term.length > 0);
+
+      if (searchTerms.length === 1) {
+        httpParams = httpParams.set('filters[$or][0][email][$containsi]', searchTerms[0]);
+        httpParams = httpParams.set('filters[$or][1][first_name][$containsi]', searchTerms[0]);
+        httpParams = httpParams.set('filters[$or][2][last_name][$containsi]', searchTerms[0]);
+      } else if (searchTerms.length === 2) {
+
+        httpParams = httpParams.set('filters[$or][0][$and][0][first_name][$containsi]', searchTerms[0]);
+        httpParams = httpParams.set('filters[$or][0][$and][1][last_name][$containsi]', searchTerms[1]);
+
+        httpParams = httpParams.set('filters[$or][1][$and][0][first_name][$containsi]', searchTerms[1]);
+        httpParams = httpParams.set('filters[$or][1][$and][1][last_name][$containsi]', searchTerms[0]);
+
+        httpParams = httpParams.set('filters[$or][2][email][$containsi]', params.search);
+      } else {
+        httpParams = httpParams.set('filters[email][$containsi]', params.search);
+      }
+    }
+
     httpParams = httpParams.set('populate[0]', 'invited_by');
     httpParams = httpParams.set('populate[1]', 'territory');
     httpParams = httpParams.set('populate[2]', 'target_country');
     httpParams = httpParams.set('populate[3]', 'invited_user');
 
-    return this.http.get<InvitationListResponse>(
-      `${this.API_URL}${this.ADMIN_ENDPOINTS.invitations}`,
-      { params: httpParams }
+    return this.http.get<InvitationListResponse>(this.ADMIN_ENDPOINTS.invitations, { params: httpParams }
     );
   }
 
@@ -150,8 +190,7 @@ export class AdminService {
     httpParams = httpParams.set('populate[2]', 'target_country');
     httpParams = httpParams.set('populate[3]', 'invited_user');
 
-    return this.http.get<{ data: InvitationListItem }>(
-      `${this.API_URL}${this.ADMIN_ENDPOINTS.invitations_by_id(documentId)}`,
+    return this.http.get<{ data: InvitationListItem }>(this.ADMIN_ENDPOINTS.invitations_by_id(documentId),
       { params: httpParams }
     );
   }
@@ -164,69 +203,72 @@ export class AdminService {
     httpParams = httpParams.set('populate[2]', 'target_country');
     httpParams = httpParams.set('populate[3]', 'invited_user');
 
-    return this.http.get<{ data: InvitationListItem[] }>(
-      `${this.API_URL}${this.ADMIN_ENDPOINTS.invitations_pending}`,
+    return this.http.get<{ data: InvitationListItem[] }>(this.ADMIN_ENDPOINTS.invitations_pending,
       { params: httpParams }
     );
   }
 
-  getInvitationStats(): Observable<InvitationStats> {
-    return this.http.get<InvitationStats>(
-      `${this.API_URL}${this.ADMIN_ENDPOINTS.invitations_stats}`
+  getInvitationStats(): Observable<{ data: InvitationStats }> {
+    return this.http.get<{ data: InvitationStats }>(
+      this.ADMIN_ENDPOINTS.invitations_stats
     );
   }
 
   getAvailableRoles(lang?: string): Observable<RolesResponse> {
     const language = lang || this.translate.currentLang || 'fr';
-    return this.http.get<RolesResponse>(
-      `${this.API_URL}${this.ADMIN_ENDPOINTS.invitations_roles}`,
+    return this.http.get<RolesResponse>(this.ADMIN_ENDPOINTS.invitations_roles,
       { params: { lang: language } }
     );
   }
 
   inviteMember(data: InviteRequest): Observable<{ data: InvitationListItem }> {
     return this.http.post<{ data: InvitationListItem }>(
-      `${this.API_URL}${this.ADMIN_ENDPOINTS.invitations_invite}`,
+      this.ADMIN_ENDPOINTS.invitations_invite,
       data
     );
   }
 
   resendInvitation(documentId: string): Observable<{ data: InvitationListItem }> {
     return this.http.put<{ data: InvitationListItem }>(
-      `${this.API_URL}${this.ADMIN_ENDPOINTS.invitations_resend(documentId)}`,
+      this.ADMIN_ENDPOINTS.invitations_resend(documentId),
       {}
     );
   }
 
   cancelInvitation(documentId: string): Observable<{ data: InvitationListItem }> {
     return this.http.put<{ data: InvitationListItem }>(
-      `${this.API_URL}${this.ADMIN_ENDPOINTS.invitations_cancel(documentId)}`,
+      this.ADMIN_ENDPOINTS.invitations_cancel(documentId),
       {}
     );
   }
 
   updateInvitation(documentId: string, data: Partial<InviteRequest>): Observable<{ data: InvitationListItem }> {
     return this.http.put<{ data: InvitationListItem }>(
-      `${this.API_URL}${this.ADMIN_ENDPOINTS.invitations_by_id(documentId)}`,
+      this.ADMIN_ENDPOINTS.invitations_by_id(documentId),
       { data }
     );
   }
 
   deleteInvitation(documentId: string): Observable<void> {
     return this.http.delete<void>(
-      `${this.API_URL}${this.ADMIN_ENDPOINTS.invitations_by_id(documentId)}`
+      this.ADMIN_ENDPOINTS.invitations_by_id(documentId)
     );
   }
 
   getCountries(): Observable<{ data: Country[] }> {
+    let params = new HttpParams();
+    params = params.set('populate', 'sales_territory');
+    params = params.set('pagination[limit]', 300);
+
     return this.http.get<{ data: Country[] }>(
-      `${this.API_URL}${this.ADMIN_ENDPOINTS.countries}`
+      this.ADMIN_ENDPOINTS.countries,
+      { params }
     );
   }
 
   getTerritories(): Observable<{ data: Territory[] }> {
     return this.http.get<{ data: Territory[] }>(
-      `${this.API_URL}${this.ADMIN_ENDPOINTS.territories}`
+      this.ADMIN_ENDPOINTS.territories
     );
   }
 

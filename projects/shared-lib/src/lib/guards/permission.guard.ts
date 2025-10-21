@@ -1,11 +1,12 @@
 import {CanActivateFn, Router} from '@angular/router';
 import {inject} from '@angular/core';
-import {map} from 'rxjs';
+import {filter, map, take} from 'rxjs';
 import {PermissionCheck, PermissionDeniedToastOptions, PermissionMode} from '../models';
 import {PermissionService} from '../services';
 import {TranslateService} from '@ngx-translate/core';
 import {PERMISSION_CONFIG} from '../config/permission.config';
 import {TOAST_SERVICE} from '../tokens/toast.token';
+import {toObservable} from '@angular/core/rxjs-interop';
 
 export function pluginPermissionGuard(
   plugin: string,
@@ -21,29 +22,24 @@ export function pluginPermissionGuard(
     const router = inject(Router);
 
     if (config.roleId === 0) {
+      router.navigate(['/']);
       return false;
     }
 
-    if (!permissionService.loaded()) {
-      return permissionService.loadPermissions().pipe(
-        map(() => {
-          const hasAccess = permissionService.hasPluginPermission(plugin, controller, action);
-          if (!hasAccess) {
-            showPermissionDeniedToast(toastService, translate, toastOptions, router);
-          }
-          return hasAccess;
-        })
-      );
-    }
-
-    const hasAccess = permissionService.hasPluginPermission(plugin, controller, action);
-    if (!hasAccess) {
-      showPermissionDeniedToast(toastService, translate, toastOptions, router);
-    }
-    return hasAccess;
+    // Attendre que les permissions soient chargées
+    return toObservable(permissionService.loaded).pipe(
+      filter(loaded => loaded),
+      take(1),
+      map(() => {
+        const hasAccess = permissionService.hasPluginPermission(plugin, controller, action);
+        if (!hasAccess) {
+          showPermissionDeniedToast(toastService, translate, toastOptions, router);
+        }
+        return hasAccess;
+      })
+    );
   };
 }
-
 
 export function apiPermissionGuard(
   api: string,
@@ -71,26 +67,22 @@ export function multiplePermissionsGuard(
     const router = inject(Router);
 
     if (config.roleId === 0) {
+      router.navigate(['/']);
       return false;
     }
 
-    if (!permissionService.loaded()) {
-      return permissionService.loadPermissions().pipe(
-        map(() => {
-          const hasAccess = checkMultiplePermissions(permissionService, permissions, mode);
-          if (!hasAccess) {
-            showPermissionDeniedToast(toastService, translate, toastOptions, router);
-          }
-          return hasAccess;
-        })
-      );
-    }
-
-    const hasAccess = checkMultiplePermissions(permissionService, permissions, mode);
-    if (!hasAccess) {
-      showPermissionDeniedToast(toastService, translate, toastOptions, router);
-    }
-    return hasAccess;
+    // Attendre que les permissions soient chargées
+    return toObservable(permissionService.loaded).pipe(
+      filter(loaded => loaded),
+      take(1),
+      map(() => {
+        const hasAccess = checkMultiplePermissions(permissionService, permissions, mode);
+        if (!hasAccess) {
+          showPermissionDeniedToast(toastService, translate, toastOptions, router);
+        }
+        return hasAccess;
+      })
+    );
   };
 }
 
@@ -127,11 +119,11 @@ function showPermissionDeniedToast(
     variant: 'header',
     style: 'border',
     position: 'top-center',
-    icon: 'bi-exclamation-triangle-fill',
+    icon: 'lock',
     autohide: true,
     delay: 3000,
-    title: translate.instant('permissions.denied.title'),
-    message: translate.instant('permissions.denied.message')
+    title: translate.instant('permissionShared.denied.title'),
+    message: translate.instant('permissionShared.denied.message')
   };
 
   if (options?.customToastConfigFactory) {

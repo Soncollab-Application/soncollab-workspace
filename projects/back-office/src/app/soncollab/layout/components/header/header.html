@@ -1,7 +1,7 @@
-<button class="btn btn-link text-body-secondary p-2 me-2 d-lg-none"
+<button class="btn btn-link text-body-secondary p-2 me-2 d-lg-none text-decoration-none"
         data-bs-toggle="offcanvas"
         data-bs-target="#mobileSidebar">
-  <i class="bi bi-list fs-5"></i>
+  <span class="material-symbols-outlined fs-3">menu</span>
 </button>
 
 <h1 class="fs-6 fw-normal mb-0 flex-grow-1 text-body-emphasis text-truncate">
@@ -11,20 +11,20 @@
 <div class="d-flex align-items-center header-container">
 
   <!-- Toggle theme -->
-  <button class="btn btn-link text-body-secondary p-2 rounded"
+  <button class="btn btn-link text-body-secondary p-2 rounded text-decoration-none"
           (click)="toggleTheme()"
           [libTooltip]="'header.theme.toggle' | translate"
           [tooltipPlacement]="'left'"
           [tooltipSm]="true">
-    <i [class]="isDarkTheme() ? 'bi bi-sun' : 'bi bi-moon'"></i>
+    <span class="material-symbols-outlined fs-5">{{ isDarkTheme() ? 'light_mode' : 'dark_mode' }}</span>
   </button>
 
   <!-- Language selector -->
   <div class="dropdown-center">
-    <button class="btn btn-link text-body-secondary p-2 rounded"
+    <button class="btn btn-link text-body-secondary p-2 rounded text-decoration-none "
             type="button"
             data-bs-toggle="dropdown">
-      <i class="bi bi-globe"></i>
+      <span class="material-symbols-outlined fs-5">language</span>
     </button>
     <ul class="dropdown-menu" style="min-width: 150px;">
       @for (lang of supportedLanguages(); track lang.code) {
@@ -82,24 +82,24 @@
                    [attr.data-bs-target]="'#mobile' + item.key + 'Submenu'"
                    aria-expanded="false"
                    [attr.aria-controls]="'mobile' + item.key + 'Submenu'">
-                  <i [class]="item.icon + ' me-3'"></i>
+                  <span class="material-symbols-outlined me-3">{{ item.icon }}</span>
                   {{ 'aside.navigation.' + item.key | translate }}
-                  <i class="bi bi-chevron-down ms-auto small"></i>
+                  <span class="material-symbols-outlined ms-auto small">expand_more</span>
                 </a>
 
                 <!-- Sous-menu collapse -->
                 <div class="collapse"
                      [id]="'mobile' + item.key + 'Submenu'"
                      data-bs-parent="#mobileAccordion">
-                  <div class="d-flex flex-column ms-3">
+                  <div class="d-flex flex-column ps-4 pe-2 py-1">
                     @for (child of item.children; track child.key) {
-                      <a class="nav-link rounded submenu-item py-1 mb-1"
+                      <a class="nav-link rounded submenu-item py-2 px-3 mb-1 d-flex align-items-center"
                          [class.text-body-secondary]="!isActiveRoute(child.route!)"
                          [routerLink]="child.route"
                          [routerLinkActive]="['active', 'bg-primary', 'bg-opacity-10', 'text-primary']"
                          [routerLinkActiveOptions]="{exact: false}"
                          data-bs-dismiss="offcanvas">
-                        <i class="bi bi-dot me-2"></i>
+                        <i class="bi bi-dot me-3"></i>
                         {{ 'aside.navigation.' + child.key | translate }}
                       </a>
                     }
@@ -114,7 +114,7 @@
                  [routerLinkActive]="['active', 'bg-primary', 'bg-opacity-10', 'text-primary']"
                  [routerLinkActiveOptions]="{exact: false}"
                  data-bs-dismiss="offcanvas">
-                <i [class]="item.icon + ' me-3'"></i>
+                <span class="material-symbols-outlined me-3">{{ item.icon }}</span>
                 {{ 'aside.navigation.' + item.key | translate }}
               </a>
             }
@@ -140,10 +140,10 @@
         </div>
       </div>
     </div>
-    <button class="btn btn-outline-danger for-inter-font btn-sm fs-sm w-100"
+    <button class="btn btn-outline-danger for-inter-font btn-sm fs-sm w-100 text-decoration-none"
             (click)="logout()"
             data-bs-dismiss="offcanvas">
-      <i class="bi bi-box-arrow-in-right me-2"></i>
+      <span class="material-symbols-outlined me-2">logout</span>
       {{ 'aside.profile.logout' | translate }}
     </button>
   </div>

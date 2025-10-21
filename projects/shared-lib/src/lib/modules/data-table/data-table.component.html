@@ -1,7 +1,7 @@
 @if (loading()) {
   <div class="text-center py-5">
     <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">{{ 'dataTable.loading' | translate }}</span>
+      <span class="visually-hidden">{{ 'dataTableShared.loading' | translate }}</span>
     </div>
   </div>
 } @else {
@@ -29,17 +29,23 @@
             [attr.colspan]="column.colspan || 1"
             [class.cursor-pointer]="column.sortable"
             (click)="onSort(column)">
-            {{ column.label }}
-            @if (column.sortable) {
-              <i [class]="'bi ms-2 ' + getSortIcon(column)"></i>
-            }
+            <div class="d-flex align-items-center">
+              <div>
+                {{ column.label }}
+              </div>
+              @if (column.sortable) {
+                <div class="mt-1">
+                  <span [class]="'material-symbols-outlined fs-5 ms-2'"> {{ getSortIcon(column) }} </span>
+                </div>
+              }
+            </div>
           </th>
         }
       </tr>
       </thead>
 
       <tbody>
-        @if (data().length === 0) {
+        @if (formattedData().length === 0) {
           <tr>
             <td [attr.colspan]="getTotalColspan()" class="p-0">
               <lib-empty-state
@@ -51,7 +57,7 @@
           </tr>
         }
 
-        @for (row of data(); track $index) {
+        @for (row of formattedData(); track $index) {
           <tr
             [class.cursor-pointer]="clickable()"
             [class.table-active]="isRowSelected(row)"
@@ -82,6 +88,9 @@
                         {{ getCellValue(row, column) }}
                       </span>
                     }
+                    @case ('date') {
+                      <span class="text-muted">{{ getCellValue(row, column) }}</span>
+                    }
                     @default {
                       {{ getCellValue(row, column) }}
                     }
@@ -90,21 +99,19 @@
                 <td style="width: 0">
                   <div class="dropdown" libDropdownSingle (click)="$event.stopPropagation()">
                     <button
-                      class="btn btn-sm btn-link"
+                      class="btn btn-sm btn-link text-decoration-none"
                       type="button"
                       data-bs-toggle="dropdown"
                       aria-expanded="false">
-                      <i class="bi bi-three-dots" style="font-size: 1.25rem;"></i>
+                      <span class="material-symbols-outlined fs-2">more_horiz</span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
                       @for (action of actions(); track action.label) {
                         @if (shouldShowAction(action, row)) {
                           <li>
-                            <a class="dropdown-item"
-                               href="javascript:void(0)"
-                               (click)="onActionClick(action, row, $event)">
+                            <a class="dropdown-item d-flex align-items-center" href="javascript:void(0)" (click)="onActionClick(action, row, $event)">
                               @if (action.icon) {
-                                <i [class]="'bi bi-' + action.icon + ' me-2'"></i>
+                                <span class="material-symbols-outlined me-2 fs-5">{{ action.icon }}</span>
                               }
                               {{ action.label }}
                             </a>
@@ -168,7 +175,7 @@
                       </span>
                     }
                     @case ('date') {
-                      {{ getCellValue(row, column) | relativeDate }}
+                      <span class="text-muted">{{ getCellValue(row, column) }}</span>
                     }
                     @case ('image') {
                       <div class="avatar">
@@ -196,35 +203,33 @@
   @if (pagination() && pagination()!.total > 0) {
     <div class="row for-inter-font align-items-center mt-4">
       <div class="col">
-        <p class="text-body-secondary mb-0">
-          {{ (pagination()!.currentPage - 1) * pagination()!.pageSize + 1 }} —
-          {{ Math.min(pagination()!.currentPage * pagination()!.pageSize, pagination()!.total) }}
-          ({{ pagination()!.total }} {{ 'dataTable.total' | translate }})
+        <p class="text-body-secondary fs-sm mb-0">
+          {{ 'dataTableShared.showing' | translate }}
+          <span class="fw-semibold">{{ (pagination()!.currentPage - 1) * pagination()!.pageSize + 1 }}</span>
+          {{ 'dataTableShared.to' | translate }}
+          <span class="fw-semibold">{{ Math.min(pagination()!.currentPage * pagination()!.pageSize, pagination()!.total) }}</span>
+          {{ 'dataTableShared.of' | translate }}
+          <span class="fw-semibold">{{ pagination()!.total }}</span>
+          {{ 'dataTableShared.results' | translate }}
         </p>
       </div>
       <div class="col-auto">
-        <nav aria-label="Page navigation">
+        <nav>
           <ul class="pagination mb-0">
             <li class="page-item" [class.disabled]="pagination()!.currentPage === 1">
-              <a class="page-link"
-                 href="javascript:void(0)"
-                 (click)="pagination()!.currentPage > 1 && onPageChange(pagination()!.currentPage - 1)"
-                 aria-label="Previous">
-                <span aria-hidden="true">«</span>
+              <a class="page-link" href="javascript:void(0)" (click)="onPageChange(pagination()!.currentPage - 1)">
+                <span class="material-symbols-outlined">chevron_left</span>
               </a>
             </li>
 
-            @for (page of getPageNumbers(); track $index) {
+            @for (page of getPageNumbers(); track page) {
               @if (page === -1) {
                 <li class="page-item disabled">
                   <span class="page-link">...</span>
                 </li>
               } @else {
-                <li class="page-item">
-                  <a class="page-link"
-                     [class.active]="page === pagination()!.currentPage"
-                     href="javascript:void(0)"
-                     (click)="onPageChange(page)">
+                <li class="page-item" [class.active]="page === pagination()!.currentPage">
+                  <a class="page-link" href="javascript:void(0)" (click)="onPageChange(page)">
                     {{ page }}
                   </a>
                 </li>
@@ -232,11 +237,8 @@
             }
 
             <li class="page-item" [class.disabled]="pagination()!.currentPage === pagination()!.pageCount">
-              <a class="page-link"
-                 href="javascript:void(0)"
-                 (click)="pagination()!.currentPage < pagination()!.pageCount && onPageChange(pagination()!.currentPage + 1)"
-                 aria-label="Next">
-                <span aria-hidden="true">»</span>
+              <a class="page-link" href="javascript:void(0)" (click)="onPageChange(pagination()!.currentPage + 1)">
+                <span class="material-symbols-outlined">chevron_right</span>
               </a>
             </li>
           </ul>

@@ -4,15 +4,21 @@ import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {Router} from '@angular/router';
 import {CookieService} from './cookie.service';
 import {
+  ActivateInvitationRequest,
+  ActivateInvitationResponse,
   AuthState,
-  BackofficeUser, ForgotPasswordRequest, ForgotPasswordResponse,
+  BackofficeUser, CustomPermission,
+  ForgotPasswordRequest,
+  ForgotPasswordResponse,
   LoginRequest,
   LoginResponse,
-  RefreshTokenResponse, ResetPasswordRequest, ResetPasswordResponse,
+  RefreshTokenResponse,
+  ResetPasswordRequest,
+  ResetPasswordResponse,
   SonCollabRoleType
 } from '../models/auth.model';
 import {environment} from '../../../environments/environment';
-import { PERMISSION_CONFIG } from "shared-lib";
+import {PERMISSION_CONFIG, PermissionService} from "shared-lib";
 
 @Injectable({
   providedIn: 'root'
@@ -20,12 +26,15 @@ import { PERMISSION_CONFIG } from "shared-lib";
 export class AuthService {
   private readonly API_URL = environment.api.fullUrl;
   private permissionConfig = inject(PERMISSION_CONFIG);
+  private permissionService = inject(PermissionService);
+
   private readonly AUTH_ENDPOINTS = {
     login: `${this.API_URL}/auth/local`,
     forgotPassword: `${this.API_URL}/auth/forgot-password`,
     resetPassword: `${this.API_URL}/auth/reset-password`,
     me: `${this.API_URL}/users/me`,
-    refresh: `${this.API_URL}/auth/local/refresh`
+    refresh: `${this.API_URL}/auth/local/refresh`,
+    activateInvitation: `${this.API_URL}/soncollab-invitations/activate`
   };
 
   private authStateSubject = new BehaviorSubject<AuthState>({
@@ -79,6 +88,7 @@ export class AuthService {
       this.validateToken(token).subscribe({
         next: (user) => {
           this.setAuthState(user, token, refreshToken);
+          // NE PAS charger les permissions ici, APP_INITIALIZER s'en charge
         },
         error: () => {
           this.tryRefreshToken();
@@ -107,10 +117,8 @@ export class AuthService {
       );
   }
 
-
   forgotPassword(email: string): Observable<ForgotPasswordResponse> {
     const request: ForgotPasswordRequest = { email };
-
     return this.http.post<ForgotPasswordResponse>(this.AUTH_ENDPOINTS.forgotPassword, request)
       .pipe(
         catchError((error: HttpErrorResponse) => {
@@ -118,7 +126,6 @@ export class AuthService {
         })
       );
   }
-
 
   resetPassword(code: string, password: string, passwordConfirmation: string): Observable<ResetPasswordResponse> {
     const request: ResetPasswordRequest = {
@@ -130,7 +137,6 @@ export class AuthService {
     return this.http.post<ResetPasswordResponse>(this.AUTH_ENDPOINTS.resetPassword, request)
       .pipe(
         tap((response) => {
-          // Auto-login après reset password réussi
           this.handleResetPasswordSuccess(response);
         }),
         catchError((error: HttpErrorResponse) => {
@@ -141,21 +147,26 @@ export class AuthService {
 
   private handleResetPasswordSuccess(response: ResetPasswordResponse): void {
     const { jwt, user } = response;
-
     this.cookieService.setCookie(environment.auth.tokenKey, jwt, 1);
-
     this.setAuthState(user, jwt, jwt);
-
     this.startRefreshTimer();
+
+    // Charger les permissions après reset password
+    if (user.role?.id) {
+      this.permissionService.loadPermissions().subscribe();
+    }
   }
 
   private handleLoginSuccess(response: LoginResponse): void {
     const { jwt, refreshToken, user } = response;
-
     this.cookieService.setCookie(environment.auth.tokenKey, jwt, 1);
     this.cookieService.setCookie(environment.auth.refreshTokenKey, refreshToken || jwt, 30);
-
     this.setAuthState(user, jwt, refreshToken || jwt);
+
+    // Charger les permissions immédiatement après login
+    if (user.role?.id) {
+      this.permissionService.loadPermissions().subscribe();
+    }
   }
 
   private setAuthState(user: BackofficeUser, token: string, refreshToken: string): void {
@@ -182,7 +193,6 @@ export class AuthService {
   private validateToken(token: string): Observable<BackofficeUser> {
     const headers = { Authorization: `Bearer ${token}` };
     const url = `${this.AUTH_ENDPOINTS.me}`;
-
     return this.http.get<BackofficeUser>(url, { headers })
       .pipe(
         map(response => response),
@@ -206,6 +216,10 @@ export class AuthService {
         this.validateToken(response.jwt).subscribe({
           next: (user) => {
             this.setAuthState(user, response.jwt, response.refreshToken);
+            // Charger les permissions après refresh token
+            if (user.role?.id) {
+              this.permissionService.loadPermissions().subscribe();
+            }
           },
           error: () => this.logout()
         });
@@ -221,9 +235,13 @@ export class AuthService {
     return this.http.post<RefreshTokenResponse>(this.AUTH_ENDPOINTS.refresh, { refreshToken });
   }
 
-  logout(): void {
+  logout(redirect: boolean = true): void {
     this.clearRefreshTimer();
     this.cookieService.deleteAllAuthCookies();
+
+    // Réinitialiser les permissions
+    this.permissionConfig.roleId = 0;
+
     this.updateAuthState({
       isAuthenticated: false,
       user: null,
@@ -232,7 +250,23 @@ export class AuthService {
       loading: false,
       error: null
     });
-    this.router.navigate(['/auth/login']);
+
+    if (redirect) {
+      this.router.navigate(['/auth/login']);
+    }
+  }
+
+
+
+  activateInvitation(token: string, password: string): Observable<ActivateInvitationResponse> {
+    const request: ActivateInvitationRequest = { token, password };
+
+    return this.http.post<ActivateInvitationResponse>(this.AUTH_ENDPOINTS.activateInvitation, request)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          return throwError(() => error);
+        })
+      );
   }
 
   private startRefreshTimer(): void {
@@ -263,5 +297,38 @@ export class AuthService {
       default:
         return 'Erreur de connexion';
     }
+  }
+
+
+  hasCustomPermission(permission: CustomPermission): boolean {
+    const user = this.currentUser;
+    if (!user?.custom_permissions) return false;
+
+    // Si l'utilisateur a 'all', il a toutes les permissions
+    if (user.custom_permissions['all']?.enabled) return true;
+
+    // Vérifier la permission spécifique
+    return user.custom_permissions[permission]?.enabled ?? false;
+  }
+
+  hasAnyCustomPermission(permissions: CustomPermission[]): boolean {
+    return permissions.some(p => this.hasCustomPermission(p));
+  }
+
+  hasAllCustomPermissions(permissions: CustomPermission[]): boolean {
+    return permissions.every(p => this.hasCustomPermission(p));
+  }
+
+  getEnabledCustomPermissions(): CustomPermission[] {
+    const user = this.currentUser;
+    if (!user?.custom_permissions) return [];
+
+    // Si 'all' est activé, retourner 'all'
+    if (user.custom_permissions['all']?.enabled) return ['all'];
+
+    // Retourner toutes les permissions activées
+    return Object.entries(user.custom_permissions)
+      .filter(([_, value]) => value.enabled)
+      .map(([key, _]) => key as CustomPermission);
   }
 }

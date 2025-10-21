@@ -2,7 +2,7 @@
   @if (loading()) {
     <div class="card-body text-center">
       <div class="spinner-border spinner-border-sm text-primary" role="status">
-        <span class="visually-hidden">{{ 'kpiCard.loading' | translate }}</span>
+        <span class="visually-hidden">{{ 'kpiCardShared.loading' | translate }}</span>
       </div>
     </div>
   } @else {
@@ -14,7 +14,7 @@
         </div>
         @if (data().icon) {
           <div [class]="'rounded-circle p-3 d-flex align-items-center justify-content-center ' + (data().bgClass || 'bg-primary bg-opacity-10')" style="width: 60px; height: 60px;">
-            <i [class]="'bi bi-' + data().icon + ' fs-4 ' + (data().iconClass || 'text-primary')"></i>
+            <span [class]="'material-symbols-outlined fs-4 ' + (data().iconClass || 'text-primary')">{{ data().icon }}</span>
           </div>
         }
       </div>
@@ -22,7 +22,7 @@
       @if (hasTrend()) {
         <div class="d-flex align-items-center gap-2">
           <span [class]="'badge ' + trendClass()">
-            <i [class]="'bi ' + trendIcon() + ' me-1'"></i>
+            <span [class]="'material-symbols-outlined me-1'" style="font-size: 1rem;">{{ trendIcon() }}</span>
             {{ data().trend }}%
           </span>
           @if (data().trendLabel) {

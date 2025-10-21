@@ -1,21 +1,20 @@
-import {Component, input, output, signal, computed, OnInit, inject, effect} from '@angular/core';
+import {Component, input, output, signal, computed, OnInit, inject, effect, DestroyRef} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {TranslatePipe, TranslateService} from '@ngx-translate/core';
-import enTranslations from './i18n/en.json';
-import frTranslations from './i18n/fr.json';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {TableAction, TableColumn} from './table.model';
 import {PaginationState} from './pagination.model';
 import {SortConfig} from '../filter-bar/filter.model';
 import {DropdownSingleDirective} from '../../directives/dropdown-single.directive';
 import {EmptyStateComponent} from '../empty-state';
 import {getInitialsByParamsName} from '../../utils/user.utils';
-import {RelativeDatePipe} from '../../pipes/relative-date.pipe';
 import {UrlStateService} from '../../services';
+import {RelativeDateService} from '../../services';
 
 @Component({
   selector: 'lib-data-table',
   standalone: true,
-  imports: [CommonModule, TranslatePipe, DropdownSingleDirective, EmptyStateComponent, RelativeDatePipe],
+  imports: [CommonModule, TranslatePipe, DropdownSingleDirective, EmptyStateComponent],
   templateUrl: './data-table.component.html',
   styleUrls: ['./data-table.component.css']
 })
@@ -23,6 +22,8 @@ export class DataTableComponent<T = any> implements OnInit {
 
   private translate = inject(TranslateService);
   private urlState = inject(UrlStateService);
+  private destroyRef = inject(DestroyRef);
+  private relativeDateService = inject(RelativeDateService);
 
   // Inputs
   data = input.required<T[]>();
@@ -50,6 +51,9 @@ export class DataTableComponent<T = any> implements OnInit {
   selectedRows = signal<Set<string>>(new Set());
   private initialized = signal(false);
 
+  // Signal pour forcer la mise à jour lors du changement de langue
+  private langVersion = signal(0);
+
   // Computed
   hasActions = computed(() => (this.actions()?.length ?? 0) > 0);
   allSelected = computed(() => {
@@ -57,7 +61,42 @@ export class DataTableComponent<T = any> implements OnInit {
     return dataLength > 0 && this.selectedRows().size === dataLength;
   });
 
+  // Computed pour formater les données avec la langue actuelle
+  formattedData = computed(() => {
+    // Force la réévaluation quand la langue change
+    const _ = this.langVersion();
+    const rawData = this.data();
+    const cols = this.columns();
+
+    return rawData.map(row => {
+      const formatted: any = { ...row };
+      cols.forEach(col => {
+        if (col.type === 'date') {
+          const value = this.getNestedValue(row, col.key);
+          if (value) {
+            formatted[`__formatted_${col.key}`] = this.relativeDateService.formatRelativeDate(value);
+          }
+        }
+      });
+      return formatted;
+    });
+  });
+
   constructor() {
+    // Écoute les changements de langue
+    this.translate.onLangChange
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.langVersion.update(v => v + 1);
+      });
+
+    // Force un refresh initial quand les traductions sont chargées
+    this.translate.onTranslationChange
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.langVersion.update(v => v + 1);
+      });
+
     // Initialiser page depuis URL
     effect(() => {
       if (!this.initialized() && this.enableUrlSync()) {
@@ -80,8 +119,8 @@ export class DataTableComponent<T = any> implements OnInit {
   }
 
   ngOnInit(): void {
-    this.translate.setTranslation('en', { dataTable: enTranslations.dataTable }, true);
-    this.translate.setTranslation('fr', { dataTable: frTranslations.dataTable }, true);
+    // Force un refresh initial
+    this.langVersion.update(v => v + 1);
   }
 
   getInitials(name: any): string {
@@ -96,8 +135,8 @@ export class DataTableComponent<T = any> implements OnInit {
 
   getSortIcon(column: TableColumn<T>): string {
     const sort = this.currentSort();
-    if (!sort || sort.field !== column.key) return 'bi-arrow-down-up';
-    return sort.direction === 'asc' ? 'bi-sort-up' : 'bi-sort-down';
+    if (!sort || sort.field !== column.key) return 'swap_vert';
+    return sort.direction === 'asc' ? 'arrow_upward' : 'arrow_downward';
   }
 
   getAvatarUrl(row: T, column: TableColumn<T>): string {
@@ -153,7 +192,7 @@ export class DataTableComponent<T = any> implements OnInit {
   }
 
   toggleAllRows(): void {
-    const data = this.data();
+    const data = this.formattedData();
     const selected = new Set(this.selectedRows());
 
     if (this.allSelected()) {
@@ -183,12 +222,24 @@ export class DataTableComponent<T = any> implements OnInit {
     this.selectionChange.emit(selectedData);
   }
 
-  getCellValue(row: T, column: TableColumn<T>): any {
+  getCellValue(row: any, column: TableColumn<T>): any {
+    // Si c'est une date, utilise la valeur formatée
+    if (column.type === 'date') {
+      return row[`__formatted_${column.key}`] || this.getNestedValue(row, column.key);
+    }
+
     if (column.render) {
       return column.render(row);
     }
+
+    if (column.format) {
+      const value = this.getNestedValue(row, column.key);
+      return column.format(value);
+    }
+
     return this.getNestedValue(row, column.key);
   }
+
 
   getNestedValue(obj: any, path: string): any {
     return path.split('.').reduce((curr, key) => curr?.[key], obj);

@@ -1,13 +1,25 @@
-<app-breadcrumb [showAvatar]="true" [icon]="'bi-people-fill'">
+<app-breadcrumb [showAvatar]="true" [icon]="'group'">
   <div breadcrumb-actions class="col-12 col-sm-auto mt-4 mt-sm-0 pb-5">
     @if (canCreateUser()) {
       <button class="btn btn-primary w-100 w-sm-auto" (click)="router.navigate(['/admin/team/users/new'])">
-        <i class="bi bi-plus-lg me-2"></i>
+        <span class="material-symbols-outlined me-2">add</span>
         {{ 'users-list.newUser' | translate }}
       </button>
     }
   </div>
 </app-breadcrumb>
+
+
+<div class="row g-3 mb-4 pb-3">
+  @for (kpi of kpiCards(); track kpi.label) {
+    <div class="col-12 col-sm-6 col-lg-4 col-xl">
+      <lib-kpi-card
+        [data]="kpi"
+        [loading]="loadingStats()"
+      />
+    </div>
+  }
+</div>
 
 
 <div class="mb-5 pt-2">

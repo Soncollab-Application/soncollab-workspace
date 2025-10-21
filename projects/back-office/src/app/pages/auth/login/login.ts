@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../../core/services/auth.service';
 import { LoginRequest } from '../../../core/models/auth.model';
+import { CustomValidators } from 'shared-lib';
 
 @Component({
   selector: 'app-login',
@@ -27,7 +28,7 @@ export class Login {
 
   // Form avec validation personnalisée
   loginForm = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
+    email: ['', [Validators.required, CustomValidators.email()]],
     password: ['', [Validators.required, Validators.minLength(6)]]
   });
 
@@ -38,7 +39,7 @@ export class Login {
       if (control.errors?.['required']) {
         return this.translate.instant('auth.login.email.required');
       }
-      if (control.errors?.['email']) {
+      if (control.errors?.['invalidEmail']) {
         return this.translate.instant('auth.login.email.invalid');
       }
     }

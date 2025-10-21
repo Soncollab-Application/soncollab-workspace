@@ -1,1 +1,304 @@
-<p>invitation-detail works!</p>
+<app-breadcrumb [showAvatar]="true" [icon]="'mail'" [hasMobileActions]="false">
+  <div breadcrumb-actions>
+    <button class="btn btn-outline-secondary" (click)="goBack()">
+      <span class="material-symbols-outlined me-2">arrow_back</span>
+      {{ 'common.back' | translate }}
+    </button>
+  </div>
+</app-breadcrumb>
+
+@if (loading()) {
+  <div class="d-flex justify-content-center align-items-center" style="min-height: 400px;">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
+    </div>
+  </div>
+}
+
+@if (!loading() && invitation()) {
+  <div class="row mt-4">
+    <div class="col-xl-4 mb-4">
+      <div class="card ">
+        <div class="card-body text-center">
+          <div class="mb-3">
+            <div class="badge text-bg-{{ getStatusBadgeType(invitation()!.invitation_status) }}">
+              <span class="material-symbols-outlined me-1 fs-sm">
+                {{ getStatusIcon(invitation()!.invitation_status) }}
+              </span>
+              {{ translateStatus(invitation()!.invitation_status) }}
+            </div>
+          </div>
+          <h4 class="mb-1 fw-bold">{{ getInviteeName() }}</h4>
+          <p class="text-muted mb-3">
+            <span class="material-symbols-outlined  me-1 fs-sm" >email</span>
+            {{ invitation()!.email }}
+          </p>
+
+          <div class="d-flex gap-2 justify-content-center mb-3">
+            <lib-badge
+              [type]="getRoleBadgeType(invitation()!.target_role)"
+              [variant]="'subtle'"
+              [text]="translateRole(invitation()!.target_role)"
+            />
+
+            @if (invitation()!.department) {
+              <lib-badge
+                [type]="'secondary'"
+                [variant]="'subtle'"
+                [text]="'invitations-list.departments.' + invitation()!.department | translate"
+              />
+            }
+          </div>
+
+          <div class="text-start mt-4 pt-3 border-top">
+            <div class="mb-3">
+              <small class="text-muted d-block mb-1">
+                <span class="material-symbols-outlined  me-1" style="font-size: 1rem;">schedule</span>
+                {{ 'invitation-detail.created' | translate }}
+              </small>
+              <p class="mb-0 fw-medium">{{ invitation()!.createdAt | relativeDate }}</p>
+            </div>
+
+            @if (invitation()!.sent_at) {
+              <div class="mb-3">
+                <small class="text-muted d-block mb-1">
+                  <span class="material-symbols-outlined  me-1" style="font-size: 1rem;">send</span>
+                  {{ 'invitation-detail.sent_at' | translate }}
+                </small>
+                <p class="mb-0 fw-medium">{{ invitation()!.sent_at | relativeDate }}</p>
+              </div>
+            }
+
+            @if (invitation()!.accepted_at) {
+              <div class="mb-3">
+                <small class="text-muted d-block mb-1">
+                  <span class="material-symbols-outlined  me-1 text-success" style="font-size: 1rem;">check_circle</span>
+                  {{ 'invitation-detail.accepted_at' | translate }}
+                </small>
+                <p class="mb-0 fw-medium">{{ invitation()!.accepted_at | relativeDate }}</p>
+              </div>
+            }
+
+            @if (invitation()!.expires_at && !isAccepted()) {
+              <div class="mb-3">
+                <small class="text-muted d-block mb-1">
+                  <span class="material-symbols-outlined  me-1" [class.text-danger]="isExpired()" style="font-size: 1rem;">event</span>
+                  {{ 'invitation-detail.expires_at' | translate }}
+                </small>
+                <p class="mb-0 fw-medium" [class.text-danger]="isExpired()">
+                  {{ invitation()!.expires_at | relativeDate }}
+                </p>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-8">
+      <div class="card mb-4">
+        <div class="card-header border-bottom">
+          <h5 class="mb-0 ">
+            <span class="material-symbols-outlined me-2 text-primary">info</span>
+            {{ 'invitation-detail.details' | translate }}
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="row g-4">
+            <div class="col-md-6">
+              <div class="detail-item">
+                <small class="text-muted d-block mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                  {{ 'invitation-detail.first_name' | translate }}
+                </small>
+                <p class="mb-0 fw-medium">{{ invitation()!.first_name }}</p>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="detail-item">
+                <small class="text-muted d-block mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                  {{ 'invitation-detail.last_name' | translate }}
+                </small>
+                <p class="mb-0 fw-medium">{{ invitation()!.last_name }}</p>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="detail-item">
+                <small class="text-muted d-block mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                  {{ 'invitation-detail.email' | translate }}
+                </small>
+                <p class="mb-0">
+                  <a [href]="'mailto:' + invitation()!.email" class="text-decoration-none">
+                    {{ invitation()!.email }}
+                  </a>
+                </p>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="detail-item">
+                <small class="text-muted d-block mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                  {{ 'invitation-detail.language' | translate }}
+                </small>
+                <p class="mb-0 fw-medium">
+                  {{ invitation()!.preferred_language === 'fr' ? 'Français' : 'English' }}
+                </p>
+              </div>
+            </div>
+
+            @if (invitation()!.territory) {
+              <div class="col-md-6">
+                <div class="detail-item">
+                  <small class="text-muted d-block mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                    {{ 'invitation-detail.territory' | translate }}
+                  </small>
+                  <p class="mb-0 fw-medium">{{ invitation()!.territory?.territory_name }}</p>
+                </div>
+              </div>
+            }
+
+            @if (invitation()!.target_country) {
+              <div class="col-md-6">
+                <div class="detail-item">
+                  <small class="text-muted d-block mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                    {{ 'invitation-detail.country' | translate }}
+                  </small>
+                  <p class="mb-0 fw-medium">
+                    @if (invitation()!.target_country?.flag) {
+                      <span class="me-2">{{ invitation()!.target_country?.flag }}</span>
+                    }
+                    {{ invitation()!.target_country?.name }}
+                  </p>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      @if (invitation()!.invited_by) {
+        <div class="card  mb-4">
+          <div class="card-header border-bottom">
+            <h5 class="mb-0 ">
+              <span class="material-symbols-outlined me-2 text-success">person_add</span>
+              {{ 'invitation-detail.invited_by' | translate }}
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="d-flex justify-content-start">
+              <div class="avatar avatar-sm justify-content-center me-3">
+                {{ invitation()!.invited_by!.first_name.charAt(0) }}{{ invitation()!.invited_by!.last_name.charAt(0) }}
+              </div>
+              <div>
+                <p class="mb-0 fw-bold">
+                  {{ invitation()!.invited_by!.first_name }} {{ invitation()!.invited_by!.last_name }}
+                </p>
+                <small class="text-muted">{{ invitation()!.invited_by!.email }}</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      @if (invitation()!.invited_user) {
+        <div class="card mb-4">
+          <div class="card-header border-bottom">
+            <h5 class="mb-0 ">
+              <span class="material-symbols-outlined me-2 text-info">person_check</span>
+              {{ 'invitation-detail.accepted_user' | translate }}
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="d-flex justify-content-start">
+              <div class="avatar avatar-sm justify-content-center me-3">
+                {{ invitation()!.invited_user!.first_name.charAt(0) }}{{ invitation()!.invited_user!.last_name.charAt(0) }}
+              </div>
+              <div>
+                <p class="mb-0 fw-bold">
+                  {{ invitation()!.invited_user!.first_name }} {{ invitation()!.invited_user!.last_name }}
+                </p>
+                <small class="text-muted">{{ invitation()!.invited_user!.email }}</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      @if (invitation()!.notes) {
+        <div class="card mb-4">
+          <div class="card-header border-bottom">
+            <h5 class="mb-0 ">
+              <span class="material-symbols-outlined me-2 text-warning">note</span>
+              {{ 'invitation-detail.notes' | translate }}
+            </h5>
+          </div>
+          <div class="card-body">
+            <p class="mb-0 text-muted">{{ invitation()!.notes }}</p>
+          </div>
+        </div>
+      }
+
+      @if (invitation()!.permissions && getPermissionKeys().length > 0) {
+        <div class="card mb-4">
+          <div class="card-header border-bottom">
+            <h5 class="mb-0 ">
+              <span class="material-symbols-outlined me-2 text-primary">verified_user</span>
+              {{ 'invitation-detail.permissions' | translate }}
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="row g-2">
+              @for (perm of getPermissionKeys(); track perm) {
+                <div class="col-md-6">
+                  <div class=" p-2 rounded" [class.bg-success-subtle]="invitation()!.permissions![perm].enabled" [class.bg-light]="!invitation()!.permissions![perm].enabled">
+                    <span class="material-symbols-outlined me-2" [class.text-success]="invitation()!.permissions![perm].enabled" [class.text-muted]="!invitation()!.permissions![perm].enabled">
+                      {{ invitation()!.permissions![perm].enabled ? 'check_circle' : 'cancel' }}
+                    </span>
+                    <small>{{ 'invitations-list.invite.permissions_list.' + perm | translate }}</small>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+      @if (showResendButton() || showCancelButton() || canDelete()) {
+        <div class="card ">
+          <div class="card-header border-bottom">
+            <h5 class="mb-0 ">
+              <span class="material-symbols-outlined me-2 text-danger">settings</span>
+              {{ 'invitation-detail.actions' | translate }}
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="d-flex flex-wrap gap-2">
+              @if (showResendButton()) {
+                <button class="btn btn-primary" (click)="resendInvitation()">
+                  <span class="material-symbols-outlined me-2">send</span>
+                  {{ 'invitations-list.actions.resend' | translate }}
+                </button>
+              }
+
+              @if (showCancelButton()) {
+                <button class="btn btn-warning" (click)="cancelInvitation()">
+                  <span class="material-symbols-outlined me-2">cancel</span>
+                  {{ 'invitations-list.actions.cancel' | translate }}
+                </button>
+              }
+
+              @if (canDelete()) {
+                <button class="btn btn-danger" (click)="deleteInvitation()">
+                  <span class="material-symbols-outlined me-2">delete</span>
+                  {{ 'common.delete' | translate }}
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+    </div>
+  </div>
+}

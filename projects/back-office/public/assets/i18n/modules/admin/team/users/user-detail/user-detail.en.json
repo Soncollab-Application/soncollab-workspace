@@ -1,0 +1,36 @@
+{
+  "user-detail": {
+    "title": "User Details",
+    "information": "Information",
+    "details": "Details",
+    "username": "Username",
+    "email": "Email",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "phone": "Phone",
+    "bio": "Biography",
+    "role": "Role",
+    "permissions": "Permissions",
+    "edit_permissions": "Edit",
+    "manage_permissions": "Manage Permissions",
+    "permissions_modal_description": "Select the permissions you want to assign to this user. Permissions determine which features the user will have access to.",
+    "all_permissions": "All permissions",
+    "no_permissions": "No permissions assigned",
+    "confirmed": "Email Confirmation",
+    "createdAt": "Created",
+    "updatedAt": "Last Updated",
+    "emailConfirmed": "Email confirmed",
+    "accountBlocked": "Account blocked",
+    "confirmBlock": "Block {{name}}?",
+    "blockTitle": "Block User",
+    "unblockTitle": "Unblock User",
+    "confirmUnblock": "Unblock {{name}}?",
+    "successUpdate": "User successfully updated",
+    "toast": {
+      "block_success": "{{name}} has been blocked successfully",
+      "block_error": "Error blocking {{name}}",
+      "unblock_success": "{{name}} has been unblocked successfully",
+      "unblock_error": "Error unblocking {{name}}"
+    }
+  }
+}

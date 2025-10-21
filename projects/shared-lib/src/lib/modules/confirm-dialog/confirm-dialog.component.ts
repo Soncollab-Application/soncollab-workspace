@@ -2,8 +2,6 @@ import {Component, inject, input} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {TranslateModule, TranslateService} from '@ngx-translate/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
-import enTranslations from './i18n/en.json';
-import frTranslations from './i18n/fr.json';
 
 export interface ConfirmDialogData {
   title?: string;
@@ -28,21 +26,17 @@ export class ConfirmDialogComponent {
 
   data = input.required<ConfirmDialogData>();
 
-  ngOnInit(): void {
-    this.translate.setTranslation('en', { confirmDialog: enTranslations.confirmDialog }, true);
-    this.translate.setTranslation('fr', { confirmDialog: frTranslations.confirmDialog }, true);
-  }
 
   getTitle(): string {
-    return this.data().title || this.translate.instant('confirmDialog.title');
+    return this.data().title || this.translate.instant('confirmDialogShared.title');
   }
 
   getConfirmText(): string {
-    return this.data().confirmText || this.translate.instant('confirmDialog.confirm');
+    return this.data().confirmText || this.translate.instant('confirmDialogShared.confirm');
   }
 
   getCancelText(): string {
-    return this.data().cancelText || this.translate.instant('confirmDialog.cancel');
+    return this.data().cancelText || this.translate.instant('confirmDialogShared.cancel');
   }
 
   getConfirmClass(): string {

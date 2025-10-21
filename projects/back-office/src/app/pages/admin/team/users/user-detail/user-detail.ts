@@ -1,14 +1,17 @@
-import {Component, computed, inject, OnDestroy, OnInit, signal} from '@angular/core';
+import {Component, computed, inject, OnDestroy, OnInit, signal, ViewChild, ElementRef} from '@angular/core';
 import {Breadcrumb} from '../../../../../core/components/breadcrumb/breadcrumb';
 import {TranslatePipe, TranslateService} from '@ngx-translate/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {
   Badge,
   Choice,
+  ChoiceOption,
   ConfirmDialogService,
   getUserInitials,
   LanguageOrchestratorService,
-  PermissionService, RelativeDatePipe, ToastService,
+  PermissionService,
+  RelativeDatePipe,
+  ToastService,
 } from "shared-lib";
 import { AdminService } from "../../../../../core/services/admin/admin.service";
 import {AuthService} from '../../../../../core/services/auth.service';
@@ -17,6 +20,7 @@ import {PageTitleService} from '../../../../../core/services/page-title.service'
 import {UserListItem} from '../../../../../core/models/admin/user-list.model';
 import {Subject, takeUntil} from 'rxjs';
 import {environment} from '../../../../../../environments/environment';
+import {CustomPermission, CustomPermissions} from '../../../../../core/models/auth.model';
 
 @Component({
   selector: 'app-user-detail',
@@ -31,7 +35,7 @@ export class UserDetail implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private pageTitleService = inject(PageTitleService);
-  private translate = inject(TranslateService);
+  translate = inject(TranslateService);
   private languageOrchestrator = inject(LanguageOrchestratorService);
   private permissionsService = inject(PermissionService);
   private fb = inject(FormBuilder);
@@ -41,6 +45,8 @@ export class UserDetail implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private componentId = 'user-detail';
 
+  @ViewChild('permissionsModal') permissionsModal!: ElementRef;
+
   user = signal<UserListItem | null>(null);
   loading = signal(false);
   saving = signal(false);
@@ -49,6 +55,9 @@ export class UserDetail implements OnInit, OnDestroy {
   userForm!: FormGroup;
   roles = signal<any[]>([]);
 
+  availablePermissions = signal<CustomPermission[]>([]);
+  permissionOptions = signal<ChoiceOption[]>([]);
+
   currentUserId = computed(() => this.authService.currentUser?.documentId);
   canManageUsers = computed(() =>
     this.permissionsService.canUpdateUser()
@@ -56,6 +65,12 @@ export class UserDetail implements OnInit, OnDestroy {
 
   isCurrentUser = computed(() => this.user()?.documentId === this.currentUserId());
   canEdit = computed(() => this.canManageUsers() && !this.isCurrentUser());
+
+  showPermissionsSection = computed(() => {
+    const user = this.user();
+    if (!user?.role?.type) return false;
+    return ['soncollab_sales', 'soncollab_content'].includes(user.role.type);
+  });
 
   apiBaseUrl = environment.api.baseUrl;
 
@@ -86,7 +101,8 @@ export class UserDetail implements OnInit, OnDestroy {
       bio: [''],
       role: [null, Validators.required],
       blocked: [false],
-      confirmed: [true]
+      confirmed: [true],
+      custom_permissions: [[]]
     });
 
     this.userForm.disable();
@@ -141,6 +157,167 @@ export class UserDetail implements OnInit, OnDestroy {
       blocked: user.blocked,
       confirmed: user.confirmed
     });
+
+    this.loadPermissionsForRole(user.role.type);
+    this.patchCustomPermissions(user);
+  }
+
+  private patchCustomPermissions(user: UserListItem) {
+    if (!user.custom_permissions) return;
+
+    if (user.custom_permissions['all']?.enabled) {
+      const allPermissions = this.availablePermissions();
+      this.userForm.patchValue({
+        custom_permissions: allPermissions
+      });
+      return;
+    }
+
+    const enabledPermissions = Object.entries(user.custom_permissions)
+      .filter(([_, value]) => value.enabled)
+      .map(([key, _]) => key);
+
+    this.userForm.patchValue({
+      custom_permissions: enabledPermissions
+    });
+  }
+
+  private loadPermissionsForRole(roleType: string) {
+    const permissionsByRole: Record<string, CustomPermission[]> = {
+      'soncollab_admin': ['all'],
+      'soncollab_content': ['blog', 'help', 'newsletter', 'analytics_read'],
+      'soncollab_sales': ['sales_contacts', 'sales_interactions', 'sales_quotas']
+    };
+
+    const permissions = permissionsByRole[roleType] || [];
+    this.availablePermissions.set(permissions);
+
+    if (permissions.includes('all')) {
+      this.permissionOptions.set([]);
+      return;
+    }
+
+    setTimeout(() => {
+      const options: ChoiceOption[] = permissions.map(perm => ({
+        value: perm,
+        label: this.translate.instant(`invitations-list.invite.permissions_list.${perm}`) || this.formatPermissionLabel(perm),
+        selected: false
+      }));
+
+      this.permissionOptions.set(options);
+    }, 0);
+  }
+
+  private formatPermissionLabel(permission: string): string {
+    return permission
+      .split('_')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  }
+
+  private buildCustomPermissions(selectedPermissions: string[]): Partial<CustomPermissions> {
+    const permissions: Partial<CustomPermissions> = {};
+    const available = this.availablePermissions();
+
+    if (available.includes('all')) {
+      permissions['all'] = { enabled: true };
+      return permissions;
+    }
+
+    available.forEach(perm => {
+      permissions[perm] = {
+        enabled: selectedPermissions.includes(perm)
+      };
+    });
+
+    return permissions;
+  }
+
+  getEnabledPermissions(): CustomPermission[] {
+    const user = this.user();
+    if (!user?.custom_permissions) return [];
+
+    if (user.custom_permissions['all']?.enabled) return ['all'];
+
+    return Object.entries(user.custom_permissions)
+      .filter(([_, value]) => value.enabled)
+      .map(([key, _]) => key as CustomPermission);
+  }
+
+  getAllPermissionsWithStatus(): Array<{key: string, enabled: boolean}> {
+    const user = this.user();
+    const available = this.availablePermissions();
+
+    if (!user || available.includes('all')) {
+      return [];
+    }
+
+    return available.map(perm => ({
+      key: perm,
+      enabled: user.custom_permissions?.[perm]?.enabled ?? false
+    }));
+  }
+
+  showPermissionsModal() {
+    const modalElement = this.permissionsModal.nativeElement;
+    const modal = new (window as any).bootstrap.Modal(modalElement);
+    modal.show();
+  }
+
+  closePermissionsModal() {
+    const modalElement = this.permissionsModal.nativeElement;
+    const modal = (window as any).bootstrap.Modal.getInstance(modalElement);
+    if (modal) {
+      modal.hide();
+    }
+  }
+
+  togglePermission(permission: string) {
+    const currentPermissions = this.userForm.value.custom_permissions || [];
+    const index = currentPermissions.indexOf(permission);
+
+    let updatedPermissions: string[];
+    if (index > -1) {
+      updatedPermissions = currentPermissions.filter((p: string) => p !== permission);
+    } else {
+      updatedPermissions = [...currentPermissions, permission];
+    }
+
+    this.userForm.patchValue({ custom_permissions: updatedPermissions });
+  }
+
+  savePermissions() {
+    if (!this.user()) return;
+
+    this.saving.set(true);
+    const formData = this.userForm.getRawValue();
+
+    const customPermissions = this.buildCustomPermissions(formData.custom_permissions);
+
+    const updateData = {
+      first_name: formData.first_name,
+      last_name: formData.last_name,
+      phone: formData.phone,
+      blocked: formData.blocked,
+      custom_permissions: customPermissions
+    };
+
+    this.adminService.updateUser(this.user()!.documentId, updateData)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (updated) => {
+          this.user.set(updated);
+          this.patchForm(updated);
+          this.saving.set(false);
+          this.closePermissionsModal();
+          this.toastService.showSuccess(
+            this.translate.instant('user-detail.successUpdate')
+          );
+        },
+        error: () => {
+          this.saving.set(false);
+        }
+      });
   }
 
   private setBreadcrumbs() {
@@ -166,7 +343,6 @@ export class UserDetail implements OnInit, OnDestroy {
     ]);
   }
 
-
   onLanguageChange() {
     setTimeout(() => {
       if (this.user()) {
@@ -177,10 +353,9 @@ export class UserDetail implements OnInit, OnDestroy {
   }
 
   private updatePageTitle() {
-    const userName =  this.translate.instant('user-detail.title');
+    const userName = this.translate.instant('user-detail.title');
     this.pageTitleService.setTitle(userName);
   }
-
 
   toggleEditMode() {
     this.isEditMode.update(v => !v);
@@ -204,7 +379,17 @@ export class UserDetail implements OnInit, OnDestroy {
     this.saving.set(true);
     const formData = this.userForm.getRawValue();
 
-    this.adminService.updateUser(this.user()!.documentId, formData)
+    const customPermissions = this.buildCustomPermissions(formData.custom_permissions);
+
+    const updateData = {
+      first_name: formData.first_name,
+      last_name: formData.last_name,
+      phone: formData.phone,
+      blocked: formData.blocked,
+      custom_permissions: customPermissions
+    };
+
+    this.adminService.updateUser(this.user()!.documentId, updateData)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (updated) => {
@@ -214,12 +399,7 @@ export class UserDetail implements OnInit, OnDestroy {
           this.userForm.disable();
           this.saving.set(false);
           this.toastService.showSuccess(
-            this.translate.instant('user-detail.successUpdate'),
-            {
-              position: 'top-end',
-              delay: 2000,
-              autohide: true,
-            }
+            this.translate.instant('user-detail.successUpdate')
           );
         },
         error: () => {
@@ -257,6 +437,14 @@ export class UserDetail implements OnInit, OnDestroy {
             next: (updated) => {
               this.user.set(updated);
               this.patchForm(updated);
+              this.toastService.showSuccess(
+                this.translate.instant('user-detail.toast.block_success', { name: username })
+              );
+            },
+            error: () => {
+              this.toastService.showError(
+                this.translate.instant('user-detail.toast.block_error', { name: username })
+              );
             }
           });
       }
@@ -273,7 +461,7 @@ export class UserDetail implements OnInit, OnDestroy {
       message: this.translate.instant('user-detail.confirmUnblock', { name: username }),
       confirmText: this.translate.instant('users-list.actions.unblock'),
       confirmClass: 'btn-success',
-      icon: 'unlock',
+      icon: 'lock_open',
       iconClass: 'text-success'
     }).then((confirmed) => {
       if (confirmed) {
@@ -283,6 +471,14 @@ export class UserDetail implements OnInit, OnDestroy {
             next: (updated) => {
               this.user.set(updated);
               this.patchForm(updated);
+              this.toastService.showSuccess(
+                this.translate.instant('user-detail.toast.unblock_success', { name: username })
+              );
+            },
+            error: () => {
+              this.toastService.showError(
+                this.translate.instant('user-detail.toast.unblock_error', { name: username })
+              );
             }
           });
       }

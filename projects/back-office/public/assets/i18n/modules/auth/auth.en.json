@@ -66,8 +66,12 @@
       "password": {
         "placeholder": "New password",
         "required": "New password required",
-        "minLength": "Minimum 6 characters",
-        "toggleVisibility": "Show/hide password"
+        "toggleVisibility": "Show/hide password",
+        "minLength": "At least 6 characters",
+        "uppercase": "At least one uppercase letter",
+        "lowercase": "At least one lowercase letter",
+        "number": "At least one number",
+        "special": "At least one special character"
       },
       "passwordConfirm": {
         "placeholder": "Confirm new password",
@@ -88,6 +92,28 @@
         "invalidPassword": "Invalid password",
         "invalidCode": "Invalid or expired reset code",
         "validation": "Invalid data",
+        "badRequest": "Invalid request",
+        "serverError": "Server error, please try again"
+      }
+    },
+    "activateInvitation": {
+      "title": "Activate your account",
+      "instructions": "Choose a password to activate your Soncollab account.",
+      "password": {
+        "placeholder": "Password",
+        "required": "Password required",
+        "minLength": "Password must be at least 8 characters",
+        "toggleVisibility": "Show/hide password"
+      },
+      "activateAccount": "Activate my account",
+      "backToLogin": "Back to login",
+      "success": {
+        "title": "Account activated!",
+        "message": "Your Soncollab account has been successfully activated. You will be redirected to login."
+      },
+      "errors": {
+        "activationFailed": "Activation failed",
+        "invalidToken": "Invalid or expired token",
         "badRequest": "Invalid request",
         "serverError": "Server error, please try again"
       }

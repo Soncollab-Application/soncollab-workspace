@@ -1,8 +1,6 @@
 import {Component, computed, inject, input, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {TranslateModule, TranslateService} from '@ngx-translate/core';
-import enTranslations from './i18n/en.json';
-import frTranslations from './i18n/fr.json';
+import {TranslateModule} from '@ngx-translate/core';
 
 export interface KpiData {
   label: string;
@@ -21,9 +19,7 @@ export interface KpiData {
   templateUrl: './kpi-card.component.html',
   styleUrls: ['./kpi-card.component.css']
 })
-export class KpiCardComponent implements OnInit {
-  private translate = inject(TranslateService);
-
+export class KpiCardComponent {
   // Inputs
   data = input.required<KpiData>();
   loading = input<boolean>(false);
@@ -39,11 +35,6 @@ export class KpiCardComponent implements OnInit {
   trendIcon = computed(() => {
     const trend = this.data().trend;
     if (trend === undefined || trend === null) return '';
-    return trend >= 0 ? 'bi-arrow-up' : 'bi-arrow-down';
+    return trend >= 0 ? 'trending_up' : 'trending_down';
   });
-
-  ngOnInit(): void {
-    this.translate.setTranslation('en', { kpiCard: enTranslations.kpiCard }, true);
-    this.translate.setTranslation('fr', { kpiCard: frTranslations.kpiCard }, true);
-  }
 }

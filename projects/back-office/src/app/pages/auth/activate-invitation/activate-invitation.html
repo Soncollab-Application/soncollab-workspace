@@ -1,0 +1,83 @@
+<h3 class="text-center fw-lighter mb-4 for-inter-font">
+  {{ 'auth.activateInvitation.title' | translate }}
+</h3>
+
+<form [formGroup]="activateForm" (ngSubmit)="onSubmit()" class="needs-validation" novalidate>
+
+  @if (!success()) {
+
+    <!-- Instructions -->
+    <p class="text-muted text-center mb-4">
+      {{ 'auth.activateInvitation.instructions' | translate }}
+    </p>
+
+    <!-- Error Message -->
+    @if (error()) {
+      <div class="alert alert-danger mb-4" role="alert">
+        {{ error() }}
+      </div>
+    }
+
+    <!-- Password Field -->
+    <div class="mb-4">
+      <div class="password-toggle">
+        <input
+          [type]="showPassword() ? 'text' : 'password'"
+          class="form-control form-control-lg"
+          [class.is-invalid]="isFieldInvalid('password')"
+          formControlName="password"
+          [placeholder]="'auth.activateInvitation.password.placeholder' | translate"
+          required>
+
+        @if (passwordError) {
+          <div class="invalid-tooltip py-0">{{ passwordError }}</div>
+        }
+
+        <label class="password-toggle-button fs-lg" [attr.aria-label]="'auth.activateInvitation.password.toggleVisibility' | translate">
+          <input type="checkbox" class="btn-check" (change)="togglePassword()">
+          <span class="password-toggle-button-icon d-flex">
+            @if (showPassword()) {
+              <i class="bi bi-eye-slash"></i>
+            } @else {
+              <i class="bi bi-eye"></i>
+            }
+          </span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <button
+      type="submit"
+      class="btn btn-lg btn-primary w-100 mb-3"
+      [disabled]="loading()">
+
+      @if (loading()) {
+        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+      }
+
+      {{ 'auth.activateInvitation.activateAccount' | translate }}
+    </button>
+
+  } @else {
+
+    <!-- Success Message -->
+    <div class="alert alert-success mb-4" role="alert">
+      <div class="d-flex align-items-center mb-2">
+        <i class="bi bi-check-circle-fill text-success me-2 fs-4"></i>
+        <h5 class="mb-0">{{ 'auth.activateInvitation.success.title' | translate }}</h5>
+      </div>
+      <p class="mb-0">{{ 'auth.activateInvitation.success.message' | translate }}</p>
+    </div>
+
+  }
+
+  <!-- Navigation -->
+  <div class="text-center">
+    <a class="btn btn-link" [routerLink]="['/auth/login']">
+      <i class="bi bi-arrow-left me-2"></i>
+      {{ 'auth.activateInvitation.backToLogin' | translate }}
+    </a>
+  </div>
+
+</form>

@@ -25,3 +25,21 @@ export interface UserFilters {
   blocked?: boolean;
   confirmed?: boolean;
 }
+
+export interface UserStats {
+  total: number;
+  by_role: {
+    soncollab_admin: number;
+    soncollab_sales: number;
+    soncollab_content: number;
+  };
+  by_status: {
+    active: number;
+    blocked: number;
+  };
+  by_confirmation: {
+    confirmed: number;
+    unconfirmed: number;
+  };
+  activation_rate: number;
+}
