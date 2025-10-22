@@ -1,11 +1,11 @@
 import { AfterViewInit, Component, OnInit, OnDestroy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Subject } from 'rxjs';
-import { AosService, LanguageService, ThemeService, Toast } from 'shared-lib';
+import {AosService, LanguageService, ModalAccessibilityDirective, ThemeService, Toast} from 'shared-lib';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Toast],
+  imports: [RouterOutlet, Toast, ModalAccessibilityDirective],
   templateUrl: './app.component.html',
   standalone: true,
   styleUrl: './app.component.css'

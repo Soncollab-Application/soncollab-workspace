@@ -13,6 +13,7 @@
     "experimentalDecorators": true,
     "paths": {
       "shared-lib": [
+        "./projects/shared-lib/src/public-api.ts",
         "./dist/shared-lib"
       ]
     },
