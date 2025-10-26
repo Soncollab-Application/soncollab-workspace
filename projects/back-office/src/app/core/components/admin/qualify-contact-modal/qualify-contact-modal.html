@@ -1,0 +1,156 @@
+@if (isOpen()) {
+  <div class="modal fade show d-block" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header border-bottom">
+          <div>
+            <h5 class="modal-title fw-bold mb-1 d-flex align-items-center">
+              <span class="material-symbols-outlined me-2 text-success">verified</span>
+              {{ 'contact-modal.qualify.title' | translate }}
+            </h5>
+            <p class="mb-0 small text-muted">
+              {{ 'contact-modal.qualify.subtitle' | translate }}
+            </p>
+          </div>
+          <button
+            type="button"
+            class="btn-close"
+            (click)="close()"
+            [disabled]="submitting()"></button>
+        </div>
+
+        <div class="modal-body">
+          <form [formGroup]="qualifyForm" (ngSubmit)="onSubmit()">
+            <!-- Contact Info -->
+            <div class="alert alert-light border-start border-4 border-success mb-4">
+              <div class="d-flex align-items-start">
+                <span class="material-symbols-outlined text-success me-2">person</span>
+                <div>
+                  <strong class="d-block">{{ contact()!.first_name }} {{ contact()!.last_name }}</strong>
+                  <small class="text-muted">{{ contact()!.email }}</small>
+                  @if (contact()!.company_name) {
+                    <small class="text-muted d-block">{{ contact()!.company_name }}</small>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <div class="row g-3">
+              <!-- Status -->
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">
+                  {{ 'contact-modal.qualify.status' | translate }}
+                  <span class="text-danger">*</span>
+                </label>
+                <lib-choice
+                  type="select-one"
+                  formControlName="sales_contact_status"
+                  [options]="statusOptions()"
+                  [config]="{
+                    searchEnabled: false,
+                    shouldSort: false,
+                    classNames: { containerInner: ['form-select'] }
+                  }"
+                />
+              </div>
+
+              <!-- Urgency -->
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">
+                  {{ 'contact-modal.qualify.urgency' | translate }}
+                  <span class="text-danger">*</span>
+                </label>
+                <lib-choice
+                  type="select-one"
+                  formControlName="urgency_level"
+                  [options]="urgencyOptions()"
+                  [config]="{
+                    searchEnabled: false,
+                    shouldSort: false,
+                    classNames: { containerInner: ['form-select'] }
+                  }"
+                />
+              </div>
+
+              <!-- Company Size -->
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">
+                  {{ 'contact-modal.qualify.company_size' | translate }}
+                </label>
+                <lib-choice
+                  type="select-one"
+                  formControlName="company_size"
+                  [options]="companySizeOptions()"
+                  [placeholder]="'contact-modal.qualify.select_size' | translate"
+                  [config]="{
+                    searchEnabled: false,
+                    shouldSort: false,
+                    classNames: { containerInner: ['form-select'] }
+                  }"
+                />
+              </div>
+
+              <!-- Revenue -->
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">
+                  {{ 'contact-modal.qualify.revenue' | translate }}
+                </label>
+                <input
+                  type="number"
+                  class="form-control"
+                  formControlName="estimated_annual_revenue"
+                  [placeholder]="'contact-modal.qualify.revenue_placeholder' | translate"
+                  min="0"
+                  step="1000"
+                />
+                <small class="text-muted">{{ 'contact-modal.qualify.revenue_hint' | translate }}</small>
+              </div>
+
+              <!-- Notes -->
+              <div class="col-12">
+                <label class="form-label fw-semibold">
+                  {{ 'contact-modal.qualify.notes' | translate }}
+                </label>
+                <textarea
+                  class="form-control"
+                  formControlName="prospection_notes"
+                  rows="4"
+                  [placeholder]="'contact-modal.qualify.notes_placeholder' | translate"
+                  maxlength="1000"></textarea>
+                <div class="d-flex justify-content-between mt-1">
+                  <small class="text-muted">{{ 'contact-modal.qualify.notes_hint' | translate }}</small>
+                  <small class="text-muted">
+                    {{ qualifyForm.get('prospection_notes')?.value?.length || 0 }}/1000
+                  </small>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="modal-footer border-top">
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            (click)="close()"
+            [disabled]="submitting()">
+            {{ 'common.cancel' | translate }}
+          </button>
+          <button
+            type="submit"
+            class="btn btn-success"
+            [disabled]="qualifyForm.invalid || submitting()"
+            (click)="onSubmit()">
+            @if (submitting()) {
+              <span class="spinner-border spinner-border-sm me-2"></span>
+            } @else {
+              <span class="material-symbols-outlined me-2">check</span>
+            }
+            {{ 'contact-modal.qualify.confirm' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop fade show"></div>
+}

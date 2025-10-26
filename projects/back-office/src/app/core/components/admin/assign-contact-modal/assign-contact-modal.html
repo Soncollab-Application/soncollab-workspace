@@ -1,0 +1,398 @@
+@if (isOpen()) {
+  <div class="modal fade show d-block" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header border-bottom">
+          <div>
+            <h5 class="modal-title fw-bold mb-1 d-flex align-items-center">
+              <span class="material-symbols-outlined me-2 text-primary">
+                {{ isReassign() ? 'swap_horiz' : 'person_add' }}
+              </span>
+              {{ (isReassign() ? 'contact-modal.reassign.title' : 'contact-modal.assign.title') | translate }}
+            </h5>
+            <p class="mb-0 small text-muted">
+              {{ (isReassign() ? 'contact-modal.reassign.subtitle' : 'contact-modal.assign.subtitle') | translate }}
+            </p>
+          </div>
+          <button
+            type="button"
+            class="btn-close"
+            (click)="close()"
+            [disabled]="submitting()"></button>
+        </div>
+
+        <div class="modal-body">
+          @if (loadingReps()) {
+            <div class="d-flex justify-content-center align-items-center py-4">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
+              </div>
+            </div>
+          } @else {
+            <form [formGroup]="assignForm" (ngSubmit)="onSubmit()">
+              <!-- Contact Info Card -->
+              <div class="card mb-4 border-primary">
+                <div class="card-header bg-primary bg-opacity-10 border-primary">
+                  <h6 class="mb-0 d-flex align-items-center text-primary">
+                    <span class="material-symbols-outlined me-2">person</span>
+                    {{ 'contact-modal.assign.contact_info' | translate }}
+                  </h6>
+                </div>
+                <div class="card-body">
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <div class="d-flex align-items-start">
+                        <span class="material-symbols-outlined text-muted me-2" style="font-size: 1.2rem;">badge</span>
+                        <div class="flex-grow-1" style="min-width: 0;">
+                          <small class="text-muted d-block">{{ 'contact-modal.assign.name' | translate }}</small>
+                          <strong class="d-block text-truncate">{{ contact()!.first_name }} {{ contact()!.last_name }}</strong>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="d-flex align-items-start">
+                        <span class="material-symbols-outlined text-muted me-2" style="font-size: 1.2rem;">email</span>
+                        <div class="flex-grow-1" style="min-width: 0;">
+                          <small class="text-muted d-block">{{ 'contact-modal.assign.email_label' | translate }}</small>
+                          <strong class="d-block text-truncate" title="{{ contact()!.email }}">{{ contact()!.email }}</strong>
+                        </div>
+                      </div>
+                    </div>
+                    @if (contact()!.company_name) {
+                      <div class="col-md-6">
+                        <div class="d-flex align-items-start">
+                          <span class="material-symbols-outlined text-muted me-2" style="font-size: 1.2rem;">business</span>
+                          <div class="flex-grow-1" style="min-width: 0;">
+                            <small class="text-muted d-block">{{ 'contact-modal.assign.company' | translate }}</small>
+                            <strong class="d-block text-truncate" title="{{ contact()!.company_name }}">{{ contact()!.company_name }}</strong>
+                          </div>
+                        </div>
+                      </div>
+                    }
+                    @if (contact()!.phone) {
+                      <div class="col-md-6">
+                        <div class="d-flex align-items-start">
+                          <span class="material-symbols-outlined text-muted me-2" style="font-size: 1.2rem;">phone</span>
+                          <div class="flex-grow-1" style="min-width: 0;">
+                            <small class="text-muted d-block">{{ 'contact-modal.assign.phone' | translate }}</small>
+                            <strong class="d-block">{{ contact()!.phone }}</strong>
+                          </div>
+                        </div>
+                      </div>
+                    }
+                    <div class="col-md-6">
+                      <div class="d-flex align-items-start">
+                        <span class="material-symbols-outlined text-muted me-2" style="font-size: 1.2rem;">category</span>
+                        <div class="flex-grow-1" style="min-width: 0;">
+                          <small class="text-muted d-block">{{ 'contact-modal.assign.type' | translate }}</small>
+                          <strong class="d-block">{{ contact()!.contact_type }}</strong>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="d-flex align-items-start">
+                        <span class="material-symbols-outlined text-muted me-2" style="font-size: 1.2rem;">flag</span>
+                        <div class="flex-grow-1" style="min-width: 0;">
+                          <small class="text-muted d-block">{{ 'contact-modal.assign.urgency' | translate }}</small>
+                          <strong class="d-block">{{ contact()!.urgency_level }}</strong>
+                        </div>
+                      </div>
+                    </div>
+                    @if (contact()!.lead_score) {
+                      <div class="col-md-6">
+                        <div class="d-flex align-items-start">
+                          <span class="material-symbols-outlined text-muted me-2" style="font-size: 1.2rem;">star</span>
+                          <div class="flex-grow-1" style="min-width: 0;">
+                            <small class="text-muted d-block">{{ 'contact-modal.assign.lead_score' | translate }}</small>
+                            <strong class="d-block">{{ contact()!.lead_score }}/100</strong>
+                          </div>
+                        </div>
+                      </div>
+                    }
+                    @if (contact()!.country?.name) {
+                      <div class="col-md-6">
+                        <div class="d-flex align-items-start">
+                          <span class="material-symbols-outlined text-muted me-2" style="font-size: 1.2rem;">public</span>
+                          <div class="flex-grow-1" style="min-width: 0;">
+                            <small class="text-muted d-block">{{ 'contact-modal.assign.country' | translate }}</small>
+                            <strong class="d-block">{{ contact()!.country?.name }}</strong>
+                          </div>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </div>
+              </div>
+
+              <!-- Current Assignment (for reassign only) -->
+              @if (isReassign() && contact()!.assigned_to) {
+                <div class="alert alert-warning border-start border-4 border-warning mb-4">
+                  <div class="d-flex align-items-start">
+                    <span class="material-symbols-outlined text-warning me-2">info</span>
+                    <div>
+                      <strong class="d-block mb-1">{{ 'contact-modal.reassign.current_rep' | translate }}</strong>
+                      <div class="d-flex align-items-center gap-2">
+                        <span class="material-symbols-outlined text-warning" style="font-size: 1rem;">person</span>
+                        <span>{{ contact()!.assigned_to?.first_name }} {{ contact()!.assigned_to?.last_name }}</span>
+                        <span class="text-muted">({{ contact()!.assigned_to?.email }})</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
+
+              <!-- Sales Rep Selection -->
+              <div class="mb-3">
+                <label class="form-label fw-semibold">
+                  {{ (isReassign() ? 'contact-modal.reassign.new_rep' : 'contact-modal.assign.sales_rep') | translate }}
+                  <span class="text-danger">*</span>
+                </label>
+                @if (repOptions().length > 0) {
+                  <lib-choice
+                    type="select-one"
+                    formControlName="user_id"
+                    [options]="repOptions()"
+                    [placeholder]="'contact-modal.assign.select_rep' | translate"
+                    [enableAvatars]="true"
+                    [config]="{
+                      searchEnabled: false,
+                      removeItemButton: true,
+                      classNames: { containerInner: ['form-select'] }
+                    }"
+                  />
+
+                  @if (assignForm.get('user_id')?.invalid && assignForm.get('user_id')?.touched) {
+                    <small class="text-danger d-block mt-1 d-flex align-items-center">
+                      <span class="material-symbols-outlined me-1" style="font-size: 1rem;">error</span>
+                      {{ 'contact-modal.assign.rep_required' | translate }}
+                    </small>
+                  }
+                } @else {
+                  <input
+                    type="text"
+                    class="form-control"
+                    [placeholder]="'contact-modal.assign.select_rep' | translate"
+                    disabled
+                    readonly
+                  />
+                }
+              </div>
+
+              @if (selectedRep()) {
+                <div class="card mb-4 border-success">
+                  <div class="card-header bg-success bg-opacity-10 border-success d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0 d-flex align-items-center text-success">
+                      <span class="material-symbols-outlined me-2">check_circle</span>
+                      {{ 'contact-modal.assign.selected_rep_info' | translate }}
+                    </h6>
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-success"
+                      (click)="goToUserDetail(selectedRep()!.documentId)">
+                      <span class="material-symbols-outlined me-1" style="font-size: 1rem;">open_in_new</span>
+                      {{ 'contact-modal.assign.view_profile' | translate }}
+                    </button>
+                  </div>
+                  <div class="card-body">
+                    <div class="row g-3">
+                      <!-- Avatar et nom principal -->
+                      <div class="col-12">
+                        <div class="d-flex align-items-center gap-3">
+                          @if (selectedRep()!.avatar && selectedRep()!.avatar.url) {
+                            <div class="avatar avatar-sm">
+                              <img class="avatar-img"
+                                   [src]="environment.api.baseUrl + selectedRep()!.avatar.url"
+                                   [alt]="selectedRep()!.first_name + ' ' + selectedRep()!.last_name">
+                            </div>
+                          } @else {
+                            <div class="avatar avatar-sm bg-success text-white">
+                              {{ selectedRep()!.first_name[0] }}{{ selectedRep()!.last_name[0] }}
+                            </div>
+                          }
+                          <div>
+                            <h6 class="mb-1 fw-bold">
+                              {{ selectedRep()!.first_name }} {{ selectedRep()!.last_name }}
+                            </h6>
+                            <div class="d-flex flex-wrap gap-2">
+                              @if (selectedRep()!.role) {
+                                <lib-badge
+                                  [text]="selectedRep()!.role.name"
+                                  [type]="'primary'"
+                                  [variant]="'subtle'"
+                                  [icon]="'badge'"
+                                />
+                              }
+
+                              @if (selectedRep()!.availability_status) {
+                                <lib-badge
+                                  [text]="'user.availability.' + selectedRep()!.availability_status | translate"
+                                  [type]="getAvailabilityBadgeType(selectedRep()!.availability_status)"
+                                  [variant]="'solid'"
+                                  [icon]="getAvailabilityIcon(selectedRep()!.availability_status)"
+                                />
+                              }
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Email -->
+                      <div class="col-md-6">
+                        <div class="d-flex align-items-start">
+                          <span class="material-symbols-outlined text-success me-2 fs-5">email</span>
+                          <div class="flex-grow-1" style="min-width: 0;">
+                            <small class="text-muted d-block">{{ 'contact-modal.assign.rep_email' | translate }}</small>
+                            <strong class="d-block text-truncate" [title]="selectedRep()!.email">{{ selectedRep()!.email }}</strong>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Phone -->
+                      @if (selectedRep()!.phone) {
+                        <div class="col-md-6">
+                          <div class="d-flex align-items-start">
+                            <span class="material-symbols-outlined text-success me-2 fs-5">phone</span>
+                            <div class="flex-grow-1" style="min-width: 0;">
+                              <small class="text-muted d-block">{{ 'contact-modal.assign.rep_phone' | translate }}</small>
+                              <strong class="d-block">{{ selectedRep()!.phone }}</strong>
+                            </div>
+                          </div>
+                        </div>
+                      }
+
+                      <!-- Home Country -->
+                      @if (selectedRep()!.home_country && selectedRep()!.home_country.name) {
+                        <div class="col-md-6">
+                          <div class="d-flex align-items-start">
+                            <span class="material-symbols-outlined text-success me-2" style="font-size: 1.2rem;">public</span>
+                            <div class="flex-grow-1" style="min-width: 0;">
+                              <small class="text-muted d-block">{{ 'contact-modal.assign.rep_country' | translate }}</small>
+                              <strong class="d-block">{{ selectedRep()!.home_country.flag }} {{ selectedRep()!.home_country.name }}</strong>
+                            </div>
+                          </div>
+                        </div>
+                      }
+
+                      <!-- Language -->
+                      @if (selectedRep()!.preferred_language) {
+                        <div class="col-md-6">
+                          <div class="d-flex align-items-start">
+                            <span class="material-symbols-outlined text-success me-2 fs-5" >language</span>
+                            <div class="flex-grow-1" style="min-width: 0;">
+                              <small class="text-muted d-block">{{ 'contact-modal.assign.rep_language' | translate }}</small>
+                              <strong class="d-block">{{ 'languages.' + selectedRep()!.preferred_language | translate }}</strong>
+                            </div>
+                          </div>
+                        </div>
+                      }
+
+                      <!-- Timezone -->
+                      @if (selectedRep()!.timezone) {
+                        <div class="col-md-6">
+                          <div class="d-flex align-items-start">
+                            <span class="material-symbols-outlined text-success me-2 fs-5">schedule</span>
+                            <div class="flex-grow-1" style="min-width: 0;">
+                              <small class="text-muted d-block">{{ 'contact-modal.assign.rep_timezone' | translate }}</small>
+                              <strong class="d-block">{{ selectedRep()!.timezone }}</strong>
+                            </div>
+                          </div>
+                        </div>
+                      }
+
+                      <!-- Quota Information -->
+                      <div class="col-12">
+                        <div class="card border-primary bg-primary bg-opacity-10">
+                          <div class="card-body p-3">
+                            <h6 class="mb-3 text-primary">
+                              <span class="material-symbols-outlined me-2 fs-5">analytics</span>
+                              {{ 'contact-modal.assign.quota_info' | translate }}
+                            </h6>
+                            <div class="row g-2">
+                              <div class="col-6">
+                                <small class="text-muted d-block">{{ 'contact-modal.assign.assigned_contacts' | translate }}</small>
+                                <strong class="d-block">{{ selectedRep()!.assigned_contacts }}</strong>
+                              </div>
+                              <div class="col-6">
+                                <small class="text-muted d-block">{{ 'contact-modal.assign.active_contacts' | translate }}</small>
+                                <strong class="d-block">{{ selectedRep()!.active_contacts }}</strong>
+                              </div>
+                              <div class="col-6">
+                                <small class="text-muted d-block">{{ 'contact-modal.assign.current_quota' | translate }}</small>
+                                <strong class="d-block">{{ selectedRep()!.quota.current_contacts }} / {{ selectedRep()!.quota.max_contacts }}</strong>
+                              </div>
+                              <div class="col-6">
+                                <small class="text-muted d-block">{{ 'contact-modal.assign.available_slots' | translate }}</small>
+                                <strong class="d-block text-success">{{ selectedRep()!.quota.available_slots }}</strong>
+                              </div>
+                              <div class="col-12 mt-2">
+                                <small class="text-muted d-block mb-1">{{ 'contact-modal.assign.load_percentage' | translate }}</small>
+                                <div class="progress" style="height: 20px;">
+                                  <div
+                                    class="progress-bar"
+                                    [class.bg-success]="selectedRep()!.quota.load_percentage < 60"
+                                    [class.bg-warning]="selectedRep()!.quota.load_percentage >= 60 && selectedRep()!.quota.load_percentage < 85"
+                                    [class.bg-danger]="selectedRep()!.quota.load_percentage >= 85"
+                                    [style.width.%]="selectedRep()!.quota.load_percentage"
+                                    role="progressbar">
+                                    <strong>{{ selectedRep()!.quota.load_percentage }}%</strong>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Bio -->
+                      @if (selectedRep()!.bio) {
+                        <div class="col-12">
+                          <div class="d-flex align-items-start">
+                            <span class="material-symbols-outlined text-success me-2" style="font-size: 1.2rem;">info</span>
+                            <div class="flex-grow-1">
+                              <small class="text-muted d-block mb-1">{{ 'contact-modal.assign.rep_bio' | translate }}</small>
+                              <p class="mb-0 small">{{ selectedRep()!.bio }}</p>
+                            </div>
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                </div>
+              }
+
+              @if (repOptions().length === 0) {
+                <div class="alert alert-warning">
+                  <span class="material-symbols-outlined me-2">warning</span>
+                  {{ 'contact-modal.assign.no_reps' | translate }}
+                </div>
+              }
+            </form>
+          }
+        </div>
+
+        <div class="modal-footer border-top">
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            (click)="close()"
+            [disabled]="submitting()">
+            {{ 'common.cancel' | translate }}
+          </button>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="assignForm.invalid || submitting() || loadingReps() || repOptions().length === 0"
+            (click)="onSubmit()">
+            @if (submitting()) {
+              <span class="spinner-border spinner-border-sm me-2"></span>
+            } @else {
+              <span class="material-symbols-outlined me-2">check</span>
+            }
+            {{ (isReassign() ? 'contact-modal.reassign.confirm' : 'contact-modal.assign.confirm') | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop fade show"></div>
+}

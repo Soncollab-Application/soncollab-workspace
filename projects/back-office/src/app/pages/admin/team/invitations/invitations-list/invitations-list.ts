@@ -507,6 +507,7 @@ export class InvitationsList implements OnInit, OnDestroy {
                 sort.field,
                 sort.direction
               );
+              this.loadStats();
             },
             error: () => {
               this.toastService.showError(
@@ -547,6 +548,7 @@ export class InvitationsList implements OnInit, OnDestroy {
                 sort.field,
                 sort.direction
               );
+              this.loadStats();
             },
             error: () => {
               this.toastService.showError(
@@ -580,6 +582,7 @@ export class InvitationsList implements OnInit, OnDestroy {
                 sort.field,
                 sort.direction
               );
+              this.loadStats();
             },
             error: () => {
               this.toastService.showError(
@@ -589,34 +592,6 @@ export class InvitationsList implements OnInit, OnDestroy {
           });
       }
     });
-  }
-
-  private getStatusBadgeType(status: InvitationStatus): string {
-    const types: Record<InvitationStatus, string> = {
-      pending: 'warning',
-      sent: 'info',
-      accepted: 'success',
-      expired: 'danger',
-      cancelled: 'secondary'
-    };
-    return types[status] || 'secondary';
-  }
-
-  private getRoleBadgeType(role: TargetRole): string {
-    const types: Record<TargetRole, string> = {
-      soncollab_admin: 'danger',
-      soncollab_sales: 'primary',
-      soncollab_content: 'info'
-    };
-    return types[role] || 'secondary';
-  }
-
-  private isExpiringSoon(expiresAt: string): boolean {
-    const expiryDate = new Date(expiresAt);
-    const now = new Date();
-    const diff = expiryDate.getTime() - now.getTime();
-    const days = diff / (1000 * 60 * 60 * 24);
-    return days > 0 && days <= 3;
   }
 
   canCreateInvitation(): boolean {

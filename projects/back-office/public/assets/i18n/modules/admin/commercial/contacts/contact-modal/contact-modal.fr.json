@@ -1,0 +1,84 @@
+{
+  "contact-modal": {
+    "assign": {
+      "title": "Assigner le contact",
+      "subtitle": "Sélectionnez un commercial pour ce contact",
+      "contact_info": "Informations du contact",
+      "selected_rep_info": "Commercial sélectionné",
+      "view_profile": "Voir le profil",
+      "name": "Nom",
+      "email_label": "Email",
+      "company": "Entreprise",
+      "phone": "Téléphone",
+      "type": "Type",
+      "urgency": "Urgence",
+      "lead_score": "Score",
+      "country": "Pays",
+      "sales_rep": "Commercial",
+      "select_rep": "Sélectionner un commercial",
+      "rep_email": "Email",
+      "rep_phone": "Téléphone",
+      "rep_territory": "Territoire",
+      "rep_country": "Pays",
+      "rep_language": "Langue",
+      "rep_timezone": "Fuseau horaire",
+      "rep_bio": "Biographie",
+      "quota_info": "Charge de travail & Quota",
+      "assigned_contacts": "Contacts assignés",
+      "active_contacts": "Contacts actifs",
+      "current_quota": "Quota actuel",
+      "available_slots": "Places disponibles",
+      "load_percentage": "Charge de travail",
+      "rep_required": "Veuillez sélectionner un commercial",
+      "no_reps": "Aucun commercial disponible pour le moment",
+      "confirm": "Assigner",
+      "success": "{{name}} a été assigné avec succès",
+      "error": "Erreur lors de l'assignation de {{name}}"
+    },
+    "reassign": {
+      "title": "Réassigner le contact",
+      "subtitle": "Sélectionnez un nouveau commercial pour ce contact",
+      "current_rep": "Commercial actuel",
+      "new_rep": "Nouveau commercial",
+      "confirm": "Réassigner",
+      "success": "{{name}} a été réassigné avec succès",
+      "error": "Erreur lors de la réassignation de {{name}}",
+      "already_assigned": "Le contact est déjà assigné à ce commercial"
+    },
+    "qualify": {
+      "title": "Qualifier le contact",
+      "subtitle": "Ajoutez des informations de qualification",
+      "status": "Statut",
+      "urgency": "Urgence",
+      "company_size": "Taille de l'entreprise",
+      "select_size": "Sélectionner une taille",
+      "revenue": "Chiffre d'affaires estimé",
+      "revenue_placeholder": "Ex: 500000",
+      "revenue_hint": "Chiffre d'affaires annuel en euros",
+      "notes": "Notes de prospection",
+      "notes_placeholder": "Ajoutez des notes sur ce contact...",
+      "notes_hint": "Informations importantes sur le contact",
+      "company_sizes": {
+        "micro_1_10": "Micro (1-10)",
+        "small_11_50": "Petite (11-50)",
+        "medium_51_200": "Moyenne (51-200)",
+        "large_201_500": "Grande (201-500)",
+        "enterprise_500_plus": "Entreprise (500+)"
+      },
+      "confirm": "Qualifier",
+      "success": "{{name}} a été qualifié avec succès",
+      "error": "Erreur lors de la qualification de {{name}}"
+    }
+  },
+  "user": {
+    "availability": {
+      "available": "Disponible",
+      "busy": "Occupé",
+      "out_of_office": "Absent"
+    }
+  },
+  "languages": {
+    "fr": "Français",
+    "en": "Anglais"
+  }
+}

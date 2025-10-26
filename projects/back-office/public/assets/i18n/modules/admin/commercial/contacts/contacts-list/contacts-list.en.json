@@ -1,0 +1,85 @@
+{
+  "contacts-list": {
+    "title": "Contacts",
+    "newContact": "New contact",
+    "filters": {
+      "status": "Status",
+      "allStatuses": "All statuses",
+      "type": "Type",
+      "allTypes": "All types",
+      "urgency": "Urgency",
+      "allUrgencies": "All urgencies",
+      "assignment": "Assignment",
+      "allAssignments": "All",
+      "assigned": "Assigned",
+      "unassigned": "Unassigned"
+    },
+    "kpi": {
+      "total": "Total",
+      "new": "New",
+      "qualified": "Qualified",
+      "conversion_rate": "Conversion Rate",
+      "unassigned": "Unassigned"
+    },
+    "sort": {
+      "createdAt": "Creation date",
+      "updatedAt": "Last update",
+      "leadScore": "Lead score",
+      "company": "Company",
+      "name": "Name"
+    },
+    "columns": {
+      "contact": "Contact",
+      "company": "Company",
+      "type": "Type",
+      "status": "Status",
+      "urgency": "Urgency",
+      "assigned_to": "Assigned to",
+      "lead_score": "Lead score"
+    },
+    "statuses": {
+      "new": "New",
+      "contacted": "Contacted",
+      "qualified": "Qualified",
+      "interested": "Interested",
+      "demo_scheduled": "Demo scheduled",
+      "demo_completed": "Demo completed",
+      "proposal_sent": "Proposal sent",
+      "negotiation": "Negotiation",
+      "converted": "Converted",
+      "lost": "Lost"
+    },
+    "types": {
+      "label": "Record Label",
+      "distributor": "Distributor",
+      "artist": "Artist",
+      "manager": "Manager",
+      "publisher": "Music Publisher",
+      "pricing_inquiry": "Pricing inquiry",
+      "other": "Other"
+    },
+    "urgencies": {
+      "low": "Low",
+      "normal": "Normal",
+      "high": "High",
+      "urgent": "Urgent"
+    },
+    "actions": {
+      "view": "View",
+      "assign": "Assign",
+      "reassign": "Reassign",
+      "qualify": "Qualify",
+      "delete": "Delete"
+    },
+    "unassigned": "Unassigned",
+    "confirmDelete": "Delete {{name}}?",
+    "deleteTitle": "Delete Contact",
+    "delete": "Delete",
+    "toast": {
+      "delete_success": "{{name}} has been deleted successfully",
+      "delete_error": "Error deleting {{name}}"
+    },
+    "no_contacts": "No contacts found",
+    "no_contacts_message": "There are no contacts to display"
+  }
+}

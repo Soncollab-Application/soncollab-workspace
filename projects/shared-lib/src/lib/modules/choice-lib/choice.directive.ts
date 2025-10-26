@@ -25,16 +25,16 @@ export class ChoiceDirective implements OnInit, OnDestroy, OnChanges {
   @Input() config: ChoiceConfig = {};
   @Input() disabled: boolean = false;
 
-  @Output() addItem = new EventEmitter<ChoiceEventDetail>();
-  @Output() removeItem = new EventEmitter<ChoiceEventDetail>();
-  @Output() highlightItem = new EventEmitter<ChoiceEventDetail>();
-  @Output() unhighlightItem = new EventEmitter<ChoiceEventDetail>();
-  @Output() choice = new EventEmitter<ChoiceEventDetail>();
-  @Output() change = new EventEmitter<any>();
-  @Output() search = new EventEmitter<{ value: string; resultCount?: number }>();
-  @Output() showDropdown = new EventEmitter<void>();
-  @Output() hideDropdown = new EventEmitter<void>();
-  @Output() highlightChoice = new EventEmitter<any>();
+  @Output() libAddItem = new EventEmitter<ChoiceEventDetail>();
+  @Output() libRemoveItem = new EventEmitter<ChoiceEventDetail>();
+  @Output() libHighlightItem = new EventEmitter<ChoiceEventDetail>();
+  @Output() libUnhighlightItem = new EventEmitter<ChoiceEventDetail>();
+  @Output() libChoice = new EventEmitter<ChoiceEventDetail>();
+  @Output() libChange = new EventEmitter<any>();
+  @Output() libSearch = new EventEmitter<{ value: string; resultCount?: number }>();
+  @Output() libShowDropdown = new EventEmitter<void>();
+  @Output() libHideDropdown = new EventEmitter<void>();
+  @Output() libHighlightChoice = new EventEmitter<any>();
 
   ngOnInit(): void {
     if (this.instance) {
@@ -81,63 +81,54 @@ export class ChoiceDirective implements OnInit, OnDestroy, OnChanges {
     element.addEventListener('addItem', (event: Event) => {
       event.stopPropagation();
       const detail = (event as CustomEvent).detail;
-      this.addItem.emit(detail);
-      this.emitChangeEvent();
+      this.libAddItem.emit(detail);
     });
 
     element.addEventListener('removeItem', (event: Event) => {
       event.stopPropagation();
       const detail = (event as CustomEvent).detail;
-      this.removeItem.emit(detail);
-      this.emitChangeEvent();
+      this.libRemoveItem.emit(detail);
     });
 
     element.addEventListener('highlightItem', (event: Event) => {
       event.stopPropagation();
       const detail = (event as CustomEvent).detail;
-      this.highlightItem.emit(detail);
+      this.libHighlightItem.emit(detail);
     });
 
     element.addEventListener('unhighlightItem', (event: Event) => {
       event.stopPropagation();
       const detail = (event as CustomEvent).detail;
-      this.unhighlightItem.emit(detail);
+      this.libUnhighlightItem.emit(detail);
     });
 
     element.addEventListener('choice', (event: Event) => {
       event.stopPropagation();
       const detail = (event as CustomEvent).detail;
-      this.choice.emit(detail);
+      this.libChoice.emit(detail);
     });
 
     element.addEventListener('search', (event: Event) => {
       event.stopPropagation();
       const detail = (event as CustomEvent).detail;
-      this.search.emit(detail);
+      this.libSearch.emit(detail);
     });
 
     element.addEventListener('showDropdown', (event: Event) => {
       event.stopPropagation();
-      this.showDropdown.emit();
+      this.libShowDropdown.emit();
     });
 
     element.addEventListener('hideDropdown', (event: Event) => {
       event.stopPropagation();
-      this.hideDropdown.emit();
+      this.libHideDropdown.emit();
     });
 
     element.addEventListener('highlightChoice', (event: Event) => {
       event.stopPropagation();
       const detail = (event as CustomEvent).detail;
-      this.highlightChoice.emit(detail);
+      this.libHighlightChoice.emit(detail); // Renommé
     });
-  }
-
-  private emitChangeEvent(): void {
-    if (this.instance) {
-      const value = this.instance.getValue(true);
-      this.change.emit(value);
-    }
   }
 
   public getInstance(): any {

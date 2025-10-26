@@ -39,6 +39,7 @@ export class AdminService {
     invitations_by_id: (documentId: string) => `${this.API_URL}/soncollab-invitations/${documentId}`,
     invitations_resend: (documentId: string) => `${this.API_URL}/soncollab-invitations/${documentId}/resend`,
     invitations_cancel: (documentId: string) => `${this.API_URL}/soncollab-invitations/${documentId}/cancel`,
+
   };
 
   getUsers(

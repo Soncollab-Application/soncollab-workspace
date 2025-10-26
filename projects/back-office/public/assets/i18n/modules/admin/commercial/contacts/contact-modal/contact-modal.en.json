@@ -1,0 +1,84 @@
+{
+  "contact-modal": {
+    "assign": {
+      "title": "Assign Contact",
+      "subtitle": "Select a sales representative for this contact",
+      "contact_info": "Contact Information",
+      "selected_rep_info": "Selected Representative",
+      "view_profile": "View Profile",
+      "name": "Name",
+      "email_label": "Email",
+      "company": "Company",
+      "phone": "Phone",
+      "type": "Type",
+      "urgency": "Urgency",
+      "lead_score": "Score",
+      "country": "Country",
+      "sales_rep": "Sales Representative",
+      "select_rep": "Select a representative",
+      "rep_email": "Email",
+      "rep_phone": "Phone",
+      "rep_territory": "Territory",
+      "rep_country": "Country",
+      "rep_language": "Language",
+      "rep_timezone": "Timezone",
+      "rep_bio": "Bio",
+      "quota_info": "Workload & Quota",
+      "assigned_contacts": "Assigned Contacts",
+      "active_contacts": "Active Contacts",
+      "current_quota": "Current Quota",
+      "available_slots": "Available Slots",
+      "load_percentage": "Workload",
+      "rep_required": "Please select a sales representative",
+      "no_reps": "No sales representatives available at the moment",
+      "confirm": "Assign",
+      "success": "{{name}} has been assigned successfully",
+      "error": "Error assigning {{name}}"
+    },
+    "reassign": {
+      "title": "Reassign Contact",
+      "subtitle": "Select a new sales representative for this contact",
+      "current_rep": "Current Representative",
+      "new_rep": "New Representative",
+      "confirm": "Reassign",
+      "success": "{{name}} has been reassigned successfully",
+      "error": "Error reassigning {{name}}",
+      "already_assigned": "Contact is already assigned to this sales representative"
+    },
+    "qualify": {
+      "title": "Qualify Contact",
+      "subtitle": "Add qualification information",
+      "status": "Status",
+      "urgency": "Urgency",
+      "company_size": "Company Size",
+      "select_size": "Select a size",
+      "revenue": "Estimated Annual Revenue",
+      "revenue_placeholder": "e.g. 500000",
+      "revenue_hint": "Annual revenue in euros",
+      "notes": "Prospection Notes",
+      "notes_placeholder": "Add notes about this contact...",
+      "notes_hint": "Important information about the contact",
+      "company_sizes": {
+        "micro_1_10": "Micro (1-10)",
+        "small_11_50": "Small (11-50)",
+        "medium_51_200": "Medium (51-200)",
+        "large_201_500": "Large (201-500)",
+        "enterprise_500_plus": "Enterprise (500+)"
+      },
+      "confirm": "Qualify",
+      "success": "{{name}} has been qualified successfully",
+      "error": "Error qualifying {{name}}"
+    }
+  },
+  "user": {
+    "availability": {
+      "available": "Available",
+      "busy": "Busy",
+      "out_of_office": "Out of office"
+    }
+  },
+  "languages": {
+    "fr": "French",
+    "en": "English"
+  }
+}

@@ -1,6 +1,6 @@
 <span [class]="getBadgeClasses()">
   @if (icon() && iconPosition() === 'left') {
-    <i [class]="getIconClasses()"></i>
+    <span [class]="getIconClasses()">{{ icon() }}</span>
   }
 
   @if (text()) {
@@ -10,6 +10,6 @@
   }
 
   @if (icon() && iconPosition() === 'right') {
-    <i [class]="getIconClasses()"></i>
+    <span [class]="getIconClasses()">{{ icon() }}</span>
   }
 </span>

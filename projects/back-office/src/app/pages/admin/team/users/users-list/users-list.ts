@@ -488,6 +488,7 @@ export class UsersList implements OnInit, OnDestroy {
                 sort.field,
                 sort.direction
               );
+              this.loadStats();
             },
             error: () => {
               this.toastService.showError(
@@ -528,6 +529,7 @@ export class UsersList implements OnInit, OnDestroy {
                 sort.field,
                 sort.direction
               );
+              this.loadStats();
             },
             error: () => {
               this.toastService.showError(

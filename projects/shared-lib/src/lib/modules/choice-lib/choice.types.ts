@@ -8,6 +8,9 @@ export interface ChoiceOption {
   disabled?: boolean;
   customProperties?: Record<string, any>;
   placeholder?: boolean;
+  avatarUrl?: string | null;
+  avatarInitials?: string;
+  avatarBgColor?: string;
 }
 
 export interface ChoiceGroup {

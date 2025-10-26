@@ -53,7 +53,12 @@ export const adminRoutes: Routes = [
       // Commercial
       {
         path: 'commercial/contacts',
-        loadComponent: () => import('../../../pages/admin/commercial/contacts/all-contacts/all-contacts').then(c => c.AllContacts)
+        loadComponent: () => import('../../../pages/admin/commercial/contacts/all-contacts/all-contacts').then(c => c.AllContacts),
+        canActivate: [apiPermissionGuard(
+          'sales-contact',
+          'sales-contact',
+          'find'
+        )]
       },
       {
         path: 'commercial/unassigned',
@@ -70,6 +75,16 @@ export const adminRoutes: Routes = [
       {
         path: 'commercial/statistics',
         loadComponent: () => import('../../../pages/admin/commercial/statistics/sales-statistics/sales-statistics').then(c => c.SalesStatistics)
+      },
+
+      {
+        path: 'commercial/contacts/:documentId',
+        loadComponent: () => import('../../../pages/admin/commercial/contacts/contact-detail/contact-detail').then(c => c.ContactDetail),
+        canActivate: [apiPermissionGuard(
+          'sales-contact',
+          'sales-contact',
+          'findOne'
+        )]
       },
 
       // Contenu

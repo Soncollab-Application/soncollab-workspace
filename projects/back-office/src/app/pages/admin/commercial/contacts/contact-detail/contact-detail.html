@@ -1,0 +1,342 @@
+<app-breadcrumb [showAvatar]="true" [icon]="'contacts'" [hasMobileActions]="false">
+  <div breadcrumb-actions>
+    <button class="btn btn-outline-secondary" (click)="goBack()">
+      <span class="material-symbols-outlined me-2">arrow_back</span>
+      {{ 'common.back' | translate }}
+    </button>
+  </div>
+</app-breadcrumb>
+
+@if (loading()) {
+  <div class="d-flex justify-content-center align-items-center" style="min-height: 400px;">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
+    </div>
+  </div>
+}
+
+@if (!loading() && contact()) {
+  <div class="row mt-4">
+    <!-- SIDEBAR -->
+    <div class="col-xl-4 mb-4">
+      <div class="card">
+        <div class="card-body text-center">
+          <!-- Status Badge -->
+          <div class="mb-3">
+            <div class="badge text-bg-{{ getStatusBadgeType(contact()!.sales_contact_status) }}">
+              <span class="material-symbols-outlined me-1 fs-sm">
+                {{ getStatusIcon(contact()!.sales_contact_status) }}
+              </span>
+              {{ translateStatus(contact()!.sales_contact_status) }}
+            </div>
+          </div>
+
+          <!-- Name & Email -->
+          <h4 class="mb-1 fw-bold">{{ getContactName() }}</h4>
+          <p class="text-muted mb-3">
+            <span class="material-symbols-outlined me-1 fs-sm">email</span>
+            {{ contact()!.email }}
+          </p>
+
+          <!-- Badges -->
+          <div class="d-flex gap-2 justify-content-center mb-3 flex-wrap">
+            <lib-badge
+              [type]="'primary'"
+              [variant]="'subtle'"
+              [text]="translateType(contact()!.contact_type)"
+            />
+
+            <lib-badge
+              [type]="getUrgencyBadgeType(contact()!.urgency_level)"
+              [variant]="'subtle'"
+              [text]="translateUrgency(contact()!.urgency_level)"
+            />
+
+            <lib-badge
+              [type]="'info'"
+              [variant]="'subtle'"
+              [text]="'Score: ' + contact()!.lead_score + '/100'"
+            />
+          </div>
+
+          <!-- Dates -->
+          <div class="text-start mt-4 pt-3 border-top">
+            <div class="mb-3">
+              <small class="text-muted d-block mb-1">
+                <span class="material-symbols-outlined me-1" style="font-size: 1rem;">schedule</span>
+                {{ 'contact-detail.created' | translate }}
+              </small>
+              <p class="mb-0 fw-medium">{{ contact()!.createdAt | relativeDate }}</p>
+            </div>
+
+            <div class="mb-3">
+              <small class="text-muted d-block mb-1">
+                <span class="material-symbols-outlined me-1" style="font-size: 1rem;">update</span>
+                {{ 'contact-detail.updated' | translate }}
+              </small>
+              <p class="mb-0 fw-medium">{{ contact()!.updatedAt | relativeDate }}</p>
+            </div>
+
+            @if (contact()!.qualification_date) {
+              <div class="mb-3">
+                <small class="text-muted d-block mb-1">
+                  <span class="material-symbols-outlined me-1 text-success" style="font-size: 1rem;">verified</span>
+                  {{ 'contact-detail.qualified_at' | translate }}
+                </small>
+                <p class="mb-0 fw-medium">{{ contact()!.qualification_date | relativeDate }}</p>
+              </div>
+            }
+
+            @if (contact()!.conversion_date) {
+              <div class="mb-3">
+                <small class="text-muted d-block mb-1">
+                  <span class="material-symbols-outlined me-1 text-success" style="font-size: 1rem;">celebration</span>
+                  {{ 'contact-detail.converted_at' | translate }}
+                </small>
+                <p class="mb-0 fw-medium">{{ contact()!.conversion_date | relativeDate }}</p>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="col-xl-8">
+      <!-- Details Card -->
+      <div class="card mb-4">
+        <div class="card-header border-bottom">
+          <h5 class="mb-0">
+            <span class="material-symbols-outlined me-2 text-primary">info</span>
+            {{ 'contact-detail.details' | translate }}
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="row g-4">
+            <div class="col-md-6">
+              <div class="detail-item">
+                <small class="text-muted d-block mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                  {{ 'contact-detail.first_name' | translate }}
+                </small>
+                <p class="mb-0 fw-medium">{{ contact()!.first_name }}</p>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="detail-item">
+                <small class="text-muted d-block mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                  {{ 'contact-detail.last_name' | translate }}
+                </small>
+                <p class="mb-0 fw-medium">{{ contact()!.last_name }}</p>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="detail-item">
+                <small class="text-muted d-block mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                  {{ 'contact-detail.email' | translate }}
+                </small>
+                <p class="mb-0">
+                  <a [href]="'mailto:' + contact()!.email" class="text-decoration-none">
+                    {{ contact()!.email }}
+                  </a>
+                </p>
+              </div>
+            </div>
+
+            @if (contact()!.phone) {
+              <div class="col-md-6">
+                <div class="detail-item">
+                  <small class="text-muted d-block mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                    {{ 'contact-detail.phone' | translate }}
+                  </small>
+                  <p class="mb-0">
+                    <a [href]="'tel:' + contact()!.phone" class="text-decoration-none">
+                      {{ contact()!.phone }}
+                    </a>
+                  </p>
+                </div>
+              </div>
+            }
+
+            @if (contact()!.company_name) {
+              <div class="col-md-6">
+                <div class="detail-item">
+                  <small class="text-muted d-block mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                    {{ 'contact-detail.company' | translate }}
+                  </small>
+                  <p class="mb-0 fw-medium">{{ contact()!.company_name }}</p>
+                </div>
+              </div>
+            }
+
+            @if (contact()!.company_website) {
+              <div class="col-md-6">
+                <div class="detail-item">
+                  <small class="text-muted d-block mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                    {{ 'contact-detail.website' | translate }}
+                  </small>
+                  <p class="mb-0">
+                    <a [href]="contact()!.company_website" target="_blank" class="text-decoration-none">
+                      {{ contact()!.company_website }}
+                      <span class="material-symbols-outlined fs-sm ms-1">open_in_new</span>
+                    </a>
+                  </p>
+                </div>
+              </div>
+            }
+
+            @if (contact()!.country) {
+              <div class="col-md-6">
+                <div class="detail-item">
+                  <small class="text-muted d-block mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                    {{ 'contact-detail.country' | translate }}
+                  </small>
+                  <p class="mb-0 fw-medium">
+                    @if (contact()!.country?.flag) {
+                      <span class="me-2">{{ contact()!.country?.flag }}</span>
+                    }
+                    {{ contact()!.country?.name }}
+                  </p>
+                </div>
+              </div>
+            }
+
+            @if (contact()!.territory_assigned) {
+              <div class="col-md-6">
+                <div class="detail-item">
+                  <small class="text-muted d-block mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                    {{ 'contact-detail.territory' | translate }}
+                  </small>
+                  <p class="mb-0 fw-medium">{{ contact()!.territory_assigned?.territory_name }}</p>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Assigned To Card -->
+      @if (contact()!.assigned_to) {
+        <div class="card mb-4">
+          <div class="card-header border-bottom">
+            <h5 class="mb-0">
+              <span class="material-symbols-outlined me-2 text-success">person</span>
+              {{ 'contact-detail.assigned_to' | translate }}
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="d-flex align-items-center">
+              <div class="flex-grow-1">
+                <h6 class="mb-1 fw-semibold">
+                  {{ contact()!.assigned_to!.first_name }} {{ contact()!.assigned_to!.last_name }}
+                </h6>
+                <p class="text-muted mb-0">
+                  <span class="material-symbols-outlined fs-sm me-1">email</span>
+                  <a [href]="'mailto:' + contact()!.assigned_to!.email" class="text-decoration-none">
+                    {{ contact()!.assigned_to!.email }}
+                  </a>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Notes -->
+      @if (contact()!.notes || contact()!.prospection_notes || contact()!.message) {
+        <div class="card mb-4">
+          <div class="card-header border-bottom">
+            <h5 class="mb-0">
+              <span class="material-symbols-outlined me-2 text-warning">note</span>
+              {{ 'contact-detail.notes' | translate }}
+            </h5>
+          </div>
+          <div class="card-body">
+            @if (contact()!.message) {
+              <div class="mb-3">
+                <small class="text-muted d-block mb-2 fw-semibold">{{ 'contact-detail.initial_message' | translate }}</small>
+                <p class="mb-0">{{ contact()!.message }}</p>
+              </div>
+            }
+
+            @if (contact()!.prospection_notes) {
+              <div class="mb-3">
+                <small class="text-muted d-block mb-2 fw-semibold">{{ 'contact-detail.prospection_notes' | translate }}</small>
+                <p class="mb-0">{{ contact()!.prospection_notes }}</p>
+              </div>
+            }
+
+            @if (contact()!.notes) {
+              <div>
+                <small class="text-muted d-block mb-2 fw-semibold">{{ 'contact-detail.internal_notes' | translate }}</small>
+                <p class="mb-0">{{ contact()!.notes }}</p>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Actions Card -->
+      @if (showAssignButton() || showReassignButton() || showUnassignButton() || showQualifyButton() || showConvertButton() || canDelete()) {
+        <div class="card">
+          <div class="card-header border-bottom">
+            <h5 class="mb-0">
+              <span class="material-symbols-outlined me-2 text-danger">settings</span>
+              {{ 'contact-detail.actions' | translate }}
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="d-flex flex-wrap gap-2">
+              @if (showAssignButton()) {
+                <button class="btn btn-primary" (click)="assignContact()">
+                  <span class="material-symbols-outlined me-2">person_add</span>
+                  {{ 'contact-detail.assign.button' | translate }}
+                </button>
+              }
+
+              @if (showReassignButton()) {
+                <button class="btn btn-warning" (click)="reassignContact()">
+                  <span class="material-symbols-outlined me-2">swap_horiz</span>
+                  {{ 'contact-detail.reassign.button' | translate }}
+                </button>
+              }
+
+              @if (showUnassignButton()) {
+                <button class="btn btn-outline-warning" (click)="unassignContact()">
+                  <span class="material-symbols-outlined me-2">person_remove</span>
+                  {{ 'contact-detail.unassign.button' | translate }}
+                </button>
+              }
+
+              @if (showQualifyButton()) {
+                <button class="btn btn-success" (click)="qualifyContact()">
+                  <span class="material-symbols-outlined me-2">verified</span>
+                  {{ 'contact-detail.qualify.button' | translate }}
+                </button>
+              }
+
+              @if (showConvertButton()) {
+                <button class="btn btn-success" (click)="convertToProspect()">
+                  <span class="material-symbols-outlined me-2">upgrade</span>
+                  {{ 'contact-detail.convert.button' | translate }}
+                </button>
+              }
+
+              @if (canDelete()) {
+                <button class="btn btn-danger ms-auto" (click)="deleteContact()">
+                  <span class="material-symbols-outlined me-2">delete</span>
+                  {{ 'common.delete' | translate }}
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+}
+
+
+<app-assign-contact-modal />
+<app-qualify-contact-modal />

@@ -10,13 +10,12 @@
     [placeholder]="placeholderValue"
     [required]="required"
     [attr.aria-label]="ariaLabel"
-    (addItem)="onAddItem($event)"
-    (removeItem)="onRemoveItem($event)"
-    (highlightItem)="highlightItem.emit($event)"
-    (unhighlightItem)="unhighlightItem.emit($event)"
-    (search)="search.emit($event)"
-    (change)="change.emit($event)"
-  />
+    (libAddItem)="onAddItem($event)"
+    (libRemoveItem)="onRemoveItem($event)"
+    (libHighlightItem)="highlightItem.emit($event)"
+    (libUnhighlightItem)="unhighlightItem.emit($event)"
+    (libSearch)="search.emit($event)"
+    (change)="change.emit($event)" />
 } @else if (isSelect()) {
   <select
     libChoice
@@ -28,15 +27,14 @@
     [id]="id"
     [required]="required"
     [attr.aria-label]="ariaLabel"
-    (addItem)="onAddItem($event)"
-    (removeItem)="onRemoveItem($event)"
-    (highlightItem)="highlightItem.emit($event)"
-    (unhighlightItem)="unhighlightItem.emit($event)"
-    (choice)="choice.emit($event)"
-    (search)="search.emit($event)"
-    (showDropdown)="onShowDropdown()"
-    (hideDropdown)="hideDropdown.emit()"
-    (change)="change.emit($event)"
+    (libAddItem)="onAddItem($event)"
+    (libRemoveItem)="onRemoveItem($event)"
+    (libHighlightItem)="highlightItem.emit($event)"
+    (libUnhighlightItem)="unhighlightItem.emit($event)"
+    (libChoice)="choice.emit($event)"
+    (libSearch)="search.emit($event)"
+    (libShowDropdown)="onShowDropdown()"
+    (libHideDropdown)="hideDropdown.emit()"
   >
     @if (!hasGroups()) {
       @for (option of optionsValue; track option.value) {

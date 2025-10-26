@@ -1,0 +1,56 @@
+{
+  "contact-detail": {
+    "title": "Détails du contact",
+    "details": "Détails",
+    "first_name": "Prénom",
+    "last_name": "Nom",
+    "email": "Email",
+    "phone": "Téléphone",
+    "company": "Entreprise",
+    "website": "Site web",
+    "country": "Pays",
+    "territory": "Territoire",
+    "created": "Créé",
+    "updated": "Mis à jour",
+    "qualified_at": "Qualifié",
+    "converted_at": "Converti",
+    "assigned_to": "Assigné à",
+    "notes": "Notes",
+    "initial_message": "Message initial",
+    "prospection_notes": "Notes de prospection",
+    "internal_notes": "Notes internes",
+    "actions": "Actions",
+    "assign": {
+      "button": "Assigner",
+      "modal_coming_soon": "Modal d'assignation à venir"
+    },
+    "reassign": {
+      "button": "Réassigner",
+      "modal_coming_soon": "Modal de réassignation à venir"
+    },
+    "unassign": {
+      "button": "Désassigner",
+      "title": "Désassigner le contact",
+      "message": "Voulez-vous vraiment désassigner {{name}} ?",
+      "confirm": "Désassigner"
+    },
+    "qualify": {
+      "button": "Qualifier",
+      "modal_coming_soon": "Modal de qualification à venir"
+    },
+    "convert": {
+      "button": "Convertir en prospect",
+      "title": "Convertir en prospect",
+      "message": "Voulez-vous vraiment convertir {{name}} en prospect ?",
+      "confirm": "Convertir"
+    },
+    "toast": {
+      "unassign_success": "{{name}} a été désassigné avec succès",
+      "unassign_error": "Erreur lors de la désassignation de {{name}}",
+      "convert_success": "{{name}} a été converti en prospect avec succès",
+      "convert_error": "Erreur lors de la conversion de {{name}}",
+      "delete_success": "{{name}} a été supprimé avec succès",
+      "delete_error": "Erreur lors de la suppression de {{name}}"
+    }
+  }
+}

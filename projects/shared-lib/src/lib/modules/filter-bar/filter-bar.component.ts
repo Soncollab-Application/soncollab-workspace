@@ -293,7 +293,7 @@ export class FilterBarComponent implements OnInit {
     return {
       searchEnabled: false,
       shouldSort: false,
-      removeItemButton: false,
+      removeItemButton: true,
       classNames: {
         containerInner: ['form-select']
       }
@@ -304,7 +304,7 @@ export class FilterBarComponent implements OnInit {
     const baseConfig = {
       searchEnabled: filter.options && filter.options.length > 5,
       shouldSort: false,
-      removeItemButton: false,
+      removeItemButton: true,
       classNames: {
         containerInner: ['form-select'],
       }

@@ -11,6 +11,12 @@
       "invitations": "Invitations",
       "invite": "Invite Member",
       "detail": "Invitation Details"
+    },
+    "contacts-list": {
+      "dashboard": "Dashboard",
+      "commercial": "Sales",
+      "all_contacts": "All Contacts",
+      "contact_detail": "Contact Details"
     }
   }
 }

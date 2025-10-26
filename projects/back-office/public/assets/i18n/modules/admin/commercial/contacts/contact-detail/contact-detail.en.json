@@ -1,0 +1,56 @@
+{
+  "contact-detail": {
+    "title": "Contact Details",
+    "details": "Details",
+    "first_name": "First Name",
+    "last_name": "Last Name",
+    "email": "Email",
+    "phone": "Phone",
+    "company": "Company",
+    "website": "Website",
+    "country": "Country",
+    "territory": "Territory",
+    "created": "Created",
+    "updated": "Updated",
+    "qualified_at": "Qualified",
+    "converted_at": "Converted",
+    "assigned_to": "Assigned to",
+    "notes": "Notes",
+    "initial_message": "Initial Message",
+    "prospection_notes": "Prospection Notes",
+    "internal_notes": "Internal Notes",
+    "actions": "Actions",
+    "assign": {
+      "button": "Assign",
+      "modal_coming_soon": "Assignment modal coming soon"
+    },
+    "reassign": {
+      "button": "Reassign",
+      "modal_coming_soon": "Reassignment modal coming soon"
+    },
+    "unassign": {
+      "button": "Unassign",
+      "title": "Unassign Contact",
+      "message": "Do you really want to unassign {{name}}?",
+      "confirm": "Unassign"
+    },
+    "qualify": {
+      "button": "Qualify",
+      "modal_coming_soon": "Qualification modal coming soon"
+    },
+    "convert": {
+      "button": "Convert to Prospect",
+      "title": "Convert to Prospect",
+      "message": "Do you really want to convert {{name}} to prospect?",
+      "confirm": "Convert"
+    },
+    "toast": {
+      "unassign_success": "{{name}} has been unassigned successfully",
+      "unassign_error": "Error unassigning {{name}}",
+      "convert_success": "{{name}} has been converted to prospect successfully",
+      "convert_error": "Error converting {{name}}",
+      "delete_success": "{{name}} has been deleted successfully",
+      "delete_error": "Error deleting {{name}}"
+    }
+  }
+}

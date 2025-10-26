@@ -34,6 +34,20 @@ export interface ResetPasswordResponse {
 
 export type CustomPermissions = Record<CustomPermission, { enabled: boolean }>;
 
+export interface SalesRepresentative extends BackofficeUser {
+  assigned_contacts: number;
+  active_contacts: number;
+  quota: {
+    quota_type: 'weekly' | 'monthly';
+    max_contacts: number;
+    current_contacts: number;
+    priority_level: number;
+    available_slots: number;
+    load_percentage: number;
+  };
+}
+
+
 
 export interface BackofficeUser {
   id: number;

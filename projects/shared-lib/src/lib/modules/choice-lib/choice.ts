@@ -5,15 +5,17 @@ import {
   effect,
   EventEmitter,
   forwardRef,
+  inject,
   Input,
   OnDestroy,
   Output,
   signal,
   ViewChild
 } from '@angular/core';
-import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { ChoiceConfig, ChoiceEventDetail, ChoiceGroup, ChoiceOption } from './choice.types';
-import { ChoiceDirective } from './choice.directive';
+import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from '@angular/forms';
+import {ChoiceConfig, ChoiceEventDetail, ChoiceGroup, ChoiceOption} from './choice.types';
+import {ChoiceDirective} from './choice.directive';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'lib-choice',
@@ -31,7 +33,10 @@ import { ChoiceDirective } from './choice.directive';
 })
 export class Choice implements AfterViewInit, OnDestroy, ControlValueAccessor {
   @ViewChild(ChoiceDirective) choiceDirective!: ChoiceDirective;
+  private translate = inject(TranslateService);
 
+
+  private searchValueTranslate = signal<string>('choiceShared.searchPlaceholder');
   private _type = signal<'text' | 'select-one' | 'select-multiple'>('select-one');
   private _options = signal<ChoiceOption[]>([]);
   private _groups = signal<ChoiceGroup[]>([]);
@@ -44,6 +49,7 @@ export class Choice implements AfterViewInit, OnDestroy, ControlValueAccessor {
   private _cssClass = signal<string>('form-select');
   private _pendingValue: any = null;
   private _isReady = signal<boolean>(false);
+  private _enableAvatars = signal<boolean>(false);
   private _initializationEndTime = 0;
 
   @Input() set type(value: 'text' | 'select-one' | 'select-multiple') {
@@ -106,6 +112,10 @@ export class Choice implements AfterViewInit, OnDestroy, ControlValueAccessor {
     this._cssClass.set(value);
   }
 
+  @Input() set enableAvatars(value: boolean) {
+    this._enableAvatars.set(value);
+  }
+
   @Input() name = '';
   @Input() id = '';
   @Input() required = false;
@@ -129,15 +139,29 @@ export class Choice implements AfterViewInit, OnDestroy, ControlValueAccessor {
 
   private mergedConfig = computed<ChoiceConfig>(() => {
     const cssClasses = this._cssClass().split(' ').filter(c => c);
-    return {
-      placeholder: this._placeholder() !== '',
-      placeholderValue: this._placeholder(),
+    const userConfig = this._config();
+
+    const baseConfig = {
+      allowHTML: true,
+      searchPlaceholderValue: this.translate.instant(this.searchValueTranslate()),
+      removeItemButton: true,
+      editItems: true,
+      searchEnabled: false,
+      shouldSort: false,
+      itemSelectText: '',
       classNames: {
-        containerInner: cssClasses,
-        ...this._config().classNames
-      },
-      ...this._config()
+        containerInner: cssClasses.length > 0 ? cssClasses : ['form-select'],
+        ...userConfig.classNames
+      }
     };
+
+    const merged = { ...baseConfig, ...userConfig };
+
+    if (this._enableAvatars() && !merged.callbackOnCreateTemplates) {
+      merged.callbackOnCreateTemplates = this.getAvatarTemplates();
+    }
+
+    return merged;
   });
 
   protected isText = computed(() => this._type() === 'text');
@@ -233,24 +257,37 @@ export class Choice implements AfterViewInit, OnDestroy, ControlValueAccessor {
           label: opt.label,
           selected: opt.selected || false,
           disabled: opt.disabled || false,
-          customProperties: opt.customProperties
+          customProperties: this.buildCustomProperties(opt)
         }))
       }));
       instance.setChoices(groupedChoices, 'value', 'label', false);
+
     } else if (options.length > 0) {
-      instance.setChoices(
-        options.map(opt => ({
+      const choicesWithPlaceholder = [];
+
+      if (this._placeholder() !== '') {
+        choicesWithPlaceholder.push({
+          value: '',
+          label: this._placeholder(),
+          selected: !this._value() || this._value() === '',
+          disabled: true,
+          placeholder: true,
+          customProperties: { isPlaceholder: true }
+        });
+      }
+
+      options.forEach(opt => {
+        choicesWithPlaceholder.push({
           value: opt.value,
           label: opt.label,
           selected: opt.selected || false,
           disabled: opt.disabled || false,
-          placeholder: opt.placeholder || opt.value === '',
-          customProperties: opt.customProperties
-        })),
-        'value',
-        'label',
-        false
-      );
+          placeholder: false,
+          customProperties: this.buildCustomProperties(opt)
+        });
+      });
+
+      instance.setChoices(choicesWithPlaceholder, 'value', 'label', false);
     }
 
     const val = this._value();
@@ -261,9 +298,120 @@ export class Choice implements AfterViewInit, OnDestroy, ControlValueAccessor {
     }
   }
 
+  private buildCustomProperties(opt: ChoiceOption): Record<string, any> {
+    const props: Record<string, any> = { ...(opt.customProperties || {}) };
+
+    // Si avatars activés, ajouter les propriétés avatar
+    if (this._enableAvatars()) {
+      if (opt.avatarUrl) {
+        props["avatarUrl"] = opt.avatarUrl;
+      }
+      if (opt.avatarInitials) {
+        props["avatarInitials"] = opt.avatarInitials;
+      }
+      if (opt.avatarBgColor) {
+        props["avatarBgColor"] = opt.avatarBgColor;
+      }
+    }
+
+    return props;
+  }
+
+
+  private getAvatarTemplates() {
+    return (template: any) => ({
+      item: (classNames: any, data: any) => {
+        if (data.customProperties?.isPlaceholder || data.value === '') {
+          return template(`
+          <div class="${classNames.item} ${classNames.placeholder}"
+               data-item
+               data-id="${data.id}"
+               data-value="">
+            ${data.label}
+          </div>
+        `);
+        }
+
+        // Générer le HTML de l'avatar
+        const avatarUrl = data.customProperties?.avatarUrl;
+        const initials = data.customProperties?.avatarInitials || '';
+        const bgColor = data.customProperties?.avatarBgColor || 'bg-secondary';
+
+        let avatarHTML = '';
+        if (avatarUrl) {
+          avatarHTML = `
+          <div class="avatar avatar-xs me-2">
+            <img class="avatar-img" src="${avatarUrl}" alt="${data.label}">
+          </div>
+        `;
+        } else if (initials) {
+          avatarHTML = `
+          <div class="avatar avatar-xs ${bgColor} me-2">
+            <span class="small">${initials}</span>
+          </div>
+        `;
+        }
+
+        return template(`
+        <div class="${classNames.item} ${classNames.itemSelectable}"
+             data-item
+             data-id="${data.id}"
+             data-value="${data.value}"
+             ${data.active ? 'aria-selected="true"' : ''}>
+          <div class="d-flex align-items-center">
+            ${avatarHTML}
+            <span>${data.label}</span>
+          </div>
+          <button type="button" class="choices__button" aria-label="Remove item" data-button></button>
+        </div>
+      `);
+      },
+
+      choice: (classNames: any, data: any) => {
+        if (data.disabled && (data.customProperties?.isPlaceholder || data.value === '')) {
+          return template(`<div class="${classNames.item}" style="display: none;"></div>`);
+        }
+
+        const avatarUrl = data.customProperties?.avatarUrl;
+        const initials = data.customProperties?.avatarInitials || '';
+        const bgColor = data.customProperties?.avatarBgColor || 'bg-secondary';
+
+        let avatarHTML = '';
+        if (avatarUrl) {
+          avatarHTML = `
+          <div class="avatar avatar-xs me-2">
+            <img class="avatar-img" src="${avatarUrl}" alt="${data.label}">
+          </div>
+        `;
+        } else if (initials) {
+          avatarHTML = `
+          <div class="avatar avatar-xs ${bgColor} me-2">
+            <span class="small">${initials}</span>
+          </div>
+        `;
+        }
+
+        return template(`
+        <div class="${classNames.item} ${classNames.itemChoice} ${classNames.itemSelectable}"
+             data-select-text=""
+             data-choice
+             data-choice-selectable
+             data-id="${data.id}"
+             data-value="${data.value}"
+             role="option">
+          <div class="d-flex align-items-center">
+            ${avatarHTML}
+            <span>${data.label}</span>
+          </div>
+        </div>
+      `);
+      }
+    });
+  }
+
   onRemoveItem(detail: ChoiceEventDetail): void {
     this.removeItem.emit(detail);
-    this.updateValue();
+    this.updateValue(undefined, 'remove');
   }
 
   onShowDropdown(): void {
@@ -278,23 +426,26 @@ export class Choice implements AfterViewInit, OnDestroy, ControlValueAccessor {
 
   onAddItem(detail: ChoiceEventDetail): void {
     this.addItem.emit(detail);
-    this.updateValue();
+    this.updateValue(detail, 'add');
   }
 
-  private updateValue(): void {
+  private updateValue(detail?: ChoiceEventDetail, action?: 'add' | 'remove'): void {
     const instance = this.choiceDirective?.getInstance();
     if (instance && !this.isExternalUpdate) {
       this.isInternalChange = true;
-      const currentValue = instance.getValue(true);
-
       let actualValue: any;
+
       if (this.isMultiple()) {
+        const currentValue = instance.getValue(true);
         actualValue = Array.isArray(currentValue) ? currentValue : [];
       } else {
-        if (Array.isArray(currentValue)) {
-          actualValue = currentValue.length > 0 ? currentValue[0] : '';
+        if (action === 'add' && detail) {
+          actualValue = detail.value;
+        } else if (action === 'remove') {
+          actualValue = '';
         } else {
-          actualValue = currentValue || '';
+          const currentValue = instance.getValue(true);
+          actualValue = Array.isArray(currentValue) ? currentValue[0] : (currentValue || '');
         }
       }
 

@@ -8,7 +8,7 @@ export interface FilterConfig {
   options?: FilterOption[];
   groups?: ChoiceGroup[];
   choiceConfig?: any;
-  avatarField?: string; // Pour afficher des avatars dans les options
+  avatarField?: string;
 }
 
 export interface FilterOption {

@@ -1,0 +1,85 @@
+{
+  "contacts-list": {
+    "title": "Contacts",
+    "newContact": "Nouveau contact",
+    "filters": {
+      "status": "Statut",
+      "allStatuses": "Tous les statuts",
+      "type": "Type",
+      "allTypes": "Tous les types",
+      "urgency": "Urgence",
+      "allUrgencies": "Toutes les urgences",
+      "assignment": "Assignation",
+      "allAssignments": "Tous",
+      "assigned": "Assignés",
+      "unassigned": "Non assignés"
+    },
+    "kpi": {
+      "total": "Total",
+      "new": "Nouveaux",
+      "qualified": "Qualifiés",
+      "conversion_rate": "Taux de conversion",
+      "unassigned": "Non assignés"
+    },
+    "sort": {
+      "createdAt": "Date de création",
+      "updatedAt": "Date de modification",
+      "leadScore": "Score",
+      "company": "Entreprise",
+      "name": "Nom"
+    },
+    "columns": {
+      "contact": "Contact",
+      "company": "Entreprise",
+      "type": "Type",
+      "status": "Statut",
+      "urgency": "Urgence",
+      "assigned_to": "Assigné à",
+      "lead_score": "Score"
+    },
+    "statuses": {
+      "new": "Nouveau",
+      "contacted": "Contacté",
+      "qualified": "Qualifié",
+      "interested": "Intéressé",
+      "demo_scheduled": "Démo planifiée",
+      "demo_completed": "Démo effectuée",
+      "proposal_sent": "Proposition envoyée",
+      "negotiation": "Négociation",
+      "converted": "Converti",
+      "lost": "Perdu"
+    },
+    "types": {
+      "label": "Label",
+      "distributor": "Distributeur",
+      "artist": "Artiste",
+      "manager": "Manager",
+      "publisher": "Éditeur musical",
+      "pricing_inquiry": "Demande de tarif",
+      "other": "Autre"
+    },
+    "urgencies": {
+      "low": "Faible",
+      "normal": "Normal",
+      "high": "Élevée",
+      "urgent": "Urgent"
+    },
+    "actions": {
+      "view": "Voir",
+      "assign": "Assigner",
+      "reassign": "Réassigner",
+      "qualify": "Qualifier",
+      "delete": "Supprimer"
+    },
+    "unassigned": "Non assigné",
+    "confirmDelete": "Supprimer {{name}} ?",
+    "deleteTitle": "Supprimer le contact",
+    "delete": "Supprimer",
+    "toast": {
+      "delete_success": "{{name}} a été supprimé avec succès",
+      "delete_error": "Erreur lors de la suppression de {{name}}"
+    },
+    "no_contacts": "Aucun contact trouvé",
+    "no_contacts_message": "Il n'y a aucun contact à afficher"
+  }
+}
