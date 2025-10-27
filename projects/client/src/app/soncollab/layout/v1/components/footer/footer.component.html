@@ -18,7 +18,11 @@
         <div class="mb-4 w-50">
           <lib-choice
             [type]="'select-one'"
-            [config]="{ searchEnabled: false }"
+            [config]="{
+               searchEnabled: false,
+               placeholder: false,
+               removeItemButton: false,
+            }"
             [options]="languageOptions()"
             (valueChange)="onLanguageChange($any($event))"
           />

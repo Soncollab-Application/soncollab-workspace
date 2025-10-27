@@ -322,9 +322,13 @@
                   {{ 'contact-detail.convert.button' | translate }}
                 </button>
               }
+            </div>
+          </div>
 
+          <div class="card-footer">
+            <div class="d-flex align-items-center justify-content-md-end justify-content-start">
               @if (canDelete()) {
-                <button class="btn btn-danger ms-auto" (click)="deleteContact()">
+                <button class="btn btn-danger" (click)="deleteContact()">
                   <span class="material-symbols-outlined me-2">delete</span>
                   {{ 'common.delete' | translate }}
                 </button>

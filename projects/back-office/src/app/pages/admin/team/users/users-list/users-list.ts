@@ -115,14 +115,29 @@ export class UsersList implements OnInit, OnDestroy {
       if (!this.urlInitialized()) return;
 
       untracked(() => {
-        const userFilters = this.buildUserFilters(search, filters);
-        this.loadUsers(page, size, userFilters, sort.field, sort.direction);
+        this.urlState.syncToUrl({
+          page: page,
+          search: search,
+          filters: filters,
+          sort: sort
+        });
+
+        this.loadUsers(
+          page,
+          size,
+          this.buildUserFilters(search, filters),
+          sort.field,
+          sort.direction
+        );
       });
     });
   }
 
   ngOnInit() {
-    this.setBreadcrumbs();
+    this.languageOrchestrator.registerComponent(
+      this.componentId,
+      () => this.onLanguageChange()
+    );
     initializeFromUrl(
       this.route,
       this.urlState,
@@ -131,13 +146,10 @@ export class UsersList implements OnInit, OnDestroy {
       this.currentSort,
       this.currentPage
     );
+    this.setBreadcrumbs();
     this.initializeConfig();
     this.loadRoles();
     this.loadStats();
-    this.languageOrchestrator.registerComponent(
-      this.componentId,
-      () => this.onLanguageChange()
-    );
     this.urlInitialized.set(true);
   }
 

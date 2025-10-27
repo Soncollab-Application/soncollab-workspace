@@ -92,14 +92,16 @@ export class PricingComponent implements OnInit, OnDestroy {
     searchEnabled: false,
     allowHTML: false,
     itemSelectText: '',
-    placeholder: true
+    placeholder: false,
+    removeItemButton: false,
   };
 
   public currencyConfig: ChoiceConfig = {
     searchEnabled: false,
     allowHTML: false,
     itemSelectText: '',
-    placeholder: true
+    placeholder: false,
+    removeItemButton: false,
   };
 
   // Filtered plans
