@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import {ToastModule} from './modules/toast/toast.module';
 import {
   AosService,
-  FilterService,
+  FilterService, FilterStateService,
   LanguageOrchestratorService,
   LanguageService, PermissionService,
   RecaptchaService, RelativeDateService,
@@ -48,7 +48,8 @@ import {CustomValidators} from './validators/custom-validators';
     PermissionService,
     UrlStateService,
     RelativeDateService,
-    CustomValidators
+    CustomValidators,
+    FilterStateService
   ],
   exports: [
     ToastModule,

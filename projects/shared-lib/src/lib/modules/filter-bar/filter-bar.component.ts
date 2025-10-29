@@ -8,14 +8,14 @@ import {
   viewChild,
   viewChildren,
   effect,
-  untracked,
+  computed,
 } from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {FormsModule} from '@angular/forms';
-import {TranslateModule, TranslateService} from '@ngx-translate/core';
-import {FilterConfig, FilterValue, SortConfig, SortOption} from './filter.model';
-import {Choice, ChoiceOption} from '../choice-lib';
-import {UrlStateService} from '../../services';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { FilterConfig, FilterValue, SortConfig, SortOption } from './filter.model';
+import { Choice, ChoiceOption, ChoiceConfig } from '../choice-lib';
+import { FilterStateService } from '../../services';
 
 @Component({
   selector: 'lib-filter-bar',
@@ -26,7 +26,7 @@ import {UrlStateService} from '../../services';
 })
 export class FilterBarComponent implements OnInit {
   private translate = inject(TranslateService);
-  private urlState = inject(UrlStateService);
+  private filterState = inject(FilterStateService);
 
   // Inputs
   filters = input<FilterConfig[]>([]);
@@ -35,7 +35,8 @@ export class FilterBarComponent implements OnInit {
   showSearch = input<boolean>(true);
   noSelectionText = input<string>('filterBarShared.noSelection');
   selectionText = input<string>('filterBarShared.selected');
-  enableUrlSync = input<boolean>(true);
+  useFilterState = input<boolean>(true);
+  sortPlaceholder = input<string>('filterBarShared.sortBy');
 
   // Outputs
   searchChange = output<string>();
@@ -43,142 +44,102 @@ export class FilterBarComponent implements OnInit {
   sortChange = output<SortConfig>();
   clearFilters = output<void>();
 
-  // State
-  searchTerm = signal<string>('');
-  filterValues = signal<FilterValue>({});
-  currentSort = signal<SortConfig>({ field: '', direction: 'asc' });
-
-
-  protected choiceRefreshKey = signal(0);
-  private filtersFingerprint = signal<string>('');
-
+  // Refs
   sortChoice = viewChild<Choice>('sortChoice');
   sortChoiceMobile = viewChild<Choice>('sortChoiceMobile');
   filterChoices = viewChildren<Choice>(Choice);
 
-  private initialized = signal(false);
+  // État
+  protected searchTerm = computed(() =>
+    this.useFilterState() ? this.filterState.state().search : ''
+  );
+
+  protected filterValues = computed(() =>
+    this.useFilterState() ? this.filterState.state().filters : {}
+  );
+
+  protected currentSort = computed(() =>
+    this.useFilterState() ? this.filterState.state().sort : { field: '', direction: 'asc' as const }
+  );
+
+  protected choiceRefreshKey = signal(0);
+  private filtersFingerprint = signal<string>('');
   private isResetting = signal(false);
   private isSyncing = signal(false);
 
   constructor() {
-    // Initialiser depuis URL au premier chargement
+    // Synchroniser les Choice avec l'état du sort
     effect(() => {
-      if (!this.initialized() && this.enableUrlSync()) {
-        const urlState = this.urlState.getStateFromUrl();
+      if (!this.useFilterState()) return;
 
-        if (urlState.search) this.searchTerm.set(urlState.search);
-        if (urlState.filters) this.filterValues.set(urlState.filters);
-        if (urlState.sort) this.currentSort.set(urlState.sort);
-
-        this.initialized.set(true);
-      }
-    });
-
-    // Sync vers URL quand état change
-    effect(() => {
-      if (!this.initialized() || !this.enableUrlSync()) return;
-
-      const search = this.searchTerm();
-      const filters = this.filterValues();
       const sort = this.currentSort();
+      const sortOptions = this.sortOptions();
 
-      untracked(() => {
-        if (!this.isResetting() && !this.isSyncing()) {
-          this.urlState.syncToUrl({ search, filters, sort });
-        }
-      });
-    });
-
-    // Initialiser sort par défaut
-    effect(() => {
-      const options = this.sortOptions();
-      if (options.length > 0 && this.currentSort().field === '' && this.initialized()) {
-        this.currentSort.set({ field: options[0].value, direction: 'asc' });
+      if (sortOptions.length > 0 && sort.field && this.filterState.initialized()) {
+        this.isSyncing.set(true);
+        setTimeout(() => {
+          this.sortChoice()?.setChoiceByValue(sort.field);
+          this.sortChoiceMobile()?.setChoiceByValue(sort.field);
+          setTimeout(() => this.isSyncing.set(false), 50);
+        }, 100);
       }
     });
 
-    // Sync Choice avec sort
+    // Synchroniser les filtres Choice
     effect(() => {
-      const options = this.sortOptions();
-      if (options.length > 0 && this.currentSort().field && this.initialized()) {
+      if (!this.useFilterState()) return;
+
+      const filterValues = this.filterValues();
+      const filterChoices = this.filterChoices();
+      const filters = this.filters();
+
+      if (this.filterState.initialized() && !this.isResetting() && filterChoices.length > 0) {
+        this.isSyncing.set(true);
         setTimeout(() => {
-          const field = this.currentSort().field;
-          this.sortChoice()?.setChoiceByValue(field);
-          this.sortChoiceMobile()?.setChoiceByValue(field);
+          filters.forEach((filter) => {
+            if ((filter.type === 'select' || filter.type === 'boolean') && filterValues[filter.key]) {
+              if (filter.options && filter.options.length > 0) {
+                const filterChoiceIndex = this.findFilterChoiceIndex(filter.key);
+                if (filterChoiceIndex >= 0 && filterChoiceIndex < filterChoices.length) {
+                  filterChoices[filterChoiceIndex]?.setChoiceByValue(filterValues[filter.key]);
+                }
+              }
+            }
+          });
+          setTimeout(() => this.isSyncing.set(false), 50);
         }, 150);
       }
     });
 
-    // Sync Choice des filtres avec filterValues
-    effect(() => {
-      const filterValues = this.filterValues();
-      const filterChoices = this.filterChoices();
-
-      if (this.initialized() && !this.isResetting() && filterChoices.length > 0) {
-        setTimeout(() => {
-          this.isSyncing.set(true);
-
-          this.filters().forEach((filter) => {
-            if ((filter.type === 'select' || filter.type === 'boolean') && filterValues[filter.key]) {
-              const filterChoiceIndex = this.findFilterChoiceIndex(filter.key);
-              if (filterChoiceIndex >= 0 && filterChoiceIndex < filterChoices.length) {
-                filterChoices[filterChoiceIndex]?.setChoiceByValue(filterValues[filter.key]);
-              }
-            }
-          });
-
-          setTimeout(() => {
-            this.isSyncing.set(false);
-          }, 50);
-        }, 200);
-      }
-    });
-
-    // Détecter les changements RÉELS de filtres
+    // Détecter changements de config
     effect(() => {
       const filters = this.filters();
-
       const fingerprint = JSON.stringify(
         filters.map(f => ({
           key: f.key,
           label: f.label,
-          placeholder: f.placeholder,
           optionsCount: f.options?.length || 0,
-          optionsLabels: f.options?.map(o => o.label).join(',') || ''
         }))
       );
 
-      untracked(() => {
-        const previousFingerprint = this.filtersFingerprint();
-
-        if (this.initialized() &&
-          filters.length > 0 &&
-          !this.isResetting() &&
-          fingerprint !== previousFingerprint) {
-
-          this.choiceRefreshKey.set(-1);
-
-          setTimeout(() => {
-            this.choiceRefreshKey.set(Date.now());
-            this.filtersFingerprint.set(fingerprint);
-          }, 50);
-        } else if (!this.initialized() && filters.length > 0) {
-          this.filtersFingerprint.set(fingerprint);
-        }
-      });
+      if (fingerprint !== this.filtersFingerprint() && filters.length > 0) {
+        this.choiceRefreshKey.update(v => v + 1);
+        this.filtersFingerprint.set(fingerprint);
+      }
     });
   }
 
   ngOnInit(): void {
+    if (this.useFilterState()) {
+      this.filterState.initialize();
+    }
   }
 
   private findFilterChoiceIndex(filterKey: string): number {
     let index = 0;
     for (const filter of this.filters()) {
       if (filter.type === 'select' || filter.type === 'boolean') {
-        if (filter.key === filterKey) {
-          return index;
-        }
+        if (filter.key === filterKey) return index;
         index++;
       }
     }
@@ -196,35 +157,109 @@ export class FilterBarComponent implements OnInit {
     return this.translate.instant(this.noSelectionText());
   }
 
+  getFilterValue(key: string): any {
+    return this.filterValues()[key] || '';
+  }
+
+  getChoiceConfig(filter: FilterConfig): ChoiceConfig {
+    return {
+      searchEnabled: filter.options && filter.options.length > 5,
+      shouldSort: false,
+      itemSelectText: ''
+    };
+  }
+
+  getSortChoiceOptions(): ChoiceOption[] {
+    return this.sortOptions().map(opt => ({
+      value: opt.value,
+      label: opt.label,
+      selected: opt.value === this.currentSort().field
+    }));
+  }
+
+  getSortChoiceConfig(): ChoiceConfig {
+    return {
+      searchEnabled: false,
+      shouldSort: false,
+      itemSelectText: '',
+      placeholderValue: this.translate.instant(this.sortPlaceholder())
+    };
+  }
+
+  // Handlers
   onSearchInput(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
-    this.searchTerm.set(value);
+
+    if (this.useFilterState()) {
+      this.filterState.setSearch(value);
+    }
+
     this.searchChange.emit(value);
   }
 
   onFilterChange(key: string, value: any): void {
-    if (this.isSyncing()) return;
+    // Bloquer pendant synchro/reset
+    if (this.isSyncing() || this.isResetting()) {
+      return;
+    }
 
-    this.filterValues.update(current => ({
-      ...current,
-      [key]: value
-    }));
-    this.filterChange.emit(this.filterValues());
+    // Ignorer les valeurs vides
+    if (value === '' || value === null || value === undefined) {
+      return;
+    }
+
+    if (this.useFilterState()) {
+      this.filterState.setFilter(key, value);
+    }
+
+    const updatedFilters = { ...this.filterValues(), [key]: value };
+    this.filterChange.emit(updatedFilters);
+  }
+
+  onFilterRemove(key: string): void {
+    if (this.isSyncing() || this.isResetting()) {
+      return;
+    }
+
+    if (this.useFilterState()) {
+      this.filterState.setFilter(key, '');
+    }
+
+    const updatedFilters = { ...this.filterValues() };
+    delete updatedFilters[key];
+    this.filterChange.emit(updatedFilters);
   }
 
   onSortFieldChangeFromChoice(field: any): void {
-    if (field && field !== this.currentSort().field) {
-      this.currentSort.update(s => ({ ...s, field }));
-      this.sortChange.emit(this.currentSort());
+
+    if (this.isSyncing()) {
+      return;
+    }
+
+    const currentSort = this.currentSort();
+    if (field && field !== currentSort.field) {
+      const newSort = { ...currentSort, field };
+
+      if (this.useFilterState()) {
+        this.filterState.setSort(newSort);
+      }
+
+      this.sortChange.emit(newSort);
     }
   }
 
   toggleSortDirection(): void {
-    this.currentSort.update(s => ({
-      ...s,
-      direction: s.direction === 'asc' ? 'desc' : 'asc'
-    }));
-    this.sortChange.emit(this.currentSort());
+    const currentSort = this.currentSort();
+    const newSort = {
+      ...currentSort,
+      direction: currentSort.direction === 'asc' ? 'desc' as const : 'asc' as const
+    };
+
+    if (this.useFilterState()) {
+      this.filterState.setSort(newSort);
+    }
+
+    this.sortChange.emit(newSort);
   }
 
   hasActiveFilters(): boolean {
@@ -233,10 +268,17 @@ export class FilterBarComponent implements OnInit {
       values[key] !== null && values[key] !== undefined && values[key] !== ''
     );
     const hasSearch = this.searchTerm() !== '';
-    const hasSortChanged = this.sortOptions().length > 0 &&
-      (this.currentSort().field !== this.sortOptions()[0].value ||
-        this.currentSort().direction !== 'asc');
-    return hasFilters || hasSearch || hasSortChanged;
+
+    if (!this.useFilterState()) {
+      // vérifier les changements localement
+      const currentSort = this.currentSort();
+      const hasSortChanged = this.sortOptions().length > 0 &&
+        (currentSort.field !== this.sortOptions()[0].value ||
+          currentSort.direction !== 'asc');
+      return hasFilters || hasSearch || hasSortChanged;
+    }
+
+    return this.filterState.hasUrlParams();
   }
 
   onClearFilters(): void {
@@ -244,108 +286,26 @@ export class FilterBarComponent implements OnInit {
 
     const defaultSort = this.sortOptions().length > 0
       ? { field: this.sortOptions()[0].value, direction: 'asc' as const }
-      : this.currentSort();
+      : undefined;
 
-    this.searchTerm.set('');
-    this.filterValues.set({});
-    this.currentSort.set(defaultSort);
+    if (this.useFilterState()) {
+      this.filterState.reset(defaultSort);
+    }
 
-    this.searchChange.emit('');
-    this.filterChange.emit({});
-    this.sortChange.emit(defaultSort);
     this.clearFilters.emit();
-
     this.choiceRefreshKey.set(-1);
 
     setTimeout(() => {
-      this.choiceRefreshKey.set(Date.now());
+      this.choiceRefreshKey.set(0);
 
       setTimeout(() => {
-        if (this.sortOptions().length > 0) {
-          const sortValue = this.sortOptions()[0].value;
-          this.sortChoice()?.setChoiceByValue(sortValue);
-          this.sortChoiceMobile()?.setChoiceByValue(sortValue);
+        if (defaultSort) {
+          this.sortChoice()?.setChoiceByValue(defaultSort.field);
+          this.sortChoiceMobile()?.setChoiceByValue(defaultSort.field);
         }
 
-        if (this.enableUrlSync()) {
-          this.urlState.clearUrl();
-        }
-
-        setTimeout(() => {
-          this.isResetting.set(false);
-        }, 50);
-      }, 100);
-    }, 0);
-  }
-
-  getFilterValue(key: string): any {
-    return this.filterValues()[key] || '';
-  }
-
-  getSortChoiceOptions(): ChoiceOption[] {
-    return this.sortOptions().map(option => ({
-      value: option.value,
-      label: option.label
-    }));
-  }
-
-  getSortChoiceConfig(): any {
-    return {
-      searchEnabled: false,
-      shouldSort: false,
-      removeItemButton: true,
-      classNames: {
-        containerInner: ['form-select']
-      }
-    };
-  }
-
-  getChoiceConfig(filter: FilterConfig): any {
-    const baseConfig = {
-      searchEnabled: filter.options && filter.options.length > 5,
-      shouldSort: false,
-      removeItemButton: true,
-      classNames: {
-        containerInner: ['form-select'],
-      }
-    };
-
-    if (filter.avatarField && filter.options?.some(o => o.avatarSrc)) {
-      return {
-        ...baseConfig,
-        callbackOnCreateTemplates: (template: any) => ({
-          item: (classNames: any, data: any) => {
-            const avatarSrc = data.customProperties?.avatarSrc;
-            if (avatarSrc) {
-              return template(`
-                <div class="${classNames.item} ${data.highlighted ? classNames.highlightedState : ''} ${data.placeholder ? classNames.placeholder : ''}" data-item data-id="${data.id}" data-value="${data.value}">
-                  <div class="avatar avatar-xs me-3">
-                    <img class="avatar-img" src="${avatarSrc}" alt="${data.label}">
-                  </div>
-                  ${data.label}
-                </div>
-              `);
-            }
-            return template(`<div class="${classNames.item}">${data.label}</div>`);
-          },
-          choice: (classNames: any, data: any) => {
-            const avatarSrc = data.customProperties?.avatarSrc;
-            if (avatarSrc) {
-              return template(`
-                <div class="${classNames.item} ${classNames.itemChoice} dropdown-item" data-select-text="Press to select" data-choice ${data.disabled ? 'data-choice-disabled aria-disabled="true"' : 'data-choice-selectable'} data-id="${data.id}" data-value="${data.value}" role="option">
-                  <div class="avatar avatar-xs me-3">
-                    <img class="avatar-img" src="${avatarSrc}" alt="${data.label}">
-                  </div>
-                  ${data.label}
-                </div>
-              `);
-            }
-            return template(`<div class="${classNames.item} ${classNames.itemChoice} dropdown-item">${data.label}</div>`);
-          }
-        })
-      };
-    }
-
-    return { ...baseConfig, ...filter.choiceConfig };
+        this.isResetting.set(false);
+      }, 150);
+    }, 50);
   }
 }

@@ -6,6 +6,7 @@
     "reset": "Réinitialiser",
     "yes": "Oui",
     "no": "Non",
+    "sortBy": "Trier par...",
     "noSelection": "Aucun élément sélectionné",
     "selected": "{{count}} éléments sélectionnés",
     "ascending": "Croissant",

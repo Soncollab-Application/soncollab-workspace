@@ -7,3 +7,4 @@ export * from './permission.service';
 export * from './filter.service';
 export * from './url-state.service';
 export * from './relative-date.service';
+export * from './filter-state.service';

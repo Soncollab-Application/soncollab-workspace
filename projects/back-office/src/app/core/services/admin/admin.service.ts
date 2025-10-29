@@ -4,7 +4,7 @@ import { environment } from '../../../../environments/environment';
 import {UserFilters, UserListItem, UsersListResponse, UserStats} from '../../models/admin/user-list.model';
 import { Observable } from 'rxjs';
 import {
-  Country,
+  Country, InvitationFilters,
   InvitationListItem,
   InvitationListResponse,
   InvitationStats,
@@ -136,52 +136,82 @@ export class AdminService {
     return this.http.get<{ data: UserStats }>(this.ADMIN_ENDPOINTS.user_stats);
   }
 
+  getInvitations(
+    page = 1,
+    pageSize = 10,
+    filters?: InvitationFilters,
+    sortField?: string,
+    sortDirection: 'asc' | 'desc' = 'asc'
+  ): Observable<InvitationListResponse> {
+    let httpParams = new HttpParams()
+      .set('pagination[page]', page.toString())
+      .set('pagination[pageSize]', pageSize.toString());
 
-  getInvitations(params?: {
-    page?: number;
-    pageSize?: number;
-    status?: string;
-    role?: string;
-    search?: string;
-    sort?: string;
-  }): Observable<InvitationListResponse> {
-    let httpParams = new HttpParams();
+    // Mapper les champs de tri - SEULEMENT si le champ est valide
+    if (sortField) {
+      const sortFieldMap: Record<string, string> = {
+        'createdAt': 'createdAt',
+        'email': 'email',
+        'first_name': 'first_name',
+        'last_name': 'last_name',
+        'invitation_status': 'invitation_status',
+        'target_role': 'target_role',
+        'sent_at': 'sent_at',
+        'accepted_at': 'accepted_at'
+      };
 
-    if (params?.page) httpParams = httpParams.set('pagination[page]', params.page.toString());
-    if (params?.pageSize) httpParams = httpParams.set('pagination[pageSize]', params.pageSize.toString());
-    if (params?.status) httpParams = httpParams.set('filters[invitation_status][$eq]', params.status);
-    if (params?.role) httpParams = httpParams.set('filters[target_role][$eq]', params.role);
-    if (params?.sort) httpParams = httpParams.set('sort', params.sort);
+      // Ne mapper QUE si le champ existe dans le map
+      if (sortFieldMap[sortField]) {
+        const mappedField = sortFieldMap[sortField];
+        httpParams = httpParams.set('sort[0]', `${mappedField}:${sortDirection}`);
+      }
+      // Si le champ n'existe pas dans le map, on n'ajoute pas de tri
+    }
 
-    if (params?.search) {
-      const searchTerms = params.search.trim().split(' ').filter(term => term.length > 0);
+    // Filtres
+    if (filters?.status) {
+      httpParams = httpParams.set('filters[invitation_status][$eq]', filters.status);
+    }
+
+    if (filters?.role) {
+      httpParams = httpParams.set('filters[target_role][$eq]', filters.role);
+    }
+
+    if (filters?.department) {
+      httpParams = httpParams.set('filters[department][$eq]', filters.department);
+    }
+
+    // Recherche par texte
+    if (filters?.search) {
+      const searchTerms = filters.search.trim().split(' ').filter(term => term.length > 0);
 
       if (searchTerms.length === 1) {
         httpParams = httpParams.set('filters[$or][0][email][$containsi]', searchTerms[0]);
         httpParams = httpParams.set('filters[$or][1][first_name][$containsi]', searchTerms[0]);
         httpParams = httpParams.set('filters[$or][2][last_name][$containsi]', searchTerms[0]);
       } else if (searchTerms.length === 2) {
-
         httpParams = httpParams.set('filters[$or][0][$and][0][first_name][$containsi]', searchTerms[0]);
         httpParams = httpParams.set('filters[$or][0][$and][1][last_name][$containsi]', searchTerms[1]);
 
         httpParams = httpParams.set('filters[$or][1][$and][0][first_name][$containsi]', searchTerms[1]);
         httpParams = httpParams.set('filters[$or][1][$and][1][last_name][$containsi]', searchTerms[0]);
 
-        httpParams = httpParams.set('filters[$or][2][email][$containsi]', params.search);
+        httpParams = httpParams.set('filters[$or][2][email][$containsi]', filters.search);
       } else {
-        httpParams = httpParams.set('filters[email][$containsi]', params.search);
+        httpParams = httpParams.set('filters[email][$containsi]', filters.search);
       }
     }
 
+    // Populate les relations
     httpParams = httpParams.set('populate[0]', 'invited_by');
     httpParams = httpParams.set('populate[1]', 'territory');
     httpParams = httpParams.set('populate[2]', 'target_country');
     httpParams = httpParams.set('populate[3]', 'invited_user');
 
-    return this.http.get<InvitationListResponse>(this.ADMIN_ENDPOINTS.invitations, { params: httpParams }
-    );
+    return this.http.get<InvitationListResponse>(this.ADMIN_ENDPOINTS.invitations, { params: httpParams });
   }
+
+
 
   getInvitationById(documentId: string): Observable<{ data: InvitationListItem }> {
     let httpParams = new HttpParams();

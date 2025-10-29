@@ -6,6 +6,7 @@
     "reset": "Reset",
     "yes": "Yes",
     "no": "No",
+    "sortBy": "Sort by...",
     "noSelection": "No items selected",
     "selected": "{{count}} items selected",
     "ascending": "Ascending",

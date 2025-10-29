@@ -9,7 +9,6 @@
   </div>
 </app-breadcrumb>
 
-
 <div class="row g-3 mb-4 pb-3">
   @for (kpi of kpiCards(); track kpi.label) {
     <div class="col-12 col-sm-6 col-lg-4 col-xl">
@@ -21,19 +20,15 @@
   }
 </div>
 
-
 <div class="mb-5 pt-2">
   <lib-filter-bar
     [filters]="filters()"
     [sortOptions]="sortOptions()"
     [showSearch]="true"
     [selectedCount]="-1"
-    (searchChange)="onSearchChange($any($event))"
-    (filterChange)="onFilterChange($any($event))"
-    (sortChange)="onSortChange($any($event))"
+    [useFilterState]="true"
   />
 </div>
-
 
 <div>
   <lib-data-table
@@ -47,10 +42,9 @@
     [clickable]="true"
     [emptyStateTitle]="emptyTitle()"
     [emptyStateMessage]="emptyMessage()"
-    (sortChange)="onSortChange($any($event))"
     (pageChange)="onPageChange($any($event))"
+    (sortChange)="onSortChange($any($event))"
     (actionClick)="onActionClick($any($event))"
     (rowClick)="onRowClick($any($event))"
   />
 </div>
-

@@ -53,7 +53,7 @@
                         </label>
 
                         @if (filter.type === 'select' || filter.type === 'boolean') {
-                          @if (choiceRefreshKey() >= 0) {
+                          @if (choiceRefreshKey() !== -1) {
                             <lib-choice
                               type="select-one"
                               [options]="filter.options || []"
@@ -61,6 +61,7 @@
                               [placeholder]="filter.placeholder || filter.label"
                               [config]="getChoiceConfig(filter)"
                               (valueChange)="onFilterChange(filter.key, $event)"
+                              (removeItem)="onFilterRemove(filter.key)"
                             />
                           }
                         } @else if (filter.type === 'date') {
@@ -209,7 +210,7 @@
                     </label>
 
                     @if (filter.type === 'select' || filter.type === 'boolean') {
-                      @if (choiceRefreshKey() >= 0) {
+                      @if (choiceRefreshKey() !== -1) {
                         <lib-choice
                           type="select-one"
                           [options]="filter.options || []"
@@ -217,6 +218,7 @@
                           [placeholder]="filter.placeholder || filter.label"
                           [config]="getChoiceConfig(filter)"
                           (valueChange)="onFilterChange(filter.key, $event)"
+                          (removeItem)="onFilterRemove(filter.key)"
                         />
                       }
                     } @else if (filter.type === 'date') {

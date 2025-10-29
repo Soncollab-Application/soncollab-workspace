@@ -1,5 +1,5 @@
-import {Component, computed, effect, inject, OnDestroy, OnInit, signal, untracked} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import { Component, computed, effect, inject, OnDestroy, OnInit, signal, untracked } from '@angular/core';
+import { Router } from '@angular/router';
 import { UserFilters, UserListItem } from '../../../../../core/models/admin/user-list.model';
 import { AdminService } from '../../../../../core/services/admin/admin.service';
 import { AuthService } from '../../../../../core/services/auth.service';
@@ -16,17 +16,16 @@ import {
   PermissionService,
   LanguageOrchestratorService,
   ConfirmDialogService,
-  UrlStateService,
   ToastService,
   KpiData,
-  KpiCardComponent
+  KpiCardComponent,
+  FilterStateService
 } from 'shared-lib';
-import {PageTitleService} from '../../../../../core/services/page-title.service';
-import {Breadcrumb} from '../../../../../core/components/breadcrumb/breadcrumb';
-import {TranslatePipe, TranslateService} from '@ngx-translate/core';
-import {Subject, takeUntil} from 'rxjs';
-import {environment} from '../../../../../../environments/environment';
-import {initializeFromUrl} from '../../../../../core/utils/url-state.utils';
+import { PageTitleService } from '../../../../../core/services/page-title.service';
+import { Breadcrumb } from '../../../../../core/components/breadcrumb/breadcrumb';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { Subject, takeUntil } from 'rxjs';
+import { environment } from '../../../../../../environments/environment';
 
 @Component({
   selector: 'app-users-list',
@@ -44,52 +43,35 @@ export class UsersList implements OnInit, OnDestroy {
   private translate = inject(TranslateService);
   private languageOrchestrator = inject(LanguageOrchestratorService);
   private confirmDialog = inject(ConfirmDialogService);
-  private urlState = inject(UrlStateService);
-  private route = inject(ActivatedRoute);
   private toastService = inject(ToastService);
+  private filterState = inject(FilterStateService);
 
   private destroy$ = new Subject<void>();
   private componentId = 'users-list';
-
-  currentTitle = this.pageTitleService.currentTitle;
 
   users = signal<UserListItem[]>([]);
   loading = signal(false);
   selectedCount = signal(0);
 
-  currentPage = signal(1);
   pageSize = signal(10);
   totalUsers = signal(0);
   pageCount = signal(0);
 
-  searchTerm = signal('');
-  filterValues = signal<FilterValue>({});
-  currentSort = signal<SortConfig>({ field: 'username', direction: 'asc' });
-  private urlInitialized = signal(false);
+  private loadingState = signal<'idle' | 'loading' | 'loaded' | 'error'>('idle');
 
   pagination = computed<PaginationState>(() => ({
-    currentPage: this.currentPage(),
+    currentPage: this.filterState.state().page,
     pageSize: this.pageSize(),
     total: this.totalUsers(),
     pageCount: this.pageCount()
   }));
 
-  canFindUsers = computed(() =>
-    this.permissionsService.canFindUsers()
-  );
+  currentSort = computed(() => this.filterState.state().sort);
 
-  canManageUsers = computed(() =>
-    this.permissionsService.canUpdateUser()
-  );
-
-  canCreateUser = computed(() =>
-    this.permissionsService.canCreateUser()
-  );
-
-  canManageRoles = computed(() =>
-    this.permissionsService.canManageRoles()
-  );
-
+  canFindUsers = computed(() => this.permissionsService.canFindUsers());
+  canManageUsers = computed(() => this.permissionsService.canUpdateUser());
+  canCreateUser = computed(() => this.permissionsService.canCreateUser());
+  canManageRoles = computed(() => this.permissionsService.canManageRoles());
   currentUserId = computed(() => this.authService.currentUser?.documentId);
 
   emptyTitle = signal('');
@@ -103,55 +85,6 @@ export class UsersList implements OnInit, OnDestroy {
   stats = signal<any>(null);
   loadingStats = signal(false);
   private languageChange = signal(0);
-
-  constructor() {
-    effect(() => {
-      const page = this.currentPage();
-      const size = this.pageSize();
-      const search = this.searchTerm();
-      const filters = this.filterValues();
-      const sort = this.currentSort();
-
-      if (!this.urlInitialized()) return;
-
-      untracked(() => {
-        this.urlState.syncToUrl({
-          page: page,
-          search: search,
-          filters: filters,
-          sort: sort
-        });
-
-        this.loadUsers(
-          page,
-          size,
-          this.buildUserFilters(search, filters),
-          sort.field,
-          sort.direction
-        );
-      });
-    });
-  }
-
-  ngOnInit() {
-    this.languageOrchestrator.registerComponent(
-      this.componentId,
-      () => this.onLanguageChange()
-    );
-    initializeFromUrl(
-      this.route,
-      this.urlState,
-      this.searchTerm,
-      this.filterValues,
-      this.currentSort,
-      this.currentPage
-    );
-    this.setBreadcrumbs();
-    this.initializeConfig();
-    this.loadRoles();
-    this.loadStats();
-    this.urlInitialized.set(true);
-  }
 
 
   kpiCards = computed<KpiData[]>(() => {
@@ -199,16 +132,67 @@ export class UsersList implements OnInit, OnDestroy {
     ];
   });
 
+  constructor() {
+    effect(() => {
+      if (!this.filterState.initialized()) {
+        return;
+      }
+
+      const currentLoadingState = this.loadingState();
+      const shouldLoadDueToStateChange = this.filterState.shouldLoad();
+
+      if (shouldLoadDueToStateChange && currentLoadingState !== 'idle') {
+        untracked(() => this.loadingState.set('idle'));
+      }
+
+      const shouldLoad = shouldLoadDueToStateChange || currentLoadingState === 'idle';
+
+      if (!shouldLoad || currentLoadingState === 'loading') {
+        return;
+      }
+
+      const state = this.filterState.state();
+
+      untracked(() => {
+        this.loadUsers(
+          state.page,
+          this.pageSize(),
+          this.buildUserFilters(state.search, state.filters),
+          state.sort.field || 'username',
+          state.sort.direction
+        );
+      });
+    });
+  }
+
+
+  ngOnInit(): void {
+    this.languageOrchestrator.registerComponent(
+      this.componentId,
+      () => this.onLanguageChange()
+    );
+
+    this.setBreadcrumbs();
+    this.updatePageTitle();
+    this.initializeConfig();
+    this.loadRoles();
+    this.loadStats();
+
+    const defaultSort: SortConfig = this.sortOptions().length > 0
+      ? { field: this.sortOptions()[0].value, direction: 'asc' }
+      : { field: 'username', direction: 'asc' };
+
+    this.filterState.initialize(defaultSort);
+  }
 
   private initializeConfig(): void {
-    // Plus d'option vide, uniquement le placeholder
     this.filters.set([
       {
         key: 'role',
         type: 'select',
         label: this.translate.instant('users-list.filters.role'),
         placeholder: this.translate.instant('users-list.filters.allRoles'),
-        options: [] // Sera rempli par loadRoles()
+        options: []
       },
       {
         key: 'blocked',
@@ -319,14 +303,10 @@ export class UsersList implements OnInit, OnDestroy {
             label: this.translateRole(role.type)
           }));
 
-        // Mettre à jour uniquement les options sans ajouter d'option vide
         this.filters.update(filters =>
           filters.map(filter =>
             filter.key === 'role'
-              ? {
-                ...filter,
-                options: roleOptions
-              }
+              ? { ...filter, options: roleOptions }
               : filter
           )
         );
@@ -423,6 +403,12 @@ export class UsersList implements OnInit, OnDestroy {
     sortField: string,
     sortDirection: 'asc' | 'desc'
   ): void {
+
+    if (!this.canFindUsers()) {
+      return;
+    }
+
+    this.loadingState.set('loading');
     this.loading.set(true);
 
     this.adminService.getUsers(page, pageSize, filters, sortField, sortDirection).subscribe({
@@ -433,28 +419,23 @@ export class UsersList implements OnInit, OnDestroy {
         this.users.set(filteredUsers);
         this.totalUsers.set(response.meta.pagination.total - (response.data.length - filteredUsers.length));
         this.pageCount.set(response.meta.pagination.pageCount);
+
+        this.loadingState.set('loaded');
         this.loading.set(false);
       },
-      error: () => this.loading.set(false)
+      error: () => {
+        this.loadingState.set('error');
+        this.loading.set(false);
+      }
     });
   }
 
-  onSearchChange(search: string): void {
-    this.searchTerm.set(search);
-    this.currentPage.set(1);
-  }
-
-  onFilterChange(filterValues: FilterValue): void {
-    this.filterValues.set(filterValues);
-    this.currentPage.set(1);
+  onPageChange(page: number): void {
+    this.filterState.setPage(page);
   }
 
   onSortChange(sort: SortConfig): void {
-    this.currentSort.set(sort);
-  }
-
-  onPageChange(page: number): void {
-    this.currentPage.set(page);
+    this.filterState.setSort(sort);
   }
 
   onActionClick(event: { action: TableAction<UserListItem>; row: UserListItem }): void {
@@ -492,13 +473,14 @@ export class UsersList implements OnInit, OnDestroy {
               this.toastService.showSuccess(
                 this.translate.instant('users-list.toast.block_success', { name: username })
               );
-              const sort = this.currentSort();
+
+              const state = this.filterState.state();
               this.loadUsers(
-                this.currentPage(),
+                state.page,
                 this.pageSize(),
-                this.buildUserFilters(this.searchTerm(), this.filterValues()),
-                sort.field,
-                sort.direction
+                this.buildUserFilters(state.search, state.filters),
+                state.sort.field || 'username',
+                state.sort.direction
               );
               this.loadStats();
             },
@@ -533,13 +515,14 @@ export class UsersList implements OnInit, OnDestroy {
               this.toastService.showSuccess(
                 this.translate.instant('users-list.toast.unblock_success', { name: username })
               );
-              const sort = this.currentSort();
+
+              const state = this.filterState.state();
               this.loadUsers(
-                this.currentPage(),
+                state.page,
                 this.pageSize(),
-                this.buildUserFilters(this.searchTerm(), this.filterValues()),
-                sort.field,
-                sort.direction
+                this.buildUserFilters(state.search, state.filters),
+                state.sort.field || 'username',
+                state.sort.direction
               );
               this.loadStats();
             },

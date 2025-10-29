@@ -14,6 +14,7 @@ export * from './lib/services/permission.service';
 export * from './lib/services/url-state.service';
 export * from './lib/services/relative-date.service';
 export * from './lib/validators/custom-validators';
+export * from './lib/services/filter-state.service';
 
 // Mixins
 export * from './lib/mixins/language-aware.mixin';
