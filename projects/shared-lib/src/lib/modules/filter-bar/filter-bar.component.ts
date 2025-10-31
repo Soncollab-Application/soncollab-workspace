@@ -28,7 +28,6 @@ export class FilterBarComponent implements OnInit {
   private translate = inject(TranslateService);
   private filterState = inject(FilterStateService);
 
-  // Inputs
   filters = input<FilterConfig[]>([]);
   sortOptions = input<SortOption[]>([]);
   selectedCount = input<number>(0);
@@ -38,18 +37,15 @@ export class FilterBarComponent implements OnInit {
   useFilterState = input<boolean>(true);
   sortPlaceholder = input<string>('filterBarShared.sortBy');
 
-  // Outputs
   searchChange = output<string>();
   filterChange = output<FilterValue>();
   sortChange = output<SortConfig>();
   clearFilters = output<void>();
 
-  // Refs
   sortChoice = viewChild<Choice>('sortChoice');
   sortChoiceMobile = viewChild<Choice>('sortChoiceMobile');
   filterChoices = viewChildren<Choice>(Choice);
 
-  // État
   protected searchTerm = computed(() =>
     this.useFilterState() ? this.filterState.state().search : ''
   );
@@ -68,7 +64,6 @@ export class FilterBarComponent implements OnInit {
   private isSyncing = signal(false);
 
   constructor() {
-    // Synchroniser les Choice avec l'état du sort
     effect(() => {
       if (!this.useFilterState()) return;
 
@@ -85,7 +80,7 @@ export class FilterBarComponent implements OnInit {
       }
     });
 
-    // Synchroniser les filtres Choice
+    // Synchroniser DESKTOP ET MOBILE
     effect(() => {
       if (!this.useFilterState()) return;
 
@@ -96,22 +91,40 @@ export class FilterBarComponent implements OnInit {
       if (this.filterState.initialized() && !this.isResetting() && filterChoices.length > 0) {
         this.isSyncing.set(true);
         setTimeout(() => {
-          filters.forEach((filter) => {
-            if ((filter.type === 'select' || filter.type === 'boolean') && filterValues[filter.key]) {
-              if (filter.options && filter.options.length > 0) {
-                const filterChoiceIndex = this.findFilterChoiceIndex(filter.key);
-                if (filterChoiceIndex >= 0 && filterChoiceIndex < filterChoices.length) {
-                  filterChoices[filterChoiceIndex]?.setChoiceByValue(filterValues[filter.key]);
-                }
+          const selectFilters = filters.filter(f => f.type === 'select' || f.type === 'boolean');
+          const hasSort = this.sortOptions().length > 0;
+
+          // Structure des choices:
+          // [0...n-1] = filtres desktop
+          // [n] = sort desktop (si présent)
+          // [n+1...2n] = filtres mobile
+          // [2n+1] = sort mobile (si présent)
+
+          const desktopFilterCount = selectFilters.length;
+          const sortOffset = hasSort ? 1 : 0;
+          const mobileFilterStartIndex = desktopFilterCount + sortOffset;
+
+          selectFilters.forEach((filter, index) => {
+            const value = filterValues[filter.key];
+            if (value && filter.options && filter.options.length > 0) {
+              // Desktop
+              if (index < filterChoices.length) {
+                filterChoices[index]?.setChoiceByValue(value);
+              }
+
+              // Mobile
+              const mobileIndex = mobileFilterStartIndex + index;
+              if (mobileIndex < filterChoices.length) {
+                filterChoices[mobileIndex]?.setChoiceByValue(value);
               }
             }
           });
+
           setTimeout(() => this.isSyncing.set(false), 50);
         }, 150);
       }
     });
 
-    // Détecter changements de config
     effect(() => {
       const filters = this.filters();
       const fingerprint = JSON.stringify(
@@ -186,7 +199,6 @@ export class FilterBarComponent implements OnInit {
     };
   }
 
-  // Handlers
   onSearchInput(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
 
@@ -198,12 +210,10 @@ export class FilterBarComponent implements OnInit {
   }
 
   onFilterChange(key: string, value: any): void {
-    // Bloquer pendant synchro/reset
     if (this.isSyncing() || this.isResetting()) {
       return;
     }
 
-    // Ignorer les valeurs vides
     if (value === '' || value === null || value === undefined) {
       return;
     }
@@ -231,7 +241,6 @@ export class FilterBarComponent implements OnInit {
   }
 
   onSortFieldChangeFromChoice(field: any): void {
-
     if (this.isSyncing()) {
       return;
     }
@@ -270,7 +279,6 @@ export class FilterBarComponent implements OnInit {
     const hasSearch = this.searchTerm() !== '';
 
     if (!this.useFilterState()) {
-      // vérifier les changements localement
       const currentSort = this.currentSort();
       const hasSortChanged = this.sortOptions().length > 0 &&
         (currentSort.field !== this.sortOptions()[0].value ||
