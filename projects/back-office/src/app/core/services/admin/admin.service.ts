@@ -141,13 +141,12 @@ export class AdminService {
     pageSize = 10,
     filters?: InvitationFilters,
     sortField?: string,
-    sortDirection: 'asc' | 'desc' = 'asc'
+    sortDirection: 'asc' | 'desc' = 'desc'
   ): Observable<InvitationListResponse> {
     let httpParams = new HttpParams()
       .set('pagination[page]', page.toString())
       .set('pagination[pageSize]', pageSize.toString());
 
-    // Mapper les champs de tri - SEULEMENT si le champ est valide
     if (sortField) {
       const sortFieldMap: Record<string, string> = {
         'createdAt': 'createdAt',
@@ -160,12 +159,12 @@ export class AdminService {
         'accepted_at': 'accepted_at'
       };
 
-      // Ne mapper QUE si le champ existe dans le map
       if (sortFieldMap[sortField]) {
         const mappedField = sortFieldMap[sortField];
         httpParams = httpParams.set('sort[0]', `${mappedField}:${sortDirection}`);
       }
-      // Si le champ n'existe pas dans le map, on n'ajoute pas de tri
+    } else {
+      httpParams = httpParams.set('sort[0]', 'createdAt:desc');
     }
 
     // Filtres

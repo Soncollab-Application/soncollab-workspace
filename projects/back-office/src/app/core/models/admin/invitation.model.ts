@@ -3,6 +3,8 @@ import { BackofficeUser } from '../auth.model';
 export type InvitationStatus = 'pending' | 'sent' | 'accepted' | 'expired' | 'cancelled';
 export type TargetRole = 'soncollab_admin' | 'soncollab_sales' | 'soncollab_content';
 export type Department = 'admin' | 'sales' | 'marketing' | 'content' | 'support';
+export type InvitationSortField = 'createdAt' | 'email' | 'first_name' | 'last_name' | 'invitation_status' | 'target_role';
+
 
 export interface Territory {
   id: number;

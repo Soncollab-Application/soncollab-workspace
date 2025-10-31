@@ -7,7 +7,8 @@
     "no_invitations_message": "Il n'y a aucune invitation à afficher",
     "filters": {
       "status": "Statut",
-      "role": "Rôle"
+      "role": "Rôle",
+      "department": "Département"
     },
     "kpi": {
       "total": "Total",
@@ -24,14 +25,15 @@
       "cancelled": "Annulé"
     },
     "sort": {
-      "newest": "Plus récent",
       "oldest": "Plus ancien",
-      "email": "Email (A-Z)"
+      "newest": "Plus récents",
+      "email": "Email"
     },
     "columns": {
       "email": "Email",
       "name": "Nom",
       "role": "Rôle",
+      "department": "Département",
       "status": "Statut",
       "invited_by": "Invité par",
       "sent_at": "Envoyé le",

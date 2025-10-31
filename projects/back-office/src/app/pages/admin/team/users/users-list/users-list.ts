@@ -199,28 +199,18 @@ export class UsersList implements OnInit, OnDestroy {
         type: 'select',
         label: this.translate.instant('users-list.filters.state'),
         placeholder: this.translate.instant('users-list.filters.allStates'),
-        options: [
-          { value: 'false', label: this.translate.instant('users-list.filters.active') },
-          { value: 'true', label: this.translate.instant('users-list.filters.blocked') }
-        ]
+        options: this.getBlockedOptions()
       },
       {
         key: 'confirmed',
         type: 'select',
         label: this.translate.instant('users-list.filters.confirmation'),
         placeholder: this.translate.instant('users-list.filters.allStates'),
-        options: [
-          { value: 'true', label: this.translate.instant('users-list.filters.confirmed') },
-          { value: 'false', label: this.translate.instant('users-list.filters.notConfirmed') }
-        ]
+        options: this.getConfirmedOptions()
       }
     ]);
 
-    this.sortOptions.set([
-      { value: 'username', label: this.translate.instant('users-list.sort.username') },
-      { value: 'email', label: this.translate.instant('users-list.sort.email') },
-      { value: 'createdAt', label: this.translate.instant('users-list.sort.createdAt') }
-    ]);
+    this.sortOptions.set(this.getSortOptions());
 
     this.columns.set([
       {
@@ -345,6 +335,30 @@ export class UsersList implements OnInit, OnDestroy {
       this.loadRoles();
       this.languageChange.update(v => v + 1);
     }, 150);
+  }
+
+
+  private getSortOptions(): SortOption[] {
+    return [
+      { value: 'username', label: this.translate.instant('users-list.sort.username') },
+      { value: 'email', label: this.translate.instant('users-list.sort.email') },
+      { value: 'createdAt', label: this.translate.instant('users-list.sort.createdAt') }
+    ];
+  }
+
+  private getBlockedOptions(): { value: string; label: string }[] {
+    return [
+      { value: 'false', label: this.translate.instant('users-list.filters.active') },
+      { value: 'true', label: this.translate.instant('users-list.filters.blocked') }
+    ];
+  }
+
+
+  private getConfirmedOptions(): { value: string; label: string }[] {
+    return [
+      { value: 'true', label: this.translate.instant('users-list.filters.confirmed') },
+      { value: 'false', label: this.translate.instant('users-list.filters.notConfirmed') }
+    ];
   }
 
   ngOnDestroy(): void {

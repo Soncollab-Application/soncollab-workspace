@@ -15,7 +15,7 @@ import {
   SortOption,
   TableAction,
   TableColumn,
-  ConfirmDialogService, UrlStateService,
+  ConfirmDialogService,
   ToastService,
   KpiCardComponent,
   KpiData, FilterStateService
@@ -156,7 +156,7 @@ export class InvitationsList implements OnInit, OnDestroy {
     this.loadStats();
 
     const defaultSort: SortConfig = this.sortOptions().length > 0
-      ? { field: this.sortOptions()[0].value, direction: 'asc' }
+      ? { field: this.sortOptions()[0].value.split(':')[0], direction: 'desc' }
       : { field: 'createdAt', direction: 'desc' };
 
     this.filterState.initialize(defaultSort);
@@ -237,32 +237,28 @@ export class InvitationsList implements OnInit, OnDestroy {
         type: 'select',
         label: this.translate.instant('invitations-list.filters.status'),
         placeholder: this.translate.instant('common.all'),
-        options: [
-          { value: 'pending', label: this.translate.instant('invitations-list.status.pending') },
-          { value: 'sent', label: this.translate.instant('invitations-list.status.sent') },
-          { value: 'accepted', label: this.translate.instant('invitations-list.status.accepted') },
-          { value: 'expired', label: this.translate.instant('invitations-list.status.expired') },
-          { value: 'cancelled', label: this.translate.instant('invitations-list.status.cancelled') }
-        ]
+        options: this.getStatusOptions()
       },
       {
         key: 'role',
         type: 'select',
         label: this.translate.instant('invitations-list.filters.role'),
         placeholder: this.translate.instant('common.all'),
-        options: [
-          { value: 'soncollab_admin', label: this.translate.instant('invitations-list.roles.soncollab_admin') },
-          { value: 'soncollab_sales', label: this.translate.instant('invitations-list.roles.soncollab_sales') },
-          { value: 'soncollab_content', label: this.translate.instant('invitations-list.roles.soncollab_content') }
-        ]
+        options: this.getRoleOptions()
+      },
+      {
+        key: 'department',
+        type: 'select',
+        label: this.translate.instant('invitations-list.filters.department'),
+        placeholder: this.translate.instant('common.all'),
+        options: this.getDepartmentOptions()
       }
     ]);
 
-    this.sortOptions.set([
-      { value: 'createdAt:desc', label: this.translate.instant('invitations-list.sort.newest') },
-      { value: 'createdAt:asc', label: this.translate.instant('invitations-list.sort.oldest') },
-      { value: 'email:asc', label: this.translate.instant('invitations-list.sort.email') }
-    ]);
+
+
+
+    this.sortOptions.set(this.getSortOptions());
 
     this.columns.set([
       {
@@ -284,6 +280,15 @@ export class InvitationsList implements OnInit, OnDestroy {
         type: 'custom-badge',
         render: (row: InvitationListItem) => this.translateRole(row.target_role),
         cellClass: 'bg-primary-subtle text-primary'
+      },
+      {
+        key: 'department',
+        label: this.translate.instant('invitations-list.columns.department'),
+        sortable: false,
+        type: 'text',
+        render: (row: InvitationListItem) => row.department
+          ? this.translate.instant(`invitations-list.departments.${row.department}`)
+          : '-'
       },
       {
         key: 'invitation_status',
@@ -426,6 +431,37 @@ export class InvitationsList implements OnInit, OnDestroy {
         active: true
       }
     ]);
+  }
+
+  private getSortOptions(): SortOption[] {
+    return [
+      { value: 'createdAt', label: this.translate.instant('invitations-list.sort.newest') },
+      { value: 'email', label: this.translate.instant('invitations-list.sort.email') }
+    ];
+  }
+
+  private getDepartmentOptions(): { value: Department; label: string }[] {
+    const departments: Department[] = ['admin', 'sales', 'marketing', 'content', 'support'];
+    return departments.map(dept => ({
+      value: dept,
+      label: this.translate.instant(`invitations-list.departments.${dept}`)
+    }));
+  }
+
+  private getRoleOptions(): { value: TargetRole; label: string }[] {
+    const roles: TargetRole[] = ['soncollab_admin', 'soncollab_sales', 'soncollab_content'];
+    return roles.map(role => ({
+      value: role,
+      label: this.translate.instant(`invitations-list.roles.${role}`)
+    }));
+  }
+
+  private getStatusOptions(): { value: InvitationStatus; label: string }[] {
+    const statuses: InvitationStatus[] = ['pending', 'sent', 'accepted', 'expired', 'cancelled'];
+    return statuses.map(status => ({
+      value: status,
+      label: this.translate.instant(`invitations-list.status.${status}`)
+    }));
   }
 
   openInviteOffcanvas(): void {
