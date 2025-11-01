@@ -5,9 +5,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {TableAction, TableColumn} from './table.model';
 import {PaginationState} from './pagination.model';
 import {SortConfig} from '../filter-bar/filter.model';
-import {DropdownSingleDirective} from '../../directives/dropdown-single.directive';
+import {DropdownSingleDirective} from '../../directives';
 import {EmptyStateComponent} from '../empty-state';
-import {getInitialsByParamsName} from '../../utils/user.utils';
+import {getInitialsByParamsName} from '../../utils';
 import {UrlStateService} from '../../services';
 import {RelativeDateService} from '../../services';
 

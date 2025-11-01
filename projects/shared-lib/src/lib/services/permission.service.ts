@@ -2,7 +2,7 @@ import {computed, inject, Injectable, signal} from '@angular/core';
 import {catchError, Observable, of, tap} from 'rxjs';
 import {PermissionsConfig, RolePermissionsResponse} from '../models';
 import {HttpClient} from '@angular/common/http';
-import {PERMISSION_CONFIG} from '../config/permission.config';
+import {PERMISSION_CONFIG} from '../config';
 import {toObservable} from '@angular/core/rxjs-interop';
 
 @Injectable({ providedIn: 'root' })

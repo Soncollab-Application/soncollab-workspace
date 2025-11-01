@@ -17,26 +17,24 @@
     [sortOptions]="sortOptions()"
     [showSearch]="true"
     [selectedCount]="-1"
-    (searchChange)="onSearchChange($any($event))"
-    (filterChange)="onFilterChange($any($event))"
-    (sortChange)="onSortChange($any($event))"
+    [useFilterState]="true"
   />
 </div>
 
 <div>
   <lib-data-table
-    [data]="contacts()"
+    [data]="listManager.items()"
     [columns]="columns()"
     [actions]="actions()"
-    [loading]="loading()"
-    [pagination]="pagination()"
-    [currentSort]="currentSort()"
+    [loading]="listManager.loading()"
+    [pagination]="listManager.pagination()"
+    [currentSort]="listManager.currentSort()"
     [selectable]="false"
     [clickable]="true"
     [emptyStateTitle]="emptyTitle()"
     [emptyStateMessage]="emptyMessage()"
-    (sortChange)="onSortChange($any($event))"
-    (pageChange)="onPageChange($any($event))"
+    (sortChange)="listManager.onSortChange($any($event))"
+    (pageChange)="listManager.onPageChange($any($event))"
     (actionClick)="onActionClick($any($event))"
     (rowClick)="onRowClick($any($event))"
   />

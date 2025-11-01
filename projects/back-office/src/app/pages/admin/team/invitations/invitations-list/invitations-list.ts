@@ -1,6 +1,6 @@
-import {Component, computed, effect, inject, OnDestroy, OnInit, signal, untracked} from '@angular/core';
+import {Component, computed, inject, OnDestroy, OnInit, signal} from '@angular/core';
 import {AdminService} from '../../../../../core/services/admin/admin.service';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Router} from '@angular/router';
 import {PageTitleService} from '../../../../../core/services/page-title.service';
 import {TranslateService, TranslatePipe} from '@ngx-translate/core';
 import {
@@ -9,7 +9,6 @@ import {
   FilterConfig,
   FilterValue,
   LanguageOrchestratorService,
-  PaginationState,
   PermissionService,
   SortConfig,
   SortOption,
@@ -18,7 +17,9 @@ import {
   ConfirmDialogService,
   ToastService,
   KpiCardComponent,
-  KpiData, FilterStateService
+  KpiData,
+  ListStateManager,
+  ListStateConfig,
 } from "shared-lib";
 import {Subject, takeUntil} from 'rxjs';
 import {
@@ -37,7 +38,8 @@ import {InviteOffcanvasService} from '../../../../../core/services/admin/invite-
   standalone: true,
   imports: [FilterBarComponent, DataTableComponent, Breadcrumb, TranslatePipe, InviteOffcanvas, KpiCardComponent ],
   templateUrl: './invitations-list.html',
-  styleUrl: './invitations-list.css'
+  styleUrl: './invitations-list.css',
+  providers: [ListStateManager]
 })
 export class InvitationsList implements OnInit, OnDestroy {
   private adminService = inject(AdminService);
@@ -49,31 +51,13 @@ export class InvitationsList implements OnInit, OnDestroy {
   private confirmDialog = inject(ConfirmDialogService);
   private inviteOffcanvasService = inject(InviteOffcanvasService);
   private toastService = inject(ToastService);
-  private filterState = inject(FilterStateService);
+
+  protected listManager = inject(ListStateManager<InvitationListItem, InvitationFilters>);
 
   private destroy$ = new Subject<void>();
   private componentId = 'invitations-list';
 
   currentTitle = this.pageTitleService.currentTitle;
-
-  invitations = signal<InvitationListItem[]>([]);
-  loading = signal(false);
-
-  currentPage = signal(1);
-  pageSize = signal(10);
-  totalInvitations = signal(0);
-  pageCountValue = signal(0);
-
-  currentSort = computed(() => this.filterState.state().sort);
-
-  private loadingState = signal<'idle' | 'loading' | 'loaded' | 'error'>('idle');
-
-  pagination = computed<PaginationState>(() => ({
-    currentPage: this.filterState.state().page,
-    pageSize: this.pageSize(),
-    total: this.totalInvitations(),
-    pageCount: this.pageCountValue()
-  }));
 
   canFind = computed(() =>
     this.permissionsService.hasPermission('soncollab-invitation', 'soncollab-invitation', 'find')
@@ -106,84 +90,6 @@ export class InvitationsList implements OnInit, OnDestroy {
   stats = signal<any>(null);
   loadingStats = signal(false);
   private languageChange = signal(0);
-
-
-  constructor() {
-    effect(() => {
-      if (!this.filterState.initialized()) {
-        return;
-      }
-
-      const currentLoadingState = this.loadingState();
-      const shouldLoadDueToStateChange = this.filterState.shouldLoad();
-
-      if (shouldLoadDueToStateChange && currentLoadingState !== 'idle') {
-        untracked(() => this.loadingState.set('idle'));
-      }
-
-      const shouldLoad = shouldLoadDueToStateChange || currentLoadingState === 'idle';
-
-      if (!shouldLoad || currentLoadingState === 'loading') {
-        return;
-      }
-
-      const state = this.filterState.state();
-
-      untracked(() => {
-        if (this.canFind()) {
-          this.loadInvitations(
-            state.page,
-            this.pageSize(),
-            this.buildInvitationsFilters(state.search, state.filters),
-            state.sort.field || 'createdAt',
-            state.sort.direction
-          );
-        }
-      });
-
-    });
-  }
-
-  ngOnInit(): void {
-    this.languageOrchestrator.registerComponent(
-      this.componentId,
-      () => this.onLanguageChange()
-    );
-
-    this.setBreadcrumbs();
-    this.updatePageTitle();
-    this.initializeConfig();
-    this.loadStats();
-
-    const defaultSort: SortConfig = this.sortOptions().length > 0
-      ? { field: this.sortOptions()[0].value.split(':')[0], direction: 'desc' }
-      : { field: 'createdAt', direction: 'desc' };
-
-    this.filterState.initialize(defaultSort);
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-    this.languageOrchestrator.unregisterComponent(this.componentId);
-    this.pageTitleService.resetBreadcrumbs();
-  }
-
-  private loadStats(): void {
-    this.loadingStats.set(true);
-    this.adminService.getInvitationStats()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (response) => {
-          this.stats.set(response.data);
-          this.loadingStats.set(false);
-        },
-        error: (err) => {
-          console.error('Error loading stats:', err);
-          this.loadingStats.set(false);
-        }
-      });
-  }
 
 
   kpiCards = computed<KpiData[]>(() => {
@@ -229,8 +135,55 @@ export class InvitationsList implements OnInit, OnDestroy {
     ];
   });
 
+  ngOnInit(): void {
+    this.setBreadcrumbs();
+    this.updatePageTitle();
+    this.initializeConfig();
+    this.loadStats();
+
+    const defaultSort: SortConfig = this.sortOptions().length > 0
+      ? { field: this.sortOptions()[0].value.split(':')[0], direction: 'desc' }
+      : { field: 'createdAt', direction: 'desc' };
+
+    const config: ListStateConfig = {
+      componentId: this.componentId,
+      defaultSort: defaultSort,
+      pageSize: 10,
+      onLanguageChange: () => this.onLanguageChange()
+    };
+
+    this.listManager.initialize(
+      config,
+      (search, filters) => this.buildInvitationsFilters(search, filters),
+      (page, pageSize, filters, sortField, sortDirection) => this.loadInvitations(page, pageSize, filters, sortField, sortDirection),
+      this.canFind
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.listManager.destroy();
+    this.pageTitleService.resetBreadcrumbs();
+  }
+
+  private loadStats(): void {
+    this.loadingStats.set(true);
+    this.adminService.getInvitationStats()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.stats.set(response.data);
+          this.loadingStats.set(false);
+        },
+        error: (err) => {
+          console.error('Error loading stats:', err);
+          this.loadingStats.set(false);
+        }
+      });
+  }
+
   private initializeConfig(): void {
-    // Plus besoin d'option vide, le placeholder suffit
     this.filters.set([
       {
         key: 'status',
@@ -254,9 +207,6 @@ export class InvitationsList implements OnInit, OnDestroy {
         options: this.getDepartmentOptions()
       }
     ]);
-
-
-
 
     this.sortOptions.set(this.getSortOptions());
 
@@ -406,8 +356,6 @@ export class InvitationsList implements OnInit, OnDestroy {
     return classes[status] || 'bg-secondary-subtle text-secondary';
   }
 
-
-
   private onLanguageChange(): void {
     setTimeout(() => {
       this.setBreadcrumbs();
@@ -466,14 +414,7 @@ export class InvitationsList implements OnInit, OnDestroy {
 
   openInviteOffcanvas(): void {
     this.inviteOffcanvasService.open(() => {
-      const state = this.filterState.state();
-      this.loadInvitations(
-        state.page,
-        this.pageSize(),
-        this.buildInvitationsFilters(state.search, state.filters),
-        state.sort.field || 'createdAt',
-        state.sort.direction
-      );
+      this.listManager.reload();
     });
   }
 
@@ -484,40 +425,25 @@ export class InvitationsList implements OnInit, OnDestroy {
   private loadInvitations(
     page: number,
     pageSize: number,
-    filters: FilterValue,
+    filters: InvitationFilters,
     sortField: string,
     sortDirection: 'asc' | 'desc'
   ): void {
-
-    if (!this.canFind()) {
-      return;
-    }
-
-    this.loadingState.set('loading');
-    this.loading.set(true);
-
     this.adminService.getInvitations(page, pageSize, filters, sortField, sortDirection)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
-          this.invitations.set(response.data);
-          this.totalInvitations.set(response.meta.pagination.total);
-          this.pageCountValue.set(response.meta.pagination.pageCount);
-          this.loading.set(false);
+          this.listManager.setData(
+            response.data,
+            response.meta.pagination.total,
+            response.meta.pagination.pageCount
+          );
         },
         error: (err) => {
           console.error('Error loading invitations:', err);
-          this.loading.set(false);
+          this.listManager.setError();
         }
       });
-  }
-
-  onPageChange(page: number): void {
-    this.filterState.setPage(page);
-  }
-
-  onSortChange(sort: SortConfig): void {
-    this.filterState.setSort(sort);
   }
 
   onActionClick(event: { action: TableAction<InvitationListItem>; row: InvitationListItem }): void {
@@ -553,14 +479,7 @@ export class InvitationsList implements OnInit, OnDestroy {
               this.toastService.showSuccess(
                 this.translate.instant('invitations-list.toast.resend_success', { name: inviteeName })
               );
-              const state = this.filterState.state();
-              this.loadInvitations(
-                state.page,
-                this.pageSize(),
-                this.buildInvitationsFilters(state.search, state.filters),
-                state.sort.field || 'createdAt',
-                state.sort.direction
-              );
+              this.listManager.reload();
               this.loadStats();
             },
             error: () => {
@@ -594,14 +513,7 @@ export class InvitationsList implements OnInit, OnDestroy {
               this.toastService.showSuccess(
                 this.translate.instant('invitations-list.toast.cancel_success', { name: inviteeName })
               );
-              const state = this.filterState.state();
-              this.loadInvitations(
-                state.page,
-                this.pageSize(),
-                this.buildInvitationsFilters(state.search, state.filters),
-                state.sort.field || 'createdAt',
-                state.sort.direction
-              );
+              this.listManager.reload();
               this.loadStats();
             },
             error: () => {
@@ -628,14 +540,7 @@ export class InvitationsList implements OnInit, OnDestroy {
               this.toastService.showSuccess(
                 this.translate.instant('invitations-list.toast.delete_success', { name: inviteeName })
               );
-              const state = this.filterState.state();
-              this.loadInvitations(
-                state.page,
-                this.pageSize(),
-                this.buildInvitationsFilters(state.search, state.filters),
-                state.sort.field || 'createdAt',
-                state.sort.direction
-              );
+              this.listManager.reload();
               this.loadStats();
             },
             error: () => {

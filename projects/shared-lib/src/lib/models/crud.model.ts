@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
-import { FilterValue, SortConfig } from '../modules/filter-bar/filter.model';
-import {PaginatedResponse, PaginationParams} from '../modules/data-table';
+import { FilterValue, SortConfig } from '../modules';
+import {PaginatedResponse, PaginationParams} from '../modules';
 
 export interface CrudOperations<T> {
   getAll(params?: QueryParams): Observable<PaginatedResponse<T>>;

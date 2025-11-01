@@ -2,7 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd, Params } from '@angular/router';
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { FilterValue, SortConfig } from '../modules/filter-bar/filter.model';
+import { FilterValue, SortConfig } from '../modules';
 
 export interface UrlStateConfig {
   search?: string;

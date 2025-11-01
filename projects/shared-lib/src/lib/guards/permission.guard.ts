@@ -4,8 +4,8 @@ import {filter, map, take} from 'rxjs';
 import {PermissionCheck, PermissionDeniedToastOptions, PermissionMode} from '../models';
 import {PermissionService} from '../services';
 import {TranslateService} from '@ngx-translate/core';
-import {PERMISSION_CONFIG} from '../config/permission.config';
-import {TOAST_SERVICE} from '../tokens/toast.token';
+import {PERMISSION_CONFIG} from '../config';
+import {TOAST_SERVICE} from '../tokens';
 import {toObservable} from '@angular/core/rxjs-interop';
 
 export function pluginPermissionGuard(

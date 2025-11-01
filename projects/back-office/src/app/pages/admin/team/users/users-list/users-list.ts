@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, OnDestroy, OnInit, signal, untracked } from '@angular/core';
+import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserFilters, UserListItem } from '../../../../../core/models/admin/user-list.model';
 import { AdminService } from '../../../../../core/services/admin/admin.service';
@@ -12,14 +12,14 @@ import {
   DataTableComponent,
   TableColumn,
   TableAction,
-  PaginationState,
   PermissionService,
   LanguageOrchestratorService,
   ConfirmDialogService,
   ToastService,
   KpiData,
   KpiCardComponent,
-  FilterStateService
+  ListStateManager,
+  ListStateConfig,
 } from 'shared-lib';
 import { PageTitleService } from '../../../../../core/services/page-title.service';
 import { Breadcrumb } from '../../../../../core/components/breadcrumb/breadcrumb';
@@ -32,7 +32,8 @@ import { environment } from '../../../../../../environments/environment';
   standalone: true,
   imports: [FilterBarComponent, DataTableComponent, Breadcrumb, TranslatePipe, KpiCardComponent],
   templateUrl: './users-list.html',
-  styleUrl: './users-list.css'
+  styleUrl: './users-list.css',
+  providers: [ListStateManager]
 })
 export class UsersList implements OnInit, OnDestroy {
   private adminService = inject(AdminService);
@@ -44,29 +45,10 @@ export class UsersList implements OnInit, OnDestroy {
   private languageOrchestrator = inject(LanguageOrchestratorService);
   private confirmDialog = inject(ConfirmDialogService);
   private toastService = inject(ToastService);
-  private filterState = inject(FilterStateService);
+  protected listManager = inject(ListStateManager<UserListItem, UserFilters>);
 
   private destroy$ = new Subject<void>();
   private componentId = 'users-list';
-
-  users = signal<UserListItem[]>([]);
-  loading = signal(false);
-  selectedCount = signal(0);
-
-  pageSize = signal(10);
-  totalUsers = signal(0);
-  pageCount = signal(0);
-
-  private loadingState = signal<'idle' | 'loading' | 'loaded' | 'error'>('idle');
-
-  pagination = computed<PaginationState>(() => ({
-    currentPage: this.filterState.state().page,
-    pageSize: this.pageSize(),
-    total: this.totalUsers(),
-    pageCount: this.pageCount()
-  }));
-
-  currentSort = computed(() => this.filterState.state().sort);
 
   canFindUsers = computed(() => this.permissionsService.canFindUsers());
   canManageUsers = computed(() => this.permissionsService.canUpdateUser());
@@ -132,46 +114,8 @@ export class UsersList implements OnInit, OnDestroy {
     ];
   });
 
-  constructor() {
-    effect(() => {
-      if (!this.filterState.initialized()) {
-        return;
-      }
-
-      const currentLoadingState = this.loadingState();
-      const shouldLoadDueToStateChange = this.filterState.shouldLoad();
-
-      if (shouldLoadDueToStateChange && currentLoadingState !== 'idle') {
-        untracked(() => this.loadingState.set('idle'));
-      }
-
-      const shouldLoad = shouldLoadDueToStateChange || currentLoadingState === 'idle';
-
-      if (!shouldLoad || currentLoadingState === 'loading') {
-        return;
-      }
-
-      const state = this.filterState.state();
-
-      untracked(() => {
-        this.loadUsers(
-          state.page,
-          this.pageSize(),
-          this.buildUserFilters(state.search, state.filters),
-          state.sort.field || 'username',
-          state.sort.direction
-        );
-      });
-    });
-  }
-
 
   ngOnInit(): void {
-    this.languageOrchestrator.registerComponent(
-      this.componentId,
-      () => this.onLanguageChange()
-    );
-
     this.setBreadcrumbs();
     this.updatePageTitle();
     this.initializeConfig();
@@ -182,7 +126,20 @@ export class UsersList implements OnInit, OnDestroy {
       ? { field: this.sortOptions()[0].value, direction: 'asc' }
       : { field: 'username', direction: 'asc' };
 
-    this.filterState.initialize(defaultSort);
+    const config: ListStateConfig = {
+      componentId: this.componentId,
+      defaultSort: defaultSort,
+      pageSize: 10, // Valeur par défaut
+      onLanguageChange: () => this.onLanguageChange()
+    };
+
+    // Initialisation du ListStateManager
+    this.listManager.initialize(
+      config,
+      (search, filters) => this.buildUserFilters(search, filters),
+      (page, pageSize, filters, sortField, sortDirection) => this.loadUsers(page, pageSize, filters, sortField, sortDirection),
+      this.canFindUsers
+    );
   }
 
   private initializeConfig(): void {
@@ -364,7 +321,7 @@ export class UsersList implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-    this.languageOrchestrator.unregisterComponent(this.componentId);
+    this.listManager.destroy();
     this.pageTitleService.resetBreadcrumbs();
   }
 
@@ -418,38 +375,23 @@ export class UsersList implements OnInit, OnDestroy {
     sortDirection: 'asc' | 'desc'
   ): void {
 
-    if (!this.canFindUsers()) {
-      return;
-    }
+    this.adminService.getUsers(page, pageSize, filters, sortField, sortDirection)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          const currentUserId = this.currentUserId();
+          const filteredUsers = response.data.filter(user => user.documentId !== currentUserId);
 
-    this.loadingState.set('loading');
-    this.loading.set(true);
-
-    this.adminService.getUsers(page, pageSize, filters, sortField, sortDirection).subscribe({
-      next: (response) => {
-        const currentUserId = this.currentUserId();
-        const filteredUsers = response.data.filter(user => user.documentId !== currentUserId);
-
-        this.users.set(filteredUsers);
-        this.totalUsers.set(response.meta.pagination.total - (response.data.length - filteredUsers.length));
-        this.pageCount.set(response.meta.pagination.pageCount);
-
-        this.loadingState.set('loaded');
-        this.loading.set(false);
-      },
-      error: () => {
-        this.loadingState.set('error');
-        this.loading.set(false);
-      }
-    });
-  }
-
-  onPageChange(page: number): void {
-    this.filterState.setPage(page);
-  }
-
-  onSortChange(sort: SortConfig): void {
-    this.filterState.setSort(sort);
+          this.listManager.setData(
+            filteredUsers,
+            response.meta.pagination.total - (response.data.length - filteredUsers.length),
+            response.meta.pagination.pageCount
+          );
+        },
+        error: () => {
+          this.listManager.setError();
+        }
+      });
   }
 
   onActionClick(event: { action: TableAction<UserListItem>; row: UserListItem }): void {
@@ -464,6 +406,7 @@ export class UsersList implements OnInit, OnDestroy {
     this.router.navigate(['/admin/team/users', user.documentId]);
   }
 
+  // Mise à jour de blockUser pour utiliser listManager.reload()
   blockUser(user: UserListItem): void {
     const username = user.first_name && user.last_name
       ? `${user.first_name} ${user.last_name}`
@@ -488,14 +431,7 @@ export class UsersList implements OnInit, OnDestroy {
                 this.translate.instant('users-list.toast.block_success', { name: username })
               );
 
-              const state = this.filterState.state();
-              this.loadUsers(
-                state.page,
-                this.pageSize(),
-                this.buildUserFilters(state.search, state.filters),
-                state.sort.field || 'username',
-                state.sort.direction
-              );
+              this.listManager.reload();
               this.loadStats();
             },
             error: () => {
@@ -529,15 +465,7 @@ export class UsersList implements OnInit, OnDestroy {
               this.toastService.showSuccess(
                 this.translate.instant('users-list.toast.unblock_success', { name: username })
               );
-
-              const state = this.filterState.state();
-              this.loadUsers(
-                state.page,
-                this.pageSize(),
-                this.buildUserFilters(state.search, state.filters),
-                state.sort.field || 'username',
-                state.sort.direction
-              );
+              this.listManager.reload();
               this.loadStats();
             },
             error: () => {

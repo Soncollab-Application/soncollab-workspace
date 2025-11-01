@@ -1,29 +1,25 @@
 import { NgModule } from '@angular/core';
-import {ToastModule} from './modules/toast/toast.module';
+import {
+  ChoiceLibModule,
+  ConfirmDialogModule,
+  DataTableModule, EmptyStateModule,
+  FilterBarModule,
+  FormModalModule, KpiCardModule,
+  ToastModule,
+  ToastService
+} from './modules';
 import {
   AosService,
   FilterService, FilterStateService,
   LanguageOrchestratorService,
-  LanguageService, PermissionService,
+  LanguageService, ListStateManager, PermissionService,
   RecaptchaService, RelativeDateService,
   ThemeService, UrlStateService
 } from './services';
-import {ToastService} from './modules/toast';
-import {DataTableModule} from './modules/data-table';
-import {FilterBarModule} from './modules/filter-bar';
-import {ConfirmDialogModule} from './modules/confirm-dialog';
-import {FormModalModule} from './modules/form-modal';
-import {EmptyStateModule} from './modules/empty-state';
-import {KpiCardModule} from './modules/kpi-card';
-import {ChoiceLibModule} from './modules/choice-lib/choice-lib.module';
-import {RelativeDatePipe} from './pipes/relative-date.pipe';
-import {Accordion} from './components/accordion/accordion';
-import {Alert} from './components/alert/alert';
-import {Badge} from './components/badge/badge';
-import {DropdownSingleDirective} from './directives/dropdown-single.directive';
-import {HasPermissionDirective, TooltipDirective} from './directives';
-import {TruncatePipe} from './pipes/truncate.pipe';
-import {CustomValidators} from './validators/custom-validators';
+import {RelativeDatePipe, TruncatePipe} from './pipes';
+import {DropdownSingleDirective, HasPermissionDirective, TooltipDirective} from './directives';
+import {Accordion, Alert, Badge} from './components';
+import {CustomValidators} from './validators';
 
 @NgModule({
   imports: [
@@ -49,7 +45,8 @@ import {CustomValidators} from './validators/custom-validators';
     UrlStateService,
     RelativeDateService,
     CustomValidators,
-    FilterStateService
+    FilterStateService,
+    ListStateManager
   ],
   exports: [
     ToastModule,

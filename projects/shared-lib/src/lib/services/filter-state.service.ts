@@ -1,7 +1,7 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
-import { FilterValue, SortConfig } from '../modules/filter-bar/filter.model';
+import { FilterValue, SortConfig } from '../modules';
 
 export interface FilterState {
   search: string;
@@ -79,6 +79,24 @@ export class FilterStateService {
 
     this._initialized.set(true);
   }
+
+  reinitialize(defaultSort: SortConfig): void {
+    this._initialized.set(false);
+    this._lastLoadedFingerprint = '';
+
+    // Nettoyer l'URL immédiatement
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {},
+      replaceUrl: true
+    });
+
+    this._search.set('');
+    this._filterValues.set({});
+    this._currentSort.set(defaultSort);
+    this._currentPage.set(1);
+  }
+
 
   shouldLoad(): boolean {
     const currentFingerprint = this.stateFingerprint();

@@ -2,7 +2,7 @@ import { inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {QueryParams} from '../models';
-import {PaginatedResponse} from '../modules/data-table';
+import {PaginatedResponse} from '../modules';
 
 export abstract class BaseCrudService<T> {
   protected http = inject(HttpClient);
