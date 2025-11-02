@@ -99,11 +99,6 @@ export class DataList<T = any> implements OnInit {
 
   constructor() {
     effect(() => {
-      const currentView = this.view();
-      console.log('DataList: view changed to:', currentView);
-    });
-
-    effect(() => {
       if (this.enableUrlSync() && this.initialized()) {
         const pagination = this.pagination();
         if (pagination) {
@@ -120,8 +115,6 @@ export class DataList<T = any> implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('DataList: ngOnInit - initial view:', this.view());
-
     if (this.enableUrlSync()) {
       const state = this.urlState.getStateFromUrl();
       if (state.page && this.pagination()) {
@@ -223,6 +216,26 @@ export class DataList<T = any> implements OnInit {
 
   onActionClick(action: ListAction<T>, item: T, event: Event): void {
     event.stopPropagation();
+
+    const target = event.target as HTMLElement;
+    const dropdownItem = target.closest('.dropdown-item');
+
+    if (dropdownItem) {
+      const dropdownMenu = dropdownItem.closest('.dropdown-menu');
+      const dropdown = dropdownMenu?.parentElement;
+
+      if (dropdown) {
+        const toggleButton = dropdown.querySelector('[data-bs-toggle="dropdown"]') as HTMLElement;
+
+        if (toggleButton && typeof (window as any).bootstrap !== 'undefined') {
+          const bsDropdown = (window as any).bootstrap.Dropdown.getInstance(toggleButton);
+          if (bsDropdown) {
+            bsDropdown.hide();
+          }
+        }
+      }
+    }
+
     this.actionClick.emit({ action, row: item });
   }
 

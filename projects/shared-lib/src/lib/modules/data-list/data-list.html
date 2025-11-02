@@ -67,15 +67,33 @@
               (click)="onItemClick(row)">
 
               @if (selectable()) {
-                <td style="width: 0" (click)="$event.stopPropagation()">
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      [id]="'tableCheck' + $index"
-                      [checked]="isItemSelected(row)"
-                      (change)="toggleItemSelection(row)">
-                    <label class="form-check-label" [for]="'tableCheck' + $index"></label>
+                <td style="width: 0">
+                  <div class="dropdown" libDropdownSingle>
+                    <button
+                      class="btn btn-sm btn-link text-decoration-none"
+                      type="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                      (click)="$event.stopPropagation()">
+                      <span class="material-symbols-outlined fs-2">more_horiz</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                      @for (action of actions(); track action.label) {
+                        @if (shouldShowAction(action, row)) {
+                          <li>
+                            <a
+                              class="dropdown-item d-flex align-items-center"
+                              href="javascript:void(0)"
+                              (click)="onActionClick(action, row, $event)">
+                              @if (action.icon) {
+                                <span class="material-symbols-outlined me-2 fs-5">{{ action.icon }}</span>
+                              }
+                              {{ action.label }}
+                            </a>
+                          </li>
+                        }
+                      }
+                    </ul>
                   </div>
                 </td>
               }
@@ -280,13 +298,13 @@
                           @if (shouldShowAction(action, card)) {
                             <li>
                               <a
-                              class="dropdown-item d-flex align-items-center"
-                              href="javascript:void(0)"
-                              (click)="onActionClick(action, card, $event)">
-                              @if (action.icon) {
-                                <span class="material-symbols-outlined me-2 fs-6">{{ action.icon }}</span>
-                              }
-                              {{ action.label }}
+                                class="dropdown-item d-flex align-items-center"
+                                href="javascript:void(0)"
+                                (click)="onActionClick(action, card, $event)">
+                                @if (action.icon) {
+                                  <span class="material-symbols-outlined me-2 fs-6">{{ action.icon }}</span>
+                                }
+                                {{ action.label }}
                               </a>
                             </li>
                           }
