@@ -4,17 +4,11 @@ export * from './toast/toast.types';
 export * from './toast/toast.service';
 export * from './toast/toast.module';
 
-// Data Table
-export * from './data-table/data-table.component';
-export * from './data-table/data-table.module';
-export * from './data-table/pagination.model';
-export * from './data-table/table.model';
-
-// Data Card
-export * from './data-card/data-card';
-export * from './data-card/data-card.model';
-export * from './data-card/data-card.module';
-
+// Data List
+export * from './data-list/data-list';
+export * from './data-list/data-list.module';
+export * from './data-list/data-list.model';
+export * from './data-list/pagination.model';
 
 // Filter Bar
 export * from './filter-bar/filter-bar.component';

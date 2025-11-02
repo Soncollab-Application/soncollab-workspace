@@ -36,11 +36,9 @@ export class FilterBarComponent implements OnInit {
   selectionText = input<string>('filterBarShared.selected');
   useFilterState = input<boolean>(true);
   sortPlaceholder = input<string>('filterBarShared.sortBy');
-  showViewSelector = input<boolean>(false); // Nouveau Input pour activer/désactiver le sélecteur
-  currentView = input<'table' | 'card'>('table'); // Nouveau Input pour la vue actuelle
+  showViewSelector = input<boolean>(false);
 
-  viewChange = output<'table' | 'card'>(); // Nouvel Output pour le changement de vue
-
+  viewChange = output<'table' | 'card'>();
   searchChange = output<string>();
   filterChange = output<FilterValue>();
   sortChange = output<SortConfig>();
@@ -60,6 +58,10 @@ export class FilterBarComponent implements OnInit {
 
   protected currentSort = computed(() =>
     this.useFilterState() ? this.filterState.state().sort : { field: '', direction: 'asc' as const }
+  );
+
+  protected currentView = computed(() =>
+    this.useFilterState() ? this.filterState.state().view : 'table' as const
   );
 
   protected choiceRefreshKey = signal(0);
@@ -84,7 +86,6 @@ export class FilterBarComponent implements OnInit {
       }
     });
 
-    // Synchroniser DESKTOP ET MOBILE
     effect(() => {
       if (!this.useFilterState()) return;
 
@@ -105,12 +106,10 @@ export class FilterBarComponent implements OnInit {
           selectFilters.forEach((filter, index) => {
             const value = filterValues[filter.key];
             if (value && filter.options && filter.options.length > 0) {
-              // Desktop
               if (index < filterChoices.length) {
                 filterChoices[index]?.setChoiceByValue(value);
               }
 
-              // Mobile
               const mobileIndex = mobileFilterStartIndex + index;
               if (mobileIndex < filterChoices.length) {
                 filterChoices[mobileIndex]?.setChoiceByValue(value);
@@ -144,17 +143,6 @@ export class FilterBarComponent implements OnInit {
     if (this.useFilterState()) {
       this.filterState.initialize();
     }
-  }
-
-  private findFilterChoiceIndex(filterKey: string): number {
-    let index = 0;
-    for (const filter of this.filters()) {
-      if (filter.type === 'select' || filter.type === 'boolean') {
-        if (filter.key === filterKey) return index;
-        index++;
-      }
-    }
-    return -1;
   }
 
   getChoiceKey(filterKey: string): string {
@@ -254,17 +242,16 @@ export class FilterBarComponent implements OnInit {
     this.sortChange.emit(defaultSort);
   }
 
-
   onViewChange(view: 'table' | 'card'): void {
-    if (this.isSyncing() || this.isResetting()) {
-      return;
+    console.log('Filter-bar: onViewChange called with:', view);
+
+    if (this.useFilterState()) {
+      this.filterState.setView(view);
+      console.log('Filter-bar: FilterState updated to:', view);
     }
-    if (view !== this.currentView()) {
-      if (this.useFilterState()) {
-        this.filterState.setView(view);
-      }
-      this.viewChange.emit(view);
-    }
+
+    this.viewChange.emit(view);
+    console.log('Filter-bar: viewChange emitted:', view);
   }
 
   onSortFieldChangeFromChoice(field: any): void {

@@ -1,6 +1,9 @@
-export interface CardColumn<T = any> {
+export interface ListColumn<T = any> {
   key: string;
   label: string;
+  sortable?: boolean;
+  width?: string;
+  colspan?: number;
   type?: 'text' | 'date' | 'badge' | 'image' | 'user' | 'phone' | 'email' | 'custom-badge' | 'custom';
   render?: (row: T) => string;
   cellClass?: string | ((row: T) => string);
@@ -12,7 +15,7 @@ export interface CardColumn<T = any> {
   showInCard?: boolean;
 }
 
-export interface CardAction<T = any> {
+export interface ListAction<T = any> {
   label: string;
   icon?: string;
   class?: string;
@@ -20,9 +23,10 @@ export interface CardAction<T = any> {
   handler: (row: T) => void;
 }
 
-export interface CardConfig<T = any> {
-  columns: CardColumn<T>[];
-  actions?: CardAction<T>[];
-  clickable?: boolean;
+export interface ListConfig<T = any> {
+  columns: ListColumn<T>[];
+  actions?: ListAction<T>[];
   selectable?: boolean;
+  clickable?: boolean;
+  view?: 'table' | 'card';
 }

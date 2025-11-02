@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import {
   ChoiceLibModule,
-  ConfirmDialogModule, DataCardModule,
-  DataTableModule, EmptyStateModule,
+  ConfirmDialogModule, DataListModule,
+  EmptyStateModule,
   FilterBarModule,
   FormModalModule, KpiCardModule,
   ToastModule,
@@ -50,14 +50,13 @@ import {CustomValidators} from './validators';
   ],
   exports: [
     ToastModule,
-    DataTableModule,
     FilterBarModule,
     ConfirmDialogModule,
     FormModalModule,
     EmptyStateModule,
     KpiCardModule,
     ChoiceLibModule,
-    DataCardModule,
+    DataListModule,
   ]
 })
 export class SharedLibModule { }

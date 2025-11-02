@@ -1,0 +1,475 @@
+@if (loading()) {
+  <div class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">{{ 'dataListShared.loading' | translate }}</span>
+    </div>
+  </div>
+} @else {
+  @if (view() === 'table') {
+    <!-- ==================== VUE TABLE (EXACTE de data-table) ==================== -->
+    <div class="table-responsive card">
+      <table class="table table-hover table-select table-round align-middle mb-0">
+        <thead>
+        <tr>
+          @if (selectable()) {
+            <th style="width: 0">
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="tableCheckAll"
+                  [checked]="allSelected()"
+                  (change)="toggleAllItems()">
+                <label class="form-check-label" for="tableCheckAll"></label>
+              </div>
+            </th>
+          }
+
+          @for (column of columns(); track column.key) {
+            <th
+              [style.width]="column.width"
+              [attr.colspan]="column.colspan || 1"
+              [class.cursor-pointer]="column.sortable"
+              (click)="onSort(column)">
+              <div class="d-flex align-items-center">
+                <div>
+                  {{ column.label }}
+                </div>
+                @if (column.sortable) {
+                  <div class="mt-1">
+                    <span [class]="'material-symbols-outlined fs-5 ms-2'"> {{ getSortIcon(column) }} </span>
+                  </div>
+                }
+              </div>
+            </th>
+          }
+        </tr>
+        </thead>
+
+        <tbody>
+          @if (formattedData().length === 0) {
+            <tr>
+              <td [attr.colspan]="getTotalColspan()" class="p-0">
+                <lib-empty-state
+                  [icon]="emptyStateIcon()"
+                  [title]="emptyStateTitle()"
+                  [message]="emptyStateMessage()"
+                />
+              </td>
+            </tr>
+          }
+
+          @for (row of formattedData(); track $index) {
+            <tr
+              [class.cursor-pointer]="clickable()"
+              [class.table-active]="isItemSelected(row)"
+              [attr.role]="clickable() ? 'link' : null"
+              [attr.tabindex]="clickable() ? '0' : null"
+              (click)="onItemClick(row)">
+
+              @if (selectable()) {
+                <td style="width: 0" (click)="$event.stopPropagation()">
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      [id]="'tableCheck' + $index"
+                      [checked]="isItemSelected(row)"
+                      (change)="toggleItemSelection(row)">
+                    <label class="form-check-label" [for]="'tableCheck' + $index"></label>
+                  </div>
+                </td>
+              }
+
+              @for (column of columns(); track column.key; let isLast = $last) {
+                @if (isLast && hasActions()) {
+                  <td>
+                    @switch (column.type) {
+                      @case ('custom-badge') {
+                        <span class="badge" [class]="getCellClass(row, column)">
+                          {{ getCellValue(row, column) }}
+                        </span>
+                      }
+                      @case ('date') {
+                        <span class="text-muted">{{ getCellValue(row, column) }}</span>
+                      }
+                      @default {
+                        {{ getCellValue(row, column) }}
+                      }
+                    }
+                  </td>
+                  <td style="width: 0">
+                    <div class="dropdown" libDropdownSingle (click)="$event.stopPropagation()">
+                      <button
+                        class="btn btn-sm btn-link text-decoration-none"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <span class="material-symbols-outlined fs-2">more_horiz</span>
+                      </button>
+                      <ul class="dropdown-menu dropdown-menu-end">
+                        @for (action of actions(); track action.label) {
+                          @if (shouldShowAction(action, row)) {
+                            <li>
+                              <a class="dropdown-item d-flex align-items-center" href="javascript:void(0)" (click)="onActionClick(action, row, $event)">
+                                @if (action.icon) {
+                                  <span class="material-symbols-outlined me-2 fs-5">{{ action.icon }}</span>
+                                }
+                                {{ action.label }}
+                              </a>
+                            </li>
+                          }
+                        }
+                      </ul>
+                    </div>
+                  </td>
+                } @else {
+                  <td>
+                    @switch (column.type) {
+                      @case ('user') {
+                        <div class="d-flex align-items-center">
+                          @if (column.avatarKey) {
+                            <div class="avatar">
+                              @if (getNestedValue(row, column.avatarKey)) {
+                                <img class="avatar-img"
+                                     [src]="getAvatarUrl(row, column)"
+                                     [alt]="getCellValue(row, column)">
+                              } @else {
+                                <div class="avatar bg-secondary  d-flex align-items-center justify-content-center">
+                                  {{ getInitials(getCellValue(row, column)) }}
+                                </div>
+                              }
+                            </div>
+                          }
+                          <div class="ms-4">
+                            <div>{{ getCellValue(row, column) }}</div>
+                            @if (column.subtitleKey) {
+                              <div class="fs-sm text-body-secondary">
+                                <a class="text-reset"
+                                   [href]="'mailto:' + getNestedValue(row, column.subtitleKey)">
+                                  {{ getNestedValue(row, column.subtitleKey) }}
+                                </a>
+                              </div>
+                            }
+                          </div>
+                        </div>
+                      }
+                      @case ('phone') {
+                        <a class="text-muted"
+                           [href]="'tel:' + getCellValue(row, column)">
+                          {{ getCellValue(row, column) }}
+                        </a>
+                      }
+                      @case ('email') {
+                        <a class="text-reset"
+                           [href]="'mailto:' + getCellValue(row, column)">
+                          {{ getCellValue(row, column) }}
+                        </a>
+                      }
+                      @case ('custom-badge') {
+                        <span class="badge" [class]="getCellClass(row, column)">
+                          {{ getCellValue(row, column) }}
+                        </span>
+                      }
+                      @case ('badge') {
+                        <span class="badge" [class]="getCellValue(row, column)">
+                          {{ getCellValue(row, column) }}
+                        </span>
+                      }
+                      @case ('date') {
+                        <span class="text-muted">{{ getCellValue(row, column) }}</span>
+                      }
+                      @case ('image') {
+                        <div class="avatar">
+                          <img class="avatar-img"
+                               [src]="getCellValue(row, column)"
+                               alt="">
+                        </div>
+                      }
+                      @case ('text') {
+                        {{ getCellValue(row, column) }}
+                      }
+                      @default {
+                        {{ getCellValue(row, column) }}
+                      }
+                    }
+                  </td>
+                }
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if (pagination() && pagination()!.total > 0) {
+      <div class="row for-inter-font align-items-center mt-4">
+        <div class="col">
+          <p class="text-body-secondary fs-sm mb-0">
+            {{ 'dataListShared.showing' | translate }}
+            <span class="fw-semibold">{{ (pagination()!.currentPage - 1) * pagination()!.pageSize + 1 }}</span>
+            {{ 'dataListShared.to' | translate }}
+            <span class="fw-semibold">{{ Math.min(pagination()!.currentPage * pagination()!.pageSize, pagination()!.total) }}</span>
+            {{ 'dataListShared.of' | translate }}
+            <span class="fw-semibold">{{ pagination()!.total }}</span>
+            {{ 'dataListShared.results' | translate }}
+          </p>
+        </div>
+        <div class="col-auto">
+          <nav>
+            <ul class="pagination mb-0">
+              <li class="page-item" [class.disabled]="pagination()!.currentPage === 1">
+                <a class="page-link" href="javascript:void(0)" (click)="onPageChange(pagination()!.currentPage - 1)">
+                  <span class="material-symbols-outlined">chevron_left</span>
+                </a>
+              </li>
+
+              @for (page of getPageNumbers(); track page) {
+                @if (page === -1) {
+                  <li class="page-item disabled">
+                    <span class="page-link">...</span>
+                  </li>
+                } @else {
+                  <li class="page-item" [class.active]="page === pagination()!.currentPage">
+                    <a class="page-link" href="javascript:void(0)" (click)="onPageChange(page)">
+                      {{ page }}
+                    </a>
+                  </li>
+                }
+              }
+
+              <li class="page-item" [class.disabled]="pagination()!.currentPage === pagination()!.pageCount">
+                <a class="page-link" href="javascript:void(0)" (click)="onPageChange(pagination()!.currentPage + 1)">
+                  <span class="material-symbols-outlined">chevron_right</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    }
+
+  } @else {
+    <!-- ==================== VUE CARD (EXACTE de data-card) ==================== -->
+    <div>
+      @if (selectable()) {
+        <div class="card mb-4">
+          <div class="card-body py-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="form-check mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="cardCheckAll"
+                  [checked]="allSelected()"
+                  (change)="toggleAllItems()">
+                <label class="form-check-label" for="cardCheckAll">
+                  {{ 'dataListShared.selectAll' | translate }}
+                </label>
+              </div>
+              @if (selectedItems().size > 0) {
+                <span class="badge bg-primary">
+                  {{ selectedItems().size }}
+                </span>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+      @if (formattedData().length === 0) {
+        <lib-empty-state
+          [icon]="emptyStateIcon()"
+          [title]="emptyStateTitle()"
+          [message]="emptyStateMessage()"
+        />
+      }
+
+      <div class="row g-4">
+        @for (card of formattedData(); track $index) {
+          <div class="col-12 col-md-6 col-xl-4">
+            <div
+              class="card h-100 border"
+              [class.cursor-pointer]="clickable()"
+              [class.border-primary]="isItemSelected(card)"
+              [class.border-2]="isItemSelected(card)"
+              [class.shadow-sm]="!isItemSelected(card)"
+              [class.shadow]="isItemSelected(card)"
+              [attr.role]="clickable() ? 'link' : null"
+              [attr.tabindex]="clickable() ? 0 : null"
+              (click)="onItemClick(card)"
+              (keydown.enter)="onItemClick(card)">
+
+              <div class="card-body">
+                <!-- Header: Checkbox + Actions -->
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                  @if (selectable()) {
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        [id]="'card-' + $index"
+                        [checked]="isItemSelected(card)"
+                        (change)="toggleItemSelection(card, $event)"
+                        (click)="$event.stopPropagation()">
+                    </div>
+                  }
+
+                  @if (hasActions()) {
+                    <div class="dropdown" [class.ms-auto]="!selectable()" libDropdownSingle>
+                      <button
+                        class="btn btn-sm btn-light"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        (click)="$event.stopPropagation()">
+                        <span class="material-symbols-outlined">more_horiz</span>
+                      </button>
+                      <ul class="dropdown-menu dropdown-menu-end">
+                        @for (action of actions(); track action.label) {
+                          @if (shouldShowAction(action, card)) {
+                            <li>
+                              <a
+                              class="dropdown-item d-flex align-items-center"
+                              href="javascript:void(0)"
+                              (click)="onActionClick(action, card, $event)">
+                              @if (action.icon) {
+                                <span class="material-symbols-outlined me-2 fs-6">{{ action.icon }}</span>
+                              }
+                              {{ action.label }}
+                              </a>
+                            </li>
+                          }
+                        }
+                      </ul>
+                    </div>
+                  }
+                </div>
+
+                <!-- Content -->
+                @for (column of visibleColumns(); track column.key) {
+                  @if (column.type === 'user') {
+                    <!-- User Section -->
+                    <div class="mb-4">
+                      <div class="d-flex align-items-center">
+                        @if (column.avatarKey) {
+                          <div class="me-3">
+                            @if (getNestedValue(card, column.avatarKey)) {
+                              <img
+                                class="rounded"
+                                [src]="getAvatarUrl(card, column)"
+                                [alt]="getCellValue(card, column)"
+                                style="width: 48px; height: 48px; object-fit: cover;">
+                            } @else {
+                              <div class="rounded bg-primary bg-opacity-10 d-flex align-items-center justify-content-center"
+                                   style="width: 48px; height: 48px;">
+                                <span class="text-primary fw-semibold">
+                                  {{ getInitials(getCellValue(card, column)) }}
+                                </span>
+                              </div>
+                            }
+                          </div>
+                        }
+                        <div class="flex-grow-1 overflow-hidden">
+                          <div class="fw-semibold text-truncate">{{ getCellValue(card, column) }}</div>
+                          @if (column.subtitleKey) {
+                            <a [href]="'mailto:' + getNestedValue(card, column.subtitleKey)"
+                               class="text-decoration-none text-muted small text-truncate d-block"
+                               (click)="$event.stopPropagation()">
+                              {{ getNestedValue(card, column.subtitleKey) }}
+                            </a>
+                          }
+                        </div>
+                      </div>
+                    </div>
+
+                  } @else if (column.type === 'custom-badge' || column.type === 'badge') {
+                    <!-- Badge Row -->
+                    <div class="mb-3">
+                      <div class="small text-muted mb-1">{{ column.label }}</div>
+                      <span
+                        class="badge"
+                        [class]="getCellClass(card, column)">
+                        {{ getCellValue(card, column) }}
+                      </span>
+                    </div>
+
+                  } @else if (column.type === 'email') {
+                    <!-- Email Row -->
+                    <div class="mb-3">
+                      <div class="small text-muted mb-1">{{ column.label }}</div>
+                      <a [href]="'mailto:' + getCellValue(card, column)"
+                         class="text-decoration-none d-block text-truncate"
+                         (click)="$event.stopPropagation()">
+                        {{ getCellValue(card, column) }}
+                      </a>
+                    </div>
+
+                  } @else if (column.type === 'phone') {
+                    <!-- Phone Row -->
+                    <div class="mb-3">
+                      <div class="small text-muted mb-1">{{ column.label }}</div>
+                      <a [href]="'tel:' + getCellValue(card, column)"
+                         class="text-decoration-none d-block"
+                         (click)="$event.stopPropagation()">
+                        {{ getCellValue(card, column) }}
+                      </a>
+                    </div>
+
+                  } @else {
+                    <!-- Standard Row -->
+                    <div class="mb-3">
+                      <div class="small text-muted mb-1">{{ column.label }}</div>
+                      <div class="text-truncate">{{ getCellValue(card, column) }}</div>
+                    </div>
+                  }
+                }
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      @if (pagination() && pagination()!.pageCount > 1) {
+        <div class="d-flex justify-content-center mt-4">
+          <nav aria-label="Pagination">
+            <ul class="pagination">
+              <li class="page-item" [class.disabled]="pagination()!.currentPage === 1">
+                <a
+                class="page-link"
+                href="javascript:void(0)"
+                (click)="pagination()!.currentPage > 1 && onPageChange(pagination()!.currentPage - 1)">
+                <span class="material-symbols-outlined">chevron_left</span>
+                </a>
+              </li>
+
+              @for (page of [].constructor(getTotalPages()); track $index) {
+                <li
+                  class="page-item"
+                  [class.active]="pagination()!.currentPage === $index + 1">
+                  <a
+                  class="page-link"
+                  href="javascript:void(0)"
+                  (click)="onPageChange($index + 1)">
+                  {{ $index + 1 }}
+                  </a>
+                </li>
+              }
+
+              <li
+                class="page-item"
+                [class.disabled]="pagination()!.currentPage === pagination()!.pageCount">
+                <a
+                class="page-link"
+                href="javascript:void(0)"
+                (click)="pagination()!.currentPage < pagination()!.pageCount && onPageChange(pagination()!.currentPage + 1)">
+                <span class="material-symbols-outlined">chevron_right</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      }
+    </div>
+  }
+}

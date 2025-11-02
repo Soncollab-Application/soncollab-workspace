@@ -5,21 +5,18 @@ import {PageTitleService} from '../../../../../core/services/page-title.service'
 import {TranslateService, TranslatePipe} from '@ngx-translate/core';
 import {
   FilterBarComponent,
-  DataTableComponent,
   FilterConfig,
   FilterValue,
   LanguageOrchestratorService,
   PermissionService,
   SortConfig,
   SortOption,
-  TableAction,
-  TableColumn,
   ConfirmDialogService,
   ToastService,
   KpiCardComponent,
   KpiData,
   ListStateManager,
-  ListStateConfig,
+  ListStateConfig, DataList, ListColumn, ListAction,
 } from "shared-lib";
 import {Subject, takeUntil} from 'rxjs';
 import {
@@ -36,7 +33,7 @@ import {InviteOffcanvasService} from '../../../../../core/services/admin/invite-
 @Component({
   selector: 'app-invitations-list',
   standalone: true,
-  imports: [FilterBarComponent, DataTableComponent, Breadcrumb, TranslatePipe, InviteOffcanvas, KpiCardComponent ],
+  imports: [FilterBarComponent, Breadcrumb, TranslatePipe, InviteOffcanvas, KpiCardComponent, DataList],
   templateUrl: './invitations-list.html',
   styleUrl: './invitations-list.css',
   providers: [ListStateManager]
@@ -81,8 +78,8 @@ export class InvitationsList implements OnInit, OnDestroy {
 
   filters = signal<FilterConfig[]>([]);
   sortOptions = signal<SortOption[]>([]);
-  columns = signal<TableColumn<InvitationListItem>[]>([]);
-  actions = signal<TableAction<InvitationListItem>[]>([]);
+  columns = signal<ListColumn<InvitationListItem>[]>([]);
+  actions = signal<ListAction<InvitationListItem>[]>([]);
 
   emptyTitle = signal<string>('');
   emptyMessage = signal<string>('');
@@ -267,7 +264,7 @@ export class InvitationsList implements OnInit, OnDestroy {
       }
     ]);
 
-    const baseActions: TableAction<InvitationListItem>[] = [
+    const baseActions: ListAction<InvitationListItem>[] = [
       {
         label: this.translate.instant('common.view'),
         icon: 'visibility',
@@ -446,7 +443,7 @@ export class InvitationsList implements OnInit, OnDestroy {
       });
   }
 
-  onActionClick(event: { action: TableAction<InvitationListItem>; row: InvitationListItem }): void {
+  onActionClick(event: { action: ListAction<InvitationListItem>; row: InvitationListItem }): void {
     event.action.handler(event.row);
   }
 

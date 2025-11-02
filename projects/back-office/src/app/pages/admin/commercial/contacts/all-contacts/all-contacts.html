@@ -16,13 +16,14 @@
     [filters]="filters()"
     [sortOptions]="sortOptions()"
     [showSearch]="true"
+    [showViewSelector]="true"
     [selectedCount]="-1"
     [useFilterState]="true"
   />
 </div>
 
 <div>
-  <lib-data-table
+  <lib-data-list
     [data]="listManager.items()"
     [columns]="columns()"
     [actions]="actions()"
@@ -36,7 +37,7 @@
     (sortChange)="listManager.onSortChange($any($event))"
     (pageChange)="listManager.onPageChange($any($event))"
     (actionClick)="onActionClick($any($event))"
-    (rowClick)="onRowClick($any($event))"
+    (itemClick)="onRowClick($any($event))"
   />
 </div>
 

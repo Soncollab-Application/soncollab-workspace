@@ -15,9 +15,6 @@ import {
   SortConfig,
   SortOption,
   FilterBarComponent,
-  DataTableComponent,
-  TableColumn,
-  TableAction,
   PermissionService,
   LanguageOrchestratorService,
   ConfirmDialogService,
@@ -25,7 +22,7 @@ import {
   KpiData,
   KpiCardComponent,
   ListStateManager,
-  ListStateConfig,
+  ListStateConfig, DataList, ListColumn, ListAction,
 } from 'shared-lib';
 import { PageTitleService } from '../../../../../core/services/page-title.service';
 import { Breadcrumb } from '../../../../../core/components/breadcrumb/breadcrumb';
@@ -38,7 +35,7 @@ import { AssignContactModal } from '../../../../../core/components/admin/assign-
 @Component({
   selector: 'app-all-contacts',
   standalone: true,
-  imports: [FilterBarComponent, DataTableComponent, Breadcrumb, KpiCardComponent, AssignContactModal, QualifyContactModal],
+  imports: [FilterBarComponent, Breadcrumb, KpiCardComponent, AssignContactModal, QualifyContactModal, DataList],
   templateUrl: './all-contacts.html',
   styleUrl: './all-contacts.css',
   providers: [ListStateManager]
@@ -83,8 +80,8 @@ export class AllContacts implements OnInit, OnDestroy {
 
   filters = signal<FilterConfig[]>([]);
   sortOptions = signal<SortOption[]>([]);
-  columns = signal<TableColumn<SalesContact>[]>([]);
-  actions = signal<TableAction<SalesContact>[]>([]);
+  columns = signal<ListColumn<SalesContact>[]>([]);
+  actions = signal<ListAction<SalesContact>[]>([]);
 
   emptyTitle = signal('');
   emptyMessage = signal('');
@@ -427,7 +424,7 @@ export class AllContacts implements OnInit, OnDestroy {
       });
   }
 
-  onActionClick(event: { action: TableAction<SalesContact>; row: SalesContact }): void {
+  onActionClick(event: { action: ListAction<SalesContact>; row: SalesContact }): void {
     event.action.handler(event.row);
   }
 

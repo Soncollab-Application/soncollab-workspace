@@ -32,7 +32,7 @@
 </div>
 
 <div>
-  <lib-data-table
+  <lib-data-list
     [data]="listManager.items()"
     [columns]="columns()"
     [actions]="actions()"
@@ -46,6 +46,6 @@
     (pageChange)="listManager.onPageChange($any($event))"
     (sortChange)="listManager.onSortChange($any($event))"
     (actionClick)="onActionClick($any($event))"
-    (rowClick)="onRowClick($any($event))"
+    (itemClick)="onRowClick($any($event))"
   />
 </div>

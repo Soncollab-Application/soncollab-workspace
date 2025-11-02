@@ -9,9 +9,6 @@ import {
   SortConfig,
   SortOption,
   FilterBarComponent,
-  DataTableComponent,
-  TableColumn,
-  TableAction,
   PermissionService,
   LanguageOrchestratorService,
   ConfirmDialogService,
@@ -19,7 +16,7 @@ import {
   KpiData,
   KpiCardComponent,
   ListStateManager,
-  ListStateConfig,
+  ListStateConfig, DataList, ListColumn, ListAction, ListConfig,
 } from 'shared-lib';
 import { PageTitleService } from '../../../../../core/services/page-title.service';
 import { Breadcrumb } from '../../../../../core/components/breadcrumb/breadcrumb';
@@ -30,7 +27,7 @@ import { environment } from '../../../../../../environments/environment';
 @Component({
   selector: 'app-users-list',
   standalone: true,
-  imports: [FilterBarComponent, DataTableComponent, Breadcrumb, TranslatePipe, KpiCardComponent],
+  imports: [FilterBarComponent, Breadcrumb, TranslatePipe, KpiCardComponent, DataList],
   templateUrl: './users-list.html',
   styleUrl: './users-list.css',
   providers: [ListStateManager]
@@ -61,8 +58,8 @@ export class UsersList implements OnInit, OnDestroy {
 
   filters = signal<FilterConfig[]>([]);
   sortOptions = signal<SortOption[]>([]);
-  columns = signal<TableColumn<UserListItem>[]>([]);
-  actions = signal<TableAction<UserListItem>[]>([]);
+  columns = signal<ListColumn<UserListItem>[]>([]);
+  actions = signal<ListAction<UserListItem>[]>([]);
 
   stats = signal<any>(null);
   loadingStats = signal(false);
@@ -394,7 +391,7 @@ export class UsersList implements OnInit, OnDestroy {
       });
   }
 
-  onActionClick(event: { action: TableAction<UserListItem>; row: UserListItem }): void {
+  onActionClick(event: { action: ListAction<UserListItem>; row: UserListItem }): void {
     event.action.handler(event.row);
   }
 
