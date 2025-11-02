@@ -240,6 +240,22 @@ export class FilterBarComponent implements OnInit {
     this.filterChange.emit(updatedFilters);
   }
 
+  onSortRemove(): void {
+    if (this.isSyncing() || this.isResetting()) {
+      return;
+    }
+
+    const defaultSort = this.sortOptions().length > 0
+      ? { field: this.sortOptions()[0].value, direction: 'asc' as const }
+      : { field: '', direction: 'asc' as const };
+
+    if (this.useFilterState()) {
+      this.filterState.setSort(defaultSort);
+    }
+
+    this.sortChange.emit(defaultSort);
+  }
+
   onSortFieldChangeFromChoice(field: any): void {
     if (this.isSyncing()) {
       return;

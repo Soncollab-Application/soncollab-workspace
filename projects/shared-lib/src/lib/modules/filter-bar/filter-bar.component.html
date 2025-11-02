@@ -20,6 +20,8 @@
                   <input
                     type="text"
                     class="form-control"
+                    id="search-desktop"
+                    name="search"
                     [placeholder]="'filterBarShared.search' | translate"
                     [value]="searchTerm()"
                     (input)="onSearchInput($event)">
@@ -55,6 +57,7 @@
                         @if (filter.type === 'select' || filter.type === 'boolean') {
                           @if (choiceRefreshKey() !== -1) {
                             <lib-choice
+                              [id]="filter.key"
                               type="select-one"
                               [options]="filter.options || []"
                               [groups]="filter.groups || []"
@@ -67,16 +70,17 @@
                         } @else if (filter.type === 'date') {
                           <input
                             type="date"
-                            class="form-control"
+                            class="form-control w-100"
                             [id]="filter.key"
-                            [placeholder]="filter.placeholder || filter.label"
+                            [name]="filter.key"
                             [value]="getFilterValue(filter.key)"
                             (change)="onFilterChange(filter.key, $any($event.target).value)">
                         } @else {
                           <input
                             type="text"
-                            class="form-control"
+                            class="form-control w-100"
                             [id]="filter.key"
+                            [name]="filter.key"
                             [placeholder]="filter.placeholder || filter.label"
                             [value]="getFilterValue(filter.key)"
                             (input)="onFilterChange(filter.key, $any($event.target).value)">
@@ -112,6 +116,7 @@
                           [options]="getSortChoiceOptions()"
                           [config]="getSortChoiceConfig()"
                           (valueChange)="onSortFieldChangeFromChoice($event)"
+                          (removeItem)="onSortRemove()"
                         />
                       </div>
                       <div class="col-auto">
@@ -171,6 +176,8 @@
               <input
                 type="text"
                 class="form-control"
+                id="search-mobile"
+                name="search"
                 [placeholder]="'filterBarShared.search' | translate"
                 [value]="searchTerm()"
                 (input)="onSearchInput($event)">
@@ -211,6 +218,7 @@
                       @if (choiceRefreshKey() !== -1) {
                         <lib-choice
                           type="select-one"
+                          [id]="'mobile-' + filter.key"
                           [options]="filter.options || []"
                           [groups]="filter.groups || []"
                           [placeholder]="filter.placeholder || filter.label"
@@ -224,6 +232,7 @@
                         type="date"
                         class="form-control w-100"
                         [id]="'mobile-' + filter.key"
+                        [name]="filter.key"
                         [value]="getFilterValue(filter.key)"
                         (change)="onFilterChange(filter.key, $any($event.target).value)">
                     } @else {
@@ -231,6 +240,7 @@
                         type="text"
                         class="form-control w-100"
                         [id]="'mobile-' + filter.key"
+                        [name]="filter.key"
                         [placeholder]="filter.placeholder || filter.label"
                         [value]="getFilterValue(filter.key)"
                         (input)="onFilterChange(filter.key, $any($event.target).value)">
@@ -265,6 +275,7 @@
                   [options]="getSortChoiceOptions()"
                   [config]="getSortChoiceConfig()"
                   (valueChange)="onSortFieldChangeFromChoice($event)"
+                  (removeItem)="onSortRemove()"
                 />
 
                 <div class="btn-group w-100 mt-3">
