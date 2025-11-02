@@ -94,8 +94,6 @@ export class ListStateManager<TItem, TFilters> {
     loadItems: LoadCallback<TFilters>,
     canFind: Signal<boolean>
   ): void {
-    // Réinitialiser FilterState proprement avant d'initialiser
-    this.filterState.reinitialize(config.defaultSort);
 
     this.config = config;
     this.buildFiltersCallback = buildFilters;
@@ -112,7 +110,7 @@ export class ListStateManager<TItem, TFilters> {
       }
     );
 
-    this.filterState.initialize(config.defaultSort);
+    this.filterState.initialize(config.defaultSort, config.componentId);
   }
 
   /**

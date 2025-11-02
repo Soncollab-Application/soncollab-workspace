@@ -23,6 +23,7 @@ export class FilterStateService {
   private _currentPage = signal<number>(1);
   private _initialized = signal<boolean>(false);
   private _lastLoadedFingerprint = '';
+  private _currentComponentId: string = '';
 
   readonly state = computed<FilterState>(() => ({
     search: this._search(),
@@ -66,7 +67,16 @@ export class FilterStateService {
       });
   }
 
-  initialize(defaultSort?: SortConfig): void {
+  initialize(defaultSort?: SortConfig, componentId?: string): void {
+
+    if (componentId && this._currentComponentId && this._currentComponentId !== componentId) {
+      this.reset();
+    }
+
+    if (componentId) {
+      this._currentComponentId = componentId;
+    }
+
     if (this._initialized()) {
       return;
     }
@@ -78,23 +88,6 @@ export class FilterStateService {
     }
 
     this._initialized.set(true);
-  }
-
-  reinitialize(defaultSort: SortConfig): void {
-    this._initialized.set(false);
-    this._lastLoadedFingerprint = '';
-
-    // Nettoyer l'URL immédiatement
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: {},
-      replaceUrl: true
-    });
-
-    this._search.set('');
-    this._filterValues.set({});
-    this._currentSort.set(defaultSort);
-    this._currentPage.set(1);
   }
 
 
