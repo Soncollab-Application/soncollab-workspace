@@ -36,6 +36,10 @@ export class FilterBarComponent implements OnInit {
   selectionText = input<string>('filterBarShared.selected');
   useFilterState = input<boolean>(true);
   sortPlaceholder = input<string>('filterBarShared.sortBy');
+  showViewSelector = input<boolean>(false); // Nouveau Input pour activer/désactiver le sélecteur
+  currentView = input<'table' | 'card'>('table'); // Nouveau Input pour la vue actuelle
+
+  viewChange = output<'table' | 'card'>(); // Nouvel Output pour le changement de vue
 
   searchChange = output<string>();
   filterChange = output<FilterValue>();
@@ -93,12 +97,6 @@ export class FilterBarComponent implements OnInit {
         setTimeout(() => {
           const selectFilters = filters.filter(f => f.type === 'select' || f.type === 'boolean');
           const hasSort = this.sortOptions().length > 0;
-
-          // Structure des choices:
-          // [0...n-1] = filtres desktop
-          // [n] = sort desktop (si présent)
-          // [n+1...2n] = filtres mobile
-          // [2n+1] = sort mobile (si présent)
 
           const desktopFilterCount = selectFilters.length;
           const sortOffset = hasSort ? 1 : 0;
@@ -254,6 +252,19 @@ export class FilterBarComponent implements OnInit {
     }
 
     this.sortChange.emit(defaultSort);
+  }
+
+
+  onViewChange(view: 'table' | 'card'): void {
+    if (this.isSyncing() || this.isResetting()) {
+      return;
+    }
+    if (view !== this.currentView()) {
+      if (this.useFilterState()) {
+        this.filterState.setView(view);
+      }
+      this.viewChange.emit(view);
+    }
   }
 
   onSortFieldChangeFromChoice(field: any): void {

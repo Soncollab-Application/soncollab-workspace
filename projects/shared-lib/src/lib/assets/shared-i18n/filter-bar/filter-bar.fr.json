@@ -10,6 +10,8 @@
     "noSelection": "Aucun élément sélectionné",
     "selected": "{{count}} éléments sélectionnés",
     "ascending": "Croissant",
-    "descending": "Décroissant"
+    "descending": "Décroissant",
+    "tableView": "Tableau",
+    "cardView": "Cartes"
   }
 }

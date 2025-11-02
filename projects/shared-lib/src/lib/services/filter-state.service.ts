@@ -8,6 +8,7 @@ export interface FilterState {
   filters: FilterValue;
   sort: SortConfig;
   page: number;
+  view: 'table' | 'card';
 }
 
 @Injectable({
@@ -20,6 +21,7 @@ export class FilterStateService {
   private _search = signal<string>('');
   private _filterValues = signal<FilterValue>({});
   private _currentSort = signal<SortConfig>({ field: '', direction: 'asc' });
+  private _currentView = signal<'table' | 'card'>('table');
   private _currentPage = signal<number>(1);
   private _initialized = signal<boolean>(false);
   private _lastLoadedFingerprint = '';
@@ -29,6 +31,7 @@ export class FilterStateService {
     search: this._search(),
     filters: this._filterValues(),
     sort: this._currentSort(),
+    view: this._currentView(),
     page: this._currentPage()
   }));
 
@@ -51,7 +54,8 @@ export class FilterStateService {
       search: state.search,
       filters: sortedFilters,
       sortField: state.sort.field,
-      sortDirection: state.sort.direction
+      sortDirection: state.sort.direction,
+      view: state.view
     });
   });
 
@@ -132,6 +136,7 @@ export class FilterStateService {
     }
 
     this._currentPage.set(params['page'] ? +params['page'] : 1);
+    this._currentView.set(params['view'] === 'card' ? 'card' : 'table');
   }
 
   private syncToUrl(): void {
@@ -141,6 +146,7 @@ export class FilterStateService {
     const filters = this._filterValues();
     const sort = this._currentSort();
     const page = this._currentPage();
+    const view = this._currentView();
 
     if (search) {
       queryParams['search'] = search;
@@ -157,6 +163,11 @@ export class FilterStateService {
       queryParams['sortField'] = sort.field;
       queryParams['sortDir'] = sort.direction;
     }
+
+    if (view === 'card') {
+      queryParams['view'] = view;
+    }
+
 
     if (page > 1) {
       queryParams['page'] = page;
@@ -216,6 +227,11 @@ export class FilterStateService {
     this.syncToUrl();
   }
 
+  setView(view: 'table' | 'card'): void {
+    this._currentView.set(view);
+    this.syncToUrl();
+  }
+
   setPage(page: number): void {
     this._currentPage.set(page);
     this.syncToUrl();
@@ -231,6 +247,7 @@ export class FilterStateService {
       this._currentSort.set({ field: '', direction: 'asc' });
     }
 
+    this._currentView.set('table');
     this._currentPage.set(1);
 
     this.router.navigate([], {
