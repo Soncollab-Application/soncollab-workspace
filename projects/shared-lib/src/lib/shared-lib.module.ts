@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import {
   ChoiceLibModule,
-  ConfirmDialogModule,
+  ConfirmDialogModule, DataCardModule,
   DataTableModule, EmptyStateModule,
   FilterBarModule,
   FormModalModule, KpiCardModule,
@@ -56,7 +56,8 @@ import {CustomValidators} from './validators';
     FormModalModule,
     EmptyStateModule,
     KpiCardModule,
-    ChoiceLibModule
+    ChoiceLibModule,
+    DataCardModule,
   ]
 })
 export class SharedLibModule { }

@@ -10,6 +10,12 @@ export * from './data-table/data-table.module';
 export * from './data-table/pagination.model';
 export * from './data-table/table.model';
 
+// Data Card
+export * from './data-card/data-card';
+export * from './data-card/data-card.model';
+export * from './data-card/data-card.module';
+
+
 // Filter Bar
 export * from './filter-bar/filter-bar.component';
 export * from './filter-bar/filter-bar.module';

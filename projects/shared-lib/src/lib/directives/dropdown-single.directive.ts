@@ -12,10 +12,14 @@ export class DropdownSingleDirective implements OnDestroy {
   @HostListener('show.bs.dropdown')
   onShow(): void {
     if (isPlatformBrowser(this.platformId)) {
-      // Chercher UNIQUEMENT dans les tables
+      // Chercher dans les tables OU dans les data-cards
       const table = this.el.nativeElement.closest('table');
-      if (table) {
-        const allDropdowns = table.querySelectorAll('[libDropdownSingle] .dropdown-menu.show');
+      const dataCardContainer = this.el.nativeElement.closest('.row');
+
+      const container = table || dataCardContainer;
+
+      if (container) {
+        const allDropdowns = container.querySelectorAll('[libDropdownSingle] .dropdown-menu.show');
         allDropdowns.forEach((menu: any) => {
           if (menu !== this.el.nativeElement.querySelector('.dropdown-menu')) {
             menu.classList.remove('show');
@@ -34,11 +38,12 @@ export class DropdownSingleDirective implements OnDestroy {
     if (isPlatformBrowser(this.platformId)) {
       const target = event.target as HTMLElement;
 
-      // IMPORTANT: Vérifier que c'est bien un dropdown-item ET qu'on est dans une table
+      // Vérifier que c'est bien un dropdown-item ET qu'on est dans une table OU data-card
       const isInTable = this.el.nativeElement.closest('table');
+      const isInDataCard = this.el.nativeElement.closest('.card');
       const isDropdownItem = target.classList.contains('dropdown-item') || target.closest('.dropdown-item');
 
-      if (isInTable && isDropdownItem) {
+      if ((isInTable || isInDataCard) && isDropdownItem) {
         const dropdown = this.el.nativeElement.querySelector('.dropdown-menu');
         const button = this.el.nativeElement.querySelector('[data-bs-toggle="dropdown"]');
 

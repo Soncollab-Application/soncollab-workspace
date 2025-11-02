@@ -1,0 +1,12 @@
+.data-card .dropdown button.btn-link {
+  text-decoration: none !important;
+}
+
+.data-card .dropdown button.btn-link:hover,
+.data-card .dropdown button.btn-link:focus {
+  text-decoration: none !important;
+}
+
+.data-card .dropdown button.btn-link .material-symbols-outlined {
+  text-decoration: none !important;
+}
