@@ -16,7 +16,7 @@ import {
   KpiData,
   KpiCardComponent,
   ListStateManager,
-  ListStateConfig, DataList, ListColumn, ListAction, ListConfig,
+  ListStateConfig, DataList, ListColumn, ListAction,
 } from 'shared-lib';
 import { PageTitleService } from '../../../../../core/services/page-title.service';
 import { Breadcrumb } from '../../../../../core/components/breadcrumb/breadcrumb';

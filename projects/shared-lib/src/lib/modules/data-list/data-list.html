@@ -6,7 +6,6 @@
   </div>
 } @else {
   @if (view() === 'table') {
-    <!-- ==================== VUE TABLE (EXACTE de data-table) ==================== -->
     <div class="table-responsive card">
       <table class="table table-hover table-select table-round align-middle mb-0">
         <thead>
@@ -201,56 +200,7 @@
         </tbody>
       </table>
     </div>
-
-    @if (pagination() && pagination()!.total > 0) {
-      <div class="row for-inter-font align-items-center mt-4">
-        <div class="col">
-          <p class="text-body-secondary fs-sm mb-0">
-            {{ 'dataListShared.showing' | translate }}
-            <span class="fw-semibold">{{ (pagination()!.currentPage - 1) * pagination()!.pageSize + 1 }}</span>
-            {{ 'dataListShared.to' | translate }}
-            <span class="fw-semibold">{{ Math.min(pagination()!.currentPage * pagination()!.pageSize, pagination()!.total) }}</span>
-            {{ 'dataListShared.of' | translate }}
-            <span class="fw-semibold">{{ pagination()!.total }}</span>
-            {{ 'dataListShared.results' | translate }}
-          </p>
-        </div>
-        <div class="col-auto">
-          <nav>
-            <ul class="pagination mb-0">
-              <li class="page-item" [class.disabled]="pagination()!.currentPage === 1">
-                <a class="page-link" href="javascript:void(0)" (click)="onPageChange(pagination()!.currentPage - 1)">
-                  <span class="material-symbols-outlined">chevron_left</span>
-                </a>
-              </li>
-
-              @for (page of getPageNumbers(); track page) {
-                @if (page === -1) {
-                  <li class="page-item disabled">
-                    <span class="page-link">...</span>
-                  </li>
-                } @else {
-                  <li class="page-item" [class.active]="page === pagination()!.currentPage">
-                    <a class="page-link" href="javascript:void(0)" (click)="onPageChange(page)">
-                      {{ page }}
-                    </a>
-                  </li>
-                }
-              }
-
-              <li class="page-item" [class.disabled]="pagination()!.currentPage === pagination()!.pageCount">
-                <a class="page-link" href="javascript:void(0)" (click)="onPageChange(pagination()!.currentPage + 1)">
-                  <span class="material-symbols-outlined">chevron_right</span>
-                </a>
-              </li>
-            </ul>
-          </nav>
-        </div>
-      </div>
-    }
-
   } @else {
-    <!-- ==================== VUE CARD (EXACTE de data-card) ==================== -->
     <div>
       @if (selectable()) {
         <div class="card mb-4">
@@ -355,14 +305,14 @@
                         @if (column.avatarKey) {
                           <div class="me-3">
                             @if (getNestedValue(card, column.avatarKey)) {
-                              <img
-                                class="rounded"
-                                [src]="getAvatarUrl(card, column)"
-                                [alt]="getCellValue(card, column)"
-                                style="width: 48px; height: 48px; object-fit: cover;">
+                              <div class="avatar avatar-sm">
+                                <img
+                                  class="avatar-img"
+                                  [src]="getAvatarUrl(card, column)"
+                                  [alt]="getCellValue(card, column)">
+                              </div>
                             } @else {
-                              <div class="rounded bg-primary bg-opacity-10 d-flex align-items-center justify-content-center"
-                                   style="width: 48px; height: 48px;">
+                              <div class="avatar avatar-sm bg-primary bg-opacity-10 d-flex align-items-center justify-content-center">
                                 <span class="text-primary fw-semibold">
                                   {{ getInitials(getCellValue(card, column)) }}
                                 </span>
@@ -470,6 +420,53 @@
           </nav>
         </div>
       }
+    </div>
+  }
+
+  @if (pagination() && pagination()!.total > 0) {
+    <div class="row for-inter-font align-items-center mt-4 py-5">
+      <div class="col">
+        <p class="text-body-secondary fs-sm mb-0">
+          {{ 'dataListShared.showing' | translate }}
+          <span class="fw-semibold">{{ (pagination()!.currentPage - 1) * pagination()!.pageSize + 1 }}</span>
+          {{ 'dataListShared.to' | translate }}
+          <span class="fw-semibold">{{ Math.min(pagination()!.currentPage * pagination()!.pageSize, pagination()!.total) }}</span>
+          {{ 'dataListShared.of' | translate }}
+          <span class="fw-semibold">{{ pagination()!.total }}</span>
+          {{ 'dataListShared.results' | translate }}
+        </p>
+      </div>
+      <div class="col-auto">
+        <nav>
+          <ul class="pagination mb-0">
+            <li class="page-item" [class.disabled]="pagination()!.currentPage === 1">
+              <a class="page-link" href="javascript:void(0)" (click)="onPageChange(pagination()!.currentPage - 1)">
+                <span class="material-symbols-outlined">chevron_left</span>
+              </a>
+            </li>
+
+            @for (page of getPageNumbers(); track page) {
+              @if (page === -1) {
+                <li class="page-item disabled">
+                  <span class="page-link">...</span>
+                </li>
+              } @else {
+                <li class="page-item" [class.active]="page === pagination()!.currentPage">
+                  <a class="page-link" href="javascript:void(0)" (click)="onPageChange(page)">
+                    {{ page }}
+                  </a>
+                </li>
+              }
+            }
+
+            <li class="page-item" [class.disabled]="pagination()!.currentPage === pagination()!.pageCount">
+              <a class="page-link" href="javascript:void(0)" (click)="onPageChange(pagination()!.currentPage + 1)">
+                <span class="material-symbols-outlined">chevron_right</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
     </div>
   }
 }

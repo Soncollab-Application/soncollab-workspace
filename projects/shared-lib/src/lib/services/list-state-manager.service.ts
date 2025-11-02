@@ -37,6 +37,7 @@ export class ListStateManager<TItem, TFilters> {
 
   // Computed publics
   readonly currentSort = computed(() => this.filterState.state().sort);
+  readonly currentView = computed(() => this.filterState.state().view);
   readonly pagination = computed<PaginationState>(() => ({
     currentPage: this.filterState.state().page,
     pageSize: this.pageSize(),

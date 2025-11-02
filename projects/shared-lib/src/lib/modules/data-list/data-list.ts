@@ -46,9 +46,11 @@ export class DataList<T = any> implements OnInit {
   actionClick = output<{ action: ListAction<T>; row: T }>();
   itemClick = output<T>();
   selectionChange = output<T[]>();
+  selectionCountChange = output<number>();
 
   // State
   selectedItems = signal<Set<string>>(new Set());
+  readonly selectedCount = computed(() => this.selectedItems().size);
   private initialized = signal(false);
   private langVersion = signal(0);
 
@@ -245,6 +247,7 @@ export class DataList<T = any> implements OnInit {
 
     this.selectedItems.set(selected);
     this.emitSelection();
+    this.selectionCountChange.emit(this.selectedCount());
   }
 
   toggleAllItems(): void {
@@ -262,6 +265,7 @@ export class DataList<T = any> implements OnInit {
 
     this.selectedItems.set(selected);
     this.emitSelection();
+    this.selectionCountChange.emit(this.selectedCount());
   }
 
   isItemSelected(item: any): boolean {
