@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import {ChangeDetectorRef, Component, computed, effect, inject, OnDestroy, OnInit, signal} from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AdminSalesService } from '../../../services/admin/admin-sales.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -20,6 +20,7 @@ export class QualifyContactModal implements OnInit, OnDestroy {
   private translate = inject(TranslateService);
   private toastService = inject(ToastService);
   private modalService = inject(ContactModalService);
+  private cdr = inject(ChangeDetectorRef);
 
   private destroy$ = new Subject<void>();
 
@@ -37,6 +38,18 @@ export class QualifyContactModal implements OnInit, OnDestroy {
   companySizeOptions = signal<ChoiceOption[]>([]);
   urgencyOptions = signal<ChoiceOption[]>([]);
 
+  constructor() {
+    // Effect pour réinitialiser le formulaire lorsque le contact change
+    effect(() => {
+      const contact = this.contact();
+      const isOpen = this.isOpen();
+
+      if (isOpen && contact) {
+        this.updateForm(contact);
+      }
+    });
+  }
+
   ngOnInit(): void {
     this.initForm();
     this.initOptions();
@@ -48,24 +61,37 @@ export class QualifyContactModal implements OnInit, OnDestroy {
   }
 
   private initForm(): void {
-    const c = this.contact();
-
     this.qualifyForm = this.fb.group({
-      sales_contact_status: [c?.sales_contact_status || 'qualified', Validators.required],
-      company_size: [c?.company_size || ''],
-      estimated_annual_revenue: [c?.estimated_annual_revenue || null],
-      urgency_level: [c?.urgency_level || 'normal', Validators.required],
-      prospection_notes: [c?.prospection_notes || '', Validators.maxLength(1000)]
+      sales_contact_status: ['qualified', Validators.required],
+      company_size: [''],
+      estimated_annual_revenue: [null],
+      urgency_level: ['normal', Validators.required],
+      prospection_notes: ['', Validators.maxLength(1000)]
     });
   }
 
+  private updateForm(contact: any): void {
+    this.qualifyForm.patchValue({
+      sales_contact_status: contact.sales_contact_status || 'qualified',
+      company_size: contact.company_size || '',
+      estimated_annual_revenue: contact.estimated_annual_revenue || null,
+      urgency_level: contact.urgency_level || 'normal',
+      prospection_notes: contact.prospection_notes || ''
+    });
+
+    this.cdr.detectChanges();
+  }
+
   private initOptions(): void {
-    // Status options - uniquement les statuts pertinents pour la qualification
     const statuses: SalesContactStatus[] = [
+      'new',
+      'contacted',
       'qualified',
       'interested',
       'demo_scheduled',
-      'proposal_sent'
+      'demo_completed',
+      'proposal_sent',
+      'negotiation'
     ];
 
     this.statusOptions.set(
