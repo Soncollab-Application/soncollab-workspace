@@ -92,6 +92,27 @@
               </div>
             }
 
+            @if (showViewSelector()) {
+              <div class="col-auto">
+                <div class="btn-group">
+                  <button
+                    type="button"
+                    class="btn btn-dark px-3 py-2"
+                    [class.active]="currentView() === 'table'"
+                    (click)="onViewChange('table')">
+                    <span class="material-symbols-outlined">table_chart</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-dark px-3 py-2"
+                    [class.active]="currentView() === 'card'"
+                    (click)="onViewChange('card')">
+                    <span class="material-symbols-outlined">view_module</span>
+                  </button>
+                </div>
+              </div>
+            }
+
             @if (sortOptions().length > 0) {
               <div class="col-auto">
                 <div class="dropdown">
@@ -191,7 +212,30 @@
 
       <div class="row row-cols-1 row-cols-sm-1 row-cols-md-1 mt-3 d-md-flex justify-content-md-end">
 
-        <div class="col mb-2">
+	        <div class="col mb-2">
+	          @if (showViewSelector()) {
+	            <div class="btn-group w-100">
+	              <button
+	                type="button"
+	                class="btn btn-dark"
+	                [class.active]="currentView() === 'table'"
+	                (click)="onViewChange('table')">
+	                <span class="material-symbols-outlined fs-5 me-2">table_chart</span>
+	                {{ 'filterBarShared.tableView' | translate }}
+	              </button>
+	              <button
+	                type="button"
+	                class="btn btn-dark"
+	                [class.active]="currentView() === 'card'"
+	                (click)="onViewChange('card')">
+	                <span class="material-symbols-outlined fs-5 me-2">view_module</span>
+	                {{ 'filterBarShared.cardView' | translate }}
+	              </button>
+	            </div>
+	          }
+	        </div>
+
+	        <div class="col mb-2">
           @if (filters().length > 0) {
             <div class="dropdown flex-fill">
               <button

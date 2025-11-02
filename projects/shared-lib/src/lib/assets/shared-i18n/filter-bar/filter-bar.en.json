@@ -10,6 +10,8 @@
     "noSelection": "No items selected",
     "selected": "{{count}} items selected",
     "ascending": "Ascending",
-    "descending": "Descending"
+    "descending": "Descending",
+    "tableView": "Table View",
+    "cardView": "Card View"
   }
 }

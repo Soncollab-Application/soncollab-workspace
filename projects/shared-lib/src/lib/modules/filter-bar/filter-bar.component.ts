@@ -36,6 +36,10 @@ export class FilterBarComponent implements OnInit {
   selectionText = input<string>('filterBarShared.selected');
   useFilterState = input<boolean>(true);
   sortPlaceholder = input<string>('filterBarShared.sortBy');
+  showViewSelector = input<boolean>(false);
+  currentView = input<'table' | 'card'>('table');
+
+  viewChange = output<'table' | 'card'>();
 
   searchChange = output<string>();
   filterChange = output<FilterValue>();
@@ -254,6 +258,15 @@ export class FilterBarComponent implements OnInit {
     }
 
     this.sortChange.emit(defaultSort);
+  }
+
+  onViewChange(view: 'table' | 'card'): void {
+    if (this.isSyncing() || this.isResetting()) {
+      return;
+    }
+    if (view !== this.currentView()) {
+      this.viewChange.emit(view);
+    }
   }
 
   onSortFieldChangeFromChoice(field: any): void {
