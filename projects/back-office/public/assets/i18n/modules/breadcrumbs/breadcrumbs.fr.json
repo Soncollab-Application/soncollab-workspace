@@ -17,6 +17,26 @@
       "commercial": "Commercial",
       "all_contacts": "Tous les contacts",
       "contact_detail": "Détail du contact"
+    },
+    "unassigned-contacts": {
+      "dashboard": "Tableau de bord",
+      "commercial": "Commercial",
+      "unassigned": "Contacts Non Assignés"
+    },
+    "sales-pipeline": {
+      "dashboard": "Tableau de bord",
+      "commercial": "Commercial",
+      "pipeline": "Pipeline Commercial"
+    },
+    "quotas-territories": {
+      "dashboard": "Tableau de bord",
+      "commercial": "Commercial",
+      "quotas": "Quotas & Territoires"
+    },
+    "quota-detail": {
+      "dashboard": "Tableau de bord",
+      "commercial": "Commercial",
+      "quotas": "Quotas & Territoires"
     }
   }
 }

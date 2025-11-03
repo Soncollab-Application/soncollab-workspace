@@ -1,0 +1,266 @@
+<app-breadcrumb [showAvatar]="true" [icon]="'assignment'" [hasMobileActions]="false">
+  <div breadcrumb-actions>
+    <button class="btn btn-outline-secondary" (click)="goBack()">
+      <span class="material-symbols-outlined me-2">arrow_back</span>
+      {{ 'common.back' | translate }}
+    </button>
+  </div>
+</app-breadcrumb>
+
+@if (loading()) {
+  <div class="d-flex justify-content-center align-items-center" style="min-height: 400px;">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
+    </div>
+  </div>
+}
+
+@if (!loading() && quota()) {
+  <div class="row mt-4">
+    <!-- SIDEBAR -->
+    <div class="col-xl-4 mb-4">
+      <div class="card">
+        <div class="card-body text-center">
+          <!-- Status Badge -->
+          <div class="mb-3">
+            <div class="badge text-bg-{{ quota()!.is_active ? 'success' : 'secondary' }}">
+              <span class="material-symbols-outlined me-1 fs-sm">
+                {{ quota()!.is_active ? 'check_circle' : 'cancel' }}
+              </span>
+              {{ quota()!.is_active
+              ? ('quota-detail.badges.active' | translate)
+              : ('quota-detail.badges.inactive' | translate) }}
+            </div>
+          </div>
+
+          <!-- Sales Rep Info -->
+          @if (quota()!.sales_rep) {
+            <div class="mb-3">
+              @if (quota()!.sales_rep?.avatar?.url) {
+                <img
+                  class="avatar avatar-xl rounded-circle mb-2"
+                  [src]="environment.api.baseUrl + quota()!.sales_rep!.avatar!.url"
+                  [alt]="getSalesRepName()">
+              } @else {
+                <div class="avatar avatar-xl rounded-circle bg-primary text-white mb-2 d-inline-flex align-items-center justify-content-center">
+                  <span class="fs-3">{{ quota()!.sales_rep!.first_name![0] }}{{ quota()!.sales_rep!.last_name![0] }}</span>
+                </div>
+              }
+            </div>
+
+            <h4 class="mb-1 fw-bold">{{ getSalesRepName() }}</h4>
+            <p class="text-muted mb-3">
+              <span class="material-symbols-outlined me-1 fs-sm">email</span>
+              {{ quota()!.sales_rep!.email }}
+            </p>
+
+            <!-- Link to user profile -->
+            @if (canViewUser()) {
+              <button
+                class="btn btn-sm btn-outline-primary mb-3"
+                (click)="goToUserProfile()">
+                <span class="material-symbols-outlined me-1" style="font-size: 1rem;">person</span>
+                {{ 'quota-detail.view_profile' | translate }}
+              </button>
+            }
+          } @else {
+            <h4 class="mb-1 fw-bold">{{ getSalesRepName() }}</h4>
+          }
+
+          <!-- Badges -->
+          <div class="d-flex gap-2 justify-content-center mb-3 flex-wrap">
+            <lib-badge
+              [type]="getQuotaTypeBadgeType(quota()!.quota_type)"
+              [variant]="'subtle'"
+              [text]="translateQuotaType(quota()!.quota_type)"
+              [icon]="'schedule'"
+            />
+
+            <lib-badge
+              [type]="getPriorityBadgeType(quota()!.priority_level)"
+              [variant]="'subtle'"
+              [text]="'quota-detail.priority' | translate: { level: quota()!.priority_level }"
+              [icon]="'flag'"
+            />
+
+            <lib-badge
+              [type]="getUtilizationBadgeType()"
+              [variant]="'subtle'"
+              [text]="utilizationPercentage() + '%'"
+              [icon]="'analytics'"
+            />
+          </div>
+
+          <!-- Utilization Progress -->
+          <div class="mt-4 pt-3 border-top">
+            <small class="text-muted d-block mb-2 text-uppercase" style="font-size: 0.75rem;">
+              {{ 'quota-detail.utilization' | translate }}
+            </small>
+            <div class="progress mb-2" style="height: 8px;">
+              <div
+                class="progress-bar bg-{{ getUtilizationBadgeType() }}"
+                [style.width.%]="utilizationPercentage()"
+                role="progressbar"
+                [attr.aria-valuenow]="utilizationPercentage()"
+                aria-valuemin="0"
+                aria-valuemax="100">
+              </div>
+            </div>
+            <div class="d-flex justify-content-between small text-muted">
+              <span>{{ quota()!.current_contacts }} / {{ quota()!.max_contacts }}</span>
+              <span>{{ availableSlots() }} {{ 'quota-detail.available' | translate }}</span>
+            </div>
+          </div>
+
+          <!-- Dates -->
+          <div class="text-start mt-4 pt-3 border-top">
+            <div class="mb-3">
+              <small class="text-muted d-block mb-1">
+                <span class="material-symbols-outlined me-1" style="font-size: 1rem;">event</span>
+                {{ 'quota-detail.reset_date' | translate }}
+              </small>
+              <p class="mb-0 fw-medium">{{ quota()!.reset_date | relativeDate }}</p>
+            </div>
+
+            <div class="mb-3">
+              <small class="text-muted d-block mb-1">
+                <span class="material-symbols-outlined me-1" style="font-size: 1rem;">schedule</span>
+                {{ 'quota-detail.created' | translate }}
+              </small>
+              <p class="mb-0 fw-medium">{{ quota()!.createdAt | relativeDate }}</p>
+            </div>
+
+            <div class="mb-3">
+              <small class="text-muted d-block mb-1">
+                <span class="material-symbols-outlined me-1" style="font-size: 1rem;">update</span>
+                {{ 'quota-detail.updated' | translate }}
+              </small>
+              <p class="mb-0 fw-medium">{{ quota()!.updatedAt | relativeDate }}</p>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          @if (canUpdate() || canDelete()) {
+            <div class="d-grid gap-2 mt-4 pt-3 border-top">
+              @if (canUpdate()) {
+                <button
+                  class="btn btn-{{ quota()!.is_active ? 'warning' : 'success' }}"
+                  (click)="toggleStatus()">
+                  <span class="material-symbols-outlined me-2">
+                    {{ quota()!.is_active ? 'cancel' : 'check_circle' }}
+                  </span>
+                  {{ quota()!.is_active
+                  ? ('quota-detail.deactivate.button' | translate)
+                  : ('quota-detail.activate.button' | translate) }}
+                </button>
+              }
+
+              @if (canDelete()) {
+                <button class="btn btn-outline-danger" (click)="deleteQuota()">
+                  <span class="material-symbols-outlined me-2">delete</span>
+                  {{ 'quota-detail.delete' | translate }}
+                </button>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="col-xl-8">
+      <!-- Details Card -->
+      <div class="card mb-4">
+        <div class="card-header border-bottom">
+          <h5 class="mb-0">
+            <span class="material-symbols-outlined me-2 text-primary">info</span>
+            {{ 'quota-detail.details' | translate }}
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="row g-4">
+            <div class="col-md-6">
+              <div class="detail-item">
+                <small class="text-muted d-block mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                  {{ 'quota-detail.quota_type' | translate }}
+                </small>
+                <p class="fw-semibold mb-0">
+                  {{ translateQuotaType(quota()!.quota_type) }}
+                </p>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="detail-item">
+                <small class="text-muted d-block mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                  {{ 'quota-detail.max_contacts' | translate }}
+                </small>
+                <p class="fw-semibold mb-0">
+                  {{ quota()!.max_contacts }}
+                </p>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="detail-item">
+                <small class="text-muted d-block mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                  {{ 'quota-detail.current_contacts' | translate }}
+                </small>
+                <p class="fw-semibold mb-0">
+                  {{ quota()!.current_contacts }}
+                </p>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="detail-item">
+                <small class="text-muted d-block mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                  {{ 'quota-detail.priority_level' | translate }}
+                </small>
+                <p class="fw-semibold mb-0">
+                  {{ quota()!.priority_level }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Target Countries Card -->
+      @if (quota()!.target_countries && quota()!.target_countries!.length > 0) {
+        <div class="card">
+          <div class="card-header border-bottom">
+            <h5 class="mb-0">
+              <span class="material-symbols-outlined me-2 text-primary">public</span>
+              {{ 'quota-detail.target_countries' | translate }}
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              @for (country of quota()!.target_countries!; track country.documentId) {
+                <div class="col-md-6">
+                  <div class="d-flex align-items-center p-3 border rounded">
+                    @if (country.flag) {
+                      <span class="me-3" style="font-size: 2rem;">{{ country.flag }}</span>
+                    }
+                    <div>
+                      <p class="fw-semibold mb-0">{{ country.name }}</p>
+                      <small class="text-muted">{{ country.code }}</small>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      } @else {
+        <div class="card">
+          <div class="card-body text-center py-5">
+            <span class="material-symbols-outlined text-muted mb-3" style="font-size: 3rem;">public_off</span>
+            <p class="text-muted mb-0">{{ 'quota-detail.no_countries' | translate }}</p>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+}

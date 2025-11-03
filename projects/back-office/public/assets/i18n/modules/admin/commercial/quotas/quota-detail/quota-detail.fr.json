@@ -1,0 +1,49 @@
+{
+  "quota-detail": {
+    "title": "Détails du Quota",
+    "details": "Informations du Quota",
+    "view_profile": "Voir le Profil",
+    "quota_type": "Type de Quota",
+    "max_contacts": "Contacts Maximum",
+    "current_contacts": "Contacts Actuels",
+    "priority_level": "Niveau de Priorité",
+    "priority": "Priorité {{level}}",
+    "utilization": "Taux d'Utilisation",
+    "available": "disponibles",
+    "reset_date": "Date de Réinitialisation",
+    "created": "Créé le",
+    "updated": "Dernière Mise à Jour",
+    "target_countries": "Pays Ciblés",
+    "no_countries": "Aucun pays ciblé configuré",
+    "no_rep": "Aucun représentant commercial",
+    "types": {
+      "weekly": "Hebdomadaire",
+      "monthly": "Mensuel"
+    },
+    "badges": {
+      "active": "Actif",
+      "inactive": "Inactif"
+    },
+    "activate": {
+      "title": "Activer le Quota",
+      "message": "Êtes-vous sûr de vouloir activer ce quota ?",
+      "confirm": "Activer",
+      "button": "Activer le Quota"
+    },
+    "deactivate": {
+      "title": "Désactiver le Quota",
+      "message": "Êtes-vous sûr de vouloir désactiver ce quota ?",
+      "confirm": "Désactiver",
+      "button": "Désactiver le Quota"
+    },
+    "delete": "Supprimer le Quota",
+    "toast": {
+      "activate_success": "Quota activé avec succès",
+      "activate_error": "Erreur lors de l'activation du quota",
+      "deactivate_success": "Quota désactivé avec succès",
+      "deactivate_error": "Erreur lors de la désactivation du quota",
+      "delete_success": "Quota supprimé avec succès",
+      "delete_error": "Erreur lors de la suppression du quota"
+    }
+  }
+}

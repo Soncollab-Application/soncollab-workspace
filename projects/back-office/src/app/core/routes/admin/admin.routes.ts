@@ -52,6 +52,15 @@ export const adminRoutes: Routes = [
 
       // Commercial
       {
+        path: 'commercial/contacts/:documentId',
+        loadComponent: () => import('../../../pages/admin/commercial/contacts/contact-detail/contact-detail').then(c => c.ContactDetail),
+        canActivate: [apiPermissionGuard(
+          'sales-contact',
+          'sales-contact',
+          'findOne'
+        )]
+      },
+      {
         path: 'commercial/contacts',
         loadComponent: () => import('../../../pages/admin/commercial/contacts/all-contacts/all-contacts').then(c => c.AllContacts),
         canActivate: [apiPermissionGuard(
@@ -62,29 +71,43 @@ export const adminRoutes: Routes = [
       },
       {
         path: 'commercial/unassigned',
-        loadComponent: () => import('../../../pages/admin/commercial/unassigned/unassigned-contacts/unassigned-contacts').then(c => c.UnassignedContacts)
+        loadComponent: () => import('../../../pages/admin/commercial/unassigned/unassigned-contacts/unassigned-contacts').then(c => c.UnassignedContacts),
+        canActivate: [apiPermissionGuard(
+          'sales-contact',
+          'sales-contact',
+          'getUnassigned'
+        )]
       },
       {
         path: 'commercial/pipeline',
-        loadComponent: () => import('../../../pages/admin/commercial/pipeline/sales-pipeline/sales-pipeline').then(c => c.SalesPipeline)
+        loadComponent: () => import('../../../pages/admin/commercial/pipeline/sales-pipeline/sales-pipeline').then(c => c.SalesPipeline),
+        canActivate: [apiPermissionGuard(
+          'sales-contact',
+          'sales-contact',
+          'getInboundQueue'
+        )]
+      },
+      {
+        path: 'commercial/quotas/:documentId',
+        loadComponent: () => import('../../../pages/admin/commercial/quotas/quota-detail/quota-detail').then(c => c.QuotaDetail),
+        canActivate: [apiPermissionGuard(
+          'sales-quota',
+          'sales-quota',
+          'findOne'
+        )]
       },
       {
         path: 'commercial/quotas',
-        loadComponent: () => import('../../../pages/admin/commercial/quotas/quotas-territories/quotas-territories').then(c => c.QuotasTerritories)
+        loadComponent: () => import('../../../pages/admin/commercial/quotas/quotas-territories/quotas-territories').then(c => c.QuotasTerritories),
+        canActivate: [apiPermissionGuard(
+          'sales-quota',
+          'sales-quota',
+          'find'
+        )]
       },
       {
         path: 'commercial/statistics',
         loadComponent: () => import('../../../pages/admin/commercial/statistics/sales-statistics/sales-statistics').then(c => c.SalesStatistics)
-      },
-
-      {
-        path: 'commercial/contacts/:documentId',
-        loadComponent: () => import('../../../pages/admin/commercial/contacts/contact-detail/contact-detail').then(c => c.ContactDetail),
-        canActivate: [apiPermissionGuard(
-          'sales-contact',
-          'sales-contact',
-          'findOne'
-        )]
       },
 
       // Contenu

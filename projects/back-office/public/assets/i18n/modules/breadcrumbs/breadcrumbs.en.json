@@ -17,6 +17,26 @@
       "commercial": "Sales",
       "all_contacts": "All Contacts",
       "contact_detail": "Contact Details"
+    },
+    "unassigned-contacts": {
+      "dashboard": "Dashboard",
+      "commercial": "Sales",
+      "unassigned": "Unassigned Contacts"
+    },
+    "sales-pipeline": {
+      "dashboard": "Dashboard",
+      "commercial": "Sales",
+      "pipeline": "Sales Pipeline"
+    },
+    "quotas-territories": {
+      "dashboard": "Dashboard",
+      "commercial": "Sales",
+      "quotas": "Quotas & Territories"
+    },
+    "quota-detail": {
+      "dashboard": "Dashboard",
+      "commercial": "Sales",
+      "quotas": "Quotas & Territories"
     }
   }
 }

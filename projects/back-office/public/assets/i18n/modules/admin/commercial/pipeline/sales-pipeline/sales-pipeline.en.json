@@ -1,0 +1,65 @@
+{
+  "sales-pipeline": {
+    "title": "Sales Pipeline",
+    "filters": {
+      "status": "Status",
+      "allStatuses": "All statuses",
+      "type": "Type",
+      "allTypes": "All types",
+      "urgency": "Urgency",
+      "allUrgencies": "All urgencies"
+    },
+    "sort": {
+      "createdAt": "Creation date",
+      "updatedAt": "Last update",
+      "leadScore": "Lead score",
+      "company": "Company",
+      "name": "Name"
+    },
+    "columns": {
+      "contact": "Contact",
+      "company": "Company",
+      "type": "Type",
+      "status": "Status",
+      "urgency": "Urgency",
+      "leadScore": "Score",
+      "createdAt": "Created",
+      "noName": "No name"
+    },
+    "badges": {
+      "new": "New",
+      "contacted": "Contacted",
+      "qualified": "Qualified",
+      "interested": "Interested",
+      "demo_scheduled": "Demo Scheduled",
+      "demo_completed": "Demo Completed",
+      "proposal_sent": "Proposal Sent",
+      "negotiation": "Negotiation",
+      "converted": "Converted",
+      "lost": "Lost",
+      "type_label": "Label",
+      "type_distributor": "Distributor",
+      "type_artist": "Artist",
+      "type_manager": "Manager",
+      "type_publisher": "Publisher",
+      "type_pricing_inquiry": "Pricing Inquiry",
+      "type_other": "Other",
+      "urgency_low": "Low",
+      "urgency_normal": "Normal",
+      "urgency_high": "High",
+      "urgency_urgent": "Urgent"
+    },
+    "actions": {
+      "assign": "Assign",
+      "reassign": "Reassign",
+      "qualify": "Qualify",
+      "view": "View"
+    },
+    "empty": {
+      "no_contacts": "No contacts in pipeline",
+      "no_contacts_message": "The inbound queue is empty",
+      "no_results": "No results found",
+      "no_results_message": "Try adjusting your filters"
+    }
+  }
+}

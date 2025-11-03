@@ -243,15 +243,10 @@ export class FilterBarComponent implements OnInit {
   }
 
   onViewChange(view: 'table' | 'card'): void {
-    console.log('Filter-bar: onViewChange called with:', view);
-
     if (this.useFilterState()) {
       this.filterState.setView(view);
-      console.log('Filter-bar: FilterState updated to:', view);
     }
-
     this.viewChange.emit(view);
-    console.log('Filter-bar: viewChange emitted:', view);
   }
 
   onSortFieldChangeFromChoice(field: any): void {

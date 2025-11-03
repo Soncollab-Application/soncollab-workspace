@@ -1,0 +1,63 @@
+{
+  "unassigned-contacts": {
+    "title": "Contacts Non Assignés",
+    "filters": {
+      "status": "Statut",
+      "allStatuses": "Tous les statuts",
+      "type": "Type",
+      "allTypes": "Tous les types",
+      "urgency": "Urgence",
+      "allUrgencies": "Toutes les urgences"
+    },
+    "sort": {
+      "createdAt": "Date de création",
+      "updatedAt": "Dernière mise à jour",
+      "leadScore": "Score du lead",
+      "company": "Entreprise",
+      "name": "Nom"
+    },
+    "columns": {
+      "contact": "Contact",
+      "company": "Entreprise",
+      "type": "Type",
+      "status": "Statut",
+      "urgency": "Urgence",
+      "leadScore": "Score",
+      "createdAt": "Créé le",
+      "noName": "Sans nom"
+    },
+    "badges": {
+      "new": "Nouveau",
+      "contacted": "Contacté",
+      "qualified": "Qualifié",
+      "interested": "Intéressé",
+      "demo_scheduled": "Démo Programmée",
+      "demo_completed": "Démo Terminée",
+      "proposal_sent": "Proposition Envoyée",
+      "negotiation": "Négociation",
+      "converted": "Converti",
+      "lost": "Perdu",
+      "type_label": "Label",
+      "type_distributor": "Distributeur",
+      "type_artist": "Artiste",
+      "type_manager": "Manager",
+      "type_publisher": "Éditeur",
+      "type_pricing_inquiry": "Demande de Tarification",
+      "type_other": "Autre",
+      "urgency_low": "Faible",
+      "urgency_normal": "Normale",
+      "urgency_high": "Élevée",
+      "urgency_urgent": "Urgente"
+    },
+    "actions": {
+      "assign": "Assigner",
+      "view": "Voir"
+    },
+    "empty": {
+      "no_contacts": "Aucun contact non assigné",
+      "no_contacts_message": "Tous les contacts sont actuellement assignés",
+      "no_results": "Aucun résultat",
+      "no_results_message": "Essayez d'ajuster vos filtres"
+    }
+  }
+}

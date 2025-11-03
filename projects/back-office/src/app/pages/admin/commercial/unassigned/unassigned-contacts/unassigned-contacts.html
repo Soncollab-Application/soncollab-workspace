@@ -1,1 +1,35 @@
-<p>unassigned-contacts works!</p>
+<app-breadcrumb [showAvatar]="true" [icon]="'person_off'"></app-breadcrumb>
+
+<div class="mb-5 pt-2">
+  <lib-filter-bar
+    [filters]="filters()"
+    [sortOptions]="sortOptions()"
+    [showSearch]="true"
+    [showViewSelector]="false"
+    [selectedCount]="-1"
+    [useFilterState]="true"
+  />
+</div>
+
+<div>
+  <lib-data-list
+    [data]="listManager.items()"
+    [columns]="columns()"
+    [actions]="actions()"
+    [loading]="listManager.loading()"
+    [pagination]="listManager.pagination()"
+    [currentSort]="listManager.currentSort()"
+    [view]="listManager.currentView()"
+    [selectable]="false"
+    [clickable]="true"
+    [emptyStateTitle]="emptyTitle()"
+    [emptyStateMessage]="emptyMessage()"
+    [emptyStateIcon]="'person_off'"
+    (sortChange)="listManager.onSortChange($any($event))"
+    (pageChange)="listManager.onPageChange($any($event))"
+    (actionClick)="onActionClick($any($event))"
+    (itemClick)="onRowClick($any($event))"
+  />
+</div>
+
+<app-assign-contact-modal />

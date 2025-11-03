@@ -1,0 +1,52 @@
+{
+  "quotas-territories": {
+    "title": "Quotas & Territories",
+    "filters": {
+      "type": "Type",
+      "allTypes": "All types",
+      "status": "Status",
+      "allStatuses": "All statuses"
+    },
+    "sort": {
+      "createdAt": "Creation date",
+      "priority": "Priority",
+      "capacity": "Capacity",
+      "assigned": "Assigned"
+    },
+    "columns": {
+      "sales_rep": "Sales Representative",
+      "type": "Type",
+      "capacity": "Capacity",
+      "assigned": "Assigned",
+      "utilization": "Utilization",
+      "priority": "Priority",
+      "status": "Status",
+      "countries": "Target Countries",
+      "no_rep": "No representative",
+      "no_countries": "No countries"
+    },
+    "badges": {
+      "weekly": "Weekly",
+      "monthly": "Monthly",
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "kpi": {
+      "total_reps": "Total Reps",
+      "total_capacity": "Total Capacity",
+      "total_assigned": "Assigned",
+      "avg_load": "Avg Load",
+      "low_load": "Low Load",
+      "overloaded": "Overloaded"
+    },
+    "actions": {
+      "view": "View Details"
+    },
+    "empty": {
+      "no_quotas": "No quotas found",
+      "no_quotas_message": "There are no quotas configured yet",
+      "no_results": "No results found",
+      "no_results_message": "Try adjusting your filters"
+    }
+  }
+}

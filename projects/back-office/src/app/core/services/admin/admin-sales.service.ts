@@ -9,7 +9,8 @@ import {
   ContactStats,
   ContactFormOptions
 } from '../../models/sales/sales-contact.model';
-import {BackofficeUser, SalesRepresentative} from '../../models/auth.model';
+import {SalesRepresentative} from '../../models/auth.model';
+import {QuotaFilters, QuotaStats, SalesQuota, SalesQuotaListResponse} from '../../models/sales/sales-quota.model';
 
 @Injectable({ providedIn: 'root' })
 export class AdminSalesService {
@@ -38,7 +39,12 @@ export class AdminSalesService {
 
     // Formulaires
     create_inbound: `${this.API_URL}/sales-contacts/inbound`,
-    form_options: (lang: string) => `${this.API_URL}/public/contact-form-options?lang=${lang}`
+    form_options: (lang: string) => `${this.API_URL}/public/contact-form-options?lang=${lang}`,
+
+    // Quotas
+    quotas: `${this.API_URL}/sales-quotas`,
+    quota_by_id: (documentId: string) => `${this.API_URL}/sales-quotas/${documentId}`,
+    quota_stats: `${this.API_URL}/sales-quotas/quota-dashboard`,
   };
 
   // GET ALL CONTACTS
@@ -245,22 +251,12 @@ export class AdminSalesService {
 
   // GET UNASSIGNED CONTACTS
   getUnassignedContacts(): Observable<SalesContactListResponse> {
-    let params = new HttpParams();
-
-    params = params.set('populate[territory_assigned]', '*');
-    params = params.set('populate[country]', '*');
-
-    return this.http.get<SalesContactListResponse>(this.SALES_ENDPOINTS.unassigned, { params });
+    return this.http.get<SalesContactListResponse>(this.SALES_ENDPOINTS.unassigned);
   }
 
   // GET INBOUND QUEUE
   getInboundQueue(): Observable<SalesContactListResponse> {
-    let params = new HttpParams();
-
-    params = params.set('populate[territory_assigned]', '*');
-    params = params.set('populate[country]', '*');
-
-    return this.http.get<SalesContactListResponse>(this.SALES_ENDPOINTS.inbound_queue, { params });
+    return this.http.get<SalesContactListResponse>(this.SALES_ENDPOINTS.inbound_queue);
   }
 
   // GET AVAILABLE REPS - Typage correct pour les modals
@@ -280,4 +276,85 @@ export class AdminSalesService {
       data
     );
   }
+
+
+
+  // GET ALL QUOTAS
+  getQuotas(
+    page = 1,
+    pageSize = 25,
+    filters?: QuotaFilters,
+    sortField?: string,
+    sortDirection: 'asc' | 'desc' = 'desc'
+  ): Observable<SalesQuotaListResponse> {
+    let params = new HttpParams()
+      .set('pagination[page]', page.toString())
+      .set('pagination[pageSize]', pageSize.toString());
+
+    if (sortField) {
+      params = params.set('sort[0]', `${sortField}:${sortDirection}`);
+    }
+
+    // Populate
+    params = params.set('populate[sales_rep][fields][0]', 'first_name');
+    params = params.set('populate[sales_rep][fields][1]', 'last_name');
+    params = params.set('populate[sales_rep][fields][2]', 'email');
+    params = params.set('populate[target_countries][fields][0]', 'name');
+    params = params.set('populate[target_countries][fields][1]', 'code');
+
+    // Filters
+    if (filters?.search) {
+      params = params.set('filters[$or][0][sales_rep][email][$containsi]', filters.search);
+      params = params.set('filters[$or][1][sales_rep][first_name][$containsi]', filters.search);
+      params = params.set('filters[$or][2][sales_rep][last_name][$containsi]', filters.search);
+    }
+
+    if (filters?.quota_type) {
+      params = params.set('filters[quota_type][$eq]', filters.quota_type);
+    }
+
+    if (filters?.is_active !== undefined) {
+      params = params.set('filters[is_active][$eq]', filters.is_active.toString());
+    }
+
+    if (filters?.sales_rep) {
+      params = params.set('filters[sales_rep][documentId][$eq]', filters.sales_rep);
+    }
+
+    return this.http.get<SalesQuotaListResponse>(this.SALES_ENDPOINTS.quotas, { params });
+  }
+
+  // GET QUOTA BY ID
+  getQuotaById(documentId: string): Observable<{ data: SalesQuota }> {
+    let params = new HttpParams();
+
+    params = params.set('populate[0]', 'sales_rep');
+    params = params.set('populate[1]', 'target_countries');
+
+    return this.http.get<{ data: SalesQuota }>(
+      this.SALES_ENDPOINTS.quota_by_id(documentId),
+      { params }
+    );
+  }
+
+  // GET QUOTA STATS
+  getQuotaStats(): Observable<{ data: QuotaStats }> {
+    return this.http.get<{ data: QuotaStats }>(this.SALES_ENDPOINTS.quota_stats);
+  }
+
+  // UPDATE QUOTA
+  updateQuota(documentId: string, data: Partial<SalesQuota>): Observable<{ data: SalesQuota }> {
+    return this.http.put<{ data: SalesQuota }>(
+      this.SALES_ENDPOINTS.quota_by_id(documentId),
+      { data }
+    );
+  }
+
+  // DELETE QUOTA
+  deleteQuota(documentId: string): Observable<void> {
+    return this.http.delete<void>(this.SALES_ENDPOINTS.quota_by_id(documentId));
+  }
+
+
+
 }

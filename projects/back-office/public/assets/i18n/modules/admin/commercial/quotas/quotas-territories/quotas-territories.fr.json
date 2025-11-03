@@ -1,0 +1,52 @@
+{
+  "quotas-territories": {
+    "title": "Quotas & Territoires",
+    "filters": {
+      "type": "Type",
+      "allTypes": "Tous les types",
+      "status": "Statut",
+      "allStatuses": "Tous les statuts"
+    },
+    "sort": {
+      "createdAt": "Date de création",
+      "priority": "Priorité",
+      "capacity": "Capacité",
+      "assigned": "Assignés"
+    },
+    "columns": {
+      "sales_rep": "Représentant Commercial",
+      "type": "Type",
+      "capacity": "Capacité",
+      "assigned": "Assignés",
+      "utilization": "Utilisation",
+      "priority": "Priorité",
+      "status": "Statut",
+      "countries": "Pays Ciblés",
+      "no_rep": "Aucun représentant",
+      "no_countries": "Aucun pays"
+    },
+    "badges": {
+      "weekly": "Hebdomadaire",
+      "monthly": "Mensuel",
+      "active": "Actif",
+      "inactive": "Inactif"
+    },
+    "kpi": {
+      "total_reps": "Total Reps",
+      "total_capacity": "Capacité Totale",
+      "total_assigned": "Assignés",
+      "avg_load": "Charge Moy.",
+      "low_load": "Charge Faible",
+      "overloaded": "Surchargés"
+    },
+    "actions": {
+      "view": "Voir Détails"
+    },
+    "empty": {
+      "no_quotas": "Aucun quota trouvé",
+      "no_quotas_message": "Aucun quota n'a encore été configuré",
+      "no_results": "Aucun résultat",
+      "no_results_message": "Essayez d'ajuster vos filtres"
+    }
+  }
+}
