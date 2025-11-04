@@ -1,49 +1,30 @@
-<app-breadcrumb [showAvatar]="true" [icon]="'assignment'" [hasMobileActions]="false">
-  <div breadcrumb-actions>
-    <button class="btn btn-outline-secondary" (click)="goBack()">
-      <span class="material-symbols-outlined me-2">arrow_back</span>
-      {{ 'common.back' | translate }}
-    </button>
-  </div>
-</app-breadcrumb>
-
 @if (loading()) {
   <div class="d-flex justify-content-center align-items-center" style="min-height: 400px;">
     <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
+      <span class="visually-hidden">Loading...</span>
     </div>
   </div>
-}
+} @else if (quota()) {
+  <app-breadcrumb />
 
-@if (!loading() && quota()) {
-  <div class="row mt-4">
+  <div class="row">
     <!-- SIDEBAR -->
-    <div class="col-xl-4 mb-4">
-      <div class="card">
+    <div class="col-xl-4">
+      <div class="card mb-4">
         <div class="card-body text-center">
-          <!-- Status Badge -->
-          <div class="mb-3">
-            <div class="badge text-bg-{{ quota()!.is_active ? 'success' : 'secondary' }}">
-              <span class="material-symbols-outlined me-1 fs-sm">
-                {{ quota()!.is_active ? 'check_circle' : 'cancel' }}
-              </span>
-              {{ quota()!.is_active
-              ? ('quota-detail.badges.active' | translate)
-              : ('quota-detail.badges.inactive' | translate) }}
-            </div>
-          </div>
-
-          <!-- Sales Rep Info -->
           @if (quota()!.sales_rep) {
             <div class="mb-3">
-              @if (quota()!.sales_rep?.avatar?.url) {
-                <img
-                  class="avatar avatar-xl rounded-circle mb-2"
-                  [src]="environment.api.baseUrl + quota()!.sales_rep!.avatar!.url"
-                  [alt]="getSalesRepName()">
+              @if (quota()!.sales_rep!.avatar && quota()!.sales_rep!.avatar.url) {
+                <div class="avatar avatar-lg">
+                  <img
+                    [src]="environment.api.baseUrl + quota()!.sales_rep!.avatar.url"
+                    alt="Avatar"
+                    class="avatar-img">
+                </div>
+
               } @else {
-                <div class="avatar avatar-xl rounded-circle bg-primary text-white mb-2 d-inline-flex align-items-center justify-content-center">
-                  <span class="fs-3">{{ quota()!.sales_rep!.first_name![0] }}{{ quota()!.sales_rep!.last_name![0] }}</span>
+                <div class="avatar avatar-lg bg-primary text-white">
+                  <span>{{ quota()!.sales_rep!.first_name![0] }}{{ quota()!.sales_rep!.last_name![0] }}</span>
                 </div>
               }
             </div>
@@ -54,7 +35,6 @@
               {{ quota()!.sales_rep!.email }}
             </p>
 
-            <!-- Link to user profile -->
             @if (canViewUser()) {
               <button
                 class="btn btn-sm btn-outline-primary mb-3"
@@ -171,96 +151,252 @@
     <div class="col-xl-8">
       <!-- Details Card -->
       <div class="card mb-4">
-        <div class="card-header border-bottom">
+        <div class="card-header border-bottom d-flex justify-content-between align-items-center">
           <h5 class="mb-0">
             <span class="material-symbols-outlined me-2 text-primary">info</span>
             {{ 'quota-detail.details' | translate }}
           </h5>
+
+          @if (!isEditMode() && canUpdate()) {
+            <button class="btn btn-outline-primary btn-sm" (click)="enableEditMode()">
+              <span class="material-symbols-outlined me-1" style="font-size: 1rem;">edit</span>
+              {{ 'quota-detail.edit_button' | translate }}
+            </button>
+          }
         </div>
         <div class="card-body">
-          <div class="row g-4">
-            <div class="col-md-6">
-              <div class="detail-item">
-                <small class="text-muted d-block mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
-                  {{ 'quota-detail.quota_type' | translate }}
-                </small>
-                <p class="fw-semibold mb-0">
-                  {{ translateQuotaType(quota()!.quota_type) }}
-                </p>
+          @if (!isEditMode()) {
+            <!-- VIEW MODE -->
+            <div class="row g-4">
+              <div class="col-md-6">
+                <div class="detail-item">
+                  <small class="text-muted d-block mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                    {{ 'quota-detail.quota_type' | translate }}
+                  </small>
+                  <p class="fw-semibold mb-0">
+                    {{ translateQuotaType(quota()!.quota_type) }}
+                  </p>
+                  <small class="text-muted">{{ 'quota-detail.not_editable' | translate }}</small>
+                </div>
               </div>
-            </div>
 
-            <div class="col-md-6">
-              <div class="detail-item">
-                <small class="text-muted d-block mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
-                  {{ 'quota-detail.max_contacts' | translate }}
-                </small>
-                <p class="fw-semibold mb-0">
-                  {{ quota()!.max_contacts }}
-                </p>
+              <div class="col-md-6">
+                <div class="detail-item">
+                  <small class="text-muted d-block mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                    {{ 'quota-detail.max_contacts' | translate }}
+                  </small>
+                  <p class="fw-semibold mb-0">
+                    {{ quota()!.max_contacts }}
+                  </p>
+                </div>
               </div>
-            </div>
 
-            <div class="col-md-6">
-              <div class="detail-item">
-                <small class="text-muted d-block mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
-                  {{ 'quota-detail.current_contacts' | translate }}
-                </small>
-                <p class="fw-semibold mb-0">
-                  {{ quota()!.current_contacts }}
-                </p>
+              <div class="col-md-6">
+                <div class="detail-item">
+                  <small class="text-muted d-block mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                    {{ 'quota-detail.current_contacts' | translate }}
+                  </small>
+                  <p class="fw-semibold mb-0">
+                    {{ quota()!.current_contacts }}
+                  </p>
+                  <small class="text-muted">{{ 'quota-detail.not_editable' | translate }}</small>
+                </div>
               </div>
-            </div>
 
-            <div class="col-md-6">
-              <div class="detail-item">
-                <small class="text-muted d-block mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
-                  {{ 'quota-detail.priority_level' | translate }}
-                </small>
-                <p class="fw-semibold mb-0">
-                  {{ quota()!.priority_level }}
-                </p>
+              <div class="col-md-6">
+                <div class="detail-item">
+                  <small class="text-muted d-block mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                    {{ 'quota-detail.priority_level' | translate }}
+                  </small>
+                  <p class="fw-semibold mb-0">
+                    {{ quota()!.priority_level }}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
+          } @else {
+            <!-- EDIT MODE -->
+            <form [formGroup]="quotaForm">
+              <div class="row g-4">
+                <div class="col-md-6">
+                  <div class="detail-item">
+                    <small class="text-muted d-block mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                      {{ 'quota-detail.quota_type' | translate }}
+                    </small>
+                    <p class="fw-semibold mb-0">
+                      {{ translateQuotaType(quota()!.quota_type) }}
+                    </p>
+                    <small class="text-muted">{{ 'quota-detail.not_editable' | translate }}</small>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                    {{ 'quota-detail.max_contacts' | translate }}
+                    <span class="text-danger">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    formControlName="max_contacts"
+                    min="1"
+                    [class.is-invalid]="quotaForm.get('max_contacts')?.invalid && quotaForm.get('max_contacts')?.touched">
+                  @if (quotaForm.get('max_contacts')?.invalid && quotaForm.get('max_contacts')?.touched) {
+                    <div class="invalid-feedback">
+                      {{ 'quota-detail.validation.max_contacts' | translate }}
+                    </div>
+                  }
+                </div>
+
+                <div class="col-md-6">
+                  <div class="detail-item">
+                    <small class="text-muted d-block mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                      {{ 'quota-detail.current_contacts' | translate }}
+                    </small>
+                    <p class="fw-semibold mb-0">
+                      {{ quota()!.current_contacts }}
+                    </p>
+                    <small class="text-muted">{{ 'quota-detail.not_editable' | translate }}</small>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                    {{ 'quota-detail.priority_level' | translate }}
+                    <span class="text-danger">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    formControlName="priority_level"
+                    min="1"
+                    max="5"
+                    [class.is-invalid]="quotaForm.get('priority_level')?.invalid && quotaForm.get('priority_level')?.touched">
+                  @if (quotaForm.get('priority_level')?.invalid && quotaForm.get('priority_level')?.touched) {
+                    <div class="invalid-feedback">
+                      {{ 'quota-detail.validation.priority_level' | translate }}
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <div class="d-flex gap-2 mt-4 justify-content-end">
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  (click)="cancelEdit()"
+                  [disabled]="saving()">
+                  <span class="material-symbols-outlined me-1" style="font-size: 1rem;">close</span>
+                  {{ 'quota-detail.cancel' | translate }}
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  (click)="saveChanges()"
+                  [disabled]="!quotaForm.valid || saving()">
+                  @if (saving()) {
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                  } @else {
+                    <span class="material-symbols-outlined me-1" style="font-size: 1rem;">save</span>
+                  }
+                  {{ 'quota-detail.save' | translate }}
+                </button>
+              </div>
+            </form>
+          }
         </div>
       </div>
 
       <!-- Target Countries Card -->
-      @if (quota()!.target_countries && quota()!.target_countries!.length > 0) {
-        <div class="card">
-          <div class="card-header border-bottom">
-            <h5 class="mb-0">
-              <span class="material-symbols-outlined me-2 text-primary">public</span>
-              {{ 'quota-detail.target_countries' | translate }}
-            </h5>
+      <div class="card">
+        <div class="card-header border-bottom d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">
+            <span class="material-symbols-outlined me-2 text-primary">public</span>
+            {{ 'quota-detail.target_countries' | translate }}
+          </h5>
+
+          <div class="d-flex align-items-center gap-2">
+            @if (quota()!.target_countries && quota()!.target_countries!.length > 0) {
+              <span class="badge bg-primary-subtle text-primary">
+                {{ quota()!.target_countries!.length }}
+              </span>
+            }
+            @if (!isEditMode() && canUpdate()) {
+              <button class="btn btn-sm btn-outline-primary" (click)="enableEditMode()">
+                <span class="material-symbols-outlined me-1" style="font-size: 1rem;">edit</span>
+                {{ 'quota-detail.edit_button' | translate }}
+              </button>
+            }
           </div>
-          <div class="card-body">
-            <div class="row g-3">
-              @for (country of quota()!.target_countries!; track country.documentId) {
-                <div class="col-md-6">
-                  <div class="d-flex align-items-center p-3 border rounded">
-                    @if (country.flag) {
-                      <span class="me-3" style="font-size: 2rem;">{{ country.flag }}</span>
-                    }
-                    <div>
-                      <p class="fw-semibold mb-0">{{ country.name }}</p>
-                      <small class="text-muted">{{ country.code }}</small>
+        </div>
+        <div class="card-body">
+          @if (!isEditMode()) {
+            <!-- VIEW MODE -->
+            @if (quota()!.target_countries && quota()!.target_countries!.length > 0) {
+              <div class="row g-2">
+                @for (country of quota()!.target_countries!; track country.documentId) {
+                  <div class="col-md-6">
+                    <div class="p-2 rounded bg-success-subtle">
+                      <small class="fw-medium">{{ country.name }}</small>
+                      <small class="text-muted ms-1">({{ country.code }})</small>
                     </div>
+                  </div>
+                }
+              </div>
+            } @else {
+              <div class="text-center py-4">
+                <span class="material-symbols-outlined text-muted mb-2" style="font-size: 2.5rem;">public_off</span>
+                <p class="text-muted mb-0 small">{{ 'quota-detail.no_countries' | translate }}</p>
+              </div>
+            }
+          } @else {
+            <!-- EDIT MODE -->
+            <form [formGroup]="quotaForm">
+              <div class="mb-3">
+                <label class="form-label fw-medium">
+                  {{ 'quota-detail.select_countries' | translate }}
+                </label>
+                <lib-choice
+                  type="select-multiple"
+                  [options]="countryOptions()"
+                  formControlName="target_countries"
+                  [placeholder]="'quota-detail.select_countries_placeholder' | translate"
+                  [config]="{
+                      searchEnabled: true,
+                      shouldSort: false,
+                      removeItemButton: true,
+                      classNames: { containerInner: ['form-select'] }
+                    }"
+                />
+                <small class="form-text text-muted">
+                  {{ 'quota-detail.countries_help' | translate }}
+                </small>
+              </div>
+
+              <!-- Preview des pays sélectionnés -->
+              @if (quotaForm.get('target_countries')?.value && quotaForm.get('target_countries')?.value.length > 0) {
+                <div class="mt-3 p-3 card rounded">
+                  <small class="text-muted d-block mb-2 fw-medium">
+                    {{ 'quota-detail.selected_preview' | translate }} ({{ quotaForm.get('target_countries')?.value.length }})
+                  </small>
+                  <div class="d-flex flex-wrap gap-2">
+                    @for (countryId of quotaForm.get('target_countries')?.value; track countryId) {
+                      @if (getCountryById(countryId); as country) {
+                        <span class="badge bg-primary-subtle text-primary px-2 py-1">
+                            @if (country.flag) {
+                              <span class="me-1">{{ country.flag }}</span>
+                            }
+                          {{ country.name }}
+                          </span>
+                      }
+                    }
                   </div>
                 </div>
               }
-            </div>
-          </div>
+            </form>
+          }
         </div>
-      } @else {
-        <div class="card">
-          <div class="card-body text-center py-5">
-            <span class="material-symbols-outlined text-muted mb-3" style="font-size: 3rem;">public_off</span>
-            <p class="text-muted mb-0">{{ 'quota-detail.no_countries' | translate }}</p>
-          </div>
-        </div>
-      }
+      </div>
     </div>
   </div>
 }

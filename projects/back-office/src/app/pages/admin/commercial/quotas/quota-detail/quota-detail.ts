@@ -1,9 +1,12 @@
 import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Breadcrumb } from '../../../../../core/components/breadcrumb/breadcrumb';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import {
   Badge,
   BadgeType,
+  Choice,
+  ChoiceOption,
   ConfirmDialogService,
   LanguageOrchestratorService,
   PermissionService,
@@ -11,9 +14,11 @@ import {
   ToastService,
 } from 'shared-lib';
 import { AdminSalesService } from '../../../../../core/services/admin/admin-sales.service';
+import { AdminService } from '../../../../../core/services/admin/admin.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PageTitleService } from '../../../../../core/services/page-title.service';
 import { SalesQuota, QuotaType } from '../../../../../core/models/sales/sales-quota.model';
+import { Country } from '../../../../../core/models/admin/invitation.model';
 import { Subject, takeUntil } from 'rxjs';
 import { environment } from '../../../../../../environments/environment';
 
@@ -24,13 +29,16 @@ import { environment } from '../../../../../../environments/environment';
     Breadcrumb,
     TranslatePipe,
     Badge,
-    RelativeDatePipe
+    RelativeDatePipe,
+    ReactiveFormsModule,
+    Choice
   ],
   templateUrl: './quota-detail.html',
   styleUrl: './quota-detail.css'
 })
 export class QuotaDetail implements OnInit, OnDestroy {
   private adminSalesService = inject(AdminSalesService);
+  private adminService = inject(AdminService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private pageTitleService = inject(PageTitleService);
@@ -39,12 +47,20 @@ export class QuotaDetail implements OnInit, OnDestroy {
   private permissionService = inject(PermissionService);
   private confirmDialog = inject(ConfirmDialogService);
   private toastService = inject(ToastService);
+  private fb = inject(FormBuilder);
 
   private destroy$ = new Subject<void>();
   private componentId = 'quota-detail';
 
   quota = signal<SalesQuota | null>(null);
   loading = signal(false);
+  saving = signal(false);
+  isEditMode = signal(false);
+
+  countries = signal<Country[]>([]);
+  countryOptions = signal<ChoiceOption[]>([]);
+
+  quotaForm!: FormGroup;
 
   protected readonly environment = environment;
 
@@ -78,9 +94,11 @@ export class QuotaDetail implements OnInit, OnDestroy {
       () => this.onLanguageChange()
     );
 
+    this.initializeForm();
     this.setBreadcrumbs();
     this.updatePageTitle();
     this.loadQuota();
+    this.loadCountries();
   }
 
   ngOnDestroy(): void {
@@ -88,6 +106,14 @@ export class QuotaDetail implements OnInit, OnDestroy {
     this.destroy$.complete();
     this.languageOrchestrator.unregisterComponent(this.componentId);
     this.pageTitleService.resetBreadcrumbs();
+  }
+
+  private initializeForm(): void {
+    this.quotaForm = this.fb.group({
+      max_contacts: [null, [Validators.required, Validators.min(1)]],
+      priority_level: [null, [Validators.required, Validators.min(1), Validators.max(5)]],
+      target_countries: [[]]
+    });
   }
 
   private setBreadcrumbs(): void {
@@ -114,6 +140,7 @@ export class QuotaDetail implements OnInit, OnDestroy {
     setTimeout(() => {
       this.setBreadcrumbs();
       this.updatePageTitle();
+      this.updateCountryOptions();
     }, 150);
   }
 
@@ -134,6 +161,7 @@ export class QuotaDetail implements OnInit, OnDestroy {
       .subscribe({
         next: (response) => {
           this.quota.set(response.data);
+          this.populateForm();
           this.loading.set(false);
         },
         error: () => {
@@ -141,6 +169,100 @@ export class QuotaDetail implements OnInit, OnDestroy {
           this.router.navigate(['/admin/commercial/quotas']);
         }
       });
+  }
+
+  private loadCountries(): void {
+    this.adminService.getCountries()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.countries.set(response.data.filter(c => c.is_active));
+          this.updateCountryOptions();
+        },
+        error: (err) => {
+          console.error('Error loading countries:', err);
+        }
+      });
+  }
+
+  private updateCountryOptions(): void {
+    this.countryOptions.set(
+      this.countries().map(country => ({
+        value: country.documentId,
+        label: `${country.flag || ''} ${country.name}`.trim()
+      }))
+    );
+  }
+
+  private populateForm(): void {
+    const q = this.quota();
+    if (!q) return;
+
+    this.quotaForm.patchValue({
+      max_contacts: q.max_contacts,
+      priority_level: q.priority_level,
+      target_countries: q.target_countries?.map(c => c.documentId) || []
+    });
+  }
+
+  enableEditMode(): void {
+    if (!this.canUpdate()) return;
+    this.isEditMode.set(true);
+    this.populateForm();
+
+    setTimeout(() => {
+      const editSection = document.querySelector('.card-body form');
+      if (editSection) {
+        editSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }, 100);
+  }
+
+  cancelEdit(): void {
+    this.isEditMode.set(false);
+    this.populateForm();
+  }
+
+  saveChanges(): void {
+    if (!this.quotaForm.valid || !this.canUpdate()) return;
+
+    const q = this.quota();
+    if (!q) return;
+
+    this.saving.set(true);
+
+    const formValue = this.quotaForm.value;
+
+    // CORRECTION: Envoyer juste les IDs, pas des objets avec documentId
+    const updateData: any = {
+      max_contacts: formValue.max_contacts,
+      priority_level: formValue.priority_level,
+      target_countries: formValue.target_countries // Déjà un tableau d'IDs
+    };
+
+    this.adminSalesService.updateQuota(q.documentId, updateData)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.toastService.showSuccess(
+            this.translate.instant('quota-detail.toast.update_success')
+          );
+          this.isEditMode.set(false);
+          this.loadQuota();
+          this.saving.set(false);
+        },
+        error: (err) => {
+          console.error('Update error:', err);
+          this.toastService.showError(
+            this.translate.instant('quota-detail.toast.update_error')
+          );
+          this.saving.set(false);
+        }
+      });
+  }
+
+  getCountryById(documentId: string): Country | undefined {
+    return this.countries().find(c => c.documentId === documentId);
   }
 
   goBack(): void {

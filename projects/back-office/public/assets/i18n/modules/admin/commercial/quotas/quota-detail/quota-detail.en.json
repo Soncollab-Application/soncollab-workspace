@@ -3,6 +3,9 @@
     "title": "Quota Details",
     "details": "Quota Information",
     "view_profile": "View Profile",
+    "edit_button": "Edit",
+    "save": "Save Changes",
+    "cancel": "Cancel",
     "quota_type": "Quota Type",
     "max_contacts": "Maximum Contacts",
     "current_contacts": "Current Contacts",
@@ -14,7 +17,13 @@
     "created": "Created",
     "updated": "Last Updated",
     "target_countries": "Target Countries",
+    "countries_count": "countries",
     "no_countries": "No target countries configured",
+    "select_countries": "Select Target Countries",
+    "select_countries_placeholder": "Choose countries",
+    "countries_help": "Select the countries for the sales representative's territory",
+    "selected_preview": "Selected countries",
+    "not_editable": "Read-only field",
     "no_rep": "No sales representative",
     "types": {
       "weekly": "Weekly",
@@ -37,13 +46,19 @@
       "button": "Deactivate Quota"
     },
     "delete": "Delete Quota",
+    "validation": {
+      "max_contacts": "Maximum contacts must be at least 1",
+      "priority_level": "Priority must be between 1 and 5"
+    },
     "toast": {
       "activate_success": "Quota activated successfully",
       "activate_error": "Error activating quota",
       "deactivate_success": "Quota deactivated successfully",
       "deactivate_error": "Error deactivating quota",
       "delete_success": "Quota deleted successfully",
-      "delete_error": "Error deleting quota"
+      "delete_error": "Error deleting quota",
+      "update_success": "Quota updated successfully",
+      "update_error": "Error updating quota"
     }
   }
 }

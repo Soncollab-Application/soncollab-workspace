@@ -3,6 +3,9 @@
     "title": "Détails du Quota",
     "details": "Informations du Quota",
     "view_profile": "Voir le Profil",
+    "edit_button": "Modifier",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
     "quota_type": "Type de Quota",
     "max_contacts": "Contacts Maximum",
     "current_contacts": "Contacts Actuels",
@@ -14,7 +17,13 @@
     "created": "Créé le",
     "updated": "Dernière Mise à Jour",
     "target_countries": "Pays Ciblés",
+    "countries_count": "pays",
     "no_countries": "Aucun pays ciblé configuré",
+    "select_countries": "Sélectionner les Pays Ciblés",
+    "select_countries_placeholder": "Choisir les pays",
+    "countries_help": "Sélectionnez les pays du territoire du représentant commercial",
+    "selected_preview": "Pays sélectionnés",
+    "not_editable": "Champ non modifiable",
     "no_rep": "Aucun représentant commercial",
     "types": {
       "weekly": "Hebdomadaire",
@@ -37,13 +46,19 @@
       "button": "Désactiver le Quota"
     },
     "delete": "Supprimer le Quota",
+    "validation": {
+      "max_contacts": "Le nombre maximum de contacts doit être au moins 1",
+      "priority_level": "La priorité doit être entre 1 et 5"
+    },
     "toast": {
       "activate_success": "Quota activé avec succès",
       "activate_error": "Erreur lors de l'activation du quota",
       "deactivate_success": "Quota désactivé avec succès",
       "deactivate_error": "Erreur lors de la désactivation du quota",
       "delete_success": "Quota supprimé avec succès",
-      "delete_error": "Erreur lors de la suppression du quota"
+      "delete_error": "Erreur lors de la suppression du quota",
+      "update_success": "Quota mis à jour avec succès",
+      "update_error": "Erreur lors de la mise à jour du quota"
     }
   }
 }
