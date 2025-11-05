@@ -249,7 +249,7 @@
 
       <!-- Section Permissions -->
       @if (showPermissionsSection() && !isEditMode() && user()) {
-        <div class="card">
+        <div class="card mb-4">
           <div class="card-header d-flex justify-content-between align-items-center">
             <h6 class="mb-0">
               <span class="material-symbols-outlined me-2 align-middle text-success">verified_user</span>
@@ -288,6 +288,52 @@
                 </div>
               }
             </div>
+          </div>
+        </div>
+      }
+
+      <!-- Section Sales Quotas -->
+      @if (hasQuotas() && !isEditMode() && user()) {
+        <div class="card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h6 class="mb-0">
+              <span class="material-symbols-outlined me-2 align-middle text-warning">assessment</span>
+              {{ 'user-detail.sales_quotas' | translate }}
+            </h6>
+            <span class="badge bg-primary-subtle text-primary">
+              {{ getActiveQuotas().length }}
+            </span>
+          </div>
+          <div class="card-body">
+            @if (getActiveQuotas().length > 0) {
+              <div class="row g-2">
+                @for (quota of getActiveQuotas(); track quota.documentId) {
+                  <div class="col-md-6">
+                    <div class="p-2 rounded border cursor-pointer" (click)="goToQuota(quota.documentId)">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div class="flex-grow-1">
+                          <span class="badge" [class]="getQuotaTypeBadge(quota.quota_type)">
+                            {{ 'user-detail.quota_types.' + quota.quota_type | translate }}
+                          </span>
+                          <small class="d-block text-muted mt-1">
+                            {{ quota.current_contacts }} / {{ quota.max_contacts }}
+                            <span class="ms-1">({{ getUtilizationPercentage(quota) }}%)</span>
+                          </small>
+                        </div>
+                        @if (canViewQuotas()) {
+                          <span class="material-symbols-outlined text-primary">chevron_right</span>
+                        }
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            } @else {
+              <div class="text-center py-3">
+                <span class="material-symbols-outlined text-muted mb-2" style="font-size: 2rem;">assessment</span>
+                <p class="text-muted mb-0 small">{{ 'user-detail.no_active_quotas' | translate }}</p>
+              </div>
+            }
           </div>
         </div>
       }

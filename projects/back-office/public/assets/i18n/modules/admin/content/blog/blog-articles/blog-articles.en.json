@@ -1,0 +1,90 @@
+{
+  "blog-articles": {
+    "page_title": "Blog Articles",
+    "new_article": "New Article",
+    "kpi": {
+      "language": "Active Language",
+      "total": "Total",
+      "published": "Published",
+      "pending": "Pending",
+      "draft": "Drafts",
+      "approved": "Approved"
+    },
+    "filters": {
+      "status": "Status",
+      "category": "Category",
+      "featured": "Featured",
+      "featured_yes": "Yes",
+      "featured_no": "No"
+    },
+    "sort": {
+      "createdAt": "Created Date",
+      "updatedAt": "Last Modified",
+      "title": "Title",
+      "views": "Views",
+      "publishedAt": "Published Date"
+    },
+    "columns": {
+      "title": "Title",
+      "category": "Category",
+      "author": "Author",
+      "translations": "Translations",
+      "status": "Status",
+      "featured": "Featured",
+      "views": "Views",
+      "createdAt": "Created"
+    },
+    "statuses": {
+      "draft": "Draft",
+      "pending_review": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "outdated": "Outdated"
+    },
+    "badges": {
+      "featured": "⭐ Featured",
+      "has_translations": "✓ Translated",
+      "no_translations": "⚠ Not translated"
+    },
+    "actions": {
+      "view": "View",
+      "edit": "Edit",
+      "create_translation": "Create translation",
+      "view_translations": "View translations",
+      "delete": "Delete",
+      "approve": "Approve",
+      "reject": "Reject"
+    },
+    "delete": {
+      "title": "Delete Article",
+      "message": "Are you sure you want to delete \"{{title}}\"?",
+      "confirm": "Delete",
+      "cancel": "Cancel",
+      "success": "Article deleted successfully",
+      "error": "Error deleting article"
+    },
+    "approve": {
+      "title": "Approve Article",
+      "message": "Do you want to approve \"{{title}}\"?",
+      "confirm": "Approve",
+      "cancel": "Cancel",
+      "success": "Article approved successfully",
+      "error": "Error approving article"
+    },
+    "reject": {
+      "title": "Reject Article",
+      "message": "Do you want to reject \"{{title}}\"?",
+      "confirm": "Reject",
+      "cancel": "Cancel",
+      "success": "Article rejected",
+      "error": "Error rejecting article"
+    },
+    "empty": {
+      "title": "No Articles",
+      "message": "No blog articles found for this language"
+    },
+    "error": {
+      "loading": "Error loading articles"
+    }
+  }
+}

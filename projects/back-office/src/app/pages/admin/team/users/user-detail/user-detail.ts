@@ -63,6 +63,10 @@ export class UserDetail implements OnInit, OnDestroy {
     this.permissionsService.canUpdateUser()
   );
 
+  canViewQuotas = computed(() =>
+    this.permissionsService.hasPermission('sales-quota', 'sales-quota', 'findOne')
+  );
+
   isCurrentUser = computed(() => this.user()?.documentId === this.currentUserId());
   canEdit = computed(() => this.canManageUsers() && !this.isCurrentUser());
 
@@ -70,6 +74,17 @@ export class UserDetail implements OnInit, OnDestroy {
     const user = this.user();
     if (!user?.role?.type) return false;
     return ['soncollab_sales', 'soncollab_content'].includes(user.role.type);
+  });
+
+  hasQuotas = computed(() => {
+    const u = this.user();
+    return u?.sales_quotas && u.sales_quotas.length > 0;
+  });
+
+  getActiveQuotas = computed(() => {
+    const u = this.user();
+    if (!u?.sales_quotas) return [];
+    return u.sales_quotas.filter(q => q.is_active);
   });
 
   apiBaseUrl = environment.api.baseUrl;
@@ -505,4 +520,31 @@ export class UserDetail implements OnInit, OnDestroy {
   goBack() {
     this.router.navigate(['/admin/team/users']);
   }
+
+  goToQuota(quotaDocumentId: string): void {
+    this.router.navigate(['/admin/commercial/quotas', quotaDocumentId]);
+  }
+
+  getQuotaTypeBadge(type: string): string {
+    return type === 'weekly' ? 'bg-primary-subtle text-primary' : 'bg-info-subtle text-info';
+  }
+
+  getQuotaStatusBadge(isActive: boolean): string {
+    return isActive ? 'bg-success-subtle text-success' : 'bg-secondary-subtle text-secondary';
+  }
+
+  getUtilizationClass(quota: any): string {
+    if (!quota.max_contacts) return 'bg-secondary';
+    const percentage = Math.round((quota.current_contacts / quota.max_contacts) * 100);
+    if (percentage >= 90) return 'bg-danger';
+    if (percentage >= 75) return 'bg-warning';
+    if (percentage >= 50) return 'bg-info';
+    return 'bg-success';
+  }
+
+  getUtilizationPercentage(quota: any): number {
+    if (!quota.max_contacts) return 0;
+    return Math.round((quota.current_contacts / quota.max_contacts) * 100);
+  }
+
 }

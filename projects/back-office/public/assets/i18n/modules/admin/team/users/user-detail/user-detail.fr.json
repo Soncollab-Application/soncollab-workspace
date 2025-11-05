@@ -11,6 +11,7 @@
     "bio": "Biographie",
     "role": "Rôle",
     "permissions": "Permissions",
+    "sales_quotas": "Quotas Commerciaux",
     "edit_permissions": "Modifier",
     "manage_permissions": "Gérer les permissions",
     "permissions_modal_description": "Sélectionnez les permissions que vous souhaitez attribuer à cet utilisateur. Les permissions déterminent les fonctionnalités auxquelles l'utilisateur aura accès.",
@@ -26,6 +27,17 @@
     "unblockTitle": "Débloquer l'utilisateur",
     "confirmUnblock": "Débloquer {{name}} ?",
     "successUpdate": "Utilisateur mis à jour avec succès",
+    "quota_types": {
+      "weekly": "Hebdomadaire",
+      "monthly": "Mensuel"
+    },
+    "quota_active": "Actif",
+    "quota_inactive": "Inactif",
+    "no_active_quotas": "Aucun quota actif",
+    "priority": "Priorité",
+    "reset_date": "Réinitialisation",
+    "utilization": "Utilisation",
+    "target_countries": "Pays Ciblés",
     "toast": {
       "block_success": "{{name}} a été bloqué avec succès",
       "block_error": "Erreur lors du blocage de {{name}}",

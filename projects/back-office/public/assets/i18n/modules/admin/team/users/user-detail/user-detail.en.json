@@ -11,6 +11,7 @@
     "bio": "Biography",
     "role": "Role",
     "permissions": "Permissions",
+    "sales_quotas": "Sales Quotas",
     "edit_permissions": "Edit",
     "manage_permissions": "Manage Permissions",
     "permissions_modal_description": "Select the permissions you want to assign to this user. Permissions determine which features the user will have access to.",
@@ -26,6 +27,17 @@
     "unblockTitle": "Unblock User",
     "confirmUnblock": "Unblock {{name}}?",
     "successUpdate": "User successfully updated",
+    "quota_types": {
+      "weekly": "Weekly",
+      "monthly": "Monthly"
+    },
+    "quota_active": "Active",
+    "quota_inactive": "Inactive",
+    "no_active_quotas": "No active quotas",
+    "priority": "Priority",
+    "reset_date": "Reset",
+    "utilization": "Utilization",
+    "target_countries": "Target Countries",
     "toast": {
       "block_success": "{{name}} has been blocked successfully",
       "block_error": "Error blocking {{name}}",

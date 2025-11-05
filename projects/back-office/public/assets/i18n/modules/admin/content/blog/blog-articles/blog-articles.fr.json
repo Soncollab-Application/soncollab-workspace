@@ -1,0 +1,90 @@
+{
+  "blog-articles": {
+    "page_title": "Articles de blog",
+    "new_article": "Nouvel article",
+    "kpi": {
+      "language": "Langue active",
+      "total": "Total",
+      "published": "Publiés",
+      "pending": "En attente",
+      "draft": "Brouillons",
+      "approved": "Approuvés"
+    },
+    "filters": {
+      "status": "Statut",
+      "category": "Catégorie",
+      "featured": "Mis en avant",
+      "featured_yes": "Oui",
+      "featured_no": "Non"
+    },
+    "sort": {
+      "createdAt": "Date de création",
+      "updatedAt": "Dernière modification",
+      "title": "Titre",
+      "views": "Vues",
+      "publishedAt": "Date de publication"
+    },
+    "columns": {
+      "title": "Titre",
+      "category": "Catégorie",
+      "author": "Auteur",
+      "translations": "Traductions",
+      "status": "Statut",
+      "featured": "Mis en avant",
+      "views": "Vues",
+      "createdAt": "Créé le"
+    },
+    "statuses": {
+      "draft": "Brouillon",
+      "pending_review": "En attente",
+      "approved": "Approuvé",
+      "rejected": "Rejeté",
+      "outdated": "Obsolète"
+    },
+    "badges": {
+      "featured": "⭐ Mis en avant",
+      "has_translations": "✓ Traduit",
+      "no_translations": "⚠ Non traduit"
+    },
+    "actions": {
+      "view": "Voir",
+      "edit": "Modifier",
+      "create_translation": "Créer traduction",
+      "view_translations": "Voir traductions",
+      "delete": "Supprimer",
+      "approve": "Approuver",
+      "reject": "Rejeter"
+    },
+    "delete": {
+      "title": "Supprimer l'article",
+      "message": "Êtes-vous sûr de vouloir supprimer \"{{title}}\" ?",
+      "confirm": "Supprimer",
+      "cancel": "Annuler",
+      "success": "Article supprimé avec succès",
+      "error": "Erreur lors de la suppression"
+    },
+    "approve": {
+      "title": "Approuver l'article",
+      "message": "Voulez-vous approuver \"{{title}}\" ?",
+      "confirm": "Approuver",
+      "cancel": "Annuler",
+      "success": "Article approuvé avec succès",
+      "error": "Erreur lors de l'approbation"
+    },
+    "reject": {
+      "title": "Rejeter l'article",
+      "message": "Voulez-vous rejeter \"{{title}}\" ?",
+      "confirm": "Rejeter",
+      "cancel": "Annuler",
+      "success": "Article rejeté",
+      "error": "Erreur lors du rejet"
+    },
+    "empty": {
+      "title": "Aucun article",
+      "message": "Aucun article de blog trouvé pour cette langue"
+    },
+    "error": {
+      "loading": "Erreur lors du chargement des articles"
+    }
+  }
+}
