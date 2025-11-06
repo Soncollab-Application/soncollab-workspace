@@ -29,6 +29,7 @@ export interface BlogCategoryListResponse {
 }
 
 export interface BlogCategoryFilters {
-  search?: string;
+  locale?: string;
   is_featured?: boolean;
+  search?: string;
 }

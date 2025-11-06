@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import {
@@ -17,6 +17,9 @@ import {
   ListColumn,
   ListAction,
   FilterValue,
+  Choice,
+  ChoiceOption,
+  ChoiceConfig,
 } from 'shared-lib';
 import { Subject, takeUntil } from 'rxjs';
 import { Breadcrumb } from '../../../../../core/components/breadcrumb/breadcrumb';
@@ -31,6 +34,9 @@ import { ContentStatus } from '../../../../../core/models/content/content-common
 import { BlogArticleStats } from '../../../../../core/models/content/content-stats.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { BlogCategoryFilters } from '../../../../../core/models/content/blog-category.model';
+import {BlogArticleOffcanvasService} from '../../../../../core/services/admin/blog-article-offcanvas.service';
+import {BlogArticleOffcanvas} from '../../../../../core/components/admin/blog-article-offcanvas/blog-article-offcanvas';
 
 @Component({
   selector: 'app-blog-articles',
@@ -43,6 +49,8 @@ import { FormsModule } from '@angular/forms';
     TranslatePipe,
     KpiCardComponent,
     DataList,
+    Choice,
+    BlogArticleOffcanvas,
   ],
   templateUrl: './blog-articles.html',
   styleUrl: './blog-articles.css',
@@ -57,15 +65,35 @@ export class BlogArticles implements OnInit, OnDestroy {
   private languageOrchestrator = inject(LanguageOrchestratorService);
   private confirmDialog = inject(ConfirmDialogService);
   private toastService = inject(ToastService);
+  private offcanvasService = inject(BlogArticleOffcanvasService);
   protected listManager = inject(ListStateManager<BlogArticle, BlogArticleFilters>);
 
   private destroy$ = new Subject<void>();
   private componentId = 'blog-articles';
+  private isInitialized = false;
+  private isLoadingCategories = false;
 
-  // LOCALE MANAGEMENT
   readonly availableLocales = AVAILABLE_LOCALES;
   currentLocale = signal<string>('fr');
   private readonly LOCALE_STORAGE_KEY = 'admin-content-locale';
+
+  // Choice pour langue
+  selectedLocale = signal<string>('fr');
+
+  languageOptions = computed<ChoiceOption[]>(() =>
+    this.availableLocales.map(locale => ({
+      value: locale.code,
+      label: `${locale.flag} ${locale.label}`
+    }))
+  );
+
+  languageConfig: ChoiceConfig = {
+    searchEnabled: false,
+    allowHTML: false,
+    itemSelectText: '',
+    shouldSort: false,
+    removeItemButton: false,
+  };
 
   // Permissions
   canFindArticles = computed(() =>
@@ -86,6 +114,7 @@ export class BlogArticles implements OnInit, OnDestroy {
 
   emptyTitle = signal('');
   emptyMessage = signal('');
+  categories = signal<{ value: string; label: string }[]>([]);
 
   filters = signal<FilterConfig[]>([]);
   sortOptions = signal<SortOption[]>([]);
@@ -96,7 +125,6 @@ export class BlogArticles implements OnInit, OnDestroy {
   loadingStats = signal(false);
   private languageChange = signal(0);
 
-  // Computed pour le label de la langue actuelle
   currentLocaleLabel = computed(() => {
     const locale = this.availableLocales.find(l => l.code === this.currentLocale());
     return locale ? `${locale.flag} ${locale.label}` : this.currentLocale().toUpperCase();
@@ -147,16 +175,20 @@ export class BlogArticles implements OnInit, OnDestroy {
     ];
   });
 
-
-
   ngOnInit(): void {
     this.initializeLocale();
+    this.selectedLocale.set(this.currentLocale());
     this.languageOrchestrator.registerComponent(this.componentId, () => this.onLanguageChange());
     this.setBreadcrumbs();
     this.updatePageTitle();
     this.initializeConfig();
     this.initializeListManager();
     this.loadStats();
+    this.loadCategories();
+
+    setTimeout(() => {
+      this.isInitialized = true;
+    }, 100);
   }
 
   ngOnDestroy(): void {
@@ -182,13 +214,22 @@ export class BlogArticles implements OnInit, OnDestroy {
     this.currentLocale.set(defaultLocale);
   }
 
-  onLocaleChange(localeCode: string): void {
-    this.currentLocale.set(localeCode);
-    localStorage.setItem(this.LOCALE_STORAGE_KEY, localeCode);
+  onLanguageChoiceChange(event: any): void {
+    if (!this.isInitialized) return;
+    const newLocale = event;
+    if (newLocale && newLocale !== this.currentLocale()) {
+      this.onLocaleChange(newLocale);
+    }
+  }
 
-    // Recharger les données
-    this.listManager.reload();
+  onLocaleChange(localeCode: string): void {
+    if (!this.isInitialized || localeCode === this.currentLocale()) return;
+    this.currentLocale.set(localeCode);
+    this.selectedLocale.set(localeCode);
+    localStorage.setItem(this.LOCALE_STORAGE_KEY, localeCode);
+    this.loadCategories();
     this.loadStats();
+    this.listManager.reload();
   }
 
   private setBreadcrumbs(): void {
@@ -228,6 +269,43 @@ export class BlogArticles implements OnInit, OnDestroy {
       });
   }
 
+  private loadCategories(): void {
+    if (this.isLoadingCategories) return;
+
+    this.isLoadingCategories = true;
+
+    const filters: BlogCategoryFilters = {
+      locale: this.currentLocale()
+    };
+
+    this.contentService.getBlogCategories(1, 100, filters)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          const categoryOptions = response.data.map(cat => ({
+            value: cat.documentId,
+            label: cat.name
+          }));
+          this.categories.set(categoryOptions);
+
+          this.filters.update(configs =>
+            configs.map(config =>
+              config.key === 'category'
+                ? { ...config, options: categoryOptions }
+                : config
+            )
+          );
+
+          this.isLoadingCategories = false;
+        },
+        error: (error) => {
+          console.error('Error loading categories:', error);
+          this.categories.set([]);
+          this.isLoadingCategories = false;
+        }
+      });
+  }
+
   private initializeConfig(): void {
     this.filters.set([
       {
@@ -242,7 +320,7 @@ export class BlogArticles implements OnInit, OnDestroy {
         type: 'select',
         label: this.translate.instant('blog-articles.filters.category'),
         placeholder: this.translate.instant('common.all'),
-        options: [],
+        options: this.categories(),
       },
       {
         key: 'is_featured',
@@ -323,9 +401,11 @@ export class BlogArticles implements OnInit, OnDestroy {
         render: (article) =>
           article.is_featured
             ? this.translate.instant('blog-articles.badges.featured')
-            : '',
+            : this.translate.instant('blog-articles.badges.not_featured'),
         cellClass: (article) =>
-          article.is_featured ? 'text-warning bg-warning-subtle' : '',
+          article.is_featured
+            ? 'text-warning bg-warning-subtle'
+            : 'text-secondary bg-secondary-subtle',
       },
       {
         key: 'view_count',
@@ -345,13 +425,6 @@ export class BlogArticles implements OnInit, OnDestroy {
 
     this.actions.set([
       {
-        label: this.translate.instant('blog-articles.actions.view'),
-        icon: 'visibility',
-        class: 'btn-outline-secondary',
-        handler: (article) => this.viewArticle(article),
-        condition: () => this.canFindArticles(),
-      },
-      {
         label: this.translate.instant('blog-articles.actions.edit'),
         icon: 'edit',
         class: 'btn-outline-primary',
@@ -369,7 +442,7 @@ export class BlogArticles implements OnInit, OnDestroy {
         },
       },
       {
-        label: this.translate.instant('blog-articles.actions.view_translations'), // Label différent !
+        label: this.translate.instant('blog-articles.actions.view_translations'),
         icon: 'language',
         class: 'btn-outline-info',
         handler: (article) => this.viewTranslations(article),
@@ -458,7 +531,7 @@ export class BlogArticles implements OnInit, OnDestroy {
     filters: FilterValue
   ): BlogArticleFilters {
     const articleFilters: BlogArticleFilters = {
-      locale: this.currentLocale(), // TOUJOURS filtrer par locale
+      locale: this.currentLocale(),
     };
 
     if (search) {
@@ -523,8 +596,15 @@ export class BlogArticles implements OnInit, OnDestroy {
   }
 
   editArticle(article: BlogArticle): void {
-    this.router.navigate(['/admin/content/blog-articles', article.documentId, 'edit'], {
-      queryParams: { locale: this.currentLocale() }
+    this.offcanvasService.open({
+      mode: 'edit',
+      articleId: article.documentId,
+      locale: this.currentLocale()
+    }).subscribe(result => {
+      if (result.action === 'saved') {
+        this.listManager.reload();
+        this.loadStats();
+      }
     });
   }
 
@@ -656,8 +736,15 @@ export class BlogArticles implements OnInit, OnDestroy {
   }
 
   createNewArticle(): void {
-    this.router.navigate(['/admin/content/blog-articles/new'], {
-      queryParams: { locale: this.currentLocale() }
+    this.offcanvasService.open({
+      mode: 'create',
+      locale: this.currentLocale()
+    }).subscribe(result => {
+      if (result.action === 'saved') {
+        this.listManager.reload();
+        this.loadStats();
+      }
     });
   }
+
 }

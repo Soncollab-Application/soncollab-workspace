@@ -10,6 +10,7 @@ import {
 } from '../../models/content/blog-article.model';
 
 import { ContentStatsResponse } from '../../models/content/content-stats.model';
+import {BlogCategoryFilters, BlogCategoryListResponse} from '../../models/content/blog-category.model';
 
 @Injectable({ providedIn: 'root' })
 export class AdminContentService {
@@ -107,6 +108,37 @@ export class AdminContentService {
     }
 
     return this.http.get<BlogArticleListResponse>(this.CONTENT_ENDPOINTS.blog_articles, { params });
+  }
+
+  getBlogCategories(
+    page = 1,
+    pageSize = 25,
+    filters?: BlogCategoryFilters,
+    sortField = 'order',
+    sortOrder: 'asc' | 'desc' = 'asc'
+  ): Observable<BlogCategoryListResponse> {
+    let params = new HttpParams()
+      .set('pagination[page]', page.toString())
+      .set('pagination[pageSize]', pageSize.toString())
+      .set('sort[0]', `${sortField}:${sortOrder}`)
+      .set('populate[0]', 'articles');
+
+    if (filters?.locale) {
+      params = params.set('locale', filters.locale);
+    }
+
+    if (filters?.is_featured !== undefined) {
+      params = params.set('filters[is_featured][$eq]', filters.is_featured.toString());
+    }
+
+    if (filters?.search) {
+      params = params.set('filters[name][$containsi]', filters.search);
+    }
+
+    return this.http.get<BlogCategoryListResponse>(
+      this.CONTENT_ENDPOINTS.blog_categories,
+      { params }
+    );
   }
 
   getBlogArticleById(documentId: string, locale?: string): Observable<{ data: BlogArticle }> {

@@ -6,18 +6,17 @@
 
   <div breadcrumb-actions>
     <div class="d-flex gap-2">
-      <!-- Dropdown de langue -->
-      <select
-        class="form-select form-select-sm"
-        [(ngModel)]="currentLocale"
-        (ngModelChange)="onLocaleChange($event)"
-        style="width: auto;">
-        @for (locale of availableLocales; track locale.code) {
-          <option [value]="locale.code">
-            {{ locale.flag }} {{ locale.label }}
-          </option>
-        }
-      </select>
+      <!-- Dropdown de langue avec Choice -->
+      <div class="position-relative" style="min-width: 150px;">
+        <lib-choice
+          [type]="'select-one'"
+          [options]="languageOptions()"
+          [config]="languageConfig"
+          [cssClass]="'form-select'"
+          [(ngModel)]="selectedLocale"
+          (change)="onLanguageChoiceChange($event)"
+        />
+      </div>
 
       @if (canCreateArticle()) {
         <button class="btn btn-primary" (click)="createNewArticle()">
@@ -30,17 +29,17 @@
 
   <div breadcrumb-actions-mobile>
     <div class="d-flex flex-column gap-2 w-100">
-      <!-- Dropdown de langue mobile -->
-      <select
-        class="form-select form-select-sm"
-        [(ngModel)]="currentLocale"
-        (ngModelChange)="onLocaleChange($event)">
-        @for (locale of availableLocales; track locale.code) {
-          <option [value]="locale.code">
-            {{ locale.flag }} {{ locale.label }}
-          </option>
-        }
-      </select>
+      <!-- Dropdown de langue mobile avec Choice -->
+      <div class="position-relative w-100">
+        <lib-choice
+          [type]="'select-one'"
+          [options]="languageOptions()"
+          [config]="languageConfig"
+          [cssClass]="'form-select'"
+          [(ngModel)]="selectedLocale"
+          (change)="onLanguageChoiceChange($event)"
+        />
+      </div>
 
       @if (canCreateArticle()) {
         <button class="btn btn-primary w-100" (click)="createNewArticle()">
@@ -68,7 +67,7 @@
     [filters]="filters()"
     [sortOptions]="sortOptions()"
     [showSearch]="true"
-    [showViewSelector]="false"
+    [showViewSelector]="true"
     [selectedCount]="-1"
     [useFilterState]="true"
   />
@@ -94,3 +93,5 @@
     (itemClick)="onRowClick($any($event))"
   />
 </div>
+
+<app-blog-article-offcanvas />

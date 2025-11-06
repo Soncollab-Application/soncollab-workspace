@@ -43,6 +43,7 @@
     },
     "badges": {
       "featured": "⭐ Mis en avant",
+      "not_featured": "Non mis en avant",
       "has_translations": "✓ Traduit",
       "no_translations": "⚠ Non traduit"
     },

@@ -24,6 +24,7 @@ export interface BlogArticle extends ContentBase {
   seo_description?: string;
   seo_keywords?: string;
   canonical_url?: string;
+  allow_comments: string | boolean;
   og_image?: {
     id: number;
     url: string;
