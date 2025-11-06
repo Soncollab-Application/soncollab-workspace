@@ -2,6 +2,7 @@
   "blog-articles": {
     "page_title": "Blog Articles",
     "new_article": "New Article",
+    "search": "Search for an article...",
     "kpi": {
       "language": "Active Language",
       "total": "Total",
@@ -26,6 +27,7 @@
     },
     "columns": {
       "title": "Title",
+      "locale": "Language",
       "category": "Category",
       "author": "Author",
       "translations": "Translations",
@@ -48,6 +50,7 @@
       "no_translations": "⚠ Not translated"
     },
     "actions": {
+      "create": "Create Article",
       "view": "View",
       "edit": "Edit",
       "create_translation": "Create translation",
@@ -86,6 +89,69 @@
     },
     "error": {
       "loading": "Error loading articles"
+    },
+    "messages": {
+      "created": "Article created successfully",
+      "updated": "Article updated successfully",
+      "all_translations_exist": "All translations already exist",
+      "translation_created": "Translation created successfully",
+      "error_saving": "Error saving article",
+      "error_loading": "Error loading article",
+      "fill_required": "Please fill in all required fields"
+    },
+    "offcanvas": {
+      "title": "Blog Article",
+      "subtitle_create": "Create a new blog article",
+      "subtitle_edit": "Edit blog article",
+      "loading": "Loading article...",
+      "content_info": "Content Information",
+      "seo_info": "SEO Optimization",
+      "tabs": {
+        "content": "Content",
+        "seo": "SEO"
+      },
+      "fields": {
+        "title": "Title",
+        "slug": "Slug",
+        "excerpt": "Excerpt",
+        "content": "Content",
+        "category": "Category",
+        "status": "Status",
+        "featured": "Featured",
+        "reading_time": "Reading Time",
+        "seo_title": "SEO Title",
+        "seo_description": "SEO Description",
+        "seo_keywords": "SEO Keywords",
+        "canonical_url": "Canonical URL"
+      },
+      "placeholders": {
+        "title": "Enter article title",
+        "slug": "article-url-slug",
+        "excerpt": "Enter a brief summary of the article",
+        "content": "Write your article in Markdown",
+        "seo_title": "Search engine optimized title",
+        "seo_description": "Search engine optimized description",
+        "seo_keywords": "keywords, separated, by, commas"
+      },
+      "hints": {
+        "excerpt": "Maximum 300 characters",
+        "markdown": "You can use Markdown to format your content",
+        "seo_title": "Ideally between 50-60 characters",
+        "seo_description": "Ideally between 150-160 characters",
+        "seo_keywords": "Separate keywords with commas"
+      },
+      "errors": {
+        "title_required": "Title is required",
+        "slug_required": "Slug is required",
+        "content_required": "Content is required",
+        "category_required": "Category is required"
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "create": "Create",
+        "save": "Save"
+      },
+      "select_category": "Select a category"
     }
   }
 }

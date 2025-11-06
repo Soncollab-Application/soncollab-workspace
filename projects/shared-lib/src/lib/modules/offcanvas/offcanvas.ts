@@ -13,7 +13,6 @@ import { OffcanvasService } from './offcanvas.service';
 
 @Component({
   selector: 'lib-offcanvas',
-  standalone: true,
   imports: [CommonModule],
   templateUrl: './offcanvas.html',
   styleUrl: './offcanvas.css'
@@ -40,9 +39,10 @@ export class Offcanvas {
   isOpen = computed(() => this.offcanvasService.isOpen());
   config = computed(() => this.offcanvasService.config());
 
+  // CORRECTION: Priorité à l'Input placement, puis config
   offcanvasClasses = computed(() => {
-    const placement = this.config().placement || this.placement;
-    return `offcanvas-${placement}`;
+    const finalPlacement = this.placement || this.config().placement || 'end';
+    return `offcanvas-${finalPlacement}`;
   });
 
   showBackdrop = computed(() => {
@@ -53,9 +53,10 @@ export class Offcanvas {
   constructor() {
     effect(() => {
       if (this.isOpen()) {
-        this.handleKeydown();
+        this.handleOpen();
         this.opened.emit();
       } else {
+        this.handleClose();
         this.closed.emit();
       }
     });
@@ -85,11 +86,20 @@ export class Offcanvas {
     }
   }
 
+  private handleOpen(): void {
+    document.body.classList.add('offcanvas-open');
+    this.handleKeydown();
+  }
+
+  private handleClose(): void {
+    document.body.classList.remove('offcanvas-open');
+  }
+
   private handleKeydown(): void {
     if (!this.keyboard && !this.config().keyboard) return;
 
     const handler = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+      if (event.key === 'Escape' && this.isOpen()) {
         this.close();
         document.removeEventListener('keydown', handler);
       }

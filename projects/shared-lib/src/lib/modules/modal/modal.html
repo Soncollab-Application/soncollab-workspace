@@ -1,0 +1,42 @@
+@if (isOpen()) {
+  <div
+    class="modal fade show d-block"
+    tabindex="-1"
+    role="dialog"
+    [attr.aria-labelledby]="ariaLabelledby"
+    (click)="onBackdropClick($event)">
+
+    <div [class]="modalDialogClasses()" role="document">
+      <div class="modal-content">
+
+        @if (showHeader) {
+          <div class="modal-header" [class]="headerClass">
+            <ng-content select="[modal-header]" />
+            @if (showCloseButton) {
+              <button
+                type="button"
+                class="btn-close"
+                [attr.aria-label]="closeLabel"
+                (click)="close()">
+              </button>
+            }
+          </div>
+        }
+
+        <div class="modal-body" [class]="bodyClass">
+          <ng-content />
+        </div>
+
+        @if (showFooter) {
+          <div class="modal-footer flex-column flex-sm-row align-items-stretch" [class]="footerClass">
+            <ng-content select="[modal-footer]" />
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  @if (showBackdrop()) {
+    <div class="modal-backdrop fade show" (click)="onBackdropClick($event)"></div>
+  }
+}

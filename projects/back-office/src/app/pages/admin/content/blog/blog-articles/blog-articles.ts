@@ -660,7 +660,7 @@ export class BlogArticles implements OnInit, OnDestroy {
   viewTranslations(article: BlogArticle): void {
     if (article.localizations && article.localizations.length > 0) {
       const otherLocale = article.localizations[0].locale;
-      this.currentLocale.set(otherLocale);
+      this.onLocaleChange(otherLocale);
     }
   }
 

@@ -47,8 +47,8 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
 
   title = computed(() =>
     this.mode() === 'create'
-      ? this.translate.instant('blog-article-offcanvas.new_article')
-      : this.translate.instant('blog-article-offcanvas.edit_article')
+      ? this.translate.instant('blog-articles.offcanvas.title')
+      : this.translate.instant('blog-articles.offcanvas.title')
   );
 
   categoryOptions = computed<ChoiceOption[]>(() =>
@@ -59,9 +59,9 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
   );
 
   statusOptions = computed<ChoiceOption[]>(() => [
-    { value: 'draft', label: this.translate.instant('blog-article-offcanvas.statuses.draft') },
-    { value: 'pending_review', label: this.translate.instant('blog-article-offcanvas.statuses.pending_review') },
-    { value: 'approved', label: this.translate.instant('blog-article-offcanvas.statuses.approved') },
+    { value: 'draft', label: this.translate.instant('blog-articles.statuses.draft') },
+    { value: 'pending_review', label: this.translate.instant('blog-articles.statuses.pending_review') },
+    { value: 'approved', label: this.translate.instant('blog-articles.statuses.approved') },
   ]);
 
   categoryConfig: ChoiceConfig = {
@@ -69,7 +69,7 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
     allowHTML: false,
     itemSelectText: '',
     placeholder: true,
-    placeholderValue: this.translate.instant('blog-article-offcanvas.select_category'),
+    placeholderValue: this.translate.instant('blog-articles.offcanvas.select_category'),
   };
 
   statusConfig: ChoiceConfig = {
@@ -202,7 +202,7 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.loading.set(false);
-          this.toast.showError(this.translate.instant('blog-article-offcanvas.messages.error_loading'));
+          this.toast.showError(this.translate.instant('blog-articles.messages.error_loading'));
           this.close();
         }
       });
@@ -229,7 +229,7 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
   onSubmit(): void {
     if (this.articleForm.invalid) {
       this.articleForm.markAllAsTouched();
-      this.toast.showWarning(this.translate.instant('blog-article-offcanvas.messages.fill_required'));
+      this.toast.showWarning(this.translate.instant('blog-articles.messages.fill_required'));
       return;
     }
 
@@ -252,8 +252,8 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
           this.toast.showSuccess(
             this.translate.instant(
               this.mode() === 'create'
-                ? 'blog-article-offcanvas.messages.created'
-                : 'blog-article-offcanvas.messages.updated'
+                ? 'blog-articles.messages.created'
+                : 'blog-articles.messages.updated'
             )
           );
 
@@ -266,7 +266,7 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.saving.set(false);
-          this.toast.showError(this.translate.instant('blog-article-offcanvas.messages.error_saving'));
+          this.toast.showError(this.translate.instant('blog-articles.messages.error_saving'));
         }
       });
   }

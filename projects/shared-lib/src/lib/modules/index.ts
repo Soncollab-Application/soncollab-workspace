@@ -43,3 +43,8 @@ export * from './kpi-card/kpi-card.module';
 export * from './offcanvas/offcanvas';
 export * from './offcanvas/offcanvas.service';
 export * from './offcanvas/offcanvas.module';
+
+// Modal
+export * from './modal/modal';
+export * from './modal/modal.service';
+export * from './modal/modal.module';

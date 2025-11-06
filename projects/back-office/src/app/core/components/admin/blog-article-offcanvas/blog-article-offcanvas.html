@@ -1,5 +1,5 @@
 <lib-offcanvas
-  placement="start"
+  placement="end"
   [backdrop]="'static'"
   [keyboard]="false"
   [showHeader]="true"
@@ -13,31 +13,28 @@
 
   <!-- Header -->
   <div offcanvas-header class="d-flex align-items-center justify-content-between w-100">
-    <div class="d-flex align-items-center gap-3">
-      <h5 id="articleOffcanvasTitle" class="offcanvas-title mb-0">
-        {{ title() }}
+    <div>
+      <h5 id="articleOffcanvasTitle" class="offcanvas-title fw-bold mb-1 d-flex align-items-center">
+        <span class="material-symbols-outlined me-2 text-primary">article</span>
+        {{ 'blog-articles.offcanvas.title' | translate }}
       </h5>
-      <span class="badge bg-secondary">{{ locale().toUpperCase() }}</span>
+      <p class="mb-0 small text-muted">
+        {{ mode() === 'create'
+        ? ('blog-articles.offcanvas.subtitle_create' | translate)
+        : ('blog-articles.offcanvas.subtitle_edit' | translate) }}
+        <span class="badge bg-secondary ms-2">{{ locale().toUpperCase() }}</span>
+      </p>
     </div>
-
-    <button type="button"
-            class="btn btn-sm btn-outline-secondary"
-            (click)="togglePreview()"
-            [disabled]="loading()">
-      <span class="material-symbols-outlined">
-        {{ showPreview() ? 'edit' : 'visibility' }}
-      </span>
-    </button>
   </div>
 
   <!-- Body -->
   @if (loading()) {
-    <div class="d-flex justify-content-center align-items-center h-100 py-5">
+    <div class="d-flex justify-content-center align-items-center py-5">
       <div class="text-center">
         <div class="spinner-border text-primary mb-3" role="status">
           <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
         </div>
-        <p class="text-muted">{{ 'common.loading' | translate }}</p>
+        <p class="text-muted">{{ 'blog-articles.offcanvas.loading' | translate }}</p>
       </div>
     </div>
   } @else {
@@ -54,7 +51,7 @@
                       [class.active]="activeTab() === 'content'"
                       (click)="setActiveTab('content')">
                 <span class="material-symbols-outlined me-2">article</span>
-                {{ 'blog-article-offcanvas.tabs.content' | translate }}
+                {{ 'blog-articles.offcanvas.tabs.content' | translate }}
               </button>
             </li>
             <li class="nav-item">
@@ -63,7 +60,7 @@
                       [class.active]="activeTab() === 'seo'"
                       (click)="setActiveTab('seo')">
                 <span class="material-symbols-outlined me-2">search</span>
-                {{ 'blog-article-offcanvas.tabs.seo' | translate }}
+                {{ 'blog-articles.offcanvas.tabs.seo' | translate }}
               </button>
             </li>
           </ul>
@@ -72,151 +69,198 @@
         <!-- Tab Content -->
         <div class="p-4">
           @if (activeTab() === 'content') {
-            <div class="row g-4">
-              <!-- Title -->
-              <div class="col-12">
-                <label class="form-label required">{{ 'blog-article-offcanvas.fields.title' | translate }}</label>
-                <input type="text"
-                       class="form-control"
-                       [class.is-invalid]="articleForm.get('title')?.invalid && articleForm.get('title')?.touched"
-                       formControlName="title"
-                       [placeholder]="'blog-article-offcanvas.placeholders.title' | translate">
-                @if (articleForm.get('title')?.invalid && articleForm.get('title')?.touched) {
-                  <div class="invalid-feedback d-block">
-                    {{ 'blog-article-offcanvas.errors.title_required' | translate }}
-                  </div>
-                }
-              </div>
+            <!-- Contenu -->
+            <div class="mb-4">
+              <h6 class="fw-bold mb-3 d-flex align-items-center">
+                <span class="material-symbols-outlined me-2 text-primary">edit_note</span>
+                {{ 'blog-articles.offcanvas.content_info' | translate }}
+              </h6>
 
-              <!-- Slug -->
-              <div class="col-12">
-                <label class="form-label required">{{ 'blog-article-offcanvas.fields.slug' | translate }}</label>
-                <input type="text"
-                       class="form-control font-monospace"
-                       [class.is-invalid]="articleForm.get('slug')?.invalid && articleForm.get('slug')?.touched"
-                       formControlName="slug"
-                       [placeholder]="'blog-article-offcanvas.placeholders.slug' | translate">
-                @if (articleForm.get('slug')?.invalid && articleForm.get('slug')?.touched) {
-                  <div class="invalid-feedback d-block">
-                    {{ 'blog-article-offcanvas.errors.slug_required' | translate }}
-                  </div>
-                }
-              </div>
-
-              <!-- Excerpt -->
-              <div class="col-12">
-                <label class="form-label">{{ 'blog-article-offcanvas.fields.excerpt' | translate }}</label>
-                <textarea class="form-control"
-                          formControlName="excerpt"
-                          rows="3"
-                          [placeholder]="'blog-article-offcanvas.placeholders.excerpt' | translate"></textarea>
-                <small class="text-muted">{{ 'blog-article-offcanvas.hints.excerpt' | translate }}</small>
-              </div>
-
-              <!-- Content -->
-              <div class="col-12">
-                <label class="form-label required">{{ 'blog-article-offcanvas.fields.content' | translate }}</label>
-                <textarea class="form-control font-monospace"
-                          [class.is-invalid]="articleForm.get('content')?.invalid && articleForm.get('content')?.touched"
-                          formControlName="content"
-                          rows="15"
-                          [placeholder]="'blog-article-offcanvas.placeholders.content' | translate"></textarea>
-                @if (articleForm.get('content')?.invalid && articleForm.get('content')?.touched) {
-                  <div class="invalid-feedback d-block">
-                    {{ 'blog-article-offcanvas.errors.content_required' | translate }}
-                  </div>
-                }
-                <small class="text-muted">{{ 'blog-article-offcanvas.hints.markdown' | translate }}</small>
-              </div>
-
-              <!-- Category -->
-              <div class="col-md-6">
-                <label class="form-label required">{{ 'blog-article-offcanvas.fields.category' | translate }}</label>
-                <lib-choice
-                  type="select-one"
-                  formControlName="category"
-                  [options]="categoryOptions()"
-                  [config]="categoryConfig"
-                  (change)="onCategoryChange($event)"
-                />
-                @if (articleForm.get('category')?.invalid && articleForm.get('category')?.touched) {
-                  <div class="invalid-feedback d-block">
-                    {{ 'blog-article-offcanvas.errors.category_required' | translate }}
-                  </div>
-                }
-              </div>
-
-              <!-- Status -->
-              <div class="col-md-6">
-                <label class="form-label">{{ 'blog-article-offcanvas.fields.status' | translate }}</label>
-                <lib-choice
-                  type="select-one"
-                  formControlName="content_status"
-                  [options]="statusOptions()"
-                  [config]="statusConfig"
-                  (change)="onStatusChange($event)"
-                />
-              </div>
-
-              <!-- Featured -->
-              <div class="col-12">
-                <div class="form-check">
-                  <input class="form-check-input"
-                         type="checkbox"
-                         formControlName="is_featured"
-                         id="isFeatured">
-                  <label class="form-check-label" for="isFeatured">
-                    {{ 'blog-article-offcanvas.fields.is_featured' | translate }}
+              <div class="row g-4">
+                <!-- Title -->
+                <div class="col-12">
+                  <label class="form-label small fw-semibold">
+                    {{ 'blog-articles.offcanvas.fields.title' | translate }}
+                    <span class="text-danger">*</span>
                   </label>
+                  <input type="text"
+                         class="form-control"
+                         [class.is-invalid]="articleForm.get('title')?.invalid && articleForm.get('title')?.touched"
+                         formControlName="title"
+                         [placeholder]="'blog-articles.offcanvas.placeholders.title' | translate">
+                  @if (articleForm.get('title')?.invalid && articleForm.get('title')?.touched) {
+                    <small class="text-danger d-block mt-1 d-flex align-items-center">
+                      <span class="material-symbols-outlined me-1" style="font-size: 1rem;">error</span>
+                      {{ 'blog-articles.offcanvas.errors.title_required' | translate }}
+                    </small>
+                  }
+                </div>
+
+                <!-- Slug -->
+                <div class="col-12">
+                  <label class="form-label small fw-semibold">
+                    {{ 'blog-articles.offcanvas.fields.slug' | translate }}
+                    <span class="text-danger">*</span>
+                  </label>
+                  <input type="text"
+                         class="form-control font-monospace"
+                         [class.is-invalid]="articleForm.get('slug')?.invalid && articleForm.get('slug')?.touched"
+                         formControlName="slug"
+                         [placeholder]="'blog-articles.offcanvas.placeholders.slug' | translate">
+                  @if (articleForm.get('slug')?.invalid && articleForm.get('slug')?.touched) {
+                    <small class="text-danger d-block mt-1 d-flex align-items-center">
+                      <span class="material-symbols-outlined me-1" style="font-size: 1rem;">error</span>
+                      {{ 'blog-articles.offcanvas.errors.slug_required' | translate }}
+                    </small>
+                  }
+                </div>
+
+                <!-- Excerpt -->
+                <div class="col-12">
+                  <label class="form-label small fw-semibold">
+                    {{ 'blog-articles.offcanvas.fields.excerpt' | translate }}
+                  </label>
+                  <textarea class="form-control"
+                            formControlName="excerpt"
+                            rows="3"
+                            [placeholder]="'blog-articles.offcanvas.placeholders.excerpt' | translate"></textarea>
+                  <div class="d-flex justify-content-between mt-1">
+                    <small class="text-muted">{{ 'blog-articles.offcanvas.hints.excerpt' | translate }}</small>
+                    <small class="text-muted">{{ articleForm.get('excerpt')?.value?.length || 0 }}/300</small>
+                  </div>
+                </div>
+
+                <!-- Content -->
+                <div class="col-12">
+                  <label class="form-label small fw-semibold">
+                    {{ 'blog-articles.offcanvas.fields.content' | translate }}
+                    <span class="text-danger">*</span>
+                  </label>
+                  <textarea class="form-control font-monospace"
+                            [class.is-invalid]="articleForm.get('content')?.invalid && articleForm.get('content')?.touched"
+                            formControlName="content"
+                            rows="15"
+                            [placeholder]="'blog-articles.offcanvas.placeholders.content' | translate"></textarea>
+                  @if (articleForm.get('content')?.invalid && articleForm.get('content')?.touched) {
+                    <small class="text-danger d-block mt-1 d-flex align-items-center">
+                      <span class="material-symbols-outlined me-1" style="font-size: 1rem;">error</span>
+                      {{ 'blog-articles.offcanvas.errors.content_required' | translate }}
+                    </small>
+                  }
+                  <small class="text-muted d-block mt-1">{{ 'blog-articles.offcanvas.hints.markdown' | translate }}</small>
+                </div>
+
+                <!-- Category -->
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">
+                    {{ 'blog-articles.offcanvas.fields.category' | translate }}
+                    <span class="text-danger">*</span>
+                  </label>
+                  <lib-choice
+                    type="select-one"
+                    formControlName="category"
+                    [options]="categoryOptions()"
+                    [config]="categoryConfig"
+                    (change)="onCategoryChange($event)"
+                  />
+                  @if (articleForm.get('category')?.invalid && articleForm.get('category')?.touched) {
+                    <small class="text-danger d-block mt-1 d-flex align-items-center">
+                      <span class="material-symbols-outlined me-1" style="font-size: 1rem;">error</span>
+                      {{ 'blog-articles.offcanvas.errors.category_required' | translate }}
+                    </small>
+                  }
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">
+                    {{ 'blog-articles.offcanvas.fields.status' | translate }}
+                  </label>
+                  <lib-choice
+                    type="select-one"
+                    formControlName="content_status"
+                    [options]="statusOptions()"
+                    [config]="statusConfig"
+                    (change)="onStatusChange($event)"
+                  />
+                </div>
+
+                <!-- Featured -->
+                <div class="col-12">
+                  <div class="form-check">
+                    <input class="form-check-input"
+                           type="checkbox"
+                           formControlName="is_featured"
+                           id="isFeatured">
+                    <label class="form-check-label" for="isFeatured">
+                      {{ 'blog-articles.offcanvas.fields.featured' | translate }}
+                    </label>
+                  </div>
                 </div>
               </div>
             </div>
-          }
 
-          @if (activeTab() === 'seo') {
-            <div class="row g-4">
-              <!-- SEO Title -->
-              <div class="col-12">
-                <label class="form-label">{{ 'blog-article-offcanvas.fields.seo_title' | translate }}</label>
-                <input type="text"
-                       class="form-control"
-                       formControlName="seo_title"
-                       [placeholder]="'blog-article-offcanvas.placeholders.seo_title' | translate"
-                       maxlength="60">
-                <small class="text-muted">
-                  {{ articleForm.get('seo_title')?.value?.length || 0 }}/60
-                </small>
-              </div>
+          } @else {
+            <!-- SEO -->
+            <div class="mb-4">
+              <h6 class="fw-bold mb-3 d-flex align-items-center">
+                <span class="material-symbols-outlined me-2 text-success">search</span>
+                {{ 'blog-articles.offcanvas.seo_info' | translate }}
+              </h6>
 
-              <!-- SEO Description -->
-              <div class="col-12">
-                <label class="form-label">{{ 'blog-article-offcanvas.fields.seo_description' | translate }}</label>
-                <textarea class="form-control"
-                          formControlName="seo_description"
-                          rows="3"
-                          [placeholder]="'blog-article-offcanvas.placeholders.seo_description' | translate"
-                          maxlength="160"></textarea>
-                <small class="text-muted">
-                  {{ articleForm.get('seo_description')?.value?.length || 0 }}/160
-                </small>
-              </div>
+              <div class="row g-4">
+                <!-- SEO Title -->
+                <div class="col-12">
+                  <label class="form-label small fw-semibold">
+                    {{ 'blog-articles.offcanvas.fields.seo_title' | translate }}
+                  </label>
+                  <input type="text"
+                         class="form-control"
+                         formControlName="seo_title"
+                         [placeholder]="'blog-articles.offcanvas.placeholders.seo_title' | translate">
+                  <div class="d-flex justify-content-between mt-1">
+                    <small class="text-muted">{{ 'blog-articles.offcanvas.hints.seo_title' | translate }}</small>
+                    <small class="text-muted">{{ articleForm.get('seo_title')?.value?.length || 0 }}/60</small>
+                  </div>
+                </div>
 
-              <!-- SEO Keywords -->
-              <div class="col-12">
-                <label class="form-label">{{ 'blog-article-offcanvas.fields.seo_keywords' | translate }}</label>
-                <input type="text"
-                       class="form-control"
-                       formControlName="seo_keywords"
-                       [placeholder]="'blog-article-offcanvas.placeholders.seo_keywords' | translate">
-              </div>
+                <!-- SEO Description -->
+                <div class="col-12">
+                  <label class="form-label small fw-semibold">
+                    {{ 'blog-articles.offcanvas.fields.seo_description' | translate }}
+                  </label>
+                  <textarea class="form-control"
+                            formControlName="seo_description"
+                            rows="3"
+                            [placeholder]="'blog-articles.offcanvas.placeholders.seo_description' | translate"></textarea>
+                  <div class="d-flex justify-content-between mt-1">
+                    <small class="text-muted">{{ 'blog-articles.offcanvas.hints.seo_description' | translate }}</small>
+                    <small class="text-muted">{{ articleForm.get('seo_description')?.value?.length || 0 }}/160</small>
+                  </div>
+                </div>
 
-              <!-- Canonical URL -->
-              <div class="col-12">
-                <label class="form-label">{{ 'blog-article-offcanvas.fields.canonical_url' | translate }}</label>
-                <input type="url"
-                       class="form-control"
-                       formControlName="canonical_url"
-                       placeholder="https://...">
+                <!-- SEO Keywords -->
+                <div class="col-12">
+                  <label class="form-label small fw-semibold">
+                    {{ 'blog-articles.offcanvas.fields.seo_keywords' | translate }}
+                  </label>
+                  <input type="text"
+                         class="form-control"
+                         formControlName="seo_keywords"
+                         [placeholder]="'blog-articles.offcanvas.placeholders.seo_keywords' | translate">
+                  <small class="text-muted d-block mt-1">{{ 'blog-articles.offcanvas.hints.seo_keywords' | translate }}</small>
+                </div>
+
+                <!-- Canonical URL -->
+                <div class="col-12">
+                  <label class="form-label small fw-semibold">
+                    {{ 'blog-articles.offcanvas.fields.canonical_url' | translate }}
+                  </label>
+                  <input type="url"
+                         class="form-control"
+                         formControlName="canonical_url"
+                         placeholder="https://...">
+                </div>
               </div>
             </div>
           }
@@ -246,24 +290,42 @@
   }
 
   <!-- Footer -->
-  <div offcanvas-footer class="d-flex justify-content-end gap-2">
+  <div offcanvas-footer class="d-flex gap-2">
     <button type="button"
-            class="btn btn-secondary"
+            class="btn btn-outline-secondary flex-fill"
             (click)="close()"
-            [disabled]="saving()">
-      {{ 'blog-article-offcanvas.buttons.cancel' | translate }}
+            [disabled]="saving() || loading()">
+      {{ 'common.cancel' | translate }}
     </button>
 
-    <button type="button"
-            class="btn btn-primary"
-            (click)="onSubmit()"
-            [disabled]="saving() || articleForm.invalid">
+    @if (!showPreview()) {
+      <button type="button"
+              class="btn btn-outline-primary"
+              (click)="togglePreview()"
+              [disabled]="loading()">
+        <span class="material-symbols-outlined">visibility</span>
+      </button>
+    } @else {
+      <button type="button"
+              class="btn btn-outline-primary"
+              (click)="togglePreview()"
+              [disabled]="loading()">
+        <span class="material-symbols-outlined">edit</span>
+      </button>
+    }
+
+    <button type="submit"
+            class="btn btn-primary flex-fill d-flex align-items-center justify-content-center"
+            [disabled]="articleForm.invalid || saving() || loading()"
+            (click)="onSubmit()">
       @if (saving()) {
         <span class="spinner-border spinner-border-sm me-2"></span>
+      } @else {
+        <span class="material-symbols-outlined me-2">{{ mode() === 'create' ? 'add' : 'save' }}</span>
       }
       {{ mode() === 'create'
-      ? ('blog-article-offcanvas.buttons.create' | translate)
-      : ('blog-article-offcanvas.buttons.save' | translate)
+      ? ('blog-articles.offcanvas.buttons.create' | translate)
+      : ('blog-articles.offcanvas.buttons.save' | translate)
       }}
     </button>
   </div>

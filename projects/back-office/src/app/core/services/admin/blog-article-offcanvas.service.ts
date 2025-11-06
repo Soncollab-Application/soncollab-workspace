@@ -29,7 +29,6 @@ export class BlogArticleOffcanvasService {
     });
 
     this.offcanvasService.open({
-      placement: 'end',
       backdrop: 'static',
       keyboard: false,
       scroll: false

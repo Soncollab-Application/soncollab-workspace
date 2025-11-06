@@ -2,6 +2,7 @@
   "blog-articles": {
     "page_title": "Articles de blog",
     "new_article": "Nouvel article",
+    "search": "Rechercher un article...",
     "kpi": {
       "language": "Langue active",
       "total": "Total",
@@ -26,6 +27,7 @@
     },
     "columns": {
       "title": "Titre",
+      "locale": "Langue",
       "category": "Catégorie",
       "author": "Auteur",
       "translations": "Traductions",
@@ -48,6 +50,7 @@
       "no_translations": "⚠ Non traduit"
     },
     "actions": {
+      "create": "Créer un article",
       "view": "Voir",
       "edit": "Modifier",
       "create_translation": "Créer traduction",
@@ -86,6 +89,69 @@
     },
     "error": {
       "loading": "Erreur lors du chargement des articles"
+    },
+    "messages": {
+      "created": "Article créé avec succès",
+      "updated": "Article mis à jour avec succès",
+      "all_translations_exist": "Toutes les traductions existent déjà",
+      "translation_created": "Traduction créée avec succès",
+      "error_saving": "Erreur lors de l'enregistrement de l'article",
+      "error_loading": "Erreur lors du chargement de l'article",
+      "fill_required": "Veuillez remplir tous les champs obligatoires"
+    },
+    "offcanvas": {
+      "title": "Article de blog",
+      "subtitle_create": "Créer un nouvel article de blog",
+      "subtitle_edit": "Modifier l'article de blog",
+      "loading": "Chargement de l'article...",
+      "content_info": "Informations de contenu",
+      "seo_info": "Optimisation SEO",
+      "tabs": {
+        "content": "Contenu",
+        "seo": "SEO"
+      },
+      "fields": {
+        "title": "Titre",
+        "slug": "Slug",
+        "excerpt": "Extrait",
+        "content": "Contenu",
+        "category": "Catégorie",
+        "status": "Statut",
+        "featured": "Mis en avant",
+        "reading_time": "Temps de lecture",
+        "seo_title": "Titre SEO",
+        "seo_description": "Description SEO",
+        "seo_keywords": "Mots-clés SEO",
+        "canonical_url": "URL canonique"
+      },
+      "placeholders": {
+        "title": "Entrez le titre de l'article",
+        "slug": "url-de-l-article",
+        "excerpt": "Entrez un court résumé de l'article",
+        "content": "Rédigez votre article en Markdown",
+        "seo_title": "Titre optimisé pour les moteurs de recherche",
+        "seo_description": "Description optimisée pour les moteurs de recherche",
+        "seo_keywords": "mots-clés, séparés, par, virgules"
+      },
+      "hints": {
+        "excerpt": "Maximum 300 caractères",
+        "markdown": "Vous pouvez utiliser Markdown pour formater votre contenu",
+        "seo_title": "Idéalement entre 50-60 caractères",
+        "seo_description": "Idéalement entre 150-160 caractères",
+        "seo_keywords": "Séparez les mots-clés par des virgules"
+      },
+      "errors": {
+        "title_required": "Le titre est requis",
+        "slug_required": "Le slug est requis",
+        "content_required": "Le contenu est requis",
+        "category_required": "La catégorie est requise"
+      },
+      "buttons": {
+        "cancel": "Annuler",
+        "create": "Créer",
+        "save": "Enregistrer"
+      },
+      "select_category": "Sélectionnez une catégorie"
     }
   }
 }
