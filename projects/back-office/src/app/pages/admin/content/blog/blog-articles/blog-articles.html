@@ -19,7 +19,7 @@
       </div>
 
       @if (canCreateArticle()) {
-        <button class="btn btn-primary" (click)="createNewArticle()">
+        <button class="btn btn-primary" (click)="openCreateOffcanvas()">
           <span class="material-symbols-outlined me-2">add</span>
           {{ 'blog-articles.new_article' | translate }}
         </button>
@@ -42,7 +42,7 @@
       </div>
 
       @if (canCreateArticle()) {
-        <button class="btn btn-primary w-100" (click)="createNewArticle()">
+        <button class="btn btn-primary w-100" (click)="openCreateOffcanvas()">
           <span class="material-symbols-outlined me-2">add</span>
           {{ 'blog-articles.new_article' | translate }}
         </button>
@@ -95,3 +95,4 @@
 </div>
 
 <app-blog-article-offcanvas />
+>

@@ -1,37 +1,46 @@
-import { Injectable, inject } from '@angular/core';
-import {BehaviorSubject, Observable} from 'rxjs';
-import {BlogArticleOffcanvasData, BlogArticleOffcanvasResult} from '../../models/content/blog-article-offcanvas.model';
+import { Injectable, inject, signal } from '@angular/core';
+import { OffcanvasService } from 'shared-lib';
+import { BlogArticleOffcanvasData } from '../../models/content/blog-article-offcanvas.model';
+
+export interface BlogArticleOffcanvasState {
+  isOpen: boolean;
+  data: BlogArticleOffcanvasData | null;
+  onSuccess?: (articleId?: string) => void;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class BlogArticleOffcanvasService {
-  private dataSubject = new BehaviorSubject<BlogArticleOffcanvasData | null>(null);
-  private resultSubject = new BehaviorSubject<BlogArticleOffcanvasResult | null>(null);
+  private offcanvasService = inject(OffcanvasService);
 
-  data$ = this.dataSubject.asObservable();
-  result$ = this.resultSubject.asObservable();
+  private state = signal<BlogArticleOffcanvasState>({
+    isOpen: false,
+    data: null
+  });
 
-  open(data: BlogArticleOffcanvasData): Observable<BlogArticleOffcanvasResult> {
-    this.dataSubject.next(data);
+  getState = this.state.asReadonly();
 
-    return new Observable(observer => {
-      const subscription = this.result$.subscribe(result => {
-        if (result) {
-          observer.next(result);
-          observer.complete();
-        }
-      });
+  open(data: BlogArticleOffcanvasData, onSuccess?: (articleId?: string) => void): void {
+    this.state.set({
+      isOpen: true,
+      data,
+      onSuccess
+    });
 
-      return () => subscription.unsubscribe();
+    this.offcanvasService.open({
+      placement: 'end',
+      backdrop: 'static',
+      keyboard: false,
+      scroll: false
     });
   }
 
-  close(result: BlogArticleOffcanvasResult): void {
-    this.resultSubject.next(result);
-    setTimeout(() => {
-      this.dataSubject.next(null);
-      this.resultSubject.next(null);
-    }, 300);
+  close(): void {
+    this.offcanvasService.close();
+    this.state.set({
+      isOpen: false,
+      data: null
+    });
   }
 }

@@ -1,29 +1,35 @@
-import {Component, computed, effect, inject, OnDestroy, OnInit, signal, untracked} from '@angular/core';
+import { Component, computed, effect, inject, OnDestroy, OnInit, signal, untracked } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AdminService } from '../../../services/admin/admin.service';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators
-} from '@angular/forms';
-import {AdminService} from '../../../services/admin/admin.service';
-import {TranslatePipe, TranslateService} from '@ngx-translate/core';
-import {Choice, ChoiceOption, CustomValidators, LanguageService, ToastService} from 'shared-lib';
-import {InviteOffcanvasService} from '../../../services/admin/invite-offcanvas.service';
+  Choice,
+  ChoiceOption,
+  CustomValidators,
+  LanguageService,
+  ToastService,
+  Offcanvas
+} from 'shared-lib';
+import { InviteOffcanvasService } from '../../../services/admin/invite-offcanvas.service';
 import {
   Country,
   InviteRequest,
-  RoleInfo, RolesData, RolesResponse,
+  RoleInfo,
+  RolesData,
+  RolesResponse,
   TargetRole,
   Territory
 } from '../../../models/admin/invitation.model';
-import {Subject, takeUntil} from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-invite-offcanvas',
+  standalone: true,
   imports: [
     ReactiveFormsModule,
     TranslatePipe,
-    Choice
+    Choice,
+    Offcanvas
   ],
   templateUrl: './invite-offcanvas.html',
   styleUrl: './invite-offcanvas.css'
@@ -57,8 +63,6 @@ export class InviteOffcanvas implements OnInit, OnDestroy {
   selectedTerritoryCode = signal<string | null>(null);
 
   isOpen = computed(() => this.offcanvasService.getState().isOpen);
-
-
 
   roleOptions = signal<ChoiceOption[]>([]);
   departmentOptions = signal<ChoiceOption[]>([]);
@@ -109,7 +113,6 @@ export class InviteOffcanvas implements OnInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
   }
-
 
   private initializeForm(): void {
     this.inviteForm = this.fb.group({
@@ -376,7 +379,6 @@ export class InviteOffcanvas implements OnInit, OnDestroy {
       formData.target_country = this.inviteForm.value.target_country;
     }
 
-    // Construction de l'objet permissions avec enabled: true/false
     const role = this.selectedRole();
     if (role && role.permissions && role.permissions.length > 0 && !role.permissions.includes('all')) {
       let selectedPermissions: any = this.inviteForm.value.permissions || [];

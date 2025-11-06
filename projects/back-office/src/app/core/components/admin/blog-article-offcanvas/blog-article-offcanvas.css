@@ -1,0 +1,4 @@
+:host ::ng-deep .offcanvas {
+  width: 900px !important;
+  max-width: 100vw;
+}

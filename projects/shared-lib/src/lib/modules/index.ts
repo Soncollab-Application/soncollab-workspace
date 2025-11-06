@@ -38,3 +38,8 @@ export * from './empty-state/empty-state.module';
 // KPI Card
 export * from './kpi-card/kpi-card.component';
 export * from './kpi-card/kpi-card.module';
+
+// Offcanvas
+export * from './offcanvas/offcanvas';
+export * from './offcanvas/offcanvas.service';
+export * from './offcanvas/offcanvas.module';

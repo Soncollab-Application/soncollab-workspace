@@ -4,7 +4,7 @@ import {
   ConfirmDialogModule, DataListModule,
   EmptyStateModule,
   FilterBarModule,
-  FormModalModule, KpiCardModule,
+  FormModalModule, KpiCardModule, OffcanvasModule,
   ToastModule,
   ToastService
 } from './modules';
@@ -57,6 +57,7 @@ import {CustomValidators} from './validators';
     KpiCardModule,
     ChoiceLibModule,
     DataListModule,
+    OffcanvasModule
   ]
 })
 export class SharedLibModule { }

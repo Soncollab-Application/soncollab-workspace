@@ -1,0 +1,42 @@
+@if (isOpen()) {
+  <div
+    class="offcanvas"
+    [class]="offcanvasClasses()"
+    [class.show]="isOpen()"
+    [style.visibility]="isOpen() ? 'visible' : 'hidden'"
+    [attr.tabindex]="-1"
+    [attr.aria-labelledby]="ariaLabelledby"
+    (click)="onBackdropClick($event)">
+
+    @if (showHeader) {
+      <div class="offcanvas-header" [class]="headerClass">
+        <ng-content select="[offcanvas-header]" />
+        @if (showCloseButton) {
+          <button
+            type="button"
+            class="btn-close"
+            [attr.aria-label]="closeLabel"
+            (click)="close()">
+          </button>
+        }
+      </div>
+    }
+
+    <div class="offcanvas-body" [class]="bodyClass">
+      <ng-content />
+    </div>
+
+    @if (hasFooter) {
+      <div class="offcanvas-footer" [class]="footerClass">
+        <ng-content select="[offcanvas-footer]" />
+      </div>
+    }
+  </div>
+
+  @if (showBackdrop()) {
+    <div
+      class="offcanvas-backdrop fade show"
+      (click)="onBackdropClick($event)">
+    </div>
+  }
+}

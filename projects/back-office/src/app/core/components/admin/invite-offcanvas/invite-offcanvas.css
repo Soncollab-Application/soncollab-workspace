@@ -1,9 +1,4 @@
-.offcanvas {
+:host ::ng-deep .offcanvas {
   width: 700px !important;
   max-width: 100vw;
-}
-
-
-.offcanvas.show {
-  transform: translateX(0) !important;
 }

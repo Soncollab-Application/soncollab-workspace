@@ -1,305 +1,303 @@
-<div
-  class="offcanvas offcanvas-end"
-  [class.show]="isOpen()"
-  [style.visibility]="isOpen() ? 'visible' : 'hidden'"
-  tabindex="-1">
+<!-- projects/back-office/src/app/core/components/admin/invite-offcanvas/invite-offcanvas.html -->
+<lib-offcanvas
+  placement="end"
+  [backdrop]="true"
+  [keyboard]="true"
+  [showHeader]="true"
+  [showCloseButton]="true"
+  [hasFooter]="true"
+  [closeLabel]="'common.close' | translate"
+  ariaLabelledby="inviteOffcanvasTitle"
+  headerClass="border-bottom"
+  bodyClass=""
+  footerClass="border-top p-3">
 
-  <div class="offcanvas-header border-bottom">
+  <!-- Header -->
+  <div offcanvas-header>
     <div>
-      <h5 class="offcanvas-title fw-bold mb-1 d-flex align-items-center">
+      <h5 id="inviteOffcanvasTitle" class="offcanvas-title fw-bold mb-1 d-flex align-items-center">
         <span class="material-symbols-outlined me-2 text-primary">person_add</span>
         {{ 'invitations-list.invite.title' | translate }}
       </h5>
       <p class="mb-0 small text-muted">{{ 'invitations-list.invite.subtitle' | translate }}</p>
     </div>
-    <button
-      type="button"
-      class="btn-close"
-      (click)="close()"
-      [disabled]="submitting() || loading()"></button>
   </div>
 
-  <div class="offcanvas-body">
-    @if (loading()) {
-      <div class="d-flex justify-content-center align-items-center py-5">
-        <div class="text-center">
-          <div class="spinner-border text-primary mb-3" role="status">
-            <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
-          </div>
-          <p class="text-muted">{{ 'invitations-list.invite.loading' | translate }}</p>
+  <!-- Body -->
+  @if (loading()) {
+    <div class="d-flex justify-content-center align-items-center py-5">
+      <div class="text-center">
+        <div class="spinner-border text-primary mb-3" role="status">
+          <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
         </div>
+        <p class="text-muted">{{ 'invitations-list.invite.loading' | translate }}</p>
       </div>
-    } @else {
-      <form [formGroup]="inviteForm" (ngSubmit)="onSubmit()">
+    </div>
+  } @else {
+    <form [formGroup]="inviteForm" (ngSubmit)="onSubmit()">
 
-        <!-- Informations personnelles -->
-        <div class="mb-4">
-          <h6 class="fw-bold mb-3 d-flex align-items-center">
-            <span class="material-symbols-outlined me-2 text-primary">account_circle</span>
-            {{ 'invitations-list.invite.personal_info' | translate }}
-          </h6>
+      <!-- Informations personnelles -->
+      <div class="mb-4">
+        <h6 class="fw-bold mb-3 d-flex align-items-center">
+          <span class="material-symbols-outlined me-2 text-primary">account_circle</span>
+          {{ 'invitations-list.invite.personal_info' | translate }}
+        </h6>
 
-          <div class="mb-3">
-            <label class="form-label small fw-semibold">
-              {{ 'invitations-list.invite.first_name' | translate }}
-              <span class="text-danger">*</span>
-            </label>
-            <input
-              type="text"
-              class="form-control"
-              formControlName="first_name"
-              [placeholder]="'invitations-list.invite.first_name_placeholder' | translate">
-            @if (inviteForm.get('first_name')?.invalid && inviteForm.get('first_name')?.touched) {
-              <small class="text-danger d-block mt-1 d-flex align-items-center">
-                <span class="material-symbols-outlined me-1" style="font-size: 1rem;">error</span>
-                {{ 'invitations-list.invite.first_name_required' | translate }}
-              </small>
-            }
-          </div>
+        <div class="mb-3">
+          <label class="form-label small fw-semibold">
+            {{ 'invitations-list.invite.first_name' | translate }}
+            <span class="text-danger">*</span>
+          </label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="first_name"
+            [placeholder]="'invitations-list.invite.first_name_placeholder' | translate">
+          @if (inviteForm.get('first_name')?.invalid && inviteForm.get('first_name')?.touched) {
+            <small class="text-danger d-block mt-1 d-flex align-items-center">
+              <span class="material-symbols-outlined me-1" style="font-size: 1rem;">error</span>
+              {{ 'invitations-list.invite.first_name_required' | translate }}
+            </small>
+          }
+        </div>
 
-          <div class="mb-3">
-            <label class="form-label small fw-semibold">
-              {{ 'invitations-list.invite.last_name' | translate }}
-              <span class="text-danger">*</span>
-            </label>
-            <input
-              type="text"
-              class="form-control"
-              formControlName="last_name"
-              [placeholder]="'invitations-list.invite.last_name_placeholder' | translate">
-            @if (inviteForm.get('last_name')?.invalid && inviteForm.get('last_name')?.touched) {
-              <small class="text-danger d-block mt-1 d-flex align-items-center">
-                <span class="material-symbols-outlined me-1" style="font-size: 1rem;">error</span>
-                {{ 'invitations-list.invite.last_name_required' | translate }}
-              </small>
-            }
-          </div>
+        <div class="mb-3">
+          <label class="form-label small fw-semibold">
+            {{ 'invitations-list.invite.last_name' | translate }}
+            <span class="text-danger">*</span>
+          </label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="last_name"
+            [placeholder]="'invitations-list.invite.last_name_placeholder' | translate">
+          @if (inviteForm.get('last_name')?.invalid && inviteForm.get('last_name')?.touched) {
+            <small class="text-danger d-block mt-1 d-flex align-items-center">
+              <span class="material-symbols-outlined me-1" style="font-size: 1rem;">error</span>
+              {{ 'invitations-list.invite.last_name_required' | translate }}
+            </small>
+          }
+        </div>
 
-          <div class="mb-3">
-            <label class="form-label small fw-semibold">
-              {{ 'invitations-list.invite.email' | translate }}
-              <span class="text-danger">*</span>
-            </label>
-            <input
-              type="email"
-              class="form-control"
-              formControlName="email"
-              [placeholder]="'invitations-list.invite.email_placeholder' | translate">
-            @if (inviteForm.get('email')?.invalid && inviteForm.get('email')?.touched) {
-              <small class="text-danger d-block mt-1 d-flex align-items-center">
-                <span class="material-symbols-outlined me-1" style="font-size: 1rem;">error</span>
-                {{ 'invitations-list.invite.email_invalid' | translate }}
-              </small>
-            }
-          </div>
+        <div class="mb-3">
+          <label class="form-label small fw-semibold">
+            {{ 'invitations-list.invite.email' | translate }}
+            <span class="text-danger">*</span>
+          </label>
+          <input
+            type="email"
+            class="form-control"
+            formControlName="email"
+            [placeholder]="'invitations-list.invite.email_placeholder' | translate">
+          @if (inviteForm.get('email')?.invalid && inviteForm.get('email')?.touched) {
+            <small class="text-danger d-block mt-1 d-flex align-items-center">
+              <span class="material-symbols-outlined me-1" style="font-size: 1rem;">error</span>
+              {{ 'invitations-list.invite.email_invalid' | translate }}
+            </small>
+          }
+        </div>
 
-          <div class="mb-3">
-            <label class="form-label small fw-semibold">
-              {{ 'invitations-list.invite.language' | translate }}
-              <span class="text-danger">*</span>
-            </label>
-            <lib-choice
-              type="select-one"
-              formControlName="preferred_language"
-              [options]="languageOptions()"
-              [config]="{
+        <div class="mb-3">
+          <label class="form-label small fw-semibold">
+            {{ 'invitations-list.invite.language' | translate }}
+            <span class="text-danger">*</span>
+          </label>
+          <lib-choice
+            type="select-one"
+            formControlName="preferred_language"
+            [options]="languageOptions()"
+            [config]="{
               searchEnabled: false,
               removeItemButton: false,
               shouldSort: false,
               classNames: { containerInner: ['form-select'] }
             }"
-            />
-          </div>
+          />
         </div>
+      </div>
 
-        <!-- Rôle et permissions -->
-        <div class="mb-4">
-          <h6 class="fw-bold mb-3 d-flex align-items-center">
-            <span class="material-symbols-outlined me-2 text-success">verified_user</span>
-            {{ 'invitations-list.invite.role_permissions' | translate }}
-          </h6>
+      <!-- Rôle et permissions -->
+      <div class="mb-4">
+        <h6 class="fw-bold mb-3 d-flex align-items-center">
+          <span class="material-symbols-outlined me-2 text-success">verified_user</span>
+          {{ 'invitations-list.invite.role_permissions' | translate }}
+        </h6>
 
-          <div class="mb-3">
-            <label class="form-label small fw-semibold">
-              {{ 'invitations-list.invite.role' | translate }}
-              <span class="text-danger">*</span>
-            </label>
-            <lib-choice
-              type="select-one"
-              formControlName="target_role"
-              [options]="roleOptions()"
-              [placeholder]="'invitations-list.invite.role_placeholder' | translate"
-              [config]="{
+        <div class="mb-3">
+          <label class="form-label small fw-semibold">
+            {{ 'invitations-list.invite.role' | translate }}
+            <span class="text-danger">*</span>
+          </label>
+          <lib-choice
+            type="select-one"
+            formControlName="target_role"
+            [options]="roleOptions()"
+            [placeholder]="'invitations-list.invite.role_placeholder' | translate"
+            [config]="{
               searchEnabled: false,
               shouldSort: false,
               classNames: { containerInner: ['form-select'] }
             }"
-            />
-            @if (inviteForm.get('target_role')?.invalid && inviteForm.get('target_role')?.touched) {
-              <small class="text-danger d-block mt-1 d-flex align-items-center">
-                <span class="material-symbols-outlined me-1" style="font-size: 1rem;">error</span>
-                {{ 'invitations-list.invite.role_required' | translate }}
-              </small>
-            }
-          </div>
+          />
+          @if (inviteForm.get('target_role')?.invalid && inviteForm.get('target_role')?.touched) {
+            <small class="text-danger d-block mt-1 d-flex align-items-center">
+              <span class="material-symbols-outlined me-1" style="font-size: 1rem;">error</span>
+              {{ 'invitations-list.invite.role_required' | translate }}
+            </small>
+          }
+        </div>
 
-          @if (selectedRole()) {
-            <div class="alert alert-light border-start border-4 border-{{ getRoleColor(selectedRole()!.value) }} mb-3">
-              <div class="d-flex align-items-start">
-                <span class="material-symbols-outlined text-{{ getRoleColor(selectedRole()!.value) }} me-2 mt-1" style="font-size: 1.25rem;">{{ getRoleIcon(selectedRole()!.value) }}</span>
-                <div class="small">
-                  <strong class="d-block mb-1">{{ selectedRole()!.label }}</strong>
-                  <span class="text-muted">{{ selectedRole()!.description }}</span>
-                </div>
+        @if (selectedRole()) {
+          <div class="alert alert-light border-start border-4 border-{{ getRoleColor(selectedRole()!.value) }} mb-3">
+            <div class="d-flex align-items-start">
+              <span class="material-symbols-outlined text-{{ getRoleColor(selectedRole()!.value) }} me-2 mt-1" style="font-size: 1.25rem;">{{ getRoleIcon(selectedRole()!.value) }}</span>
+              <div class="small">
+                <strong class="d-block mb-1">{{ selectedRole()!.label }}</strong>
+                <span class="text-muted">{{ selectedRole()!.description }}</span>
               </div>
             </div>
-          }
+          </div>
+        }
 
-          @if (showDepartment()) {
-            <div class="mb-3">
-              <label class="form-label small fw-semibold">
-                {{ 'invitations-list.invite.department' | translate }}
-                <span class="text-danger">*</span>
-              </label>
-              <lib-choice
-                type="select-one"
-                formControlName="department"
-                [options]="departmentOptions()"
-                [placeholder]="'invitations-list.invite.department_placeholder' | translate"
-                [config]="{
+        @if (showDepartment()) {
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">
+              {{ 'invitations-list.invite.department' | translate }}
+              <span class="text-danger">*</span>
+            </label>
+            <lib-choice
+              type="select-one"
+              formControlName="department"
+              [options]="departmentOptions()"
+              [placeholder]="'invitations-list.invite.department_placeholder' | translate"
+              [config]="{
                 searchEnabled: false,
                 shouldSort: false,
                 classNames: { containerInner: ['form-select'] }
               }"
-              />
-              @if (inviteForm.get('department')?.invalid && inviteForm.get('department')?.touched) {
-                <small class="text-danger d-block mt-1 d-flex align-items-center">
-                  <span class="material-symbols-outlined me-1" style="font-size: 1rem;">error</span>
-                  {{ 'invitations-list.invite.department_required' | translate }}
-                </small>
-              }
-            </div>
-          }
-
-          @if (showPermissions() && permissionOptions().length > 0) {
-            <div class="mb-3">
-              <label class="form-label small fw-semibold">
-                {{ 'invitations-list.invite.permissions' | translate }}
-              </label>
-              <lib-choice
-                type="select-multiple"
-                formControlName="permissions"
-                [options]="permissionOptions()"
-                [placeholder]="'invitations-list.invite.permissions_placeholder' | translate"
-                [config]="permissionsConfig()"
-              />
-              <small class="text-muted d-block mt-1">{{ 'invitations-list.invite.permissions_hint' | translate }}</small>
-            </div>
-          }
-
-          @if (showTerritory() || showCountry()) {
-            <div class="alert alert-info small mb-3 d-flex align-items-center">
-              <span class="material-symbols-outlined me-2">info</span>
-              {{ 'invitations-list.invite.territory_hint' | translate }}
-            </div>
-          }
-
-          @if (showTerritory()) {
-            <div class="mb-3">
-              <label class="form-label small fw-semibold">
-                {{ 'invitations-list.invite.territory' | translate }}
-              </label>
-              <lib-choice
-                type="select-one"
-                formControlName="territory"
-                [options]="territoryOptions()"
-                [placeholder]="'invitations-list.invite.territory_placeholder' | translate"
-                [config]="{
-                searchEnabled: true,
-                shouldSort: false,
-                classNames: { containerInner: ['form-select'] }
-              }"
-              />
-            </div>
-          }
-
-          @if (showCountry()) {
-            <div class="mb-3">
-              <label class="form-label small fw-semibold">
-                {{ 'invitations-list.invite.country' | translate }}
-              </label>
-              <lib-choice
-                type="select-one"
-                formControlName="target_country"
-                [options]="countryOptions()"
-                [placeholder]="'invitations-list.invite.country_placeholder' | translate"
-                [config]="{
-                searchEnabled: true,
-                shouldSort: false,
-                classNames: { containerInner: ['form-select'] }
-              }"
-              />
-            </div>
-          }
-
-          @if (showTerritory() || showCountry()) {
-            @if ((inviteForm.get('territory')?.invalid || inviteForm.get('target_country')?.invalid) &&
-            (inviteForm.get('territory')?.touched || inviteForm.get('target_country')?.touched)) {
+            />
+            @if (inviteForm.get('department')?.invalid && inviteForm.get('department')?.touched) {
               <small class="text-danger d-block mt-1 d-flex align-items-center">
                 <span class="material-symbols-outlined me-1" style="font-size: 1rem;">error</span>
-                {{ 'invitations-list.invite.territory_country_required' | translate }}
+                {{ 'invitations-list.invite.department_required' | translate }}
               </small>
             }
-          }
-        </div>
-
-        <!-- Notes -->
-        <div class="mb-4">
-          <label class="form-label small fw-semibold d-flex align-items-center">
-            <span class="material-symbols-outlined me-1 text-info">comment</span>
-            {{ 'invitations-list.invite.notes' | translate }}
-          </label>
-          <textarea
-            class="form-control"
-            formControlName="notes"
-            rows="3"
-            [placeholder]="'invitations-list.invite.notes_placeholder' | translate"
-            maxlength="500"></textarea>
-          <div class="d-flex justify-content-between mt-1">
-            <small class="text-muted">{{ 'invitations-list.invite.notes_hint' | translate }}</small>
-            <small class="text-muted">{{ inviteForm.get('notes')?.value?.length || 0 }}/500</small>
           </div>
-        </div>
-
-      </form>
-    }
-  </div>
-
-  <div class="offcanvas-footer border-top p-3">
-    <div class="d-flex gap-2">
-      <button
-        type="button"
-        class="btn btn-outline-secondary flex-fill"
-        (click)="close()"
-        [disabled]="submitting() || loading()">
-        {{ 'common.cancel' | translate }}
-      </button>
-      <button
-        type="submit"
-        class="btn btn-primary flex-fill d-flex align-items-center"
-        [disabled]="inviteForm.invalid || submitting() || loading()"
-        (click)="onSubmit()">
-        @if (submitting()) {
-          <span class="spinner-border spinner-border-sm me-2"></span>
-        } @else {
-          <span class="material-symbols-outlined me-2">send</span>
         }
-        {{ 'invitations-list.invite.send' | translate }}
-      </button>
-    </div>
-  </div>
-</div>
 
-@if (isOpen()) {
-  <div class="offcanvas-backdrop fade show"></div>
-}
+        @if (showPermissions() && permissionOptions().length > 0) {
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">
+              {{ 'invitations-list.invite.permissions' | translate }}
+            </label>
+            <lib-choice
+              type="select-multiple"
+              formControlName="permissions"
+              [options]="permissionOptions()"
+              [placeholder]="'invitations-list.invite.permissions_placeholder' | translate"
+              [config]="permissionsConfig()"
+            />
+            <small class="text-muted d-block mt-1">{{ 'invitations-list.invite.permissions_hint' | translate }}</small>
+          </div>
+        }
+
+        @if (showTerritory() || showCountry()) {
+          <div class="alert alert-info small mb-3 d-flex align-items-center">
+            <span class="material-symbols-outlined me-2">info</span>
+            {{ 'invitations-list.invite.territory_hint' | translate }}
+          </div>
+        }
+
+        @if (showTerritory()) {
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">
+              {{ 'invitations-list.invite.territory' | translate }}
+            </label>
+            <lib-choice
+              type="select-one"
+              formControlName="territory"
+              [options]="territoryOptions()"
+              [placeholder]="'invitations-list.invite.territory_placeholder' | translate"
+              [config]="{
+                searchEnabled: true,
+                shouldSort: false,
+                classNames: { containerInner: ['form-select'] }
+              }"
+            />
+          </div>
+        }
+
+        @if (showCountry()) {
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">
+              {{ 'invitations-list.invite.country' | translate }}
+            </label>
+            <lib-choice
+              type="select-one"
+              formControlName="target_country"
+              [options]="countryOptions()"
+              [placeholder]="'invitations-list.invite.country_placeholder' | translate"
+              [config]="{
+                searchEnabled: true,
+                shouldSort: false,
+                classNames: { containerInner: ['form-select'] }
+              }"
+            />
+          </div>
+        }
+
+        @if (showTerritory() || showCountry()) {
+          @if ((inviteForm.get('territory')?.invalid || inviteForm.get('target_country')?.invalid) &&
+          (inviteForm.get('territory')?.touched || inviteForm.get('target_country')?.touched)) {
+            <small class="text-danger d-block mt-1 d-flex align-items-center">
+              <span class="material-symbols-outlined me-1" style="font-size: 1rem;">error</span>
+              {{ 'invitations-list.invite.territory_country_required' | translate }}
+            </small>
+          }
+        }
+      </div>
+
+      <!-- Notes -->
+      <div class="mb-4">
+        <label class="form-label small fw-semibold d-flex align-items-center">
+          <span class="material-symbols-outlined me-1 text-info">comment</span>
+          {{ 'invitations-list.invite.notes' | translate }}
+        </label>
+        <textarea
+          class="form-control"
+          formControlName="notes"
+          rows="3"
+          [placeholder]="'invitations-list.invite.notes_placeholder' | translate"
+          maxlength="500"></textarea>
+        <div class="d-flex justify-content-between mt-1">
+          <small class="text-muted">{{ 'invitations-list.invite.notes_hint' | translate }}</small>
+          <small class="text-muted">{{ inviteForm.get('notes')?.value?.length || 0 }}/500</small>
+        </div>
+      </div>
+
+    </form>
+  }
+
+  <!-- Footer -->
+  <div offcanvas-footer class="d-flex gap-2">
+    <button
+      type="button"
+      class="btn btn-outline-secondary flex-fill"
+      (click)="close()"
+      [disabled]="submitting() || loading()">
+      {{ 'common.cancel' | translate }}
+    </button>
+    <button
+      type="submit"
+      class="btn btn-primary flex-fill d-flex align-items-center justify-content-center"
+      [disabled]="inviteForm.invalid || submitting() || loading()"
+      (click)="onSubmit()">
+      @if (submitting()) {
+        <span class="spinner-border spinner-border-sm me-2"></span>
+      } @else {
+        <span class="material-symbols-outlined me-2">send</span>
+      }
+      {{ 'invitations-list.invite.send' | translate }}
+    </button>
+  </div>
+</lib-offcanvas>

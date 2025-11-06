@@ -1,23 +1,27 @@
-import { Injectable, signal } from '@angular/core';
-
-export interface InviteOffcanvasState {
-  isOpen: boolean;
-  onSuccess?: () => void;
-}
+import { Injectable, inject } from '@angular/core';
+import { OffcanvasService } from 'shared-lib';
 
 @Injectable({
   providedIn: 'root'
 })
 export class InviteOffcanvasService {
-  private state = signal<InviteOffcanvasState>({ isOpen: false });
-
-  getState = this.state.asReadonly();
+  private offcanvasService = inject(OffcanvasService);
 
   open(onSuccess?: () => void): void {
-    this.state.set({ isOpen: true, onSuccess });
+    this.offcanvasService.open({
+      placement: 'end',
+      backdrop: true,
+      keyboard: true,
+      scroll: false,
+      onSuccess
+    });
   }
 
   close(): void {
-    this.state.set({ isOpen: false });
+    this.offcanvasService.close();
+  }
+
+  getState() {
+    return this.offcanvasService.getState();
   }
 }

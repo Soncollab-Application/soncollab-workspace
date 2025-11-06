@@ -351,6 +351,42 @@ export class BlogArticles implements OnInit, OnDestroy {
         render: (article) => article.title,
       },
       {
+        key: 'locale',
+        label: this.translate.instant('blog-articles.columns.locale'),
+        sortable: false,
+        type: 'custom-badge',
+        render: (article) => {
+          const localeConfig = this.availableLocales.find(l => l.code === article.locale);
+          return localeConfig ? `${localeConfig.flag} ${localeConfig.label}` : article.locale?.toUpperCase() || '-';
+        },
+        cellClass: 'text-info bg-info-subtle',
+      },
+      {
+        key: 'translations',
+        label: this.translate.instant('blog-articles.columns.translations'),
+        sortable: false,
+        type: 'custom-badge',
+        render: (article) => {
+          if (!article.localizations || article.localizations.length === 0) {
+            return this.translate.instant('blog-articles.badges.no_translations');
+          }
+
+          // Afficher les locales disponibles
+          const availableLocales = article.localizations
+            .map(loc => {
+              const config = this.availableLocales.find(l => l.code === loc.locale);
+              return config ? config.flag : loc.locale.toUpperCase();
+            })
+            .join(' ');
+
+          return `${availableLocales} (${article.localizations.length})`;
+        },
+        cellClass: (article) => {
+          const hasTranslations = article.localizations && article.localizations.length > 0;
+          return hasTranslations ? 'text-success bg-success-subtle' : 'text-warning bg-warning-subtle';
+        },
+      },
+      {
         key: 'category',
         label: this.translate.instant('blog-articles.columns.category'),
         sortable: false,
@@ -367,22 +403,6 @@ export class BlogArticles implements OnInit, OnDestroy {
           article.author
             ? `${article.author.first_name} ${article.author.last_name}`
             : '-',
-      },
-      {
-        key: 'translations',
-        label: this.translate.instant('blog-articles.columns.translations'),
-        sortable: false,
-        type: 'custom-badge',
-        render: (article) => {
-          const hasOtherLang = article.localizations && article.localizations.length > 0;
-          return hasOtherLang
-            ? this.translate.instant('blog-articles.badges.has_translations')
-            : this.translate.instant('blog-articles.badges.no_translations');
-        },
-        cellClass: (article) => {
-          const hasOtherLang = article.localizations && article.localizations.length > 0;
-          return hasOtherLang ? 'text-success bg-success-subtle' : 'text-warning bg-warning-subtle';
-        },
       },
       {
         key: 'content_status',
@@ -437,32 +457,19 @@ export class BlogArticles implements OnInit, OnDestroy {
         class: 'btn-outline-info',
         handler: (article) => this.createTranslation(article),
         condition: (article) => {
-          const hasTranslation = !!(article.localizations && article.localizations.length > 0);
-          return this.canCreateArticle() && !hasTranslation;
+          const existingLocales = [
+            article.locale,
+            ...(article.localizations?.map(l => l.locale) || [])
+          ];
+          return existingLocales.length < this.availableLocales.length;
         },
       },
       {
         label: this.translate.instant('blog-articles.actions.view_translations'),
         icon: 'language',
-        class: 'btn-outline-info',
+        class: 'btn-outline-secondary',
         handler: (article) => this.viewTranslations(article),
         condition: (article) => !!(article.localizations && article.localizations.length > 0),
-      },
-      {
-        label: this.translate.instant('blog-articles.actions.approve'),
-        icon: 'check_circle',
-        class: 'btn-outline-success',
-        handler: (article) => this.approveArticle(article),
-        condition: (article) =>
-          this.canReviewArticle() && article.content_status === 'pending_review',
-      },
-      {
-        label: this.translate.instant('blog-articles.actions.reject'),
-        icon: 'cancel',
-        class: 'btn-outline-danger',
-        handler: (article) => this.rejectArticle(article),
-        condition: (article) =>
-          this.canReviewArticle() && article.content_status === 'pending_review',
       },
       {
         label: this.translate.instant('blog-articles.actions.delete'),
@@ -596,28 +603,58 @@ export class BlogArticles implements OnInit, OnDestroy {
   }
 
   editArticle(article: BlogArticle): void {
-    this.offcanvasService.open({
-      mode: 'edit',
-      articleId: article.documentId,
-      locale: this.currentLocale()
-    }).subscribe(result => {
-      if (result.action === 'saved') {
+    this.offcanvasService.open(
+      {
+        mode: 'edit',
+        articleId: article.documentId,
+        locale: article.locale
+      },
+      (articleId) => {
         this.listManager.reload();
-        this.loadStats();
       }
-    });
+    );
   }
 
   createTranslation(article: BlogArticle): void {
-    const otherLocale = this.availableLocales.find(l => l.code !== this.currentLocale());
-    if (otherLocale) {
-      this.router.navigate(['/admin/content/blog-articles/new'], {
-        queryParams: {
-          sourceId: article.documentId,
-          locale: otherLocale.code
-        }
-      });
+    const existingLocales = [
+      article.locale,
+      ...(article.localizations?.map(l => l.locale) || [])
+    ];
+
+    const availableLocales = this.availableLocales.filter(
+      loc => !existingLocales.includes(loc.code)
+    );
+
+    if (availableLocales.length === 0) {
+      this.toastService.showWarning(
+        this.translate.instant('blog-articles.messages.all_translations_exist')
+      );
+      return;
     }
+
+    // Si une seule locale disponible, l'utiliser directement
+    if (availableLocales.length === 1) {
+      this.openCreateTranslationOffcanvas(article.documentId!, availableLocales[0].code);
+      return;
+    }
+
+    this.openCreateTranslationOffcanvas(article.documentId!, availableLocales[0].code);
+  }
+
+  private openCreateTranslationOffcanvas(sourceDocumentId: string, targetLocale: string): void {
+    this.offcanvasService.open(
+      {
+        mode: 'create',
+        locale: targetLocale,
+        sourceDocumentId
+      },
+      (articleId) => {
+        this.listManager.reload();
+        this.toastService.showSuccess(
+          this.translate.instant('blog-articles.messages.translation_created')
+        );
+      }
+    );
   }
 
   viewTranslations(article: BlogArticle): void {
@@ -735,16 +772,16 @@ export class BlogArticles implements OnInit, OnDestroy {
       });
   }
 
-  createNewArticle(): void {
-    this.offcanvasService.open({
-      mode: 'create',
-      locale: this.currentLocale()
-    }).subscribe(result => {
-      if (result.action === 'saved') {
+  openCreateOffcanvas(): void {
+    this.offcanvasService.open(
+      {
+        mode: 'create',
+        locale: this.currentLocale()
+      },
+      (articleId) => {
         this.listManager.reload();
-        this.loadStats();
       }
-    });
+    );
   }
 
 }

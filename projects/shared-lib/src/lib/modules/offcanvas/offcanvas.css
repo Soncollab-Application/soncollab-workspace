@@ -1,0 +1,8 @@
+:host {
+  display: contents;
+}
+
+.offcanvas-footer {
+  padding: 1rem;
+  border-top: 1px solid var(--bs-border-color);
+}

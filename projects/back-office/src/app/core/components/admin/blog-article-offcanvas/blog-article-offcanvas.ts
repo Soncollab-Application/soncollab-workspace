@@ -1,14 +1,13 @@
-import { Component, computed, ElementRef, inject, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, computed, inject, OnDestroy, OnInit, signal, effect, untracked } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { Choice, ChoiceOption, ChoiceConfig, ToastService } from 'shared-lib';
-import { Subject, takeUntil, filter } from 'rxjs';
+import { Choice, ChoiceOption, ChoiceConfig, ToastService, Offcanvas } from 'shared-lib';
+import { Subject, takeUntil } from 'rxjs';
 import { MarkdownModule } from 'ngx-markdown';
-import { Offcanvas } from 'bootstrap';
-import {BlogCategoryFilters} from '../../../models/content/blog-category.model';
-import {BlogArticleOffcanvasService} from '../../../services/admin/blog-article-offcanvas.service';
-import {AdminContentService} from '../../../services/admin/admin-content.service';
+import { BlogCategoryFilters } from '../../../models/content/blog-category.model';
+import { BlogArticleOffcanvasService } from '../../../services/admin/blog-article-offcanvas.service';
+import { AdminContentService } from '../../../services/admin/admin-content.service';
 
 @Component({
   selector: 'app-blog-article-offcanvas',
@@ -20,13 +19,12 @@ import {AdminContentService} from '../../../services/admin/admin-content.service
     MarkdownModule,
     Choice,
     FormsModule,
+    Offcanvas
   ],
   templateUrl: './blog-article-offcanvas.html',
   styleUrl: './blog-article-offcanvas.css'
 })
 export class BlogArticleOffcanvas implements OnInit, OnDestroy {
-  @ViewChild('offcanvasElement', { static: true }) offcanvasElement!: ElementRef;
-
   private offcanvasService = inject(BlogArticleOffcanvasService);
   private contentService = inject(AdminContentService);
   private fb = inject(FormBuilder);
@@ -34,9 +32,7 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
   private translate = inject(TranslateService);
   private destroy$ = new Subject<void>();
 
-  private offcanvasInstance: Offcanvas | null = null;
-
-  isOpen = signal(false);
+  isOpen = computed(() => this.offcanvasService.getState().isOpen);
   mode = signal<'create' | 'edit'>('create');
   locale = signal('fr');
   articleId = signal<string | undefined>(undefined);
@@ -47,7 +43,6 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
   showPreview = signal(false);
 
   articleForm!: FormGroup;
-
   categories = signal<any[]>([]);
 
   title = computed(() =>
@@ -84,28 +79,24 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
     shouldSort: false,
   };
 
-  ngOnInit(): void {
-    this.initForm();
-    this.setupOffcanvasListener();
-
-    this.offcanvasInstance = new Offcanvas(this.offcanvasElement.nativeElement, {
-      backdrop: 'static',
-      keyboard: false,
-      scroll: false,
-    });
-
-    // Écouter la fermeture du backdrop
-    this.offcanvasElement.nativeElement.addEventListener('hidden.bs.offcanvas', () => {
-      if (this.isOpen()) {
-        this.close('cancelled');
+  constructor() {
+    effect(() => {
+      const state = this.offcanvasService.getState();
+      if (state.isOpen && state.data) {
+        untracked(() => {
+          this.loadOffcanvasData(state.data!);
+        });
       }
     });
+  }
+
+  ngOnInit(): void {
+    this.initForm();
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-    this.offcanvasInstance?.dispose();
   }
 
   private initForm(): void {
@@ -117,14 +108,10 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
       category: [null, [Validators.required]],
       is_featured: [false],
       reading_time: [0],
-
-      // SEO
       seo_title: ['', [Validators.maxLength(60)]],
       seo_description: ['', [Validators.maxLength(160)]],
       seo_keywords: [''],
       canonical_url: [''],
-
-      // Status
       content_status: ['draft']
     });
 
@@ -144,41 +131,30 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
       .subscribe(content => {
         if (content) {
           const words = content.split(/\s+/).length;
-          const readingTime = Math.ceil(words / 200); // 200 words per minute
+          const readingTime = Math.ceil(words / 200);
           this.articleForm.patchValue({ reading_time: readingTime }, { emitEvent: false });
         }
       });
   }
 
-  private setupOffcanvasListener(): void {
-    this.offcanvasService.data$
-      .pipe(
-        takeUntil(this.destroy$),
-        filter(data => data !== null)
-      )
-      .subscribe(data => {
-        if (!data) return;
+  private loadOffcanvasData(data: any): void {
+    this.mode.set(data.mode);
+    this.locale.set(data.locale);
+    this.articleId.set(data.articleId);
+    this.activeTab.set('content');
+    this.showPreview.set(false);
 
-        this.mode.set(data.mode);
-        this.locale.set(data.locale);
-        this.articleId.set(data.articleId);
-        this.activeTab.set('content');
-        this.showPreview.set(false);
+    this.loadCategories();
 
-        this.loadCategories();
-
-        if (data.mode === 'edit' && data.articleId) {
-          this.loadArticle(data.articleId);
-        } else {
-          this.articleForm.reset({
-            is_featured: false,
-            content_status: 'draft',
-            reading_time: 0
-          });
-        }
-
-        this.open();
+    if (data.mode === 'edit' && data.articleId) {
+      this.loadArticle(data.articleId);
+    } else {
+      this.articleForm.reset({
+        is_featured: false,
+        content_status: 'draft',
+        reading_time: 0
       });
+    }
   }
 
   private loadCategories(): void {
@@ -227,7 +203,7 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
         error: (error) => {
           this.loading.set(false);
           this.toast.showError(this.translate.instant('blog-article-offcanvas.messages.error_loading'));
-          this.close('cancelled');
+          this.close();
         }
       });
   }
@@ -241,18 +217,13 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
       .replace(/^-+|-+$/g, '');
   }
 
-  open(): void {
-    this.isOpen.set(true);
-    this.offcanvasInstance?.show();
-  }
-
-  close(action: 'saved' | 'cancelled'): void {
-    this.isOpen.set(false);
-    this.offcanvasInstance?.hide();
-
-    setTimeout(() => {
-      this.offcanvasService.close({ action });
-    }, 300);
+  close(): void {
+    this.offcanvasService.close();
+    this.articleForm.reset({
+      is_featured: false,
+      content_status: 'draft',
+      reading_time: 0
+    });
   }
 
   onSubmit(): void {
@@ -276,7 +247,7 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
 
     request.pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: () => {
+        next: (response) => {
           this.saving.set(false);
           this.toast.showSuccess(
             this.translate.instant(
@@ -285,7 +256,13 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
                 : 'blog-article-offcanvas.messages.updated'
             )
           );
-          this.close('saved');
+
+          const state = this.offcanvasService.getState();
+          if (state.onSuccess) {
+            state.onSuccess(response.data?.documentId);
+          }
+
+          this.close();
         },
         error: (error) => {
           this.saving.set(false);

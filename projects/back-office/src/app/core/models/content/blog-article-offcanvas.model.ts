@@ -4,6 +4,7 @@ export interface BlogArticleOffcanvasData {
   mode: 'create' | 'edit';
   articleId?: string;
   locale: string;
+  sourceDocumentId?: string;
 }
 
 export interface BlogArticleOffcanvasResult {
