@@ -1,0 +1,41 @@
+{
+  "fileUploadShared": {
+    "label": "Choose files",
+    "hint": "PNG, JPG, GIF up to {{maxSize}}MB",
+    "chooseFiles": "Choose Files",
+    "uploadFiles": "Upload photos / videos",
+    "dropHere": "Drop your files here",
+    "addMore": "Add More",
+    "clearAll": "Clear All",
+    "remove": "Remove",
+    "cover": "Cover",
+    "uploadAll": "Upload All",
+    "loadingPreview": "Loading...",
+    "filesSelected": "{{count}} file(s) selected",
+    "uploading": "Uploading {{progress}}%",
+    "uploaded": "Uploaded",
+    "error": "Error",
+    "errors": {
+      "maxFiles": "Maximum {{max}} files allowed",
+      "maxSize": "File too large (max {{maxSize}}MB)",
+      "fileType": "File type not allowed",
+      "multipleNotAllowed": "Multiple files not allowed",
+      "uploadFailed": "Upload failed",
+      "duplicates": "Some files already exist and were skipped"
+    },
+    "status": {
+      "pending": "Pending",
+      "uploading": "Uploading",
+      "success": "Success",
+      "error": "Error"
+    },
+    "messages": {
+      "filesAdded": "{{count}} file(s) added successfully",
+      "uploadSuccess": "{{name}} uploaded successfully",
+      "uploadError": "Error uploading {{name}}",
+      "fileRemoved": "{{name}} removed",
+      "allFilesCleared": "{{count}} file(s) cleared",
+      "noPendingFiles": "No files pending upload"
+    }
+  }
+}

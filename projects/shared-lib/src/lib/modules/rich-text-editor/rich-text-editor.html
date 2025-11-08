@@ -1,0 +1,27 @@
+<div class="ngx-editor-wrapper">
+  <ngx-editor-menu
+    [editor]="editor"
+    [toolbar]="toolbar"
+    [disabled]="readonly">
+  </ngx-editor-menu>
+
+  <ngx-editor
+    [editor]="editor"
+    [ngModel]="html()"
+    (ngModelChange)="onContentChanged($event)"
+    [disabled]="readonly"
+    [placeholder]="placeholder">
+  </ngx-editor>
+
+  @if (enableMediaPicker) {
+    <div class="editor-footer border-top p-2 bg-body-tertiary">
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-primary"
+        (click)="insertImageFromMediaPicker()">
+        <span class="material-symbols-outlined me-1" style="font-size: 1rem;">photo_library</span>
+        {{ 'richTextEditorShared.insertFromLibrary' | translate }}
+      </button>
+    </div>
+  }
+</div>

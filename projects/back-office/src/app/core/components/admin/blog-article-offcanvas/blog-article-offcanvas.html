@@ -96,25 +96,6 @@
                   }
                 </div>
 
-                <!-- Slug -->
-                <div class="col-12">
-                  <label class="form-label small fw-semibold">
-                    {{ 'blog-articles.offcanvas.fields.slug' | translate }}
-                    <span class="text-danger">*</span>
-                  </label>
-                  <input type="text"
-                         class="form-control font-monospace"
-                         [class.is-invalid]="articleForm.get('slug')?.invalid && articleForm.get('slug')?.touched"
-                         formControlName="slug"
-                         [placeholder]="'blog-articles.offcanvas.placeholders.slug' | translate">
-                  @if (articleForm.get('slug')?.invalid && articleForm.get('slug')?.touched) {
-                    <small class="text-danger d-block mt-1 d-flex align-items-center">
-                      <span class="material-symbols-outlined me-1" style="font-size: 1rem;">error</span>
-                      {{ 'blog-articles.offcanvas.errors.slug_required' | translate }}
-                    </small>
-                  }
-                </div>
-
                 <!-- Excerpt -->
                 <div class="col-12">
                   <label class="form-label small fw-semibold">

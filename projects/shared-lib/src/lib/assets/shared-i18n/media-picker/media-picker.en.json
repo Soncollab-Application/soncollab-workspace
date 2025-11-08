@@ -1,0 +1,19 @@
+{
+  "mediaPickerShared": {
+    "title": "Select Media",
+    "search": "Search...",
+    "loading": "Loading media...",
+    "selected": "{{count}} selected",
+    "confirm": "Confirm",
+    "folders": {
+      "all": "All",
+      "images": "Images",
+      "videos": "Videos",
+      "documents": "Documents"
+    },
+    "empty": {
+      "title": "No media",
+      "message": "No media found. Start by uploading files."
+    }
+  }
+}

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import {
   ChoiceLibModule,
   ConfirmDialogModule, DataListModule,
-  EmptyStateModule,
+  EmptyStateModule, FileUploadModule, FileUploadService,
   FilterBarModule,
   FormModalModule, KpiCardModule, ModalModule, ModalService, OffcanvasModule, OffcanvasService,
   ToastModule,
@@ -48,7 +48,8 @@ import {CustomValidators} from './validators';
     FilterStateService,
     ListStateManager,
     OffcanvasService,
-    ModalService
+    ModalService,
+    FileUploadService,
   ],
   exports: [
     ToastModule,
@@ -60,7 +61,8 @@ import {CustomValidators} from './validators';
     ChoiceLibModule,
     DataListModule,
     OffcanvasModule,
-    ModalModule
+    ModalModule,
+    FileUploadModule
   ]
 })
 export class SharedLibModule { }

@@ -1,0 +1,19 @@
+{
+  "mediaPickerShared": {
+    "title": "Sélectionner un média",
+    "search": "Rechercher...",
+    "loading": "Chargement des médias...",
+    "selected": "{{count}} sélectionné(s)",
+    "confirm": "Confirmer",
+    "folders": {
+      "all": "Tous",
+      "images": "Images",
+      "videos": "Vidéos",
+      "documents": "Documents"
+    },
+    "empty": {
+      "title": "Aucun média",
+      "message": "Aucun média trouvé. Commencez par télécharger des fichiers."
+    }
+  }
+}

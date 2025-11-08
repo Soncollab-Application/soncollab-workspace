@@ -3,29 +3,40 @@
 }
 
 .modal {
-  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1055;
+  width: 100%;
+  height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
+  outline: 0;
+}
+
+.modal.show {
+  display: block !important;
 }
 
 .modal-backdrop {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 1040;
+  z-index: 1050;
   width: 100vw;
   height: 100vh;
-  background-color: #000;
-}
-
-.modal-backdrop.fade {
-  opacity: 0;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .modal-backdrop.show {
-  opacity: 0.5;
+  opacity: 1;
 }
 
-body.modal-open {
-  overflow: hidden;
+/* S'assurer que le modal est au-dessus de tout */
+:host ::ng-deep .modal {
+  z-index: 1055 !important;
+}
+
+:host ::ng-deep .modal-backdrop {
+  z-index: 1050 !important;
 }

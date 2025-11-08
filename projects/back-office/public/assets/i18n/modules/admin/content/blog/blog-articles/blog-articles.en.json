@@ -95,9 +95,15 @@
       "updated": "Article updated successfully",
       "all_translations_exist": "All translations already exist",
       "translation_created": "Translation created successfully",
+      "translation_opened": "Translation opened",
       "error_saving": "Error saving article",
       "error_loading": "Error loading article",
       "fill_required": "Please fill in all required fields"
+    },
+    "translations_modal": {
+      "title": "Available Translations",
+      "subtitle": "Select a translation to view",
+      "no_translations": "No translations available"
     },
     "offcanvas": {
       "title": "Blog Article",
@@ -112,7 +118,6 @@
       },
       "fields": {
         "title": "Title",
-        "slug": "Slug",
         "excerpt": "Excerpt",
         "content": "Content",
         "category": "Category",
@@ -126,7 +131,6 @@
       },
       "placeholders": {
         "title": "Enter article title",
-        "slug": "article-url-slug",
         "excerpt": "Enter a brief summary of the article",
         "content": "Write your article in Markdown",
         "seo_title": "Search engine optimized title",
@@ -142,7 +146,6 @@
       },
       "errors": {
         "title_required": "Title is required",
-        "slug_required": "Slug is required",
         "content_required": "Content is required",
         "category_required": "Category is required"
       },

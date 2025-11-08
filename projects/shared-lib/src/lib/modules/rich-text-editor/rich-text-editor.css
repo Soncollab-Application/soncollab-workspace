@@ -1,0 +1,29 @@
+:host {
+  display: block;
+}
+
+.ngx-editor-wrapper {
+  border: 1px solid var(--fn-border-color);
+  border-radius: var(--fn-border-radius);
+  overflow: hidden;
+}
+
+::ng-deep .NgxEditor {
+  border: none !important;
+}
+
+::ng-deep .NgxEditor__Content {
+  min-height: 300px;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+::ng-deep .NgxEditor__MenuBar {
+  background-color: var(--fn-tertiary-bg);
+  border-bottom: 1px solid var(--fn-border-color);
+  padding: 0.5rem;
+}
+
+.editor-footer {
+  background-color: var(--fn-tertiary-bg);
+}

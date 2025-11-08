@@ -1,0 +1,24 @@
+{
+  "richTextEditorShared": {
+    "toggleMode": "Changer de mode",
+    "markdown": "Markdown",
+    "visual": "Visuel",
+    "insertLink": "Entrez l'URL du lien",
+    "insertImageUrl": "Entrez l'URL de l'image",
+    "characters": "Caractères",
+    "commands": {
+      "bold": "Gras",
+      "italic": "Italique",
+      "underline": "Souligné",
+      "heading1": "Titre 1",
+      "heading2": "Titre 2",
+      "heading3": "Titre 3",
+      "bulletList": "Liste à puces",
+      "numberedList": "Liste numérotée",
+      "link": "Insérer un lien",
+      "image": "Insérer une image",
+      "code": "Code",
+      "quote": "Citation"
+    }
+  }
+}

@@ -102,7 +102,6 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
   private initForm(): void {
     this.articleForm = this.fb.group({
       title: ['', [Validators.required, Validators.maxLength(200)]],
-      slug: ['', [Validators.required]],
       excerpt: ['', [Validators.maxLength(300)]],
       content: ['', [Validators.required]],
       category: [null, [Validators.required]],
@@ -115,15 +114,8 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
       content_status: ['draft']
     });
 
-    // Auto-generate slug from title
-    this.articleForm.get('title')?.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(title => {
-        if (this.mode() === 'create' && title) {
-          const slug = this.generateSlug(title);
-          this.articleForm.patchValue({ slug }, { emitEvent: false });
-        }
-      });
+
+
 
     // Auto-calculate reading time from content
     this.articleForm.get('content')?.valueChanges
@@ -187,7 +179,6 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
 
           this.articleForm.patchValue({
             title: article.title,
-            slug: article.slug,
             excerpt: article.excerpt,
             content: article.content,
             category: article.category?.documentId,
@@ -206,15 +197,6 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
           this.close();
         }
       });
-  }
-
-  private generateSlug(text: string): string {
-    return text
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '');
   }
 
   close(): void {

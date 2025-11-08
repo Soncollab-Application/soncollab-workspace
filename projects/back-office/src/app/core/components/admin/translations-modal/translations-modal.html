@@ -1,0 +1,46 @@
+<lib-modal
+  size="default"
+  [centered]="true"
+  [backdrop]="'static'"
+  [keyboard]="true"
+  [showHeader]="true"
+  [showFooter]="false"
+  [closeLabel]="'common.close' | translate"
+  ariaLabelledby="translationsModalTitle">
+
+  <!-- Header -->
+  <div modal-header>
+    <h5 id="translationsModalTitle" class="modal-title d-flex align-items-center">
+      <span class="material-symbols-outlined me-2 text-primary">translate</span>
+      {{ 'blog-articles.translations_modal.title' | translate }}
+    </h5>
+  </div>
+
+  <!-- Body -->
+  <div>
+    <p class="text-muted mb-3">{{ 'blog-articles.translations_modal.subtitle' | translate }}</p>
+
+    @if (translations().length === 0) {
+      <div class="alert alert-info d-flex align-items-center">
+        <span class="material-symbols-outlined me-2">info</span>
+        {{ 'blog-articles.translations_modal.no_translations' | translate }}
+      </div>
+    } @else {
+      <div class="list-group">
+        @for (translation of translations(); track translation.locale) {
+          <button
+            type="button"
+            class="list-group-item list-group-item-action d-flex align-items-center py-3"
+            (click)="selectTranslation(translation)">
+            <span class="fs-3 me-3">{{ translation.flag }}</span>
+            <div class="flex-grow-1">
+              <div class="fw-semibold">{{ translation.label }}</div>
+              <small class="text-muted">{{ translation.locale.toUpperCase() }}</small>
+            </div>
+            <span class="material-symbols-outlined text-primary">arrow_forward</span>
+          </button>
+        }
+      </div>
+    }
+  </div>
+</lib-modal>

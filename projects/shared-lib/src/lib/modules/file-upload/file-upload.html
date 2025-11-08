@@ -1,0 +1,178 @@
+<div class="file-upload-container">
+  <input
+    #fileInput
+    type="file"
+    class="d-none"
+    [multiple]="multiple"
+    [accept]="accept"
+    (change)="onFileSelect($event)">
+
+  <div
+    class="border rounded p-3"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave($event)"
+    (drop)="onDrop($event)"
+    [class.border-primary]="isDragging()"
+    [class.bg-primary-bg-subtle]="isDragging()">
+
+    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-3">
+
+      <!-- Uploaded Files -->
+      @for (file of files(); track $index) {
+        <div class="col animate__animated animate__fadeIn">
+          <div class="hover-effect-opacity position-relative overflow-hidden rounded">
+
+            <!-- Cover Badge -->
+            @if ($index === 0 && showCoverBadge) {
+              <span class="badge bg-primary position-absolute top-0 start-0 z-3 mt-2 ms-2">
+                {{ 'fileUploadShared.cover' | translate }}
+              </span>
+            }
+
+            <!-- Status Badge -->
+            @if (file.status === 'uploading') {
+              <span class="badge bg-info position-absolute top-0 end-0 z-3 mt-2 me-2">
+                <span class="spinner-border spinner-border-sm me-1"></span>
+                {{ file.progress }}%
+              </span>
+            }
+            @if (file.status === 'error') {
+              <span class="badge bg-danger position-absolute top-0 end-0 z-3 mt-2 me-2 animate__animated animate__shakeX">
+                <span class="material-symbols-outlined" style="font-size: 1rem;">error</span>
+              </span>
+            }
+            @if (file.status === 'success') {
+              <span class="badge bg-success position-absolute top-0 end-0 z-3 mt-2 me-2 animate__animated animate__zoomIn">
+                <span class="material-symbols-outlined" style="font-size: 1rem;">check_circle</span>
+              </span>
+            }
+
+            <!-- Image Preview -->
+            <div class="ratio" style="--fn-aspect-ratio: calc(180 / 268 * 100%)">
+              @if (file.loadingPreview) {
+                <div class="d-flex flex-column align-items-center justify-content-center bg-body-tertiary p-3">
+                  <span class="material-symbols-outlined text-primary mb-2 fs-1">image</span>
+                  <div class="w-100">
+                    <div class="progress" style="height: 4px;">
+                      <div class="progress-bar progress-bar-striped progress-bar-animated w-100"></div>
+                    </div>
+                  </div>
+                  <small class="text-muted mt-2">{{ 'fileUploadShared.loadingPreview' | translate }}</small>
+                </div>
+              } @else if (file.preview && showPreview) {
+                <img [src]="file.preview" [alt]="file.name" class="w-100 h-100 object-fit-cover">
+              } @else {
+                <div class="d-flex align-items-center justify-content-center bg-body-tertiary">
+                  <span class="material-symbols-outlined text-muted" style="font-size: 3rem;">
+                    {{ getFileIcon(file.type) }}
+                  </span>
+                </div>
+              }
+
+              <!-- Upload Overlay -->
+              @if (file.status === 'uploading' && !file.loadingPreview) {
+                <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center bg-dark bg-opacity-75">
+                  <div class="text-white text-center">
+                    <span class="material-symbols-outlined mb-2" style="font-size: 2.5rem;">cloud_upload</span>
+                    <div class="fw-semibold mb-2">{{ file.progress }}%</div>
+                    <div class="progress bg-white bg-opacity-25" style="height: 6px; width: 120px;">
+                      <div
+                        class="progress-bar bg-white"
+                        [style.width.%]="file.progress">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+
+            <!-- Bottom Progress Bar -->
+            @if (file.status === 'uploading') {
+              <div class="progress position-absolute bottom-0 start-0 w-100" style="height: 4px; border-radius: 0;">
+                <div class="progress-bar" [style.width.%]="file.progress"></div>
+              </div>
+            }
+
+            <!-- Hover Delete Button -->
+            @if (!file.loadingPreview && file.status !== 'uploading') {
+              <div class="hover-effect-target position-absolute top-0 start-0 d-flex align-items-center justify-content-center w-100 h-100 opacity-0">
+                <button
+                  type="button"
+                  class="btn btn-icon btn-sm btn-danger position-relative z-2"
+                  [attr.aria-label]="'fileUploadShared.remove' | translate"
+                  (click)="removeFile($index)">
+                  <span class="material-symbols-outlined">delete</span>
+                </button>
+                <span class="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-50 z-1"></span>
+              </div>
+            }
+          </div>
+
+          <!-- File Name -->
+          @if (showFileName) {
+            <div class="text-truncate small text-muted mt-1">{{ file.name }}</div>
+          }
+        </div>
+      }
+
+      <!-- Upload Button -->
+      <div class="col">
+        <div
+          class="d-flex align-items-center justify-content-center position-relative h-100 cursor-pointer bg-body-tertiary border border-2 border-dashed rounded p-3"
+          [class.border-primary]="isDragging()"
+          [class.bg-primary-bg-subtle]="isDragging()"
+          [class.animate__animated]="isDragging()"
+          [class.animate__pulse]="isDragging()"
+          (click)="fileInput.click()"
+          style="min-height: 180px;">
+          <div class="text-center">
+            <span
+              class="material-symbols-outlined text-primary mb-2"
+              [class.animate__animated]="isDragging()"
+              [class.animate__bounce]="isDragging()"
+              style="font-size: 3rem;">
+              {{ isDragging() ? 'cloud_download' : 'add_photo_alternate' }}
+            </span>
+            <div class="hover-effect-underline stretched-link fs-sm fw-medium">
+              {{ isDragging()
+              ? ('fileUploadShared.dropHere' | translate)
+              : ('fileUploadShared.uploadFiles' | translate) }}
+            </div>
+            @if (!isDragging()) {
+              <div class="text-muted mt-1 fs-xs">{{ hintText() }}</div>
+            }
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Actions Bar -->
+    @if (files().length > 0) {
+      <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+        <span class="text-muted small">
+          {{ 'fileUploadShared.filesSelected' | translate: { count: files().length } }}
+        </span>
+        <div class="d-flex gap-2">
+          @if (!autoUpload && uploadUrl) {
+            <button
+              type="button"
+              class="btn btn-sm btn-primary"
+              (click)="uploadAll()"
+              [disabled]="!hasPendingFiles()">
+              <span class="material-symbols-outlined me-1">cloud_upload</span>
+              {{ 'fileUploadShared.uploadAll' | translate }}
+            </button>
+          }
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-danger"
+            (click)="clearAll()">
+            <span class="material-symbols-outlined me-1">delete_sweep</span>
+            {{ 'fileUploadShared.clearAll' | translate }}
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+</div>

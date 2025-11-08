@@ -1,0 +1,24 @@
+{
+  "richTextEditorShared": {
+    "toggleMode": "Toggle mode",
+    "markdown": "Markdown",
+    "visual": "Visual",
+    "insertLink": "Enter link URL",
+    "insertImageUrl": "Enter image URL",
+    "characters": "Characters",
+    "commands": {
+      "bold": "Bold",
+      "italic": "Italic",
+      "underline": "Underline",
+      "heading1": "Heading 1",
+      "heading2": "Heading 2",
+      "heading3": "Heading 3",
+      "bulletList": "Bullet List",
+      "numberedList": "Numbered List",
+      "link": "Insert Link",
+      "image": "Insert Image",
+      "code": "Code",
+      "quote": "Quote"
+    }
+  }
+}

@@ -95,9 +95,15 @@
       "updated": "Article mis à jour avec succès",
       "all_translations_exist": "Toutes les traductions existent déjà",
       "translation_created": "Traduction créée avec succès",
+      "translation_opened": "Traduction ouverte",
       "error_saving": "Erreur lors de l'enregistrement de l'article",
       "error_loading": "Erreur lors du chargement de l'article",
       "fill_required": "Veuillez remplir tous les champs obligatoires"
+    },
+    "translations_modal": {
+      "title": "Traductions disponibles",
+      "subtitle": "Sélectionnez une traduction à consulter",
+      "no_translations": "Aucune traduction disponible"
     },
     "offcanvas": {
       "title": "Article de blog",
@@ -112,7 +118,6 @@
       },
       "fields": {
         "title": "Titre",
-        "slug": "Slug",
         "excerpt": "Extrait",
         "content": "Contenu",
         "category": "Catégorie",
@@ -126,7 +131,6 @@
       },
       "placeholders": {
         "title": "Entrez le titre de l'article",
-        "slug": "url-de-l-article",
         "excerpt": "Entrez un court résumé de l'article",
         "content": "Rédigez votre article en Markdown",
         "seo_title": "Titre optimisé pour les moteurs de recherche",
@@ -142,7 +146,6 @@
       },
       "errors": {
         "title_required": "Le titre est requis",
-        "slug_required": "Le slug est requis",
         "content_required": "Le contenu est requis",
         "category_required": "La catégorie est requise"
       },

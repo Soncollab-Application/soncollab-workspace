@@ -1,0 +1,41 @@
+{
+  "fileUploadShared": {
+    "label": "Choisissez des fichiers",
+    "hint": "PNG, JPG, GIF jusqu'à {{maxSize}}MB",
+    "chooseFiles": "Choisir des fichiers",
+    "uploadFiles": "Télécharger photos / vidéos",
+    "dropHere": "Déposez vos fichiers ici",
+    "addMore": "Ajouter plus",
+    "clearAll": "Tout effacer",
+    "remove": "Supprimer",
+    "cover": "Couverture",
+    "uploadAll": "Tout envoyer",
+    "loadingPreview": "Chargement...",
+    "filesSelected": "{{count}} fichier(s) sélectionné(s)",
+    "uploading": "Envoi {{progress}}%",
+    "uploaded": "Envoyé",
+    "error": "Erreur",
+    "errors": {
+      "maxFiles": "Maximum {{max}} fichiers autorisés",
+      "maxSize": "Fichier trop volumineux (max {{maxSize}}MB)",
+      "fileType": "Type de fichier non autorisé",
+      "multipleNotAllowed": "Plusieurs fichiers non autorisés",
+      "uploadFailed": "Échec de l'envoi",
+      "duplicates": "Certains fichiers existent déjà et ont été ignorés"
+    },
+    "status": {
+      "pending": "En attente",
+      "uploading": "Envoi en cours",
+      "success": "Succès",
+      "error": "Erreur"
+    },
+    "messages": {
+      "filesAdded": "{{count}} fichier(s) ajouté(s) avec succès",
+      "uploadSuccess": "{{name}} envoyé avec succès",
+      "uploadError": "Erreur lors de l'envoi de {{name}}",
+      "fileRemoved": "{{name}} supprimé",
+      "allFilesCleared": "{{count}} fichier(s) supprimé(s)",
+      "noPendingFiles": "Aucun fichier en attente d'envoi"
+    }
+  }
+}

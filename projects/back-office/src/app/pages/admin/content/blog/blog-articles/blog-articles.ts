@@ -37,6 +37,11 @@ import { FormsModule } from '@angular/forms';
 import { BlogCategoryFilters } from '../../../../../core/models/content/blog-category.model';
 import {BlogArticleOffcanvasService} from '../../../../../core/services/admin/blog-article-offcanvas.service';
 import {BlogArticleOffcanvas} from '../../../../../core/components/admin/blog-article-offcanvas/blog-article-offcanvas';
+import {TranslationsModal} from '../../../../../core/components/admin/translations-modal/translations-modal';
+import {
+  TranslationOption,
+  TranslationsModalService
+} from '../../../../../core/services/admin/translations-modal.service';
 
 @Component({
   selector: 'app-blog-articles',
@@ -51,6 +56,7 @@ import {BlogArticleOffcanvas} from '../../../../../core/components/admin/blog-ar
     DataList,
     Choice,
     BlogArticleOffcanvas,
+    TranslationsModal,
   ],
   templateUrl: './blog-articles.html',
   styleUrl: './blog-articles.css',
@@ -67,6 +73,7 @@ export class BlogArticles implements OnInit, OnDestroy {
   private toastService = inject(ToastService);
   private offcanvasService = inject(BlogArticleOffcanvasService);
   protected listManager = inject(ListStateManager<BlogArticle, BlogArticleFilters>);
+  private translationsModalService = inject(TranslationsModalService);
 
   private destroy$ = new Subject<void>();
   private componentId = 'blog-articles';
@@ -472,6 +479,20 @@ export class BlogArticles implements OnInit, OnDestroy {
         condition: (article) => !!(article.localizations && article.localizations.length > 0),
       },
       {
+        label: this.translate.instant('blog-articles.actions.approve'),
+        icon: 'check_circle',
+        class: 'btn-outline-success',
+        handler: (article) => this.approveArticle(article),
+        condition: (article) => this.canReviewArticle() && article.content_status === 'pending_review',
+      },
+      {
+        label: this.translate.instant('blog-articles.actions.reject'),
+        icon: 'cancel',
+        class: 'btn-outline-danger',
+        handler: (article) => this.rejectArticle(article),
+        condition: (article) => this.canReviewArticle() && article.content_status === 'pending_review',
+      },
+      {
         label: this.translate.instant('blog-articles.actions.delete'),
         icon: 'delete',
         class: 'btn-outline-danger',
@@ -658,10 +679,42 @@ export class BlogArticles implements OnInit, OnDestroy {
   }
 
   viewTranslations(article: BlogArticle): void {
-    if (article.localizations && article.localizations.length > 0) {
-      const otherLocale = article.localizations[0].locale;
-      this.onLocaleChange(otherLocale);
+    if (!article.localizations || article.localizations.length === 0) {
+      this.toastService.showWarning(
+        this.translate.instant('blog-articles.translations_modal.no_translations')
+      );
+      return;
     }
+
+    const translations: TranslationOption[] = article.localizations.map(loc => {
+      const localeConfig = this.availableLocales.find(l => l.code === loc.locale);
+      return {
+        locale: loc.locale,
+        flag: localeConfig?.flag || '',
+        label: localeConfig?.label || loc.locale.toUpperCase(),
+        documentId: loc.documentId
+      };
+    });
+
+    this.translationsModalService.open(translations, (translation) => {
+      this.onTranslationSelected(translation);
+    });
+  }
+
+  private onTranslationSelected(translation: TranslationOption): void {
+    this.offcanvasService.open(
+      {
+        mode: 'edit',
+        articleId: translation.documentId,
+        locale: translation.locale
+      },
+      (articleId) => {
+        this.listManager.reload();
+        this.toastService.showSuccess(
+          this.translate.instant('blog-articles.messages.translation_opened')
+        );
+      }
+    );
   }
 
   deleteArticle(article: BlogArticle): void {
