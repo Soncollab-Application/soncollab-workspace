@@ -1,24 +1,55 @@
 {
   "richTextEditorShared": {
-    "toggleMode": "Changer de mode",
-    "markdown": "Markdown",
-    "visual": "Visuel",
-    "insertLink": "Entrez l'URL du lien",
-    "insertImageUrl": "Entrez l'URL de l'image",
+    "toolbar": "Barre d'outils de formatage",
+    "textFormatting": "Formatage du texte",
+    "blocks": "Blocs",
+    "lists": "Listes",
+    "linksAndMedia": "Liens et médias",
+    "alignment": "Alignement",
+    "actions": "Actions",
     "characters": "Caractères",
     "commands": {
       "bold": "Gras",
       "italic": "Italique",
       "underline": "Souligné",
+      "strikethrough": "Barré",
       "heading1": "Titre 1",
       "heading2": "Titre 2",
       "heading3": "Titre 3",
+      "paragraph": "Paragraphe",
+      "blockquote": "Citation",
       "bulletList": "Liste à puces",
       "numberedList": "Liste numérotée",
       "link": "Insérer un lien",
       "image": "Insérer une image",
+      "alignLeft": "Aligner à gauche",
+      "alignCenter": "Centrer",
+      "alignRight": "Aligner à droite",
+      "undo": "Annuler",
+      "redo": "Refaire",
       "code": "Code",
-      "quote": "Citation"
+      "codeBlock": "Bloc de code",
+      "horizontalRule": "Ligne horizontale",
+      "table": "Insérer un tableau",
+      "removeFormat": "Supprimer la mise en forme"
+    },
+    "prompts": {
+      "insertLink": "Entrez l'URL du lien :",
+      "insertImageUrl": "Entrez l'URL de l'image :",
+      "insertTableRows": "Nombre de lignes :",
+      "insertTableCols": "Nombre de colonnes :"
+    },
+    "placeholders": {
+      "editor": "Commencez à taper...",
+      "linkUrl": "https://exemple.com",
+      "imageUrl": "https://exemple.com/image.jpg"
+    },
+    "messages": {
+      "contentUpdated": "Contenu mis à jour",
+      "linkInserted": "Lien inséré",
+      "imageInserted": "Image insérée",
+      "tableInserted": "Tableau inséré",
+      "formattingRemoved": "Mise en forme supprimée"
     }
   }
 }

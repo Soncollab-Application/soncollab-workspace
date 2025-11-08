@@ -1,24 +1,55 @@
 {
   "richTextEditorShared": {
-    "toggleMode": "Toggle mode",
-    "markdown": "Markdown",
-    "visual": "Visual",
-    "insertLink": "Enter link URL",
-    "insertImageUrl": "Enter image URL",
+    "toolbar": "Formatting toolbar",
+    "textFormatting": "Text formatting",
+    "blocks": "Blocks",
+    "lists": "Lists",
+    "linksAndMedia": "Links and media",
+    "alignment": "Alignment",
+    "actions": "Actions",
     "characters": "Characters",
     "commands": {
       "bold": "Bold",
       "italic": "Italic",
       "underline": "Underline",
+      "strikethrough": "Strikethrough",
       "heading1": "Heading 1",
       "heading2": "Heading 2",
       "heading3": "Heading 3",
-      "bulletList": "Bullet List",
-      "numberedList": "Numbered List",
-      "link": "Insert Link",
-      "image": "Insert Image",
+      "paragraph": "Paragraph",
+      "blockquote": "Quote",
+      "bulletList": "Bullet list",
+      "numberedList": "Numbered list",
+      "link": "Insert link",
+      "image": "Insert image",
+      "alignLeft": "Align left",
+      "alignCenter": "Align center",
+      "alignRight": "Align right",
+      "undo": "Undo",
+      "redo": "Redo",
       "code": "Code",
-      "quote": "Quote"
+      "codeBlock": "Code block",
+      "horizontalRule": "Horizontal rule",
+      "table": "Insert table",
+      "removeFormat": "Remove formatting"
+    },
+    "prompts": {
+      "insertLink": "Enter the link URL:",
+      "insertImageUrl": "Enter the image URL:",
+      "insertTableRows": "Number of rows:",
+      "insertTableCols": "Number of columns:"
+    },
+    "placeholders": {
+      "editor": "Start typing...",
+      "linkUrl": "https://example.com",
+      "imageUrl": "https://example.com/image.jpg"
+    },
+    "messages": {
+      "contentUpdated": "Content updated",
+      "linkInserted": "Link inserted",
+      "imageInserted": "Image inserted",
+      "tableInserted": "Table inserted",
+      "formattingRemoved": "Formatting removed"
     }
   }
 }

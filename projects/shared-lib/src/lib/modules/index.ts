@@ -67,3 +67,5 @@ export * from './rich-text-editor/rich-text-editor';
 export * from './rich-text-editor/rich-text-editor.module';
 export * from './rich-text-editor/rich-text-editor.service';
 export * from './rich-text-editor/rich-text-editor.model';
+export * from './rich-text-editor/html-to-markdown.service';
+export * from './rich-text-editor/editor-command.service';

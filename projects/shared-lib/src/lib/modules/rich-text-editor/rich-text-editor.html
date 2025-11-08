@@ -1,27 +1,204 @@
-<div class="ngx-editor-wrapper">
-  <ngx-editor-menu
-    [editor]="editor"
-    [toolbar]="toolbar"
-    [disabled]="readonly">
-  </ngx-editor-menu>
+<div class="card">
+  <div class="card-header">
+    @if (!readonly && !isPreview()) {
+      <!-- Groupe de formatage de texte -->
+      <div class="btn-group me-2 mb-1" role="group" [attr.aria-label]="'richTextEditorShared.textFormatting' | translate">
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary"
+          [class.active]="isBold()"
+          (click)="applyFormat('bold')"
+          [attr.title]="('richTextEditorShared.commands.bold' | translate) + ' (Ctrl+B)'"
+          [disabled]="readonly">
+          <i class="bi bi-type-bold"></i>
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary"
+          [class.active]="isItalic()"
+          (click)="applyFormat('italic')"
+          [attr.title]="('richTextEditorShared.commands.italic' | translate) + ' (Ctrl+I)'"
+          [disabled]="readonly">
+          <i class="bi bi-type-italic"></i>
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary"
+          [class.active]="isUnderline()"
+          (click)="applyFormat('underline')"
+          [attr.title]="('richTextEditorShared.commands.underline' | translate) + ' (Ctrl+U)'"
+          [disabled]="readonly">
+          <i class="bi bi-type-underline"></i>
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary"
+          [class.active]="isStrike()"
+          (click)="applyFormat('strikethrough')"
+          [attr.title]="'richTextEditorShared.commands.strikethrough' | translate"
+          [disabled]="readonly">
+          <i class="bi bi-type-strikethrough"></i>
+        </button>
+      </div>
 
-  <ngx-editor
-    [editor]="editor"
-    [ngModel]="html()"
-    (ngModelChange)="onContentChanged($event)"
-    [disabled]="readonly"
-    [placeholder]="placeholder">
-  </ngx-editor>
+      <!-- Groupe de blocs -->
+      <div class="btn-group me-2 mb-1" role="group" [attr.aria-label]="'richTextEditorShared.blocks' | translate">
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary dropdown-toggle"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+          [disabled]="readonly">
+          <i class="bi bi-type-h1"></i> {{ 'richTextEditorShared.blocks' | translate }}
+        </button>
+        <ul class="dropdown-menu">
+          @for (block of blockCommands; track block.command) {
+            <li><a class="dropdown-item" href="javascript:void(0)" (click)="applyBlockFormat(block.command)">{{ block.label }}</a></li>
+          }
+        </ul>
+      </div>
 
-  @if (enableMediaPicker) {
-    <div class="editor-footer border-top p-2 bg-body-tertiary">
-      <button
-        type="button"
-        class="btn btn-sm btn-outline-primary"
-        (click)="insertImageFromMediaPicker()">
-        <span class="material-symbols-outlined me-1" style="font-size: 1rem;">photo_library</span>
-        {{ 'richTextEditorShared.insertFromLibrary' | translate }}
-      </button>
+      <!-- Groupe de listes -->
+      <div class="btn-group me-2 mb-1" role="group" [attr.aria-label]="'richTextEditorShared.lists' | translate">
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary"
+          [class.active]="isUnorderedList()"
+          (click)="applyFormat('insertUnorderedList')"
+          [attr.title]="'richTextEditorShared.commands.bulletList' | translate"
+          [disabled]="readonly">
+          <i class="bi bi-list-ul"></i>
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary"
+          [class.active]="isOrderedList()"
+          (click)="applyFormat('insertOrderedList')"
+          [attr.title]="'richTextEditorShared.commands.numberedList' | translate"
+          [disabled]="readonly">
+          <i class="bi bi-list-ol"></i>
+        </button>
+      </div>
+
+      <!-- Groupe de liens et images -->
+      <div class="btn-group me-2 mb-1" role="group" [attr.aria-label]="'richTextEditorShared.linksAndMedia' | translate">
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary"
+          (click)="insertLink()"
+          [attr.title]="'richTextEditorShared.commands.link' | translate"
+          [disabled]="readonly">
+          <i class="bi bi-link-45deg"></i>
+        </button>
+        @if (enableMediaPicker) {
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-secondary"
+            (click)="insertImageFromMediaPicker()"
+            [attr.title]="'richTextEditorShared.commands.image' | translate"
+            [disabled]="readonly">
+            <i class="bi bi-image"></i>
+          </button>
+        }
+      </div>
+
+      <!-- Groupe d'alignement -->
+      <div class="btn-group me-2 mb-1" role="group" [attr.aria-label]="'richTextEditorShared.alignment' | translate">
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary"
+          (click)="applyFormat('justifyLeft')"
+          [attr.title]="'richTextEditorShared.commands.alignLeft' | translate"
+          [disabled]="readonly">
+          <i class="bi bi-text-left"></i>
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary"
+          (click)="applyFormat('justifyCenter')"
+          [attr.title]="'richTextEditorShared.commands.alignCenter' | translate"
+          [disabled]="readonly">
+          <i class="bi bi-text-center"></i>
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary"
+          (click)="applyFormat('justifyRight')"
+          [attr.title]="'richTextEditorShared.commands.alignRight' | translate"
+          [disabled]="readonly">
+          <i class="bi bi-text-right"></i>
+        </button>
+      </div>
+
+      <!-- Groupe d'actions -->
+      <div class="btn-group mb-1" role="group" [attr.aria-label]="'richTextEditorShared.actions' | translate">
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary"
+          (click)="applyFormat('undo')"
+          [attr.title]="'richTextEditorShared.commands.undo' | translate"
+          [disabled]="readonly">
+          <i class="bi bi-arrow-counterclockwise"></i>
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary"
+          (click)="applyFormat('redo')"
+          [attr.title]="'richTextEditorShared.commands.redo' | translate"
+          [disabled]="readonly">
+          <i class="bi bi-arrow-clockwise"></i>
+        </button>
+        <!-- Bouton Prévisualisation -->
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary"
+          (click)="togglePreview()"
+          [attr.title]="'richTextEditorShared.commands.preview' | translate"
+          [disabled]="readonly">
+          @if (!isPreview()) {
+            <i class="bi bi-eye"></i>
+          } @else {
+            <i class="bi bi-pencil-square"></i>
+          }
+        </button>
+      </div>
+    }
+  </div>
+
+
+  @if (!isPreview()) {
+    <div
+      #editorContent
+      class="card-body border-secondary-subtle rounded-bottom p-3"
+      [style.min-height]="minHeight"
+      contenteditable="true"
+      [attr.data-placeholder]="placeholder || ('richTextEditorShared.placeholders.editor' | translate)"
+      (input)="onContentChanged()"
+      (blur)="onTouched()"
+      (mouseup)="updateButtonStates()"
+      (keyup)="updateButtonStates()"
+      [attr.readonly]="readonly ? true : null"
+      role="textbox"
+      [attr.aria-multiline]="true"
+      [attr.aria-label]="'richTextEditorShared.toolbar' | translate"
+    ></div>
+  } @else {
+    <!-- Mode Prévisualisation -->
+    <div class="card-body p-3" [style.min-height]="minHeight" [innerHTML]="html()">
     </div>
   }
+
+  <div class="card-footer d-flex justify-content-end">
+    <button
+      type="button"
+      class="btn btn-sm btn-outline-secondary"
+      (click)="toggleFullScreen()"
+      [attr.title]="isFullScreen() ? ('richTextEditorShared.commands.exitFullscreen' | translate) : ('richTextEditorShared.commands.fullscreen' | translate)">
+      @if (!isFullScreen()) {
+        <i class="bi bi-arrows-angle-expand"></i>
+      } @else {
+        <i class="bi bi-arrows-angle-contract"></i>
+      }
+    </button>
+  </div>
 </div>
