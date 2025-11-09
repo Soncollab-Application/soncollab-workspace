@@ -1,215 +1,522 @@
-<lib-modal
-  size="xl"
-  [centered]="false"
-  [backdrop]="'static'"
-  [keyboard]="true"
-  [showHeader]="true"
-  [showFooter]="true"
-  [closeLabel]="'common.close' | translate"
-  ariaLabelledby="mediaPickerTitle">
+@if (isOpen()) {
+  <!-- Modal Backdrop -->
+  <div class="modal-backdrop fade show" style="z-index: 1050;"></div>
 
-  <!-- Header -->
-  <div modal-header>
-    <h5 id="mediaPickerTitle" class="modal-title d-flex align-items-center">
-      <span class="material-symbols-outlined me-2 text-primary">perm_media</span>
-      {{ 'mediaPickerShared.title' | translate }}
-    </h5>
-  </div>
+  <!-- Modal -->
+  <div class="modal fade show d-block" tabindex="-1" style="z-index: 1055;">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+      <div class="modal-content">
 
-  <!-- Body -->
-  <div class="media-picker-body">
-
-    <!-- Toolbar -->
-    <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
-      <!-- Search -->
-      <div class="input-group" style="max-width: 300px;">
-        <span class="input-group-text">
-          <span class="material-symbols-outlined">search</span>
-        </span>
-        <input
-          type="text"
-          class="form-control"
-          [placeholder]="'mediaPickerShared.search' | translate"
-          [value]="searchQuery()"
-          (input)="onSearch($event)">
-      </div>
-
-      <!-- Actions -->
-      <div class="d-flex gap-2 align-items-center">
-        <!-- View Mode Toggle -->
-        <div class="btn-group" role="group">
-          <button
-            type="button"
-            class="btn btn-sm btn-outline-secondary"
-            [class.active]="viewMode() === 'grid'"
-            (click)="viewMode.set('grid')">
-            <span class="material-symbols-outlined">grid_view</span>
-          </button>
-          <button
-            type="button"
-            class="btn btn-sm btn-outline-secondary"
-            [class.active]="viewMode() === 'list'"
-            (click)="viewMode.set('list')">
-            <span class="material-symbols-outlined">view_list</span>
-          </button>
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h5 class="modal-title mb-0">Add new assets</h5>
+          <button type="button" class="btn-close" (click)="close()"></button>
         </div>
 
-        <!-- Folder Filter -->
-        <select
-          class="form-select form-select-sm"
-          style="width: auto;"
-          [value]="currentFolder()"
-          (change)="onFolderChange($any($event.target).value)">
-          @for (folder of folders(); track folder) {
-            <option [value]="folder">
-              {{ 'mediaPickerShared.folders.' + folder | translate }}
-            </option>
-          }
-        </select>
-      </div>
-    </div>
+        <!-- Modal Body -->
+        <div class="modal-body p-0">
 
-    <!-- Upload Zone (if enabled) -->
-    @if (config().showUpload && uploadUrl) {
-      <div class="mb-4">
-        <lib-file-upload
-          [multiple]="config().multiple || false"
-          [accept]="config().accept?.join(',') || 'image/*'"
-          [maxSize]="10"
-          [maxFiles]="config().maxSelection || 5"
-          [autoUpload]="true"
-          [uploadUrl]="uploadUrl"
-          [showPreview]="true"
-          [showFileName]="false"
-          [showCoverBadge]="false"
-          (uploadComplete)="onFilesUploaded($event)"
-        />
-      </div>
-    }
+          <!-- TABS + Actions Bar -->
+          <div class="border-bottom">
+            <div class="d-flex align-items-center justify-content-between">
+              <!-- Tabs -->
+              <ul class="nav nav-underline mb-0">
+                <li class="nav-item">
+                  <button
+                    type="button"
+                    class="nav-link py-3 px-3"
+                    [class.active]="activeTab() === 'browse'"
+                    (click)="setActiveTab('browse')">
+                    BROWSE
+                  </button>
+                </li>
+                <li class="nav-item">
+                  <button
+                    type="button"
+                    class="nav-link py-3 px-3"
+                    [class.active]="activeTab() === 'selected'"
+                    (click)="setActiveTab('selected')">
+                    SELECTED FILES
+                    <span class="badge bg-secondary ms-2">{{ selectedItems().length }}</span>
+                  </button>
+                </li>
+              </ul>
 
-    <!-- Loading State -->
-    @if (loading) {
-      <div class="text-center py-5">
-        <div class="spinner-border text-primary mb-3" role="status">
-          <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
-        </div>
-        <p class="text-muted">{{ 'mediaPickerShared.loading' | translate }}</p>
-      </div>
-    }
-
-    <!-- Grid View -->
-    @if (!loading && viewMode() === 'grid') {
-      <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3">
-        @for (item of items; track item.id) {
-          <div class="col">
-            <div
-              class="media-item hover-effect-opacity position-relative overflow-hidden rounded border cursor-pointer"
-              [class.selected]="isSelected(item.id)"
-              (click)="selectItem(item)">
-
-              <!-- Selection Badge -->
-              @if (isSelected(item.id)) {
-                <span class="badge bg-primary position-absolute top-0 end-0 z-3 m-2 animate__animated animate__zoomIn">
-                  <span class="material-symbols-outlined" style="font-size: 1rem;">check_circle</span>
-                </span>
-              }
-
-              <!-- Image/Icon -->
-              <div class="ratio ratio-1x1">
-                @if (item.type === 'image' && item.thumbnailUrl) {
-                  <img [src]="item.thumbnailUrl" [alt]="item.name" class="object-fit-cover">
-                } @else {
-                  <div class="d-flex align-items-center justify-content-center bg-body-tertiary">
-                    <span class="material-symbols-outlined text-muted" style="font-size: 3rem;">
-                      {{ getItemTypeIcon(item.type) }}
-                    </span>
-                  </div>
+              <!-- Action Buttons -->
+              <div class="d-flex gap-2 px-3">
+                @if (activeTab() === 'browse' && config().allowFolderCreation) {
+                  <button type="button" class="btn btn-sm btn-outline-secondary" (click)="openNewFolderModal()">
+                    <i class="bi bi-folder-plus me-1"></i>
+                    Add folder
+                  </button>
                 }
-              </div>
-
-              <!-- Info Overlay -->
-              <div class="hover-effect-target position-absolute bottom-0 start-0 w-100 bg-dark bg-opacity-75 text-white p-2 opacity-0">
-                <div class="small text-truncate fw-medium">{{ item.name }}</div>
-                <div class="text-muted" style="font-size: 0.75rem;">{{ formatFileSize(item.size) }}</div>
+                @if (activeTab() === 'browse' && config().showUpload) {
+                  <label class="btn btn-sm btn-success mb-0">
+                    <i class="bi bi-upload me-1"></i>
+                    Add more assets
+                    <input type="file" class="d-none" multiple (change)="onFileInputChange($event)">
+                  </label>
+                }
               </div>
             </div>
           </div>
-        }
-      </div>
-    }
 
-    <!-- List View -->
-    @if (!loading && viewMode() === 'list') {
-      <div class="list-group">
-        @for (item of items; track item.id) {
-          <button
-            type="button"
-            class="list-group-item list-group-item-action d-flex align-items-center"
-            [class.active]="isSelected(item.id)"
-            (click)="selectItem(item)">
+          <!-- BROWSE TAB -->
+          @if (activeTab() === 'browse') {
 
-            <!-- Thumbnail -->
-            <div class="me-3" style="width: 60px; height: 60px;">
-              @if (item.type === 'image' && item.thumbnailUrl) {
-                <img [src]="item.thumbnailUrl" [alt]="item.name" class="rounded object-fit-cover w-100 h-100">
-              } @else {
-                <div class="d-flex align-items-center justify-content-center bg-body-tertiary rounded w-100 h-100">
-                  <span class="material-symbols-outlined text-muted">
-                    {{ getItemTypeIcon(item.type) }}
-                  </span>
+            <!-- Toolbar with controls -->
+            <div class="border-bottom px-4 py-3">
+              <div class="d-flex align-items-center gap-3 flex-wrap">
+
+                <!-- Select all checkbox -->
+                @if ((filteredFolders().length + filteredItems().length) > 0) {
+                  <div class="form-check">
+                    <input
+                      type="checkbox"
+                      class="form-check-input"
+                      [checked]="selectedItems().length > 0 && selectedItems().length === filteredItems().length"
+                      [indeterminate]="selectedItems().length > 0 && selectedItems().length < filteredItems().length"
+                      (change)="selectedItems().length === filteredItems().length ? deselectAll() : selectAll()">
+                  </div>
+                }
+
+                <!-- Sort dropdown -->
+                <div class="dropdown">
+                  <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    <i class="bi bi-sort-down me-1"></i>
+                    @if (filter().sortBy === 'date' && filter().sortOrder === 'desc') {
+                      Most recent uploads
+                    } @else if (filter().sortBy === 'date' && filter().sortOrder === 'asc') {
+                      Oldest uploads
+                    } @else if (filter().sortBy === 'name' && filter().sortOrder === 'asc') {
+                      Name (A to Z)
+                    } @else if (filter().sortBy === 'name' && filter().sortOrder === 'desc') {
+                      Name (Z to A)
+                    } @else {
+                      Sort
+                    }
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="javascript:void(0)" (click)="onSortByChange('date'); onSortOrderChange('desc')">Most recent uploads</a></li>
+                    <li><a class="dropdown-item" href="javascript:void(0)" (click)="onSortByChange('date'); onSortOrderChange('asc')">Oldest uploads</a></li>
+                    <li><a class="dropdown-item" href="javascript:void(0)" (click)="onSortByChange('name'); onSortOrderChange('asc')">Name (A to Z)</a></li>
+                    <li><a class="dropdown-item" href="javascript:void(0)" (click)="onSortByChange('name'); onSortOrderChange('desc')">Name (Z to A)</a></li>
+                    <li><a class="dropdown-item" href="javascript:void(0)" (click)="onSortByChange('size'); onSortOrderChange('asc')">Size (smallest first)</a></li>
+                    <li><a class="dropdown-item" href="javascript:void(0)" (click)="onSortByChange('size'); onSortOrderChange('desc')">Size (largest first)</a></li>
+                  </ul>
                 </div>
+
+                <!-- Advanced Filters Dropdown -->
+                <div class="dropdown">
+                  <button
+                    class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                    type="button"
+                    data-bs-toggle="dropdown"
+                    [class.active]="filter().advancedFilter !== null">
+                    <i class="bi bi-funnel me-1"></i>
+                    Advanced Filters
+                    @if (filter().advancedFilter) {
+                      <span class="badge bg-primary ms-1">1</span>
+                    }
+                  </button>
+                  <div class="dropdown-menu p-3" style="min-width: 350px;" (click)="$event.stopPropagation()">
+                    <div class="mb-3">
+                      <label class="form-label small fw-bold mb-2">Field</label>
+                      <lib-choice
+                        [type]="'select-one'"
+                        [options]="filterFieldOptions"
+                        [config]="{ removeItemButton: false, searchEnabled: false }"
+                        [cssClass]="'form-select form-select-sm'"
+                        (change)="onAdvancedFilterFieldChange($event)">
+                      </lib-choice>
+                    </div>
+
+                    @if (advancedFilterField()) {
+                      <div class="mb-3">
+                        <label class="form-label small fw-bold mb-2">Operator</label>
+                        <lib-choice
+                          [type]="'select-one'"
+                          [options]="operatorOptions()"
+                          [config]="{ removeItemButton: false, searchEnabled: false }"
+                          [cssClass]="'form-select form-select-sm'"
+                          (change)="onAdvancedFilterOperatorChange($event)">
+                        </lib-choice>
+                      </div>
+                    }
+
+                    @if (advancedFilterField() && advancedFilterOperator()) {
+                      <div class="mb-3">
+                        <label class="form-label small fw-bold mb-2">Value</label>
+                        @if (advancedFilterField() === 'type') {
+                          <lib-choice
+                            [type]="'select-one'"
+                            [options]="valueOptions()"
+                            [config]="{ removeItemButton: false, searchEnabled: false }"
+                            [cssClass]="'form-select form-select-sm'"
+                            (change)="onAdvancedFilterValueChange($event)">
+                          </lib-choice>
+                        } @else {
+                          <input
+                            type="datetime-local"
+                            class="form-control form-control-sm"
+                            [value]="advancedFilterDate()"
+                            (change)="onAdvancedFilterDateChange($event)">
+                        }
+                      </div>
+                    }
+
+                    @if (filter().advancedFilter) {
+                      <div class="d-flex gap-2">
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-outline-danger flex-fill"
+                          (click)="clearAdvancedFilter()">
+                          <i class="bi bi-x me-1"></i>
+                          Clear
+                        </button>
+                      </div>
+                    }
+                  </div>
+                </div>
+
+                <div class="flex-grow-1"></div>
+
+                <!-- View toggles -->
+                <div class="btn-group btn-group-sm">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    [class.active]="viewMode() === 'grid'"
+                    (click)="setViewMode('grid')">
+                    <i class="bi bi-grid-3x3"></i>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    [class.active]="viewMode() === 'list'"
+                    (click)="setViewMode('list')">
+                    <i class="bi bi-list"></i>
+                  </button>
+                </div>
+
+                <!-- Search -->
+                <div class="position-relative" style="width: 200px;">
+                  <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-2 text-muted"></i>
+                  <input
+                    type="search"
+                    class="form-control form-control-sm ps-4"
+                    placeholder="Search"
+                    [value]="filter().search"
+                    (input)="onSearchChange($event)">
+                </div>
+              </div>
+            </div>
+
+            <!-- Breadcrumb -->
+            @if (currentFolderPath().length > 0) {
+              <div class="px-4 py-2  border-bottom">
+                <nav aria-label="breadcrumb" class="mb-0">
+                  <ol class="breadcrumb breadcrumb-sm mb-0">
+                    @for (pathItem of currentFolderPath(); track $index) {
+                      <li class="breadcrumb-item small">
+                        @if ($index < currentFolderPath().length - 1) {
+                          <a href="javascript:void(0)" class="text-decoration-none" (click)="navigateToPath($index)">
+                            <i class="bi bi-house-door me-1"></i>
+                            {{ pathItem }}
+                          </a>
+                        } @else {
+                          <span class="text-muted fw-medium">
+                            <i class="bi bi-folder me-1"></i>
+                            {{ pathItem }}
+                          </span>
+                        }
+                      </li>
+                    }
+                  </ol>
+                </nav>
+              </div>
+            }
+
+            <!-- Content Area -->
+            <div class="p-4" style="min-height: 450px; max-height: 500px; overflow-y: auto;">
+
+              @if (loading) {
+                <div class="text-center py-5">
+                  <div class="spinner-border text-primary"></div>
+                  <p class="text-muted mt-3">Loading assets...</p>
+                </div>
+              } @else if ((filteredFolders().length + filteredItems().length) === 0) {
+
+                <!-- Empty State -->
+                <div class="text-center py-5">
+                  <div class="mb-4">
+                    <span class="bi bi-inbox text-muted" style="font-size: 4rem;"></span>
+                  </div>
+                  @if (filter().search || filter().advancedFilter) {
+                    <h6 class="mb-2">No results found</h6>
+                    <p class="text-muted small mb-3">Try adjusting your filters</p>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" (click)="onResetFilters()">
+                      <i class="bi bi-x-circle me-1"></i>
+                      Clear filters
+                    </button>
+                  } @else {
+                    <h6 class="mb-2">This folder is empty</h6>
+                    <p class="text-muted small mb-3">Upload your first asset...</p>
+                    <label class="btn btn-sm btn-primary">
+                      <i class="bi bi-plus me-1"></i>
+                      Add new assets
+                      <input type="file" class="d-none" multiple (change)="onFileInputChange($event)">
+                    </label>
+                  }
+                </div>
+
+              } @else {
+
+                <!-- Folders Section -->
+                @if (filteredFolders().length > 0) {
+                  <div class="mb-4">
+                    <h6 class="text-uppercase small fw-bold text-muted mb-3">
+                      <i class="bi bi-folder me-1"></i>
+                      Folders ({{ filteredFolders().length }})
+                    </h6>
+
+                    <div class="row g-3">
+                      @for (folder of filteredFolders(); track folder.id) {
+                        <div class="col-6 col-md-4 col-lg-3">
+                          <div
+                            class="card border hover-shadow h-100"
+                            (click)="onFolderClick(folder.id, folder.name)"
+                            style="cursor: pointer;">
+                            <div class="card-body text-center p-3">
+                              <i class="bi bi-folder-fill text-warning mb-2" style="font-size: 2.5rem;"></i>
+                              <div class="fw-medium small mb-1 text-truncate" [title]="folder.name">
+                                {{ folder.name }}
+                              </div>
+                              <small class="text-muted">
+                                {{ folder.itemCount }} folder{{ folder.itemCount !== 1 ? 's' : '' }},
+                                {{ folder.assetCount }} asset{{ folder.assetCount !== 1 ? 's' : '' }}
+                              </small>
+                            </div>
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
+
+                <!-- Assets Section -->
+                @if (filteredItems().length > 0) {
+                  <div>
+                    @if (filteredFolders().length > 0) {
+                      <h6 class="text-uppercase small fw-bold text-muted mb-3 mt-4">
+                        <i class="bi bi-file-earmark me-1"></i>
+                        Assets ({{ filteredItems().length }})
+                      </h6>
+                    }
+
+                    @if (viewMode() === 'grid') {
+                      <div class="row g-3">
+                        @for (item of filteredItems(); track item.id) {
+                          <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+                            <div
+                              class="card border position-relative h-100 hover-shadow"
+                              [class.border-primary]="isSelected(item.id)"
+                              [class.border-2]="isSelected(item.id)"
+                              (click)="selectItem(item)"
+                              style="cursor: pointer;">
+
+                              <!-- Image Preview -->
+                              <div class=" d-flex align-items-center justify-content-center position-relative" style="height: 140px;">
+                                @if (item.type === 'image') {
+                                  <img
+                                    [src]="item.thumbnailUrl || item.url"
+                                    [alt]="item.alt || item.name"
+                                    class="img-fluid p-2"
+                                    style="max-height: 100%; max-width: 100%; object-fit: contain;">
+                                } @else {
+                                  <i class="bi text-muted" [class]="getFileIcon(item.type)" style="font-size: 3rem;"></i>
+                                }
+
+                                <!-- Selection Badge -->
+                                @if (isSelected(item.id)) {
+                                  <div class="position-absolute top-0 end-0 m-2">
+                                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 26px; height: 26px;">
+                                      <i class="bi bi-check-lg fw-bold"></i>
+                                    </div>
+                                  </div>
+                                }
+                              </div>
+
+                              <!-- Info -->
+                              <div class="card-body p-2">
+                                <div class="small text-truncate fw-medium" [title]="item.name">
+                                  {{ item.name }}
+                                </div>
+                                <small class="text-muted">{{ formatFileSize(item.size) }}</small>
+                              </div>
+                            </div>
+                          </div>
+                        }
+                      </div>
+                    } @else {
+                      <!-- List View -->
+                      <div class="list-group">
+                        @for (item of filteredItems(); track item.id) {
+                          <div
+                            class="list-group-item list-group-item-action d-flex align-items-center gap-3"
+                            [class.active]="isSelected(item.id)"
+                            (click)="selectItem(item)"
+                            style="cursor: pointer;">
+
+                            <div style="width: 50px; height: 50px;" class="flex-shrink-0  rounded d-flex align-items-center justify-content-center">
+                              @if (item.type === 'image') {
+                                <img [src]="item.thumbnailUrl || item.url" [alt]="item.alt || item.name" class="img-fluid" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+                              } @else {
+                                <i class="bi text-muted" [class]="getFileIcon(item.type)" style="font-size: 1.5rem;"></i>
+                              }
+                            </div>
+
+                            <div class="flex-grow-1 min-width-0">
+                              <div class="fw-medium text-truncate">{{ item.name }}</div>
+                              <div class="d-flex gap-2 text-muted small">
+                                <span>{{ formatFileSize(item.size) }}</span>
+                                <span>•</span>
+                                <span class="text-capitalize">{{ item.type }}</span>
+                              </div>
+                            </div>
+
+                            @if (isSelected(item.id)) {
+                              <i class="bi bi-check-circle-fill text-primary fs-5"></i>
+                            } @else {
+                              <i class="bi bi-circle text-muted"></i>
+                            }
+                          </div>
+                        }
+                      </div>
+                    }
+                  </div>
+                }
+
               }
             </div>
 
-            <!-- Info -->
-            <div class="flex-grow-1">
-              <div class="fw-semibold">{{ item.name }}</div>
-              <small class="text-muted">
-                {{ formatFileSize(item.size) }}
-                @if (item.width && item.height) {
-                  • {{ item.width }}x{{ item.height }}
-                }
-              </small>
+          }
+
+          <!-- SELECTED TAB -->
+          @if (activeTab() === 'selected') {
+            <div class="p-4" style="min-height: 450px; max-height: 500px; overflow-y: auto;">
+              @if (selectedItems().length === 0) {
+                <div class="text-center py-5">
+                  <i class="bi bi-inbox text-muted mb-3" style="font-size: 4rem;"></i>
+                  <h6 class="mb-2">No assets selected</h6>
+                  <p class="text-muted">Select assets from the browse tab</p>
+                </div>
+              } @else {
+                <div class="mb-3">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0">{{ selectedItems().length }} asset{{ selectedItems().length !== 1 ? 's' : '' }} selected</h6>
+                    <button type="button" class="btn btn-sm btn-outline-danger" (click)="deselectAll()">
+                      <i class="bi bi-trash me-1"></i>
+                      Clear all
+                    </button>
+                  </div>
+                </div>
+                <div class="row g-3">
+                  @for (item of selectedItems(); track item.id) {
+                    <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+                      <div class="card border h-100 position-relative">
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2 rounded-circle"
+                          style="width: 28px; height: 28px; padding: 0; z-index: 10;"
+                          (click)="removeSelectedItem(item.id)">
+                          <i class="bi bi-x"></i>
+                        </button>
+
+                        <div class=" d-flex align-items-center justify-content-center" style="height: 140px;">
+                          @if (item.type === 'image') {
+                            <img [src]="item.thumbnailUrl || item.url" [alt]="item.alt || item.name" class="img-fluid p-2" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+                          } @else {
+                            <i class="bi text-muted" [class]="getFileIcon(item.type)" style="font-size: 3rem;"></i>
+                          }
+                        </div>
+
+                        <div class="card-body p-2">
+                          <div class="small text-truncate fw-medium" [title]="item.name">{{ item.name }}</div>
+                          <small class="text-muted">{{ formatFileSize(item.size) }}</small>
+                        </div>
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
             </div>
+          }
 
-            <!-- Selection Icon -->
-            @if (isSelected(item.id)) {
-              <span class="material-symbols-outlined text-primary">check_circle</span>
-            }
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="modal-footer ">
+          <button type="button" class="btn btn-secondary" (click)="close()">
+            Cancel
           </button>
-        }
-      </div>
-    }
+          <button
+            type="button"
+            class="btn btn-success"
+            [disabled]="selectedItems().length === 0"
+            (click)="confirm()">
+            <i class="bi bi-check me-1"></i>
+            Insert {{ selectedItems().length }} asset{{ selectedItems().length !== 1 ? 's' : '' }}
+          </button>
+        </div>
 
-    <!-- Empty State -->
-    @if (!loading && items.length === 0) {
-      <div class="text-center py-5">
-        <span class="material-symbols-outlined text-muted mb-3" style="font-size: 4rem;">image_not_supported</span>
-        <h5>{{ 'mediaPickerShared.empty.title' | translate }}</h5>
-        <p class="text-muted">{{ 'mediaPickerShared.empty.message' | translate }}</p>
-      </div>
-    }
-  </div>
-
-  <!-- Footer -->
-  <div modal-footer>
-    <div class="d-flex justify-content-between align-items-center w-100">
-      <span class="text-muted small">
-        {{ 'mediaPickerShared.selected' | translate: { count: selectedItems().length } }}
-      </span>
-      <div class="d-flex gap-2">
-        <button type="button" class="btn btn-secondary" (click)="close()">
-          {{ 'common.cancel' | translate }}
-        </button>
-        <button
-          type="button"
-          class="btn btn-primary"
-          [disabled]="selectedItems().length === 0"
-          (click)="confirm()">
-          <span class="material-symbols-outlined me-1">check</span>
-          {{ 'mediaPickerShared.confirm' | translate }}
-        </button>
       </div>
     </div>
   </div>
-</lib-modal>
+
+  <!-- New Folder Modal -->
+  @if (showNewFolderModal()) {
+    <div class="modal fade show d-block" tabindex="-1" style="z-index: 1060;">
+      <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h6 class="modal-title">
+              <i class="bi bi-folder-plus me-2"></i>
+              Create new folder
+            </h6>
+            <button type="button" class="btn-close" (click)="closeNewFolderModal()"></button>
+          </div>
+          <div class="modal-body">
+            <label class="form-label small fw-bold">Folder name</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="e.g: Product Images"
+              [value]="newFolderName()"
+              (input)="onNewFolderNameChange($event)"
+              (keyup.enter)="createFolder()"
+              autofocus>
+            @if (filter().folder) {
+              <small class="text-muted d-block mt-2">
+                <i class="bi bi-info-circle me-1"></i>
+                Will be created in: {{ currentFolderPath()[currentFolderPath().length - 1] }}
+              </small>
+            }
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-sm" (click)="closeNewFolderModal()">Cancel</button>
+            <button
+              type="button"
+              class="btn btn-success btn-sm"
+              [disabled]="!newFolderName().trim()"
+              (click)="createFolder()">
+              <i class="bi bi-check me-1"></i>
+              Create
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-backdrop fade show" style="z-index: 1055;"></div>
+  }
+}

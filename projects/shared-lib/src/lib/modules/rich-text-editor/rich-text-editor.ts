@@ -8,16 +8,21 @@ import {
   OnInit,
   OnDestroy,
   forwardRef,
-  ViewEncapsulation, AfterViewInit, ViewChild, ElementRef
+  ViewEncapsulation,
+  AfterViewInit,
+  ViewChild,
+  ElementRef,
+  effect, computed
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { NgxEditorModule, Editor, Toolbar, toHTML } from 'ngx-editor';
-import { Subject } from 'rxjs';
-import {MediaItem, MediaPickerService} from '../media-picker';
-import {EditorCommandService} from './editor-command.service';
-import {HtmlToMarkdownService} from './html-to-markdown.service';
+import { NgxEditorModule } from 'ngx-editor';
+import { Subject, takeUntil } from 'rxjs';
+import { MediaItem, MediaPickerService } from '../media-picker';
+import { EditorCommandService } from './editor-command.service';
+import { HtmlToMarkdownService } from './html-to-markdown.service';
+import {DomSanitizer} from '@angular/platform-browser';
 
 @Component({
   selector: 'lib-rich-text-editor',
@@ -37,12 +42,13 @@ import {HtmlToMarkdownService} from './html-to-markdown.service';
   ]
 })
 export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, ControlValueAccessor {
-  @ViewChild('editorContent', { static: false }) editorContent!: ElementRef<HTMLDivElement>;
+  @ViewChild('editorContent', { static: false }) editorContent?: ElementRef<HTMLDivElement>;
 
   private mediaPickerService = inject(MediaPickerService);
   private translate = inject(TranslateService);
   private editorCommandService = inject(EditorCommandService);
   private htmlToMarkdownService = inject(HtmlToMarkdownService);
+  private sanitizer = inject(DomSanitizer);
   private destroy$ = new Subject<void>();
 
   @Input() placeholder = '';
@@ -65,63 +71,69 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
   isStrike = signal(false);
   isOrderedList = signal(false);
   isUnorderedList = signal(false);
-  currentBlockTag = signal('Paragraphe');
+  currentBlockTag = signal('richTextEditorShared.commands.paragraph');
 
-  // Commandes de formatage disponibles
-  formatCommands = [
-    { command: 'bold', icon: 'bi-type-bold', label: 'Gras', shortcut: 'Ctrl+B' },
-    { command: 'italic', icon: 'bi-type-italic', label: 'Italique', shortcut: 'Ctrl+I' },
-    { command: 'underline', icon: 'bi-type-underline', label: 'Souligné', shortcut: 'Ctrl+U' },
-    { command: 'strikethrough', icon: 'bi-type-strikethrough', label: 'Barré', shortcut: '' }
-  ];
+  safeHtml = computed(() => this.sanitizer.bypassSecurityTrustHtml(this.html()));
 
+  // Commandes de blocs avec traduction
   blockCommands = [
-    { command: 'h1', label: 'Titre 1' },
-    { command: 'h2', label: 'Titre 2' },
-    { command: 'h3', label: 'Titre 3' },
-    { command: 'p', label: 'Paragraphe' },
-    { command: 'blockquote', label: 'Citation' }
+    { command: 'p', translationKey: 'richTextEditorShared.commands.paragraph' },
+    { command: 'h1', translationKey: 'richTextEditorShared.commands.heading1' },
+    { command: 'h2', translationKey: 'richTextEditorShared.commands.heading2' },
+    { command: 'h3', translationKey: 'richTextEditorShared.commands.heading3' },
+    { command: 'blockquote', translationKey: 'richTextEditorShared.commands.blockquote' }
   ];
 
-  listCommands = [
-    { command: 'insertUnorderedList', icon: 'bi-list-ul', label: 'Liste à puces' },
-    { command: 'insertOrderedList', icon: 'bi-list-ol', label: 'Liste numérotée' }
-  ];
+  // ControlValueAccessor
+  onChange: (value: string) => void = () => {};
+  onTouched: () => void = () => {};
 
-  private onChange: (value: string) => void = () => {};
-  public onTouched: () => void = () => {};
+  constructor() {
+    // Effect pour gérer le changement de langue
+    effect(() => {
+      const parentNode = this.editorCommandService.getParentBlockNode();
+      if (parentNode) {
+        const tag = parentNode.tagName.toLowerCase();
+        const block = this.blockCommands.find(b => b.command === tag);
+        this.currentBlockTag.set(block?.translationKey || 'richTextEditorShared.commands.paragraph');
+      }
+    });
+  }
 
   ngOnInit(): void {
-    // Initialisation si nécessaire
+    // Écouter les changements de langue
+    this.translate.onLangChange
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.updateButtonStates();
+      });
   }
 
   ngAfterViewInit(): void {
-    // Initialiser le contenu si une valeur a été définie avant la vue
-    if (this.html() && this.editorContent) {
+    if (this.editorContent && this.html()) {
       this.editorContent.nativeElement.innerHTML = this.html();
-    }
-
-    // Écouter les changements de sélection pour mettre à jour l'état des boutons
-    if (this.editorContent) {
-      this.editorContent.nativeElement.addEventListener('mouseup', () => this.updateButtonStates());
-      this.editorContent.nativeElement.addEventListener('keyup', () => this.updateButtonStates());
     }
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+
+    // Nettoyer le mode fullscreen si actif
+    if (this.isFullScreen()) {
+      document.body.style.overflow = '';
+      const wrapper = this.editorContent?.nativeElement.closest('.rich-text-editor-wrapper');
+      if (wrapper) {
+        wrapper.classList.remove('fullscreen');
+      }
+    }
   }
 
-  /**
-   * Implémentation de ControlValueAccessor
-   */
+  // ControlValueAccessor implementation
   writeValue(value: string): void {
-    if (value) {
-      this.html.set(value);
-      if (this.editorContent) {
-        this.editorContent.nativeElement.innerHTML = value;
-      }
+    this.html.set(value || '');
+    if (this.editorContent) {
+      this.editorContent.nativeElement.innerHTML = value || '';
     }
   }
 
@@ -135,9 +147,6 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
 
   setDisabledState(isDisabled: boolean): void {
     this.readonly = isDisabled;
-    if (this.editorContent) {
-      this.editorContent.nativeElement.contentEditable = isDisabled ? 'false' : 'true';
-    }
   }
 
   /**
@@ -150,6 +159,28 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
       this.markdown.set(this.htmlToMarkdownService.convert(htmlContent));
       this.onChange(htmlContent);
       this.contentChange.emit(htmlContent);
+    }
+  }
+
+  /**
+   * Met à jour l'état des boutons de formatage
+   */
+  updateButtonStates(): void {
+    this.isBold.set(this.editorCommandService.queryCommandState('bold'));
+    this.isItalic.set(this.editorCommandService.queryCommandState('italic'));
+    this.isUnderline.set(this.editorCommandService.queryCommandState('underline'));
+    this.isStrike.set(this.editorCommandService.queryCommandState('strikethrough'));
+    this.isOrderedList.set(this.editorCommandService.queryCommandState('insertOrderedList'));
+    this.isUnorderedList.set(this.editorCommandService.queryCommandState('insertUnorderedList'));
+
+    // Mise à jour du tag de bloc actuel avec traduction
+    const parentNode = this.editorCommandService.getParentBlockNode();
+    if (parentNode) {
+      const tag = parentNode.tagName.toLowerCase();
+      const block = this.blockCommands.find(b => b.command === tag);
+      this.currentBlockTag.set(block?.translationKey || 'richTextEditorShared.commands.paragraph');
+    } else {
+      this.currentBlockTag.set('richTextEditorShared.commands.paragraph');
     }
   }
 
@@ -181,7 +212,7 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
    * Insère un lien
    */
   insertLink(): void {
-    const url = prompt(this.translate.instant('richTextEditorShared.prompts.linkUrl'));
+    const url = prompt(this.translate.instant('richTextEditorShared.prompts.insertLink'));
     if (url) {
       this.editorCommandService.insertLink(url);
       this.onContentChanged();
@@ -195,7 +226,13 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
    * Insère une image depuis le Media Picker
    */
   insertImageFromMediaPicker(): void {
+    console.log('insertImageFromMediaPicker called', {
+      enableMediaPicker: this.enableMediaPicker
+    });
+
     if (this.enableMediaPicker) {
+      console.log('Opening media picker...');
+
       this.mediaPickerService.open(
         {
           multiple: false,
@@ -204,8 +241,12 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
           showUpload: false
         },
         (items: MediaItem[]) => {
+          console.log('Items selected:', items);
           if (items[0]) {
-            const altText = prompt(this.translate.instant('richTextEditorShared.prompts.imageAlt'), items[0].name);
+            const altText = prompt(
+              this.translate.instant('richTextEditorShared.prompts.imageAlt'),
+              items[0].name
+            );
             this.editorCommandService.insertImage(items[0].url, altText || items[0].name);
             this.onContentChanged();
             if (this.editorContent) {
@@ -214,28 +255,8 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
           }
         }
       );
-    }
-  }
-
-  /**
-   * Met à jour l'état des boutons de formatage en fonction de la sélection
-   */
-  updateButtonStates(): void {
-    this.isBold.set(this.editorCommandService.queryCommandState('bold'));
-    this.isItalic.set(this.editorCommandService.queryCommandState('italic'));
-    this.isUnderline.set(this.editorCommandService.queryCommandState('underline'));
-    this.isStrike.set(this.editorCommandService.queryCommandState('strikethrough'));
-    this.isOrderedList.set(this.editorCommandService.queryCommandState('insertOrderedList'));
-    this.isUnorderedList.set(this.editorCommandService.queryCommandState('insertUnorderedList'));
-
-    // Mise à jour du tag de bloc actuel
-    const parentNode = this.editorCommandService.getParentBlockNode();
-    if (parentNode) {
-      const tag = parentNode.tagName.toLowerCase();
-      const block = this.blockCommands.find(b => b.command === tag);
-      this.currentBlockTag.set(block ? block.label : 'Paragraphe');
     } else {
-      this.currentBlockTag.set('Paragraphe');
+      console.log('enableMediaPicker is false');
     }
   }
 
@@ -243,17 +264,49 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
    * Bascule le mode plein écran
    */
   toggleFullScreen(): void {
-    this.isFullScreen.set(!this.isFullScreen());
+    const newValue = !this.isFullScreen();
+    this.isFullScreen.set(newValue);
+
+    if (newValue) {
+      const wrapper = this.editorContent?.nativeElement.closest('.rich-text-editor-wrapper');
+      if (wrapper) {
+        wrapper.classList.add('fullscreen');
+        document.body.style.overflow = 'hidden';
+      }
+    } else {
+      const wrapper = this.editorContent?.nativeElement.closest('.rich-text-editor-wrapper');
+      if (wrapper) {
+        wrapper.classList.remove('fullscreen');
+        document.body.style.overflow = '';
+      }
+    }
   }
 
   /**
    * Bascule le mode prévisualisation
    */
   togglePreview(): void {
-    this.isPreview.set(!this.isPreview());
-    if (this.isPreview()) {
-      // S'assurer que le contenu est à jour avant de passer en prévisualisation
-      this.onContentChanged();
+    const wasInPreview = this.isPreview();
+
+    if (wasInPreview) {
+      // Revenir en mode édition
+      this.isPreview.set(false);
+
+      // Attendre que le DOM soit mis à jour puis restaurer le contenu
+      setTimeout(() => {
+        if (this.editorContent) {
+          this.editorContent.nativeElement.innerHTML = this.html();
+          this.editorContent.nativeElement.focus();
+        }
+      }, 0);
+    } else {
+      // Passer en mode preview - sauvegarder le contenu actuel
+      if (this.editorContent) {
+        const htmlContent = this.editorCommandService.sanitizeHTML(this.editorContent.nativeElement.innerHTML);
+        this.html.set(htmlContent);
+        this.markdown.set(this.htmlToMarkdownService.convert(htmlContent));
+      }
+      this.isPreview.set(true);
     }
   }
 

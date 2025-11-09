@@ -1,0 +1,161 @@
+/* Mode plein écran */
+.rich-text-editor-wrapper.fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  background: var(--fn-body-bg);
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+.rich-text-editor-wrapper.fullscreen .card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.rich-text-editor-wrapper.fullscreen .card-body {
+  flex: 1;
+  overflow-y: auto;
+  min-height: unset !important;
+}
+
+/* Styles communs éditeur et preview */
+.editor-content,
+.editor-preview {
+  line-height: 1.6;
+  color: var(--fn-body-color);
+}
+
+/* Styles du contenu édité */
+.editor-content h1,
+.editor-preview h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.editor-content h2,
+.editor-preview h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 0.875rem;
+}
+
+.editor-content h3,
+.editor-preview h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.editor-content p,
+.editor-preview p {
+  margin-bottom: 1rem;
+}
+
+.editor-content ul,
+.editor-preview ul,
+.editor-content ol,
+.editor-preview ol {
+  margin-bottom: 1rem;
+  padding-left: 2rem;
+}
+
+.editor-content li,
+.editor-preview li {
+  margin-bottom: 0.5rem;
+}
+
+.editor-content blockquote,
+.editor-preview blockquote {
+  border-left: 4px solid var(--fn-primary);
+  padding-left: 1rem;
+  margin: 1rem 0;
+  font-style: italic;
+  color: var(--fn-secondary);
+}
+
+.editor-content a,
+.editor-preview a {
+  color: var(--fn-link-color);
+  text-decoration: underline;
+}
+
+.editor-content img,
+.editor-preview img {
+  max-width: 100%;
+  height: auto;
+  margin: 1rem 0;
+}
+
+.editor-content code,
+.editor-preview code {
+  background-color: var(--fn-secondary-bg);
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-family: monospace;
+  font-size: 0.875em;
+}
+
+.editor-content pre,
+.editor-preview pre {
+  background-color: var(--fn-secondary-bg);
+  padding: 1rem;
+  border-radius: 0.25rem;
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+.editor-content table,
+.editor-preview table {
+  width: 100%;
+  margin-bottom: 1rem;
+  border-collapse: collapse;
+}
+
+.editor-content th,
+.editor-preview th,
+.editor-content td,
+.editor-preview td {
+  border: 1px solid var(--fn-border-color);
+  padding: 0.5rem;
+}
+
+.editor-content th,
+.editor-preview th {
+  background-color: var(--fn-secondary-bg);
+  font-weight: 600;
+}
+
+.editor-content [style*="text-align: left"],
+.editor-preview [style*="text-align: left"] {
+  text-align: left !important;
+}
+
+.editor-content [style*="text-align: center"],
+.editor-preview [style*="text-align: center"] {
+  text-align: center !important;
+}
+
+.editor-content [style*="text-align: right"],
+.editor-preview [style*="text-align: right"] {
+  text-align: right !important;
+}
+
+.editor-content [style*="text-align: justify"],
+.editor-preview [style*="text-align: justify"] {
+  text-align: justify !important;
+}
+
+.editor-content div[style*="text-align"],
+.editor-preview div[style*="text-align"] {
+  width: 100%;
+}

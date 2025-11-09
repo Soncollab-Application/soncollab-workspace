@@ -3,30 +3,42 @@
     <div class="col-12">
       <div class="card mb-4">
         <div class="card-header pb-0">
-          <h6>Test de l'Éditeur de Texte Riche (RTE)</h6>
+          <h6>Test de l'Éditeur de Texte Riche avec Media Picker Style Strapi</h6>
         </div>
-        <div class="card-body px-0 pt-0 pb-2">
-          <div class="p-4">
-            <form>
-              <div class="mb-3">
-                <label class="form-label">Contenu de l'Article (RTE)</label>
-                <lib-rich-text-editor
-                  [minHeight]="'400px'"
-                  [placeholder]="'Commencez à écrire votre article ici...'"
-                  [enableMediaPicker]="true"
-                  [(ngModel)]="articleContent"
-                  name="articleContent">
-                </lib-rich-text-editor>
-              </div>
-            </form>
-
-            <div class="mt-4">
-              <h6>Contenu HTML généré :</h6>
-              <pre class="p-3">{{ articleContent }}</pre>
+        <div class="card-body">
+          <form>
+            <div class="mb-3">
+              <label class="form-label">Contenu de l'Article</label>
+              <lib-rich-text-editor
+                [minHeight]="'400px'"
+                [placeholder]="'Commencez à écrire votre article ici...'"
+                [enableMediaPicker]="true"
+                [(ngModel)]="articleContent"
+                name="articleContent">
+              </lib-rich-text-editor>
             </div>
+          </form>
+
+          <div class="mt-4">
+            <h6>Contenu HTML généré :</h6>
+            <pre class="p-3  border rounded" style="max-height: 300px; overflow-y: auto;"><code>{{ articleContent }}</code></pre>
           </div>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- MediaPicker Component -->
+  <lib-media-picker
+    [items]="mockMediaItems"
+    [folders]="mockFolders"
+    [loading]="false"
+    (itemsSelected)="onItemsSelected($event)"
+    (filesUploaded)="onFilesUploaded($event)"
+    (urlUploaded)="onUrlUploaded($event)"
+    (filterChanged)="onFilterChanged($event)"
+    (folderCreated)="onFolderCreated($event)"
+    (itemDeleted)="onItemDeleted($event)"
+    (itemEdited)="onItemEdited($event)">
+  </lib-media-picker>
 </div>

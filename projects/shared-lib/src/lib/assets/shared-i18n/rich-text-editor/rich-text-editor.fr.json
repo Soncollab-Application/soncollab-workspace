@@ -31,7 +31,12 @@
       "codeBlock": "Bloc de code",
       "horizontalRule": "Ligne horizontale",
       "table": "Insérer un tableau",
-      "removeFormat": "Supprimer la mise en forme"
+      "removeFormat": "Supprimer la mise en forme",
+      "preview": "Prévisualiser",
+      "edit": "Éditer",
+      "fullscreen": "Plein écran",
+      "exitFullscreen": "Quitter le plein écran",
+      "imageAlt": "Texte alternatif de l'image"
     },
     "prompts": {
       "insertLink": "Entrez l'URL du lien :",
