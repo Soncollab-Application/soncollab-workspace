@@ -68,7 +68,10 @@ export class PageTitleService {
     // Profile
     '/profile/overview': 'header.pages.profile.overview',
     '/profile/security': 'header.pages.profile.security',
-    '/profile/notifications': 'header.pages.profile.notifications'
+    '/profile/notifications': 'header.pages.profile.notifications',
+
+    // Media (commun à tous les rôles)
+    '/media': 'header.pages.media.library',
   };
 
   constructor() {

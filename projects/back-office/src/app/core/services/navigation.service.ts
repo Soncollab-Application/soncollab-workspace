@@ -57,7 +57,8 @@ export class NavigationService {
               { key: 'help-articles', icon: 'help', route: '/admin/content/help' },
               { key: 'categories-tags', icon: 'label', route: '/admin/content/categories' }
             ]
-          }
+          },
+          { key: 'media-library', icon: 'perm_media', route: '/media' }
         ]
       },
       {
@@ -93,7 +94,8 @@ export class NavigationService {
           { key: 'dashboard', icon: 'dashboard', route: '/sales/dashboard' },
           { key: 'my-contacts', icon: 'contacts', route: '/sales/contacts' },
           { key: 'my-pipeline', icon: 'filter_list', route: '/sales/pipeline' },
-          { key: 'my-proposals', icon: 'description', route: '/sales/proposals' }
+          { key: 'my-proposals', icon: 'description', route: '/sales/proposals' },
+          { key: 'media-library', icon: 'perm_media', route: '/media' }
         ]
       },
       {
@@ -125,7 +127,8 @@ export class NavigationService {
           { key: 'dashboard', icon: 'dashboard', route: '/content/dashboard' },
           { key: 'my-blog-articles', icon: 'article', route: '/content/blog' },
           { key: 'my-help-articles', icon: 'help', route: '/content/help' },
-          { key: 'categories-tags', icon: 'label', route: '/content/categories' }
+          { key: 'categories-tags', icon: 'label', route: '/content/categories' },
+          { key: 'media-library', icon: 'perm_media', route: '/media' }
         ]
       },
       {

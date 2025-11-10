@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import {UserFilters, UserListItem, UsersListResponse, UserStats} from '../../models/admin/user-list.model';
-import { Observable } from 'rxjs';
+import {forkJoin, Observable} from 'rxjs';
 import {
   Country, InvitationFilters,
   InvitationListItem,
@@ -11,7 +11,6 @@ import {
   InviteRequest, RolesResponse, Territory
 } from '../../models/admin/invitation.model';
 import {TranslateService} from '@ngx-translate/core';
-import {CustomPermissions} from '../../models/auth.model';
 
 @Injectable({ providedIn: 'root' })
 export class AdminService {

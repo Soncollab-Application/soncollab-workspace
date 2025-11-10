@@ -52,6 +52,9 @@
         "settings": "Paramètres du profil",
         "security": "Paramètres de sécurité",
         "notifications": "Paramètres notifications"
+      },
+      "media": {
+        "library": "Médiathèque"
       }
     },
     "breadcrumbs": {
@@ -82,7 +85,8 @@
       "profile": "Profil",
       "settings": "Paramètres",
       "security": "Sécurité",
-      "notifications": "Notifications"
+      "notifications": "Notifications",
+      "media": "Médiathèque"
     }
   }
 }

@@ -52,6 +52,9 @@
         "settings": "Profile Settings",
         "security": "Security Settings",
         "notifications": "Notification Settings"
+      },
+      "media": {
+        "library": "Media Library"
       }
     },
     "breadcrumbs": {
@@ -82,7 +85,8 @@
       "profile": "Profile",
       "settings": "Settings",
       "security": "Security",
-      "notifications": "Notifications"
+      "notifications": "Notifications",
+      "media": "Media Library"
     }
   }
 }

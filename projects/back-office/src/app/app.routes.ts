@@ -49,6 +49,13 @@ export const routes: Routes = [
     loadChildren: () => import('./core/routes/sales/sales.routes').then(r => r.salesRoutes)
   },
 
+  {
+    path: 'media',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['soncollab_admin', 'soncollab_content', 'soncollab_sales'] },
+    loadChildren: () => import('./core/routes/media/media.routes').then(r => r.mediaRoutes)
+  },
+
   // Routes communes (tous les utilisateurs connectés)
   {
     path: 'profile',

@@ -37,7 +37,8 @@
       "my-blog-articles": "My Blog Articles",
       "my-help-articles": "My Help Articles",
       "pending-validation": "Pending Validation",
-      "newsletter": "Newsletter"
+      "newsletter": "Newsletter",
+      "media-library": "Media Library"
     },
     "roles": {
       "soncollab_admin": "Administrator",
