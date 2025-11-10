@@ -56,12 +56,6 @@ export * from './file-upload/file-upload.service';
 export * from './file-upload/file-upload.module';
 export * from './file-upload/file-upload.model';
 
-// Media Picker
-export * from './media-picker/media-picker';
-export * from './media-picker/media-picker.service';
-export * from './media-picker/media-picker.module';
-export * from './media-picker/media-picker.model';
-
 // Rich Text Editor
 export * from './rich-text-editor/rich-text-editor';
 export * from './rich-text-editor/rich-text-editor.module';

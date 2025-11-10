@@ -19,7 +19,6 @@ import { FormsModule, ReactiveFormsModule, NG_VALUE_ACCESSOR, ControlValueAccess
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { NgxEditorModule } from 'ngx-editor';
 import { Subject, takeUntil } from 'rxjs';
-import { MediaItem, MediaPickerService } from '../media-picker';
 import { EditorCommandService } from './editor-command.service';
 import { HtmlToMarkdownService } from './html-to-markdown.service';
 import {DomSanitizer} from '@angular/platform-browser';
@@ -44,7 +43,7 @@ import {DomSanitizer} from '@angular/platform-browser';
 export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, ControlValueAccessor {
   @ViewChild('editorContent', { static: false }) editorContent?: ElementRef<HTMLDivElement>;
 
-  private mediaPickerService = inject(MediaPickerService);
+
   private translate = inject(TranslateService);
   private editorCommandService = inject(EditorCommandService);
   private htmlToMarkdownService = inject(HtmlToMarkdownService);
@@ -232,29 +231,6 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
 
     if (this.enableMediaPicker) {
       console.log('Opening media picker...');
-
-      this.mediaPickerService.open(
-        {
-          multiple: false,
-          accept: ['image'],
-          maxSelection: 1,
-          showUpload: false
-        },
-        (items: MediaItem[]) => {
-          console.log('Items selected:', items);
-          if (items[0]) {
-            const altText = prompt(
-              this.translate.instant('richTextEditorShared.prompts.imageAlt'),
-              items[0].name
-            );
-            this.editorCommandService.insertImage(items[0].url, altText || items[0].name);
-            this.onContentChanged();
-            if (this.editorContent) {
-              this.editorContent.nativeElement.focus();
-            }
-          }
-        }
-      );
     } else {
       console.log('enableMediaPicker is false');
     }
