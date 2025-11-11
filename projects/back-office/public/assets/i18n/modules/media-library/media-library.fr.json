@@ -1,0 +1,67 @@
+{
+  "media-library": {
+    "page_title": "Bibliothèque de médias",
+    "upload": "Téléverser",
+    "delete_selected": "Supprimer la sélection",
+    "loading": "Chargement...",
+    "preview": "Aperçu",
+    "name": "Nom",
+    "type": "Type",
+    "size": "Taille",
+    "uploaded_by": "Téléversé par",
+    "created_at": "Créé le",
+    "actions": "Actions",
+    "delete": "Supprimer",
+    "showing": "Affichage",
+    "of": "sur",
+
+    "kpis": {
+      "total_files": "Total fichiers",
+      "images": "Images",
+      "videos": "Vidéos",
+      "documents": "Documents"
+    },
+
+    "filters": {
+      "type": "Type de fichier",
+      "all_types": "Tous les types",
+      "images": "Images",
+      "videos": "Vidéos",
+      "documents": "Documents",
+      "audio": "Audio",
+      "uploaded_by": "Téléversé par",
+      "user_email": "Email de l'utilisateur"
+    },
+
+    "sort": {
+      "recent": "Plus récents",
+      "name_asc": "Nom (A-Z)",
+      "name_desc": "Nom (Z-A)",
+      "size_desc": "Taille (plus gros)"
+    },
+
+    "empty": {
+      "title": "Aucun fichier",
+      "message": "Commencez par téléverser vos premiers fichiers"
+    },
+
+    "confirm": {
+      "delete_title": "Supprimer les fichiers",
+      "delete_message": "Êtes-vous sûr de vouloir supprimer {{count}} fichier(s) ? Cette action est irréversible.",
+      "delete_file_title": "Supprimer le fichier",
+      "delete_file_message": "Êtes-vous sûr de vouloir supprimer '{{name}}' ? Cette action est irréversible."
+    },
+
+    "success": {
+      "upload": "{{count}} fichier(s) téléversé(s) avec succès"
+    },
+
+    "errors": {
+      "load_files_error": "Erreur lors du chargement des fichiers",
+      "load_folders_error": "Erreur lors du chargement des dossiers",
+      "load_folder_error": "Erreur lors du chargement du dossier",
+      "upload_error": "Erreur lors du téléversement",
+      "delete_error": "Erreur lors de la suppression"
+    }
+  }
+}

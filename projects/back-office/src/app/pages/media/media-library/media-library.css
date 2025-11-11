@@ -1,0 +1,33 @@
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.object-fit-cover {
+  object-fit: cover;
+}
+
+/* Style pour le checkbox indeterminate */
+input[type="checkbox"]:indeterminate {
+  background-color: var(--bs-primary);
+  border-color: var(--bs-primary);
+}
+
+input[type="checkbox"]:indeterminate::before {
+  content: '−';
+  display: block;
+  text-align: center;
+  color: white;
+  font-weight: bold;
+}
+
+/* Hover effect sur les cards */
+.card:hover {
+  transform: translateY(-2px);
+  transition: transform 0.2s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Style pour les images en loading */
+img[loading="lazy"] {
+  background: #f8f9fa;
+}

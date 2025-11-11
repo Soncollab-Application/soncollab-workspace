@@ -1,1 +1,463 @@
-<p>media-library works!</p>
+<app-breadcrumb [showAvatar]="true" [icon]="'perm_media'" [hasMobileActions]="true">
+  <div breadcrumb-actions>
+    <div class="d-flex gap-2">
+      @if (hasSelection()) {
+        <button class="btn btn-danger" (click)="deleteSelected()">
+          <span class="material-symbols-outlined me-2">delete</span>
+          {{ 'media-library.delete_selected' | translate }} ({{ selectedCount() }})
+        </button>
+      }
+      @if (canManageFolders()) {
+        <button class="btn btn-success" (click)="createFolder()">
+          <span class="material-symbols-outlined me-2">create_new_folder</span>
+          {{ 'media-library.add_folder' | translate }}
+        </button>
+      }
+      @if (canUploadFiles()) {
+        <label class="btn btn-primary mb-0 cursor-pointer">
+          <input
+            type="file"
+            multiple
+            class="d-none"
+            accept="image/*,video/*,audio/*,.pdf,.doc,.docx"
+            (change)="onFilesSelected($event)"
+          />
+          <span class="material-symbols-outlined me-2">upload</span>
+          {{ 'media-library.upload' | translate }}
+        </label>
+      }
+    </div>
+  </div>
+
+  <div breadcrumb-actions-mobile>
+    <div class="d-flex flex-column gap-2 w-100">
+      @if (hasSelection()) {
+        <button class="btn btn-danger w-100" (click)="deleteSelected()">
+          <span class="material-symbols-outlined me-2">delete</span>
+          {{ 'media-library.delete_selected' | translate }} ({{ selectedCount() }})
+        </button>
+      }
+      @if (canUploadFiles()) {
+        <label class="btn btn-primary w-100 mb-0 cursor-pointer">
+          <input
+            type="file"
+            multiple
+            class="d-none"
+            accept="image/*,video/*,audio/*,.pdf,.doc,.docx"
+            (change)="onFilesSelected($event)"
+          />
+          <span class="material-symbols-outlined me-2">upload</span>
+          {{ 'media-library.upload' | translate }}
+        </label>
+      }
+    </div>
+  </div>
+</app-breadcrumb>
+
+@if (canViewStats()) {
+  <div class="row g-3 mb-4 pb-3">
+    @for (kpi of kpiCards(); track kpi.label) {
+      <div class="col-12 col-sm-6 col-lg-4 col-xl">
+        <lib-kpi-card
+          [data]="kpi"
+          [loading]="loadingStats()"
+        />
+      </div>
+    }
+  </div>
+}
+
+<!-- Breadcrumb Navigation des dossiers -->
+@if (canManageFolders() && !isInRootFolder()) {
+  <div class="mb-4">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+          <a href="javascript:void(0)" (click)="goToRoot()" class="text-decoration-none">
+            <span class="material-symbols-outlined me-1 align-middle" style="font-size: 1.2rem;">home</span>
+            {{ 'media-library.root' | translate }}
+          </a>
+        </li>
+        @for (folder of breadcrumbPath(); track folder.documentId; let idx = $index) {
+          <li class="breadcrumb-item">
+            <a href="javascript:void(0)" (click)="navigateToBreadcrumb(idx)" class="text-decoration-none">
+              {{ folder.name }}
+            </a>
+          </li>
+        }
+        @if (currentFolder()) {
+          <li class="breadcrumb-item active" aria-current="page">
+            {{ currentFolder()!.name }}
+          </li>
+        }
+      </ol>
+    </nav>
+  </div>
+}
+
+<!-- Bouton retour (version mobile) -->
+@if (!isInRootFolder()) {
+  <div class="d-md-none mb-3">
+    <button class="btn btn-outline-secondary btn-sm" (click)="goBack()">
+      <span class="material-symbols-outlined me-2">arrow_back</span>
+      {{ 'media-library.back' | translate }}
+    </button>
+  </div>
+}
+
+<div class="mb-5 pt-2">
+  <lib-filter-bar
+    [filters]="filters()"
+    [sortOptions]="sortOptions()"
+    [showSearch]="true"
+    [showViewSelector]="true"
+    [selectedCount]="selectedCount()"
+    [useFilterState]="true"
+  />
+</div>
+
+<div class="pb-5">
+  @if (loading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">{{ 'media-library.loading' | translate }}</span>
+      </div>
+    </div>
+  } @else if (displayedFolders().length === 0 && displayedFiles().length === 0) {
+    <lib-empty-state
+      [title]="emptyTitle()"
+      [message]="emptyMessage()"
+      [icon]="'perm_media'"
+    />
+  } @else {
+    @if (listManager.currentView() === 'card') {
+      <!-- Vue Grid -->
+      <div class="row g-4 mb-4">
+
+        <!-- DOSSIERS -->
+        @for (folder of displayedFolders(); track folder.documentId) {
+          <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <div
+              class="card h-100 cursor-pointer folder-card"
+              (click)="navigateToFolder(folder)"
+            >
+              <!-- Icône Dossier -->
+              <div class="position-relative d-flex align-items-center justify-content-center bg-light" style="height: 160px;">
+                <span class="material-symbols-outlined text-primary" style="font-size: 4rem;">
+                  folder
+                </span>
+
+                <!-- Compteur de fichiers -->
+                @if (getFolderFileCount(folder) > 0) {
+                  <div class="position-absolute bottom-0 end-0 p-2">
+                    <span class="badge bg-primary">
+                      {{ getFolderFileCount(folder) }}
+                    </span>
+                  </div>
+                }
+              </div>
+
+              <!-- Info Dossier -->
+              <div class="card-body p-2">
+                <p class="small text-truncate mb-0 fw-medium" [title]="folder.name">
+                  <span class="material-symbols-outlined me-1 align-middle" style="font-size: 1rem;">folder</span>
+                  {{ folder.name }}
+                </p>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- FICHIERS -->
+        @for (file of displayedFiles(); track file.documentId) {
+          <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+            <div
+              class="card h-100 cursor-pointer position-relative file-card"
+              [class.border-primary]="selectedFiles().has(file.documentId)"
+              (click)="toggleFileSelection(file.documentId)"
+            >
+              <!-- Preview Image -->
+              <div class="position-relative" style="height: 160px; overflow: hidden;">
+                @if (isImage(file)) {
+                  <img
+                    [src]="getThumbnailUrl(file)"
+                    [alt]="file.alternativeText || file.name"
+                    class="w-100 h-100 object-fit-cover"
+                    loading="lazy"
+                  />
+                } @else {
+                  <div class="w-100 h-100 d-flex align-items-center justify-content-center bg-light">
+                    <span class="material-symbols-outlined text-muted" style="font-size: 3rem;">
+                      {{ getFileIcon(file) }}
+                    </span>
+                  </div>
+                }
+
+                <!-- Checkbox Selection -->
+                <div class="position-absolute top-0 start-0 p-2">
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    [checked]="selectedFiles().has(file.documentId)"
+                    (click)="$event.stopPropagation()"
+                    (change)="toggleFileSelection(file.documentId)"
+                  />
+                </div>
+
+                <!-- Actions Menu -->
+                @if (canUpdateFiles() || canDeleteFiles()) {
+                  <div class="position-absolute top-0 end-0 p-2">
+                    <div class="dropdown" libDropdownSingle>
+                      <button
+                        class="btn btn-sm btn-light rounded-circle p-1"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        (click)="$event.stopPropagation()"
+                      >
+                        <span class="material-symbols-outlined fs-6">more_vert</span>
+                      </button>
+                      <ul class="dropdown-menu dropdown-menu-end">
+                        @if (canDeleteFiles()) {
+                          <li>
+                            <button
+                              class="dropdown-item text-danger"
+                              (click)="deleteFile(file); $event.stopPropagation()"
+                            >
+                              <span class="material-symbols-outlined me-2">delete</span>
+                              {{ 'media-library.delete' | translate }}
+                            </button>
+                          </li>
+                        }
+                      </ul>
+                    </div>
+                  </div>
+                }
+              </div>
+
+              <!-- File Info -->
+              <div class="card-body p-2">
+                <p class="small text-truncate mb-1 fw-medium" [title]="file.name">
+                  {{ file.name }}
+                </p>
+                <p class="small text-muted mb-0">
+                  {{ formatFileSize(file.size * 1024) }}
+                </p>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      <!-- Vue Table : afficher dossiers ET fichiers -->
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead>
+          <tr>
+            <th style="width: 40px;">
+              <input
+                type="checkbox"
+                class="form-check-input"
+                [checked]="selectedCount() === displayedFiles().length && displayedFiles().length > 0"
+                [indeterminate]="selectedCount() > 0 && selectedCount() < displayedFiles().length"
+                (change)="selectedCount() === displayedFiles().length ? clearSelection() : selectAll()"
+              />
+            </th>
+            <th style="width: 60px;">{{ 'media-library.preview' | translate }}</th>
+            <th>{{ 'media-library.name' | translate }}</th>
+            <th>{{ 'media-library.extension' | translate }}</th>
+            <th>{{ 'media-library.size' | translate }}</th>
+            <th>{{ 'media-library.created' | translate }}</th>
+            <th>{{ 'media-library.last_update' | translate }}</th>
+            @if (canUpdateFiles() || canDeleteFiles()) {
+              <th style="width: 100px;">{{ 'media-library.actions' | translate }}</th>
+            }
+          </tr>
+          </thead>
+          <tbody>
+          <!-- DOSSIERS -->
+            @for (folder of displayedFolders(); track folder.documentId) {
+              <tr class="cursor-pointer" (click)="navigateToFolder(folder)">
+                <td>
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    disabled
+                    (click)="$event.stopPropagation()"
+                  />
+                </td>
+                <td>
+                  <div class="d-flex align-items-center justify-content-center bg-light rounded" style="width: 40px; height: 40px;">
+                <span class="material-symbols-outlined text-primary">
+                  folder
+                </span>
+                  </div>
+                </td>
+                <td>
+                  <div class="fw-medium">
+                    <span class="material-symbols-outlined me-2 align-middle">folder</span>
+                    {{ folder.name }}
+                  </div>
+                </td>
+                <td>-</td>
+                <td>-</td>
+                <td><small>{{ folder.createdAt | date:'short' }}</small></td>
+                <td><small>{{ folder.updatedAt | date:'short' }}</small></td>
+                @if (canUpdateFiles() || canDeleteFiles()) {
+                  <td>
+                    <div class="d-flex gap-2">
+                      <button
+                        class="btn btn-sm btn-light"
+                        type="button"
+                        (click)="navigateToFolder(folder); $event.stopPropagation()"
+                        [title]="'media-library.view' | translate"
+                      >
+                        <span class="material-symbols-outlined">visibility</span>
+                      </button>
+                    </div>
+                  </td>
+                }
+              </tr>
+            }
+
+          <!-- FICHIERS -->
+            @for (file of displayedFiles(); track file.documentId) {
+              <tr [class.table-active]="selectedFiles().has(file.documentId)">
+                <td>
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    [checked]="selectedFiles().has(file.documentId)"
+                    (change)="toggleFileSelection(file.documentId)"
+                  />
+                </td>
+                <td>
+                  @if (isImage(file)) {
+                    <img
+                      [src]="getThumbnailUrl(file)"
+                      [alt]="file.alternativeText || file.name"
+                      class="rounded"
+                      style="width: 40px; height: 40px; object-fit: cover;"
+                      loading="lazy"
+                    />
+                  } @else {
+                    <div class="d-flex align-items-center justify-content-center bg-light rounded" style="width: 40px; height: 40px;">
+                  <span class="material-symbols-outlined text-muted">
+                    {{ getFileIcon(file) }}
+                  </span>
+                    </div>
+                  }
+                </td>
+                <td>
+                  <div>
+                    <div class="fw-medium text-truncate" style="max-width: 300px;" [title]="file.name">
+                      {{ file.name }}
+                    </div>
+                    @if (file.alternativeText) {
+                      <small class="text-muted text-truncate d-block" style="max-width: 300px;">
+                        {{ file.alternativeText }}
+                      </small>
+                    }
+                  </div>
+                </td>
+                <td>
+                  <span class="badge bg-secondary">{{ file.ext }}</span>
+                </td>
+                <td>{{ formatFileSize(file.size * 1024) }}</td>
+                <td>
+                  <small>{{ file.createdAt | date:'short' }}</small>
+                </td>
+                <td>
+                  <small>{{ file.updatedAt | date:'short' }}</small>
+                </td>
+                @if (canUpdateFiles() || canDeleteFiles()) {
+                  <td>
+                    <div class="d-flex gap-2">
+                      @if (canUpdateFiles()) {
+                        <button
+                          class="btn btn-sm btn-light"
+                          type="button"
+                          (click)="editFile(file)"
+                          [title]="'media-library.edit' | translate"
+                        >
+                          <span class="material-symbols-outlined">edit</span>
+                        </button>
+                      }
+                      @if (canDeleteFiles()) {
+                        <button
+                          class="btn btn-sm btn-light text-danger"
+                          type="button"
+                          (click)="deleteFile(file)"
+                          [title]="'media-library.delete' | translate"
+                        >
+                          <span class="material-symbols-outlined">delete</span>
+                        </button>
+                      }
+                    </div>
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+
+    <!-- Pagination seulement en mode racine -->
+    @if (isInRootFolder() && listManager.pagination() && listManager.pagination()!.pageCount > 1) {
+      <div class="d-flex justify-content-center mt-4">
+        <nav aria-label="Pagination">
+          <ul class="pagination">
+            <li class="page-item" [class.disabled]="listManager.pagination()!.currentPage === 1">
+              <button
+                class="page-link"
+                type="button"
+                [disabled]="listManager.pagination()!.currentPage === 1"
+                (click)="listManager.onPageChange(listManager.pagination()!.currentPage - 1)">
+                <span class="material-symbols-outlined">chevron_left</span>
+              </button>
+            </li>
+
+            @for (page of [].constructor(listManager.pagination()!.pageCount); track $index) {
+              <li
+                class="page-item"
+                [class.active]="listManager.pagination()!.currentPage === $index + 1">
+                <button
+                  class="page-link"
+                  type="button"
+                  (click)="listManager.onPageChange($index + 1)">
+                  {{ $index + 1 }}
+                </button>
+              </li>
+            }
+
+            <li
+              class="page-item"
+              [class.disabled]="listManager.pagination()!.currentPage === listManager.pagination()!.pageCount">
+              <button
+                class="page-link"
+                type="button"
+                [disabled]="listManager.pagination()!.currentPage === listManager.pagination()!.pageCount"
+                (click)="listManager.onPageChange(listManager.pagination()!.currentPage + 1)">
+                <span class="material-symbols-outlined">chevron_right</span>
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    }
+
+    @if (isInRootFolder() && listManager.pagination() && listManager.pagination()!.total > 0) {
+      <div class="row for-inter-font">
+        <div class="col">
+          <p class="text-body-secondary text-center mt-3 mb-0">
+            {{ 'media-library.showing' | translate }}
+            {{ (listManager.pagination()!.currentPage - 1) * listManager.pagination()!.pageSize + 1 }} -
+            {{ Math.min(listManager.pagination()!.currentPage * listManager.pagination()!.pageSize, listManager.pagination()!.total) }}
+            {{ 'media-library.of' | translate }}
+            {{ listManager.pagination()!.total }}
+          </p>
+        </div>
+      </div>
+    }
+  }
+</div>
