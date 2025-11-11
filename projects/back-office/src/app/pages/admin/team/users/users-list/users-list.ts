@@ -39,7 +39,6 @@ export class UsersList implements OnInit, OnDestroy {
   private permissionsService = inject(PermissionService);
   private pageTitleService = inject(PageTitleService);
   private translate = inject(TranslateService);
-  private languageOrchestrator = inject(LanguageOrchestratorService);
   private confirmDialog = inject(ConfirmDialogService);
   private toastService = inject(ToastService);
   protected listManager = inject(ListStateManager<UserListItem, UserFilters>);

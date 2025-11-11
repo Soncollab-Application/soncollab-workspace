@@ -1,0 +1,86 @@
+{
+  "media-library": {
+    "page_title": "Media Library",
+    "upload": "Upload",
+    "delete_selected": "Delete Selected",
+    "loading": "Loading...",
+    "preview": "Preview",
+    "name": "Name",
+    "type": "Type",
+    "size": "Size",
+    "extension": "Extension",
+    "created": "Created",
+    "uploaded_by": "Uploaded by",
+    "created_at": "Created at",
+    "actions": "Actions",
+    "delete": "Delete",
+    "edit": "Edit",
+    "open": "Open",
+    "showing": "Showing",
+    "of": "of",
+    "root": "Home",
+    "back": "Back",
+    "add_folder": "Create Folder",
+    "create_folder_prompt": "Enter folder name:",
+    "edit_file_prompt": "Enter new file name:",
+
+    "kpis": {
+      "total_files": "Total Files",
+      "images": "Images",
+      "videos": "Videos",
+      "documents": "Documents"
+    },
+
+    "filters": {
+      "type": "File Type",
+      "all_types": "All Types",
+      "images": "Images",
+      "videos": "Videos",
+      "documents": "Documents",
+      "audio": "Audio",
+      "uploaded_by": "Uploaded by",
+      "user_email": "User email"
+    },
+
+    "sort": {
+      "recent": "Most Recent",
+      "name_asc": "Name (A-Z)",
+      "name_desc": "Name (Z-A)",
+      "size_desc": "Size (Largest)"
+    },
+
+    "empty": {
+      "title": "No Files",
+      "message": "Start by uploading your first files"
+    },
+
+    "confirm": {
+      "delete_title": "Delete Files",
+      "delete_message": "Are you sure you want to delete {{count}} file(s)? This action cannot be undone.",
+      "delete_file_title": "Delete File",
+      "delete_file_message": "Are you sure you want to delete '{{name}}'? This action cannot be undone."
+    },
+
+    "success": {
+      "upload": "{{count}} file(s) uploaded successfully",
+      "folder_created": "Folder created successfully",
+      "file_updated": "File updated successfully",
+      "file_deleted": "File deleted successfully",
+      "files_deleted": "{{count}} file(s) deleted successfully"
+    },
+
+    "warning": {
+      "partial_delete": "{{success}} file(s) deleted, {{errors}} error(s) occurred"
+    },
+
+    "errors": {
+      "load_files_error": "Error loading files",
+      "load_folders_error": "Error loading folders",
+      "load_folder_error": "Error loading folder",
+      "upload_error": "Upload error",
+      "delete_error": "Delete error",
+      "create_folder_error": "Error creating folder",
+      "update_file_error": "Error updating file"
+    }
+  }
+}

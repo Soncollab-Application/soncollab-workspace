@@ -4,7 +4,7 @@ export interface ListColumn<T = any> {
   sortable?: boolean;
   width?: string;
   colspan?: number;
-  type?: 'text' | 'date' | 'badge' | 'image' | 'user' | 'phone' | 'email' | 'custom-badge' | 'custom';
+  type?: 'text' | 'date' | 'badge' | 'image' | 'user' | 'phone' | 'email' | 'custom-badge' | 'custom' | 'icon';
   render?: (row: T) => string;
   cellClass?: string | ((row: T) => string);
   avatarKey?: string;
@@ -13,6 +13,7 @@ export interface ListColumn<T = any> {
   format?: (value: any) => string;
   icon?: string;
   showInCard?: boolean;
+  iconRender?: (row: T) => string;
 }
 
 export interface ListAction<T = any> {

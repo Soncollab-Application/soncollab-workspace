@@ -203,9 +203,18 @@
                                alt="">
                         </div>
                       }
+
+                      @case ('icon') {
+                        <span class="material-symbols-outlined" [class]="getCellClass(row, column)">
+                          {{ column.iconRender ? column.iconRender(row) : (column.icon || 'help') }}
+                        </span>
+                      }
+
                       @case ('text') {
                         {{ getCellValue(row, column) }}
                       }
+
+
                       @default {
                         {{ getCellValue(row, column) }}
                       }
@@ -382,6 +391,15 @@
                          (click)="$event.stopPropagation()">
                         {{ getCellValue(card, column) }}
                       </a>
+                    </div>
+
+                  } @else if (column.type === 'icon') {
+
+                    <div class="mb-3">
+                      <div class="small text-muted mb-1">{{ column.label }}</div>
+                      <span class="material-symbols-outlined" [class]="getCellClass(card, column)">
+                        {{ column.iconRender ? column.iconRender(card) : (column.icon || 'help') }}
+                      </span>
                     </div>
 
                   } @else {

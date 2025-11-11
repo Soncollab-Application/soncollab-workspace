@@ -1,0 +1,86 @@
+{
+  "media-library": {
+    "page_title": "Bibliothèque de médias",
+    "upload": "Téléverser",
+    "delete_selected": "Supprimer la sélection",
+    "loading": "Chargement...",
+    "preview": "Aperçu",
+    "name": "Nom",
+    "type": "Type",
+    "size": "Taille",
+    "extension": "Extension",
+    "created": "Créé",
+    "uploaded_by": "Téléversé par",
+    "created_at": "Créé le",
+    "actions": "Actions",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "open": "Ouvrir",
+    "showing": "Affichage",
+    "of": "sur",
+    "root": "Accueil",
+    "back": "Retour",
+    "add_folder": "Créer un dossier",
+    "create_folder_prompt": "Nom du dossier :",
+    "edit_file_prompt": "Nouveau nom du fichier :",
+
+    "kpis": {
+      "total_files": "Total fichiers",
+      "images": "Images",
+      "videos": "Vidéos",
+      "documents": "Documents"
+    },
+
+    "filters": {
+      "type": "Type de fichier",
+      "all_types": "Tous les types",
+      "images": "Images",
+      "videos": "Vidéos",
+      "documents": "Documents",
+      "audio": "Audio",
+      "uploaded_by": "Téléversé par",
+      "user_email": "Email de l'utilisateur"
+    },
+
+    "sort": {
+      "recent": "Plus récents",
+      "name_asc": "Nom (A-Z)",
+      "name_desc": "Nom (Z-A)",
+      "size_desc": "Taille (plus gros)"
+    },
+
+    "empty": {
+      "title": "Aucun fichier",
+      "message": "Commencez par téléverser vos premiers fichiers"
+    },
+
+    "confirm": {
+      "delete_title": "Supprimer les fichiers",
+      "delete_message": "Êtes-vous sûr de vouloir supprimer {{count}} fichier(s) ? Cette action est irréversible.",
+      "delete_file_title": "Supprimer le fichier",
+      "delete_file_message": "Êtes-vous sûr de vouloir supprimer '{{name}}' ? Cette action est irréversible."
+    },
+
+    "success": {
+      "upload": "{{count}} fichier(s) téléversé(s) avec succès",
+      "folder_created": "Dossier créé avec succès",
+      "file_updated": "Fichier mis à jour avec succès",
+      "file_deleted": "Fichier supprimé avec succès",
+      "files_deleted": "{{count}} fichier(s) supprimé(s) avec succès"
+    },
+
+    "warning": {
+      "partial_delete": "{{success}} fichier(s) supprimé(s), {{errors}} erreur(s) rencontrée(s)"
+    },
+
+    "errors": {
+      "load_files_error": "Erreur lors du chargement des fichiers",
+      "load_folders_error": "Erreur lors du chargement des dossiers",
+      "load_folder_error": "Erreur lors du chargement du dossier",
+      "upload_error": "Erreur lors du téléversement",
+      "delete_error": "Erreur lors de la suppression",
+      "create_folder_error": "Erreur lors de la création du dossier",
+      "update_file_error": "Erreur lors de la mise à jour du fichier"
+    }
+  }
+}
