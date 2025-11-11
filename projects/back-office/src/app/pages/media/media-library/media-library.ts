@@ -100,8 +100,15 @@ export class MediaLibrary implements OnInit, OnDestroy {
 
   displayedFolders = computed(() => {
     // Content manager : filtrer pour ne montrer que ses dossiers
-    if (this.isContentManager() && this.currentFolder()) {
-      return this.currentFolder()?.children || [];
+    if (this.isContentManager()) {
+      // Si Content Manager, on ne montre que les dossiers chargés dans loadUserRootFolder,
+      // qui sont censés être les dossiers de l'utilisateur.
+      // Si on est dans un sous-dossier, on affiche ses enfants.
+      if (this.currentFolder()) {
+        return this.currentFolder()?.children || [];
+      }
+      // À la racine, on affiche le dossier racine de l'utilisateur (qui est le seul dans this.folders() après loadUserRootFolder)
+      return this.folders();
     }
 
     if (this.currentFolder()) {
@@ -278,7 +285,9 @@ export class MediaLibrary implements OnInit, OnDestroy {
           );
 
           if (userFolder) {
-            this.loadFolderContent(userFolder.documentId);
+            // Au lieu de charger le contenu du dossier, on le met comme dossier racine
+            // pour le Content Manager.
+            this.folders.set([userFolder]);
           } else {
             // Pas de dossier trouvé, rester à la racine
             this.folders.set([]);
