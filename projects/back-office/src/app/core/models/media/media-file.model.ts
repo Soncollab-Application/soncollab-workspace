@@ -1,42 +1,46 @@
+// projects/back-office/src/app/core/models/media/media-file.model.ts
+
 export interface MediaFile {
   id: number;
   documentId: string;
   name: string;
-  alternativeText: string | null;
-  caption: string | null;
-  width: number | null;
-  height: number | null;
-  formats: MediaFormats | null;
+  alternativeText?: string | null;
+  caption?: string | null;
+  width?: number | null;
+  height?: number | null;
+  formats?: MediaFormats | null;
   hash: string;
   ext: string;
   mime: string;
   size: number;
   url: string;
-  previewUrl: string | null;
+  previewUrl?: string | null;
   provider: string;
-  provider_metadata: Record<string, any> | null;
   folderPath: string;
   createdAt: string;
   updatedAt: string;
-  publishedAt: string;
-  locale: string | null;
   uploaded_by: MediaUploader;
-  folder: MediaFolder;
-  related?: any[];
+  folder?: MediaFolder | null;
+  type?: 'asset';
+  isSelectable?: boolean;
 }
 
 export interface MediaFormats {
-  thumbnail?: MediaThumbnail;
-  small?: MediaThumbnail;
-  medium?: MediaThumbnail;
-  large?: MediaThumbnail;
+  thumbnail?: MediaFormat;
+  small?: MediaFormat;
+  medium?: MediaFormat;
+  large?: MediaFormat;
 }
 
-export interface MediaThumbnail {
-  url: string;
+export interface MediaFormat {
+  name: string;
+  hash: string;
+  ext: string;
+  mime: string;
   width: number;
   height: number;
   size: number;
+  url: string;
 }
 
 export interface MediaUploader {
@@ -49,233 +53,99 @@ export interface MediaUploader {
 }
 
 export interface MediaFolder {
-  id: number | string;
+  id: number;
   documentId: string;
   name: string;
   pathId: number;
   path: string;
   createdAt: string;
   updatedAt: string;
-  publishedAt: string;
-  locale: string | null;
-  parent: MediaFolder | null;
-  files?: MediaFolderFiles;
+  parent?: MediaFolder | null;
   children?: MediaFolder[];
+  files?: { count: number };
+  type?: 'folder';
+  folderURL?: string;
+  isSelectable?: boolean;
 }
 
-export interface MediaFolderFiles {
-  count: number;
-}
-
-export interface MediaFilesResponse {
+export interface MediaResponse {
   data: MediaFile[];
-  meta: {
-    pagination: {
-      page: number;
-      pageSize: number;
-      pageCount: number;
-      total: number;
-    };
-  };
-}
-
-export interface MediaFileResponse {
-  data: MediaFile;
-}
-
-export interface MediaUploadResponse {
-  data: MediaFile[];
-  meta: {
-    count: number;
-  };
-}
-
-export interface MediaFoldersResponse {
-  data: MediaFolder[];
+  meta: { pagination: MediaPagination };
 }
 
 export interface MediaFolderResponse {
+  data: MediaFolder[];
+}
+
+export interface MediaSingleResponse {
+  data: MediaFile;
+}
+
+export interface MediaSingleFolderResponse {
   data: MediaFolder;
 }
 
-export interface MediaStats {
-  total: {
-    files: number;
-    size: number;
-    sizeFormatted: string;
-  };
-  byType: {
-    images: number;
-    videos: number;
-    documents: number;
-    others: number;
-  };
-  byUser: MediaUserStats[] | null;
+export interface MediaPagination {
+  page: number;
+  pageSize: number;
+  total: number;
+  pageCount: number;
 }
 
-export interface MediaUserStats {
-  user: {
-    documentId: string;
-    email: string;
-    role: string;
-    name: string;
-  };
-  totalFiles: number;
-  totalSize: number;
-  sizeFormatted: string;
+export interface BulkDeleteRequest {
+  fileIds: string[];
+  folderIds: string[];
 }
 
-export interface MediaStatsResponse {
-  data: MediaStats;
-}
-
-export interface MediaFilters {
-  page?: number;
-  pageSize?: number;
-  sort?: string;
-
-  folder?: string;
-  folderPath?: string;
-
-  mime?: 'image' | 'video' | 'document' | 'audio';
-  search?: string;
-  uploaded_by?: string;
-
-  createdAt_eq?: string;
-  createdAt_ne?: string;
-  createdAt_gt?: string;
-  createdAt_gte?: string;
-  createdAt_lt?: string;
-  createdAt_lte?: string;
-
-  updatedAt_eq?: string;
-  updatedAt_ne?: string;
-  updatedAt_gt?: string;
-  updatedAt_gte?: string;
-  updatedAt_lt?: string;
-  updatedAt_lte?: string;
-
-  mime_contains?: string;
-  mime_notContains?: string;
-}
-
-export type MediaFilterField = 'createdAt' | 'updatedAt' | 'type';
-export type MediaFilterOperator = 'eq' | 'ne' | 'gt' | 'gte' | 'lt' | 'lte';
-export type MediaMimeOperator = 'contains' | 'notContains';
-export type MediaMimeType = 'audio' | 'file' | 'image' | 'video';
-
-export interface MediaAdvancedFilter {
-  field: MediaFilterField;
-  operator: MediaFilterOperator | MediaMimeOperator;
-  value: string | MediaMimeType;
-}
-
-export interface MediaSearchRequest {
-  query?: string;
-  filters?: {
-    mime?: 'image' | 'video' | 'document' | 'audio';
-    uploaded_by?: string;
-  };
-  pagination?: {
-    page?: number;
-    pageSize?: number;
+export interface BulkDeleteResponse {
+  message: string;
+  data: {
+    files: { success: string[]; errors: Array<{ documentId: string; error: string }> };
+    folders: { success: string[]; errors: Array<{ documentId: string; error: string }> };
   };
 }
 
-export interface MediaUpdateRequest {
+export interface CreateFolderRequest {
+  name: string;
+  parentId?: string;
+}
+
+export interface CreateFolderResponse {
+  message: string;
+  data: MediaFolder;
+}
+
+export interface UpdateFileRequest {
   name?: string;
   alternativeText?: string;
   caption?: string;
 }
 
-export interface MediaFolderCreateRequest {
-  name: string;
-  parentId?: string;
+export interface BulkMoveRequest {
+  fileIds: string[];
+  folderIds: string[];
+  destinationFolderId?: string;
 }
 
-export interface MediaBulkDeleteRequest {
-  documentIds: string[];
-}
-
-export interface MediaBulkDeleteResponse {
+export interface BulkMoveResponse {
   message: string;
   data: {
     success: string[];
-    errors: Array<{
-      documentId: string;
-      error: string;
-    }>;
+    errors: Array<{ documentId: string; error: string }>;
   };
 }
 
-export interface MediaDeleteResponse {
-  message: string;
-  data: {
-    documentId: string;
-  };
-}
-
-export interface MediaFolderCreateResponse {
-  message: string;
-  data: {
-    id: number;
-    documentId?: string;
-    name?: string;
-    path?: string;
-    pathId?: number;
-  };
-}
-
-export interface NavigationFolder {
-  documentId: string;
-  id: number | string;
-  name: string;
-  path: string;
-  pathId: number;
-  parent: any;
-  createdAt: string;
-  updatedAt: string;
-  files: MediaFile[];
-  children: MediaFolder[];
-}
-
-export interface DeleteFolderResponse {
-  message: string;
-  data: {
-    documentId: string;
-  };
-}
-
-export interface BulkDeleteFoldersResponse {
-  message: string;
-  data: {
-    success: string[];
-    errors: Array<{
-      documentId: string;
-      error: string;
-    }>;
-  };
-}
-
-export interface MediaItem {
-  id: number | string;
-  documentId: string;
-  name: string;
-  type: 'file' | 'folder';
-  createdAt: string;
-  updatedAt: string;
-
-  mime?: string;
-  size?: number;
-  ext?: string;
-  url?: string;
-  formats?: MediaFormats | null;
-  alternativeText?: string | null;
-  uploaded_by?: MediaUploader;
-
+export interface FolderTreeNode {
+  value: string | null;
+  label: string;
   path?: string;
-  pathId?: number;
-  files?: MediaFolderFiles;
-  children?: MediaFolder[];
-  parent?: MediaFolder | null;
+  children?: FolderTreeNode[];
 }
+
+export interface UpdateFolderRequest {
+  name: string;
+}
+
+export type SortOption = 'createdAt:DESC' | 'createdAt:ASC' | 'name:ASC' | 'name:DESC' | 'updatedAt:DESC' | 'updatedAt:ASC';
+export type ViewMode = 'grid' | 'list';
+export const DEFAULT_PAGE_SIZE = 10;

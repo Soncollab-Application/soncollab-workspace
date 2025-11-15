@@ -1,0 +1,762 @@
+<div class="media-library-container">
+
+  <!-- ==================== HEADER ==================== -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-0">
+        @for (item of breadcrumbs(); track item.id) {
+          @if ($last) {
+            <li class="breadcrumb-item active" aria-current="page">
+              {{ item.label }}
+            </li>
+          } @else {
+            <li class="breadcrumb-item">
+              <a href="javascript:void(0)" (click)="onBreadcrumbClick(item)">
+                {{ item.label }}
+              </a>
+            </li>
+          }
+        }
+      </ol>
+    </nav>
+
+    <!-- Actions -->
+    <div class="d-flex gap-2">
+      @if (state.canUpload()) {
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="openUploadDialog()">
+          <span class="material-symbols-outlined me-1">upload</span>
+          {{ 'mediaLibrary.actions.upload' | translate }}
+        </button>
+      }
+
+      @if (state.canCreateFolder()) {
+        <button
+          type="button"
+          class="btn btn-outline-primary"
+          (click)="openCreateFolderDialog()">
+          <span class="material-symbols-outlined me-1">create_new_folder</span>
+          {{ 'mediaLibrary.actions.createFolder' | translate }}
+        </button>
+      }
+
+      <button
+        type="button"
+        class="btn btn-outline-secondary"
+        (click)="toggleViewMode()">
+        <span class="material-symbols-outlined">
+          {{ state.viewMode() === 'grid' ? 'view_list' : 'grid_view' }}
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== SEARCH & FILTERS ==================== -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <div class="row align-items-center g-3">
+        <div class="col-md-6">
+          <div class="input-group">
+            <span class="input-group-text">
+              <span class="material-symbols-outlined">search</span>
+            </span>
+            <input
+              type="search"
+              class="form-control"
+              [value]="state.searchQuery()"
+              (keyup.enter)="onSearchEnter()"
+               placeholder="{{ 'mediaLibrary.search.placeholder' | translate }}">
+
+            @if (state.searchQuery()) {
+              <button
+                class="btn btn-outline-secondary"
+                type="button"
+                (click)="clearSearch()">
+                <span class="material-symbols-outlined">close</span>
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <select
+            class="form-select"
+            [value]="state.currentSort()"
+            (change)="onSortChange($any($event.target).value)">
+            <option value="createdAt:DESC">{{ 'mediaLibrary.sort.newest' | translate }}</option>
+            <option value="createdAt:ASC">{{ 'mediaLibrary.sort.oldest' | translate }}</option>
+            <option value="name:ASC">{{ 'mediaLibrary.sort.nameAsc' | translate }}</option>
+            <option value="name:DESC">{{ 'mediaLibrary.sort.nameDesc' | translate }}</option>
+            <option value="updatedAt:DESC">{{ 'mediaLibrary.sort.recentlyUpdated' | translate }}</option>
+            <option value="updatedAt:ASC">{{ 'mediaLibrary.sort.oldestUpdated' | translate }}</option>
+          </select>
+        </div>
+
+        <div class="col-md-3 text-end">
+          @if (state.totalItems() > 0) {
+            <span class="text-muted">
+              {{ 'mediaLibrary.totalItems' | translate: { count: state.totalItems() } }}
+            </span>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== BULK ACTIONS ==================== -->
+  @if (state.hasSelection()) {
+    <div class="alert alert-info d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <span class="material-symbols-outlined me-2">info</span>
+        {{ 'mediaLibrary.selection.count' | translate: { count: state.selectedItems().length } }}
+      </div>
+      <div class="d-flex gap-2">
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-primary"
+          (click)="openMoveDialog()">
+          <span class="material-symbols-outlined me-1">drive_file_move</span>
+          {{ 'mediaLibrary.actions.move' | translate }}
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary"
+          (click)="state.clearSelection()">
+          {{ 'mediaLibrary.selection.clear' | translate }}
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-danger"
+          (click)="bulkDelete()">
+          <span class="material-symbols-outlined me-1">delete</span>
+          {{ 'mediaLibrary.actions.deleteSelected' | translate }}
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- ==================== LOADING ==================== -->
+  @if (state.isLoading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">{{ 'mediaLibrary.loading' | translate }}</span>
+      </div>
+    </div>
+  }
+
+  <!-- ==================== CONTENT (GRID VIEW) ==================== -->
+  @if (!state.isLoading() && state.viewMode() === 'grid') {
+
+    <!-- Select All -->
+    @if (state.folders().length > 0 || state.files().length > 0) {
+      <div class="mb-3">
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="selectAll"
+            [checked]="state.allSelected()"
+            [indeterminate]="!state.allSelected() && state.hasSelection()"
+            (change)="onSelectAll()">
+          <label class="form-check-label" for="selectAll">
+            {{ 'mediaLibrary.selection.selectAll' | translate }}
+          </label>
+        </div>
+      </div>
+    }
+
+    <!-- Folders Grid -->
+    @if (state.folders().length > 0) {
+      <div class="row g-3 mb-4">
+        @for (folder of state.folders(); track folder.documentId) {
+          <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+            <div
+              class="card folder-card h-100"
+              [class.border-primary]="isSelected(folder)"
+              [class.border-2]="isSelected(folder)">
+
+              <div class="card-body p-3">
+                <!-- Checkbox -->
+                <div class="form-check position-absolute top-0 start-0 m-2">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    [id]="'folder-' + folder.documentId"
+                    [checked]="isSelected(folder)"
+                    (change)="onToggleSelection(folder)"
+                    (click)="$event.stopPropagation()">
+                </div>
+
+                <!-- Folder Icon -->
+                <div
+                  class="folder-icon-wrapper text-center mb-2 cursor-pointer"
+                  (click)="onFolderClick(folder)">
+                  <span class="material-symbols-outlined display-1 text-warning">folder</span>
+                </div>
+
+                <!-- Folder Info -->
+                <div class="text-center">
+                  <p class="mb-1 fw-semibold text-truncate" [title]="folder.name">
+                    {{ folder.name }}
+                  </p>
+                  <small class="text-muted">
+                    {{ 'mediaLibrary.folder.itemCount' | translate: { count: folder.files?.count || 0 } }}
+                  </small>
+                </div>
+
+                <!-- Actions Dropdown -->
+                <div class="dropdown position-absolute top-0 end-0 m-2">
+                  <button
+                    class="btn btn-sm btn-light"
+                    type="button"
+                    data-bs-toggle="dropdown"
+                    (click)="$event.stopPropagation()">
+                    <span class="material-symbols-outlined">more_vert</span>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                      <a class="dropdown-item" href="javascript:void(0)" (click)="editFolder(folder)">
+                        <span class="material-symbols-outlined me-2">edit</span>
+                        {{ 'mediaLibrary.actions.edit' | translate }}
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="javascript:void(0)" (click)="moveItem(folder)">
+                        <span class="material-symbols-outlined me-2">drive_file_move</span>
+                        {{ 'mediaLibrary.actions.move' | translate }}
+                      </a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                      <a class="dropdown-item text-danger" href="javascript:void(0)" (click)="deleteFolder(folder)">
+                        <span class="material-symbols-outlined me-2">delete</span>
+                        {{ 'mediaLibrary.actions.delete' | translate }}
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Files Grid -->
+    @if (state.files().length > 0) {
+      <div class="row g-3">
+        @for (file of state.files(); track file.documentId) {
+          <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+            <div
+              class="card file-card h-100"
+              [class.border-primary]="isSelected(file)"
+              [class.border-2]="isSelected(file)">
+
+              <div class="card-body p-3">
+                <!-- Checkbox -->
+                <div class="form-check position-absolute top-0 start-0 m-2 z-1">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    [id]="'file-' + file.documentId"
+                    [checked]="isSelected(file)"
+                    (change)="onToggleSelection(file)"
+                    (click)="$event.stopPropagation()">
+                </div>
+
+                <!-- File Preview -->
+                <div class="file-preview-wrapper mb-2">
+                  @if (file.mime.startsWith('image/')) {
+                    <img
+                      [src]="getFileUrl(getThumbnail(file))"
+                      [alt]="file.alternativeText || file.name"
+                      class="img-fluid rounded"
+                      style="max-height: 120px; width: 100%; object-fit: cover;">
+                  } @else {
+                    <div class="text-center py-4">
+                      <span class="material-symbols-outlined display-1 text-secondary">
+                        {{ getFileIcon(file.mime) }}
+                      </span>
+                    </div>
+                  }
+                </div>
+
+                <!-- File Info -->
+                <div class="text-center">
+                  <p class="mb-1 small fw-semibold text-truncate" [title]="file.name">
+                    {{ file.name }}
+                  </p>
+                  <small class="text-muted">
+                    {{ formatFileSize(file.size) }}
+                  </small>
+                </div>
+
+                <!-- Actions Dropdown -->
+                <div class="dropdown position-absolute top-0 end-0 m-2 z-1">
+                  <button
+                    class="btn btn-sm btn-light"
+                    type="button"
+                    data-bs-toggle="dropdown"
+                    (click)="$event.stopPropagation()">
+                    <span class="material-symbols-outlined">more_vert</span>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                      <a class="dropdown-item" href="javascript:void(0)" (click)="openEditFileDialog(file)">
+                        <span class="material-symbols-outlined me-2">edit</span>
+                        {{ 'mediaLibrary.actions.edit' | translate }}
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="javascript:void(0)" (click)="moveItem(file)">
+                        <span class="material-symbols-outlined me-2">drive_file_move</span>
+                        {{ 'mediaLibrary.actions.move' | translate }}
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="javascript:void(0)" (click)="downloadFile(file)">
+                        <span class="material-symbols-outlined me-2">download</span>
+                        {{ 'mediaLibrary.actions.download' | translate }}
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="javascript:void(0)" (click)="copyLink(file)">
+                        <span class="material-symbols-outlined me-2">link</span>
+                        {{ 'mediaLibrary.actions.copyLink' | translate }}
+                      </a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                      <a class="dropdown-item text-danger" href="javascript:void(0)" (click)="deleteFile(file)">
+                        <span class="material-symbols-outlined me-2">delete</span>
+                        {{ 'mediaLibrary.actions.delete' | translate }}
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Empty State -->
+    @if (state.folders().length === 0 && state.files().length === 0) {
+      <div class="text-center py-5">
+        <span class="material-symbols-outlined display-1 text-muted mb-3">folder_open</span>
+        <h5>{{ 'mediaLibrary.empty.title' | translate }}</h5>
+        <p class="text-muted">{{ 'mediaLibrary.empty.message' | translate }}</p>
+      </div>
+    }
+  }
+
+  <!-- ==================== CONTENT (LIST VIEW) ==================== -->
+  @if (!state.isLoading() && state.viewMode() === 'list') {
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+        <tr>
+          <th style="width: 40px;">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              [checked]="state.allSelected()"
+              [indeterminate]="!state.allSelected() && state.hasSelection()"
+              (change)="onSelectAll()">
+          </th>
+          <th style="width: 60px;"></th>
+          <th>{{ 'mediaLibrary.table.name' | translate }}</th>
+          <th>{{ 'mediaLibrary.table.type' | translate }}</th>
+          <th>{{ 'mediaLibrary.table.size' | translate }}</th>
+          <th>{{ 'mediaLibrary.table.createdAt' | translate }}</th>
+          <th style="width: 100px;"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Folders -->
+          @for (folder of state.folders(); track folder.documentId) {
+            <tr [class.table-primary]="isSelected(folder)">
+              <td>
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  [checked]="isSelected(folder)"
+                  (change)="onToggleSelection(folder)">
+              </td>
+              <td>
+                <span class="material-symbols-outlined text-warning">folder</span>
+              </td>
+              <td>
+                <a href="javascript:void(0)" (click)="onFolderClick(folder)" class="text-decoration-none">
+                  {{ folder.name }}
+                </a>
+              </td>
+              <td>{{ 'mediaLibrary.types.folder' | translate }}</td>
+              <td>{{ folder.files?.count || 0 }} {{ 'mediaLibrary.items' | translate }}</td>
+              <td>{{ folder.createdAt | date:'short' }}</td>
+              <td>
+                <div class="dropdown">
+                  <button class="btn btn-sm btn-light" type="button" data-bs-toggle="dropdown">
+                    <span class="material-symbols-outlined">more_vert</span>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                      <a class="dropdown-item" href="javascript:void(0)" (click)="editFolder(folder)">
+                        <span class="material-symbols-outlined me-2">edit</span>
+                        {{ 'mediaLibrary.actions.edit' | translate }}
+                      </a>
+                    </li>
+
+                    <li>
+                      <a class="dropdown-item" href="javascript:void(0)" (click)="moveItem(folder)">
+                        <span class="material-symbols-outlined me-2">drive_file_move</span>
+                        {{ 'mediaLibrary.actions.move' | translate }}
+                      </a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                      <a class="dropdown-item text-danger" href="javascript:void(0)" (click)="deleteFolder(folder)">
+                        <span class="material-symbols-outlined me-2">delete</span>
+                        {{ 'mediaLibrary.actions.delete' | translate }}
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+          }
+
+        <!-- Files -->
+          @for (file of state.files(); track file.documentId) {
+            <tr [class.table-primary]="isSelected(file)">
+              <td>
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  [checked]="isSelected(file)"
+                  (change)="onToggleSelection(file)">
+              </td>
+              <td>
+                @if (file.mime.startsWith('image/')) {
+                  <img
+                    [src]="getFileUrl(getThumbnail(file))"
+                    [alt]="file.name"
+                    class="rounded"
+                    style="width: 40px; height: 40px; object-fit: cover;">
+                } @else {
+                  <span class="material-symbols-outlined">{{ getFileIcon(file.mime) }}</span>
+                }
+              </td>
+              <td>{{ file.name }}</td>
+              <td>{{ file.ext }}</td>
+              <td>{{ formatFileSize(file.size) }}</td>
+              <td>{{ file.createdAt | date:'short' }}</td>
+              <td>
+                <div class="dropdown">
+                  <button class="btn btn-sm btn-light" type="button" data-bs-toggle="dropdown">
+                    <span class="material-symbols-outlined">more_vert</span>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                      <a class="dropdown-item" href="javascript:void(0)" (click)="openEditFileDialog(file)">
+                        <span class="material-symbols-outlined me-2">edit</span>
+                        {{ 'mediaLibrary.actions.edit' | translate }}
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="javascript:void(0)" (click)="moveItem(file)">
+                        <span class="material-symbols-outlined me-2">drive_file_move</span>
+                        {{ 'mediaLibrary.actions.move' | translate }}
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="javascript:void(0)" (click)="downloadFile(file)">
+                        <span class="material-symbols-outlined me-2">download</span>
+                        {{ 'mediaLibrary.actions.download' | translate }}
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="javascript:void(0)" (click)="copyLink(file)">
+                        <span class="material-symbols-outlined me-2">link</span>
+                        {{ 'mediaLibrary.actions.copyLink' | translate }}
+                      </a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                      <a class="dropdown-item text-danger" href="javascript:void(0)" (click)="deleteFile(file)">
+                        <span class="material-symbols-outlined me-2">delete</span>
+                        {{ 'mediaLibrary.actions.delete' | translate }}
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+          }
+
+        <!-- Empty State -->
+          @if (state.folders().length === 0 && state.files().length === 0) {
+            <tr>
+              <td colspan="7" class="text-center py-5">
+                <span class="material-symbols-outlined display-1 text-muted mb-3">folder_open</span>
+                <h5>{{ 'mediaLibrary.empty.title' | translate }}</h5>
+                <p class="text-muted">{{ 'mediaLibrary.empty.message' | translate }}</p>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <!-- ==================== PAGINATION ==================== -->
+  @if (state.totalItems() > 0 && state.pageCount() > 1) {
+    <nav aria-label="Page navigation" class="mt-4">
+      <ul class="pagination justify-content-center">
+        <li class="page-item" [class.disabled]="state.currentPage() === 1">
+          <a class="page-link" href="javascript:void(0)" (click)="onPageChange(state.currentPage() - 1)">
+            {{ 'mediaLibrary.pagination.previous' | translate }}
+          </a>
+        </li>
+
+        @for (page of [].constructor(state.pageCount()); track $index) {
+          <li class="page-item" [class.active]="state.currentPage() === $index + 1">
+            <a class="page-link" href="javascript:void(0)" (click)="onPageChange($index + 1)">
+              {{ $index + 1 }}
+            </a>
+          </li>
+        }
+
+        <li class="page-item" [class.disabled]="state.currentPage() === state.pageCount()">
+          <a class="page-link" href="javascript:void(0)" (click)="onPageChange(state.currentPage() + 1)">
+            {{ 'mediaLibrary.pagination.next' | translate }}
+          </a>
+        </li>
+      </ul>
+    </nav>
+  }
+
+</div>
+
+
+<!-- Upload Modal -->
+@if (showUploadModal()) {
+  <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ 'mediaLibrary.upload.title' | translate }}</h5>
+          <button type="button" class="btn-close" (click)="closeUploadDialog()"></button>
+        </div>
+        <div class="modal-body">
+          <input
+            type="file"
+            class="form-control"
+            multiple
+            (change)="onFilesSelected($event)">
+          @if (uploadingFiles().length > 0) {
+            <div class="mt-3">
+              <p class="mb-2">{{ 'mediaLibrary.upload.selected' | translate: { count: uploadingFiles().length } }}</p>
+              <ul class="list-group">
+                @for (file of uploadingFiles(); track $index) {
+                  <li class="list-group-item">{{ file.name }} ({{ formatFileSize(file.size) }})</li>
+                }
+              </ul>
+            </div>
+          }
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeUploadDialog()">
+            {{ 'mediaLibrary.actions.cancel' | translate }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            [disabled]="uploadingFiles().length === 0"
+            (click)="uploadFiles()">
+            {{ 'mediaLibrary.actions.upload' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Create Folder Modal -->
+@if (showCreateFolderModal()) {
+  <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ 'mediaLibrary.createFolder.title' | translate }}</h5>
+          <button type="button" class="btn-close" (click)="closeCreateFolderDialog()"></button>
+        </div>
+        <div class="modal-body">
+          <label class="form-label">{{ 'mediaLibrary.createFolder.name' | translate }}</label>
+          <input
+            type="text"
+            class="form-control"
+            [value]="newFolderName()"
+            (input)="newFolderName.set($any($event.target).value)"
+            (keydown.enter)="createFolder()">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeCreateFolderDialog()">
+            {{ 'mediaLibrary.actions.cancel' | translate }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            [disabled]="!newFolderName().trim()"
+            (click)="createFolder()">
+            {{ 'mediaLibrary.actions.create' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Edit File Modal -->
+@if (showEditFileModal() && fileToEdit()) {
+  <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ 'mediaLibrary.editFile.title' | translate }}</h5>
+          <button type="button" class="btn-close" (click)="closeEditFileDialog()"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">{{ 'mediaLibrary.editFile.name' | translate }}</label>
+            <input
+              type="text"
+              class="form-control"
+              [value]="fileToEdit()!.name"
+              #fileName>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">{{ 'mediaLibrary.editFile.altText' | translate }}</label>
+            <input
+              type="text"
+              class="form-control"
+              [value]="fileToEdit()!.alternativeText || ''"
+              #altText>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">{{ 'mediaLibrary.editFile.caption' | translate }}</label>
+            <textarea
+              class="form-control"
+              rows="3"
+              #caption>{{ fileToEdit()!.caption || '' }}</textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeEditFileDialog()">
+            {{ 'mediaLibrary.actions.cancel' | translate }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="updateFile({ name: fileName.value, alternativeText: altText.value, caption: caption.value })">
+            {{ 'mediaLibrary.actions.save' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Move Modal -->
+@if (showMoveModal()) {
+  <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ 'mediaLibrary.move.title' | translate }}</h5>
+          <button type="button" class="btn-close" (click)="closeMoveDialog()"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Items à déplacer -->
+          @if (filesToMove().length > 0) {
+            <div class="alert alert-info mb-3">
+              <small>
+                <strong>{{ 'mediaLibrary.move.moving' | translate }}:</strong>
+                @for (item of filesToMove(); track item.documentId) {
+                  <div>
+                    <span class="material-symbols-outlined" style="font-size: 14px; vertical-align: middle;">
+                      {{ item.type === 'folder' ? 'folder' : 'description' }}
+                    </span>
+                    {{ item.name }}
+                  </div>
+                }
+              </small>
+            </div>
+          }
+
+          <!-- Sélection destination -->
+          <label class="form-label">{{ 'mediaLibrary.move.destination' | translate }}</label>
+          <select
+            class="form-select"
+            [(ngModel)]="selectedDestinationFolder">
+            @for (node of flattenFolderStructure(folderStructure()); track node.value) {
+              <option [value]="node.value">
+                @for (_ of [].constructor(node.level); track $index) {&nbsp;&nbsp;}{{ node.label }}
+              </option>
+            }
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeMoveDialog()">
+            {{ 'mediaLibrary.actions.cancel' | translate }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="confirmMove()">
+            {{ 'mediaLibrary.actions.move' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Edit Folder Modal -->
+@if (showEditFolderModal() && folderToEdit()) {
+  <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ 'mediaLibrary.editFolder.title' | translate }}</h5>
+          <button type="button" class="btn-close" (click)="closeEditFolderDialog()"></button>
+        </div>
+        <div class="modal-body">
+          <label class="form-label">{{ 'mediaLibrary.editFolder.name' | translate }}</label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="newFolderNameEdit"
+            (keydown.enter)="updateFolderName()">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeEditFolderDialog()">
+            {{ 'mediaLibrary.actions.cancel' | translate }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            [disabled]="!newFolderNameEdit().trim()"
+            (click)="updateFolderName()">
+            {{ 'mediaLibrary.actions.save' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
