@@ -1,5 +1,3 @@
-// projects/back-office/src/app/pages/media/media-library/utils/breadcrumb.utils.ts
-
 import { MediaFolder } from '../../../../core/models/media/media-file.model';
 
 export interface BreadcrumbItem {
@@ -22,5 +20,21 @@ export function getBreadcrumbData(currentFolder: MediaFolder | null): Breadcrumb
     return items;
   };
 
-  return [...breadcrumbs, ...buildPath(currentFolder)];
+  const fullPath = buildPath(currentFolder);
+
+  const filteredPath = fullPath.filter(item => {
+    const folderName = item.folder?.name || '';
+
+    // Exclure les dossiers système
+    if (folderName === 'users') return false;
+    if (folderName === 'soncollab_admin') return false;
+    if (folderName === 'soncollab_content') return false;
+
+    // Exclure les emails (contiennent un @)
+    if (folderName.includes('@')) return false;
+
+    return true;
+  });
+
+  return [...breadcrumbs, ...filteredPath];
 }

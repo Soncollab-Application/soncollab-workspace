@@ -1,86 +1,152 @@
 {
-  "media-library": {
-    "page_title": "Bibliothèque de médias",
-    "upload": "Téléverser",
-    "delete_selected": "Supprimer la sélection",
+  "mediaLibrary": {
+    "title": "Médiathèque",
+    "items": "éléments",
     "loading": "Chargement...",
-    "preview": "Aperçu",
-    "name": "Nom",
-    "type": "Type",
-    "size": "Taille",
-    "extension": "Extension",
-    "created": "Créé",
-    "uploaded_by": "Téléversé par",
-    "created_at": "Créé le",
-    "actions": "Actions",
-    "delete": "Supprimer",
-    "edit": "Modifier",
-    "open": "Ouvrir",
-    "showing": "Affichage",
-    "of": "sur",
-    "root": "Accueil",
-    "back": "Retour",
-    "add_folder": "Créer un dossier",
-    "create_folder_prompt": "Nom du dossier :",
-    "edit_file_prompt": "Nouveau nom du fichier :",
 
-    "kpis": {
-      "total_files": "Total fichiers",
-      "images": "Images",
-      "videos": "Vidéos",
-      "documents": "Documents"
-    },
-
-    "filters": {
-      "type": "Type de fichier",
-      "all_types": "Tous les types",
-      "images": "Images",
-      "videos": "Vidéos",
-      "documents": "Documents",
-      "audio": "Audio",
-      "uploaded_by": "Téléversé par",
-      "user_email": "Email de l'utilisateur"
+    "search": {
+      "placeholder": "Rechercher un fichier..."
     },
 
     "sort": {
-      "recent": "Plus récents",
-      "name_asc": "Nom (A-Z)",
-      "name_desc": "Nom (Z-A)",
-      "size_desc": "Taille (plus gros)"
+      "newest": "Plus récent d'abord",
+      "oldest": "Plus ancien d'abord",
+      "nameAsc": "Nom (A à Z)",
+      "nameDesc": "Nom (Z à A)",
+      "recentlyUpdated": "Dernière modification",
+      "oldestUpdated": "Première modification"
+    },
+
+    "filters": {
+      "title": "Filtres",
+      "addFilter": "Ajouter un filtre",
+      "selectField": "Sélectionner un champ",
+      "selectOperator": "Sélectionner un opérateur",
+      "selectValue": "Sélectionner une valeur",
+      "createdAt": "Date de création",
+      "updatedAt": "Date de modification",
+      "type": "Type",
+      "is": "est",
+      "isNot": "n'est pas",
+      "isGreaterThan": "est supérieur à",
+      "isGreaterThanOrEqual": "est supérieur ou égal à",
+      "isLowerThan": "est inférieur à",
+      "isLowerThanOrEqual": "est inférieur ou égal à",
+      "audio": "Audio",
+      "file": "Fichier",
+      "image": "Image",
+      "video": "Vidéo",
+      "activeFilters": "Filtres actifs",
+      "clearAll": "Tout effacer"
+    },
+
+    "actions": {
+      "upload": "Téléverser",
+      "createFolder": "Créer un dossier",
+      "cancel": "Annuler",
+      "save": "Enregistrer",
+      "create": "Créer",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "move": "Déplacer",
+      "view": "Voir",
+      "deleteSelected": "Supprimer la sélection"
+    },
+
+    "selection": {
+      "selected": "sélectionné(s)",
+      "selectAll": "Tout sélectionner",
+      "clear": "Effacer la sélection"
+    },
+
+    "folder": {
+      "label": "Dossier",
+      "itemCount": "{{count}} élément(s)"
+    },
+
+    "table": {
+      "preview": "Aperçu",
+      "name": "Nom",
+      "type": "Type",
+      "size": "Taille",
+      "created": "Créé le",
+      "actions": "Actions"
+    },
+
+    "upload": {
+      "title": "Téléverser des fichiers",
+      "selected": "{{count}} fichier(s) sélectionné(s)"
+    },
+
+    "createFolder": {
+      "title": "Créer un dossier",
+      "name": "Nom du dossier"
+    },
+
+    "editFile": {
+      "title": "Modifier le fichier",
+      "name": "Nom",
+      "altText": "Texte alternatif",
+      "caption": "Légende"
+    },
+
+    "editFolder": {
+      "title": "Modifier le dossier",
+      "name": "Nom du dossier"
+    },
+
+    "move": {
+      "title": "Déplacer",
+      "moving": "Déplacement de",
+      "destination": "Destination",
+      "root": "Racine"
+    },
+
+    "bulkDelete": {
+      "title": "Supprimer les éléments",
+      "message": "Êtes-vous sûr de vouloir supprimer {{count}} élément(s) ?",
+      "confirm": "Supprimer"
     },
 
     "empty": {
       "title": "Aucun fichier",
-      "message": "Commencez par téléverser vos premiers fichiers"
+      "message": "Commencez par téléverser des fichiers ou créer un dossier"
     },
 
-    "confirm": {
-      "delete_title": "Supprimer les fichiers",
-      "delete_message": "Êtes-vous sûr de vouloir supprimer {{count}} fichier(s) ? Cette action est irréversible.",
-      "delete_file_title": "Supprimer le fichier",
-      "delete_file_message": "Êtes-vous sûr de vouloir supprimer '{{name}}' ? Cette action est irréversible."
+    "pagination": {
+      "previous": "Précédent",
+      "next": "Suivant"
     },
 
     "success": {
-      "upload": "{{count}} fichier(s) téléversé(s) avec succès",
-      "folder_created": "Dossier créé avec succès",
-      "file_updated": "Fichier mis à jour avec succès",
-      "file_deleted": "Fichier supprimé avec succès",
-      "files_deleted": "{{count}} fichier(s) supprimé(s) avec succès"
-    },
-
-    "warning": {
-      "partial_delete": "{{success}} fichier(s) supprimé(s), {{errors}} erreur(s) rencontrée(s)"
+      "fileUploaded": "Fichier téléversé avec succès",
+      "fileDeleted": "{{name}} supprimé avec succès",
+      "fileUpdated": "Fichier mis à jour avec succès",
+      "folderCreated": "Dossier {{name}} créé avec succès",
+      "folderDeleted": "{{name}} supprimé avec succès",
+      "folderUpdated": "Dossier {{name}} mis à jour avec succès",
+      "itemsMoved": "{{count}} élément(s) déplacé(s) avec succès",
+      "bulkDeleted": "{{count}} élément(s) supprimé(s) avec succès",
+      "linkCopied": "Lien copié dans le presse-papier"
     },
 
     "errors": {
-      "load_files_error": "Erreur lors du chargement des fichiers",
-      "load_folders_error": "Erreur lors du chargement des dossiers",
-      "load_folder_error": "Erreur lors du chargement du dossier",
-      "upload_error": "Erreur lors du téléversement",
-      "delete_error": "Erreur lors de la suppression",
-      "create_folder_error": "Erreur lors de la création du dossier",
-      "update_file_error": "Erreur lors de la mise à jour du fichier"
+      "loadFiles": "Erreur lors du chargement des fichiers",
+      "loadFolders": "Erreur lors du chargement des dossiers",
+      "uploadFailed": "Erreur lors du téléversement",
+      "deleteFileFailed": "Erreur lors de la suppression : {{message}}",
+      "deleteFolderFailed": "Erreur lors de la suppression : {{message}}",
+      "updateFileFailed": "Erreur lors de la mise à jour : {{message}}",
+      "updateFolderFailed": "Erreur lors de la mise à jour : {{message}}",
+      "createFolderFailed": "Erreur lors de la création : {{message}}",
+      "moveFailed": "Erreur lors du déplacement : {{message}}",
+      "bulkDeleteFailed": "Erreur lors de la suppression : {{message}}",
+      "loadStructure": "Erreur lors du chargement de la structure"
+    },
+
+    "warnings": {
+      "nothingToMove": "Aucun élément à déplacer",
+      "cannotCreateFolderHere": "Impossible de créer un dossier ici"
     }
   }
 }

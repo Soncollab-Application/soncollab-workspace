@@ -1,4 +1,4 @@
-<div class="media-library-container">
+<div class="media-library-container" [class.loading]="state.isLoading()">
 
   <!-- ==================== HEADER ==================== -->
   <div class="d-flex justify-content-between align-items-center mb-4">
@@ -96,16 +96,138 @@
           </select>
         </div>
 
-        <div class="col-md-3 text-end">
+        <div class="col-md-2">
+          <div class="dropdown">
+            <button
+              class="btn btn-outline-secondary w-100"
+              type="button"
+              id="filtersDropdown"
+              data-bs-toggle="dropdown"
+              aria-expanded="false">
+              <span class="material-symbols-outlined me-1">filter_list</span>
+              {{ 'mediaLibrary.filters.title' | translate }}
+              @if (appliedFilters().length > 0) {
+                <span class="badge bg-primary ms-1">{{ appliedFilters().length }}</span>
+              }
+            </button>
+
+            <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 400px;" (click)="$event.stopPropagation()">
+              <h6 class="dropdown-header px-0 mb-3">{{ 'mediaLibrary.filters.addFilter' | translate }}</h6>
+
+              <!-- Step 1: Select Field -->
+              <div class="mb-3">
+                <select
+                  class="form-select"
+                  [value]="selectedFilterField()"
+                  (change)="onFilterFieldChange($any($event.target).value)">
+                  <option [value]="null">{{ 'mediaLibrary.filters.selectField' | translate }}</option>
+                  <option value="createdAt">{{ 'mediaLibrary.filters.createdAt' | translate }}</option>
+                  <option value="updatedAt">{{ 'mediaLibrary.filters.updatedAt' | translate }}</option>
+                  <option value="mime">{{ 'mediaLibrary.filters.type' | translate }}</option>
+                </select>
+              </div>
+
+              @if (selectedFilterField()) {
+                <!-- Step 2: Select Operator -->
+                <div class="mb-3">
+                  <select
+                    class="form-select"
+                    [value]="selectedFilterOperator()"
+                    (change)="onFilterOperatorChange($any($event.target).value)">
+                    <option [value]="null">{{ 'mediaLibrary.filters.selectOperator' | translate }}</option>
+
+                    @if (selectedFilterField() === 'createdAt' || selectedFilterField() === 'updatedAt') {
+                      <option value="$eq">{{ 'mediaLibrary.filters.is' | translate }}</option>
+                      <option value="$ne">{{ 'mediaLibrary.filters.isNot' | translate }}</option>
+                      <option value="$gt">{{ 'mediaLibrary.filters.isGreaterThan' | translate }}</option>
+                      <option value="$gte">{{ 'mediaLibrary.filters.isGreaterThanOrEqual' | translate }}</option>
+                      <option value="$lt">{{ 'mediaLibrary.filters.isLowerThan' | translate }}</option>
+                      <option value="$lte">{{ 'mediaLibrary.filters.isLowerThanOrEqual' | translate }}</option>
+                    }
+
+                    @if (selectedFilterField() === 'mime') {
+                      <option value="$contains">{{ 'mediaLibrary.filters.is' | translate }}</option>
+                      <option value="$notContains">{{ 'mediaLibrary.filters.isNot' | translate }}</option>
+                    }
+                  </select>
+                </div>
+
+                @if (selectedFilterOperator()) {
+                  <!-- Step 3: Select Value -->
+                  <div class="mb-3">
+                    @if (selectedFilterField() === 'createdAt' || selectedFilterField() === 'updatedAt') {
+                      <input
+                        type="date"
+                        class="form-control"
+                        [value]="selectedFilterValue()"
+                        (change)="onFilterValueChange($any($event.target).value)">
+                    }
+
+                    @if (selectedFilterField() === 'mime') {
+                      <select
+                        class="form-select"
+                        [value]="selectedFilterValue()"
+                        (change)="onFilterValueChange($any($event.target).value)">
+                        <option [value]="null">{{ 'mediaLibrary.filters.selectValue' | translate }}</option>
+                        <option value="audio">{{ 'mediaLibrary.filters.audio' | translate }}</option>
+                        <option value="file">{{ 'mediaLibrary.filters.file' | translate }}</option>
+                        <option value="image">{{ 'mediaLibrary.filters.image' | translate }}</option>
+                        <option value="video">{{ 'mediaLibrary.filters.video' | translate }}</option>
+                      </select>
+                    }
+                  </div>
+
+                  <!-- Add Filter Button -->
+                  <button
+                    class="btn btn-success w-100"
+                    (click)="addFilter()"
+                    [disabled]="!canAddFilter()">
+                    <span class="material-symbols-outlined me-1">add</span>
+                    {{ 'mediaLibrary.filters.addFilter' | translate }}
+                  </button>
+                }
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-2 text-end">
           @if (state.totalItems() > 0) {
-            <span class="text-muted">
-              {{ 'mediaLibrary.totalItems' | translate: { count: state.totalItems() } }}
-            </span>
+            <small class="text-muted">
+              {{ state.totalItems() }} {{ 'mediaLibrary.items' | translate }}
+            </small>
           }
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Applied Filters Tags -->
+  @if (appliedFilters().length > 0) {
+    <div class="border-top pt-3 mt-3">
+      <div class="d-flex gap-2 flex-wrap align-items-center">
+        <small class="text-muted fw-semibold">{{ 'mediaLibrary.filters.activeFilters' | translate }}:</small>
+
+        @for (filter of appliedFilters(); track $index) {
+          <span class="badge bg-primary d-flex align-items-center gap-2 py-2 px-3">
+                {{ getFilterLabel(filter) }}
+            <span
+              class="material-symbols-outlined cursor-pointer"
+              style="font-size: 16px;"
+              (click)="removeFilter($index)">
+                  close
+                </span>
+              </span>
+        }
+
+        <button
+          class="btn btn-sm btn-link text-danger p-0 text-decoration-none"
+          (click)="clearAllFilters()">
+          {{ 'mediaLibrary.filters.clearAll' | translate }}
+        </button>
+      </div>
+    </div>
+  }
 
   <!-- ==================== BULK ACTIONS ==================== -->
   @if (state.hasSelection()) {
@@ -760,3 +882,4 @@
     </div>
   </div>
 }
+

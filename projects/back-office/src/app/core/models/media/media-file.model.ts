@@ -146,6 +146,30 @@ export interface UpdateFolderRequest {
   name: string;
 }
 
-export type SortOption = 'createdAt:DESC' | 'createdAt:ASC' | 'name:ASC' | 'name:DESC' | 'updatedAt:DESC' | 'updatedAt:ASC';
+export type SortOption =
+  | 'createdAt:DESC'
+  | 'createdAt:ASC'
+  | 'name:ASC'
+  | 'name:DESC'
+  | 'updatedAt:DESC'
+  | 'updatedAt:ASC';
+
+export const SORT_OPTIONS: Array<{ value: SortOption; label: string }> = [
+  { value: 'createdAt:DESC', label: 'mediaLibrary.sort.createdAtDesc' },
+  { value: 'createdAt:ASC', label: 'mediaLibrary.sort.createdAtAsc' },
+  { value: 'name:ASC', label: 'mediaLibrary.sort.nameAsc' },
+  { value: 'name:DESC', label: 'mediaLibrary.sort.nameDesc' },
+  { value: 'updatedAt:DESC', label: 'mediaLibrary.sort.updatedAtDesc' },
+  { value: 'updatedAt:ASC', label: 'mediaLibrary.sort.updatedAtAsc' }
+];
+
+export type FilterType = 'audio' | 'file' | 'image' | 'video';
+
+export interface MediaFilters {
+  createdAt?: { $gte?: string; $lte?: string };
+  updatedAt?: { $gte?: string; $lte?: string };
+  mime?: { $contains?: string };
+}
+
 export type ViewMode = 'grid' | 'list';
 export const DEFAULT_PAGE_SIZE = 10;

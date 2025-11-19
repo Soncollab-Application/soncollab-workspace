@@ -1,86 +1,152 @@
 {
-  "media-library": {
-    "page_title": "Media Library",
-    "upload": "Upload",
-    "delete_selected": "Delete Selected",
+  "mediaLibrary": {
+    "title": "Media Library",
+    "items": "items",
     "loading": "Loading...",
-    "preview": "Preview",
-    "name": "Name",
-    "type": "Type",
-    "size": "Size",
-    "extension": "Extension",
-    "created": "Created",
-    "uploaded_by": "Uploaded by",
-    "created_at": "Created at",
-    "actions": "Actions",
-    "delete": "Delete",
-    "edit": "Edit",
-    "open": "Open",
-    "showing": "Showing",
-    "of": "of",
-    "root": "Home",
-    "back": "Back",
-    "add_folder": "Create Folder",
-    "create_folder_prompt": "Enter folder name:",
-    "edit_file_prompt": "Enter new file name:",
 
-    "kpis": {
-      "total_files": "Total Files",
-      "images": "Images",
-      "videos": "Videos",
-      "documents": "Documents"
-    },
-
-    "filters": {
-      "type": "File Type",
-      "all_types": "All Types",
-      "images": "Images",
-      "videos": "Videos",
-      "documents": "Documents",
-      "audio": "Audio",
-      "uploaded_by": "Uploaded by",
-      "user_email": "User email"
+    "search": {
+      "placeholder": "Search for a file..."
     },
 
     "sort": {
-      "recent": "Most Recent",
-      "name_asc": "Name (A-Z)",
-      "name_desc": "Name (Z-A)",
-      "size_desc": "Size (Largest)"
+      "newest": "Newest first",
+      "oldest": "Oldest first",
+      "nameAsc": "Name (A to Z)",
+      "nameDesc": "Name (Z to A)",
+      "recentlyUpdated": "Recently updated",
+      "oldestUpdated": "Oldest updated"
+    },
+
+    "filters": {
+      "title": "Filters",
+      "addFilter": "Add filter",
+      "selectField": "Select a field",
+      "selectOperator": "Select an operator",
+      "selectValue": "Select a value",
+      "createdAt": "Created at",
+      "updatedAt": "Updated at",
+      "type": "Type",
+      "is": "is",
+      "isNot": "is not",
+      "isGreaterThan": "is greater than",
+      "isGreaterThanOrEqual": "is greater than or equal to",
+      "isLowerThan": "is lower than",
+      "isLowerThanOrEqual": "is lower than or equal to",
+      "audio": "Audio",
+      "file": "File",
+      "image": "Image",
+      "video": "Video",
+      "activeFilters": "Active filters",
+      "clearAll": "Clear all"
+    },
+
+    "actions": {
+      "upload": "Upload",
+      "createFolder": "Create folder",
+      "cancel": "Cancel",
+      "save": "Save",
+      "create": "Create",
+      "edit": "Edit",
+      "delete": "Delete",
+      "move": "Move",
+      "view": "View",
+      "deleteSelected": "Delete selected"
+    },
+
+    "selection": {
+      "selected": "selected",
+      "selectAll": "Select all",
+      "clear": "Clear selection"
+    },
+
+    "folder": {
+      "label": "Folder",
+      "itemCount": "{{count}} item(s)"
+    },
+
+    "table": {
+      "preview": "Preview",
+      "name": "Name",
+      "type": "Type",
+      "size": "Size",
+      "created": "Created",
+      "actions": "Actions"
+    },
+
+    "upload": {
+      "title": "Upload files",
+      "selected": "{{count}} file(s) selected"
+    },
+
+    "createFolder": {
+      "title": "Create folder",
+      "name": "Folder name"
+    },
+
+    "editFile": {
+      "title": "Edit file",
+      "name": "Name",
+      "altText": "Alternative text",
+      "caption": "Caption"
+    },
+
+    "editFolder": {
+      "title": "Edit folder",
+      "name": "Folder name"
+    },
+
+    "move": {
+      "title": "Move",
+      "moving": "Moving",
+      "destination": "Destination",
+      "root": "Root"
+    },
+
+    "bulkDelete": {
+      "title": "Delete items",
+      "message": "Are you sure you want to delete {{count}} item(s)?",
+      "confirm": "Delete"
     },
 
     "empty": {
-      "title": "No Files",
-      "message": "Start by uploading your first files"
+      "title": "No files",
+      "message": "Start by uploading files or creating a folder"
     },
 
-    "confirm": {
-      "delete_title": "Delete Files",
-      "delete_message": "Are you sure you want to delete {{count}} file(s)? This action cannot be undone.",
-      "delete_file_title": "Delete File",
-      "delete_file_message": "Are you sure you want to delete '{{name}}'? This action cannot be undone."
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next"
     },
 
     "success": {
-      "upload": "{{count}} file(s) uploaded successfully",
-      "folder_created": "Folder created successfully",
-      "file_updated": "File updated successfully",
-      "file_deleted": "File deleted successfully",
-      "files_deleted": "{{count}} file(s) deleted successfully"
-    },
-
-    "warning": {
-      "partial_delete": "{{success}} file(s) deleted, {{errors}} error(s) occurred"
+      "fileUploaded": "File uploaded successfully",
+      "fileDeleted": "{{name}} deleted successfully",
+      "fileUpdated": "File updated successfully",
+      "folderCreated": "Folder {{name}} created successfully",
+      "folderDeleted": "{{name}} deleted successfully",
+      "folderUpdated": "Folder {{name}} updated successfully",
+      "itemsMoved": "{{count}} item(s) moved successfully",
+      "bulkDeleted": "{{count}} item(s) deleted successfully",
+      "linkCopied": "Link copied to clipboard"
     },
 
     "errors": {
-      "load_files_error": "Error loading files",
-      "load_folders_error": "Error loading folders",
-      "load_folder_error": "Error loading folder",
-      "upload_error": "Upload error",
-      "delete_error": "Delete error",
-      "create_folder_error": "Error creating folder",
-      "update_file_error": "Error updating file"
+      "loadFiles": "Error loading files",
+      "loadFolders": "Error loading folders",
+      "uploadFailed": "Upload failed",
+      "deleteFileFailed": "Delete failed: {{message}}",
+      "deleteFolderFailed": "Delete failed: {{message}}",
+      "updateFileFailed": "Update failed: {{message}}",
+      "updateFolderFailed": "Update failed: {{message}}",
+      "createFolderFailed": "Create failed: {{message}}",
+      "moveFailed": "Move failed: {{message}}",
+      "bulkDeleteFailed": "Delete failed: {{message}}",
+      "loadStructure": "Error loading structure"
+    },
+
+    "warnings": {
+      "nothingToMove": "Nothing to move",
+      "cannotCreateFolderHere": "Cannot create folder here"
     }
   }
 }

@@ -29,17 +29,39 @@ export class MediaService {
     page: number,
     pageSize: number,
     sort: string,
-    search?: string
+    search?: string,
+    additionalParams?: any
   ): Observable<MediaResponse> {
     let params = new HttpParams()
       .set('pagination[page]', page.toString())
       .set('pagination[pageSize]', pageSize.toString())
       .set('sort', sort);
 
+    // ✅ NE PAS ajouter folder et folderPath depuis les additionalParams
+    // Car ils sont déjà gérés ci-dessous
+    if (folderId) {
+      params = params.set('filters[folder]', folderId.toString());
+    }
+
+    if (folderPath !== undefined) {
+      params = params.set('filters[folderPath]', folderPath);
+    }
+
     if (search) {
       params = params.set('_q', search);
-    } else if (folderPath) {
-      params = params.set('filters[$and][0][folderPath][$eq]', folderPath);
+    }
+
+    // ✅ Ajouter tous les params additionnels SAUF folder, folderPath, pagination, sort, _q
+    if (additionalParams) {
+      Object.keys(additionalParams).forEach(key => {
+        // ✅ Ignorer les params déjà gérés
+        if (!['pagination[page]', 'pagination[pageSize]', 'sort', 'filters[folder]', 'filters[folderPath]', '_q', 'page', 'folder', 'pageSize'].includes(key)) {
+          const value = additionalParams[key];
+          if (value !== undefined && value !== null) {
+            params = params.set(key, value.toString());
+          }
+        }
+      });
     }
 
     return this.http.get<MediaResponse>(`${this.BASE_URL}/files`, { params });
@@ -65,7 +87,12 @@ export class MediaService {
   }
 
   // ==================== FOLDERS ====================
-  getFolders(parentFolderId: number | null, sort: string = 'name:ASC', search?: string): Observable<MediaFolderResponse> {
+  getFolders(
+    parentFolderId: number | null,
+    sort: string,
+    search?: string,
+    additionalParams?: any
+  ): Observable<MediaFolderResponse> {
     let params = new HttpParams().set('sort', sort);
 
     if (parentFolderId) {
@@ -74,6 +101,19 @@ export class MediaService {
 
     if (search) {
       params = params.set('_q', search);
+    }
+
+    // ✅ Ajouter tous les params additionnels SAUF folder, sort, _q
+    if (additionalParams) {
+      Object.keys(additionalParams).forEach(key => {
+        // ✅ Ignorer les params déjà gérés
+        if (!['sort', 'filters[folder]', '_q', 'page', 'folder', 'pageSize'].includes(key)) {
+          const value = additionalParams[key];
+          if (value !== undefined && value !== null) {
+            params = params.set(key, value.toString());
+          }
+        }
+      });
     }
 
     return this.http.get<MediaFolderResponse>(`${this.BASE_URL}/folders`, { params });
