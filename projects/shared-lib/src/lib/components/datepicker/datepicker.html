@@ -1,0 +1,20 @@
+@if (label()) {
+  <label class="form-label">
+    {{ label() }}
+    @if (required()) {
+      <span class="text-danger">*</span>
+    }
+  </label>
+}
+
+<div class="position-relative">
+  <input
+    #datepickerInput
+    type="text"
+    class="form-control form-icon-end"
+    [placeholder]="placeholder()"
+    [disabled]="disabled()"
+    [attr.required]="required() ? true : null"
+  />
+  <i [class]="icon() + ' position-absolute top-50 end-0 translate-middle-y me-3'"></i>
+</div>

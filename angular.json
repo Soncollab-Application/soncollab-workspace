@@ -44,6 +44,7 @@
               "dist/shared-lib/assets/vendor/nouislider/nouislider.min.css",
               "dist/shared-lib/assets/vendor/swiper/swiper-bundle.min.css",
               "dist/shared-lib/assets/vendor/choices.js/choices.min.css",
+              "dist/shared-lib/assets/vendor/flatpickr/flatpickr.min.css",
               "dist/shared-lib/assets/css/theme.min.css",
               "dist/shared-lib/assets/css/shared-lib.css"
             ],
@@ -54,6 +55,8 @@
               "dist/shared-lib/assets/js/confetti.bundle.min.js",
               "dist/shared-lib/assets/vendor/swiper/swiper-bundle.min.js",
               "dist/shared-lib/assets/vendor/choices.js/choices.min.js",
+              "dist/shared-lib/assets/vendor/flatpickr/flatpickr.min.js",
+              "dist/shared-lib/assets/vendor/flatpickr/rangePlugin.js",
               "dist/shared-lib/assets/js/theme.min.js"
             ]
           },
@@ -182,6 +185,7 @@
               "dist/shared-lib/assets/vendor/nouislider/nouislider.min.css",
               "dist/shared-lib/assets/vendor/swiper/swiper-bundle.min.css",
               "dist/shared-lib/assets/vendor/choices.js/choices.min.css",
+              "dist/shared-lib/assets/vendor/flatpickr/flatpickr.min.css",
               "dist/shared-lib/assets/css/theme.min.css",
               "dist/shared-lib/assets/css/shared-lib.css"
             ],
@@ -192,6 +196,8 @@
               "dist/shared-lib/assets/js/confetti.bundle.min.js",
               "dist/shared-lib/assets/vendor/swiper/swiper-bundle.min.js",
               "dist/shared-lib/assets/vendor/choices.js/choices.min.js",
+              "dist/shared-lib/assets/vendor/flatpickr/flatpickr.min.js",
+              "dist/shared-lib/assets/vendor/flatpickr/rangePlugin.js",
               "dist/shared-lib/assets/js/theme.min.js"
             ]
           },
