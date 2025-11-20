@@ -1,38 +1,55 @@
 // projects/back-office/src/app/pages/media/media-library/media-library.ts
 
-import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { Subject, takeUntil, distinctUntilChanged } from 'rxjs';
+import { Subject, takeUntil, distinctUntilChanged, forkJoin, map, Observable } from 'rxjs';
 
 // Services
 import { MediaService } from '../../../core/services/media/media.service';
-import { ToastService, ConfirmDialogService } from 'shared-lib';
+import { PageTitleService } from '../../../core/services/page-title.service';
+import {
+  ToastService,
+  ConfirmDialogService,
+  ListStateManager,
+  DataList,
+  FilterBarComponent,
+  SortOption,
+  FilterConfig,
+  ListStateConfig,
+  ListColumn,
+  ListAction,
+} from 'shared-lib';
 
-// State
-import { MediaLibraryState } from './media-library.state';
+// Models & Config
+import { MediaListItem, MediaLibraryFilters } from './media-library.model';
+import { MEDIA_LIBRARY_STATE_CONFIG, MEDIA_LIBRARY_COLUMNS, MEDIA_LIBRARY_ACTIONS } from './media-library.config';
 
 // Models
-import {FolderTreeNode, MediaFile, MediaFolder, SortOption} from '../../../core/models/media/media-file.model';
+import { MediaFile, MediaFolder, SortOption as MediaSortOption } from '../../../core/models/media/media-file.model';
 
 // Utils
 import { getBreadcrumbData, BreadcrumbItem } from './utils/breadcrumb.utils';
+import { getFolderURL } from './utils/navigation.utils';
 
 // Environment
 import { environment } from '../../../../environments/environment';
 import {FormsModule} from '@angular/forms';
+import { Breadcrumb } from '../../../core/components/breadcrumb/breadcrumb';
 
 @Component({
   selector: 'app-media-library',
   standalone: true,
-  imports: [CommonModule, TranslateModule, FormsModule],
+  imports: [CommonModule, TranslateModule, FormsModule, DataList, FilterBarComponent, Breadcrumb],
   templateUrl: './media-library.html',
-  styleUrls: ['./media-library.css']
+  styleUrls: ['./media-library.css'],
+  providers: [ListStateManager]
 })
 export class MediaLibrary implements OnInit, OnDestroy {
+  // ListStateManager pour gérer l'état de la liste (pagination, tri, filtres)
+  protected listManager = inject(ListStateManager<MediaListItem, MediaLibraryFilters>);
   private destroy$ = new Subject<void>();
-  private searchSubject$ = new Subject<string>();
 
   // Services
   private mediaService = inject(MediaService);
@@ -42,10 +59,12 @@ export class MediaLibrary implements OnInit, OnDestroy {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
-  // State
-  state = new MediaLibraryState();
+  // Configuration pour DataList
+  protected columns = MEDIA_LIBRARY_COLUMNS;
+  protected actions = MEDIA_LIBRARY_ACTIONS;
 
-  // UI State
+  // État UI spécifique non géré par ListStateManager
+  viewMode = signal<'grid' | 'list'>('grid');
   showUploadModal = signal(false);
   showCreateFolderModal = signal(false);
   showEditFileModal = signal(false);
@@ -64,40 +83,263 @@ export class MediaLibrary implements OnInit, OnDestroy {
   folderToEdit = signal<MediaFolder | null>(null);
   newFolderNameEdit = signal('');
 
-  // Filters
-  selectedFilterField = signal<string | null>(null);
-  selectedFilterOperator = signal<string | null>(null);
-  selectedFilterValue = signal<string | null>(null);
-  appliedFilters = signal<Array<{
-    field: string;
-    operator: string;
-    value: string;
-  }>>([]);
+  // Données calculées pour la vue
+  breadcrumbs = computed(() => getBreadcrumbData(this.listManager.state.currentFilters().folder));
 
-  // Breadcrumb
-  breadcrumbs = signal<BreadcrumbItem[]>([]);
+  ngOnInit(): void {
+    this.pageTitleService.setTitle('mediaLibrary.title');
 
-  ngOnInit() {
-    // Query params subscription
-    this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
-      this.handleRouteChange(params);
+    // 1. Initialiser le ListStateManager avec la configuration et la fonction de chargement
+    this.listManager.init({
+      ...MEDIA_LIBRARY_STATE_CONFIG,
+      loadData: this.loadMediaData.bind(this),
     });
 
-    // Recherche uniquement sur Enter ou clear
-    this.searchSubject$.pipe(
-      distinctUntilChanged(),
-      takeUntil(this.destroy$)
-    ).subscribe(query => {
-      this.executeSearch(query);
-    });
+    // 2. Synchroniser l'état du ListStateManager avec les query params de l'URL
+    this.route.queryParamMap
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(params => {
+        const folderId = params.get('folderId');
+        const folderPath = params.get('folderPath');
+        const page = params.get('page');
+        const sort = params.get('sort') as MediaSortOption;
+        const search = params.get('search');
+
+        // Mettre à jour les filtres du ListStateManager
+        const newFilters: MediaLibraryFilters = {
+          folderId: folderId ? parseInt(folderId, 10) : undefined,
+          folderPath: folderPath || undefined,
+        };
+
+        // Mettre à jour l'état de la liste
+        this.listManager.updateState({
+          currentPage: page ? parseInt(page, 10) : 1,
+          currentSort: sort || MEDIA_LIBRARY_STATE_CONFIG.initialSort,
+          searchQuery: search || '',
+          currentFilters: newFilters,
+        }, { silent: true }); // Silent pour éviter un rechargement immédiat
+
+        // Charger les données après la mise à jour de l'état
+        this.listManager.loadData();
+      });
+
+    // 3. Souscrire aux changements d'état du ListStateManager pour mettre à jour l'URL
+    this.listManager.state$
+      .pipe(
+        takeUntil(this.destroy$),
+        distinctUntilChanged((prev, curr) => {
+          // Comparaison profonde pour éviter les navigations inutiles
+          return (
+            prev.currentPage === curr.currentPage &&
+            prev.currentSort === curr.currentSort &&
+            prev.searchQuery === curr.searchQuery &&
+            prev.currentFilters.folderId === curr.currentFilters.folderId &&
+            prev.currentFilters.folderPath === curr.currentFilters.folderPath
+          );
+        })
+      )
+      .subscribe(state => {
+        this.updateUrl(state.currentPage, state.currentSort, state.searchQuery, state.currentFilters);
+      });
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
 
-  // ==================== QUERY PARAMS ====================
+  // ==================== DATA LOADING ====================
+
+  // Fonction de chargement des données implémentée pour ListStateManager
+  private loadMediaData(
+    page: number,
+    pageSize: number,
+    sort: MediaSortOption,
+    search: string,
+    filters: MediaLibraryFilters
+  ): Observable<{ items: MediaListItem[]; total: number }> {
+    // Récupérer les fichiers et les dossiers
+    const files$ = this.mediaService.getFiles(
+      filters.folderId || null,
+      filters.folderPath,
+      page,
+      pageSize,
+      sort,
+      search
+    );
+
+    const folders$ = this.mediaService.getFolders(
+      filters.folderId || null,
+      filters.folderPath,
+      sort,
+      search
+    );
+
+    // Fusionner les deux observables
+    return forkJoin([folders$, files$]).pipe(
+      map(([folderResponse, fileResponse]) => {
+        // Fusionner les dossiers et les fichiers
+        const items: MediaListItem[] = [
+          ...(folderResponse.data as MediaFolder[]).map(f => ({ ...f, type: 'folder' as const })),
+          ...(fileResponse.data as MediaFile[]).map(f => ({ ...f, type: 'asset' as const })),
+        ];
+
+        // Mettre à jour le dossier courant dans les filtres si nécessaire
+        // On suppose que le service retourne le dossier courant dans la réponse des dossiers
+        const currentFolder = folderResponse.currentFolder;
+        if (currentFolder) {
+          this.listManager.updateFilters({ folder: currentFolder }, { silent: true });
+        }
+
+        return {
+          items: items,
+          total: fileResponse.meta.pagination.total, // Le total ne concerne que les fichiers pour la pagination
+        };
+      })
+    );
+  }
+
+  // Mise à jour de l'URL basée sur l'état du ListStateManager
+  private updateUrl(
+    page: number,
+    sort: MediaSortOption,
+    search: string,
+    filters: MediaLibraryFilters
+  ): void {
+    const queryParams: any = {
+      page: page > 1 ? page : null,
+      sort: sort !== MEDIA_LIBRARY_STATE_CONFIG.initialSort ? sort : null,
+      search: search || null,
+      folderId: filters.folderId || null,
+      folderPath: filters.folderPath || null,
+    };
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: queryParams,
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  // ==================== ACTIONS ====================
+
+  // Gérer le clic sur un élément de la liste (ouverture de dossier ou sélection de fichier)
+  onItemClick(item: MediaListItem): void {
+    if (item.type === 'folder') {
+      this.listManager.updateFilters({
+        folderId: item.id,
+        folderPath: item.folderPath,
+        folder: item as MediaFolder,
+      });
+    } else {
+      // Logique de sélection de fichier (si nécessaire)
+      // this.listManager.toggleSelection(item);
+    }
+  }
+
+  // Gérer le clic sur une action de la liste
+  onActionClick(action: ListAction<MediaListItem>, item: MediaListItem): void {
+    switch (action.id) {
+      case 'open':
+        this.onItemClick(item);
+        break;
+      case 'download':
+        this.downloadFile(item as MediaFile);
+        break;
+      case 'rename':
+        this.renameItem(item);
+        break;
+      case 'delete':
+        this.deleteItem(item);
+        break;
+    }
+  }
+
+  // Gérer le clic sur le fil d'Ariane
+  onBreadcrumbClick(item: BreadcrumbItem): void {
+    const folderId = item.folder ? item.folder.id : undefined;
+    const folderPath = item.folder ? item.folder.folderPath : undefined;
+    const folder = item.folder;
+
+    this.listManager.updateFilters({
+      folderId: folderId,
+      folderPath: folderPath,
+      folder: folder,
+    });
+  }
+
+  // Logique pour télécharger un fichier
+  private downloadFile(file: MediaFile): void {
+    // Implémenter la logique de téléchargement
+    window.open(file.url, '_blank');
+  }
+
+  // Logique pour renommer un élément
+  private renameItem(item: MediaListItem): void {
+    // Implémenter la logique de renommage
+    this.toastService.info('Renommer', `Renommer l'élément: ${item.name}`);
+  }
+
+  // Logique pour supprimer un élément
+  private deleteItem(item: MediaListItem): void {
+    this.confirmDialog.confirm({
+      title: this.translate.instant('mediaLibrary.delete.title'),
+      message: this.translate.instant('mediaLibrary.delete.message', { name: item.name }),
+      confirmText: this.translate.instant('common.delete'),
+      cancelText: this.translate.instant('common.cancel'),
+    }).subscribe(result => {
+      if (result) {
+        // Implémenter la suppression via mediaService
+        this.toastService.success('Suppression', `Suppression de l'élément: ${item.name}`);
+      }
+    });
+  }
+
+  // Logique pour ouvrir la modale d'upload
+  openUploadDialog(): void {
+    this.showUploadModal.set(true);
+  }
+
+  // Logique pour ouvrir la modale de création de dossier
+  openCreateFolderDialog(): void {
+    this.showCreateFolderModal.set(true);
+  }
+
+  // Logique pour basculer le mode de vue
+  toggleViewMode(): void {
+    this.viewMode.set(this.viewMode() === 'grid' ? 'list' : 'grid');
+  }
+
+  // Logique pour la sélection de masse
+  onSelectAll(selected: boolean): void {
+    this.listManager.toggleSelectAll(selected);
+  }
+
+  // Logique pour la suppression de masse
+  bulkDelete(): void {
+    const selectedItems = this.listManager.state.selectedItems();
+    if (selectedItems.length === 0) return;
+
+    this.confirmDialog.confirm({
+      title: this.translate.instant('mediaLibrary.bulkDelete.title'),
+      message: this.translate.instant('mediaLibrary.bulkDelete.message', { count: selectedItems.length }),
+      confirmText: this.translate.instant('common.delete'),
+      cancelText: this.translate.instant('common.cancel'),
+    }).subscribe(result => {
+      if (result) {
+        // Implémenter la suppression de masse via mediaService
+        this.toastService.success('Suppression de masse', `${selectedItems.length} éléments supprimés.`);
+        this.listManager.clearSelection();
+        this.listManager.loadData();
+      }
+    });
+  }
+
+  // Logique pour le déplacement de masse
+  bulkMove(): void {
+    // Implémenter la logique de déplacement de masse
+    this.toastService.info('Déplacement de masse', `Déplacement de ${this.listManager.state.selectedItems().length} éléments.`);
+  }
 
   private handleRouteChange(params: any) {
     const folderId = params['folder'] || null;
