@@ -1,111 +1,117 @@
 {
   "mediaLibrary": {
-    "title": "Médiathèque",
-    "items": "éléments",
-    "loading": "Chargement...",
+    "title": "Bibliothèque de médias",
+    "items": "élément(s)",
+    "selected": "sélectionné(s)",
+    "folder": "Dossier",
+    "noPreview": "Aucun aperçu disponible",
 
-    "search": {
-      "placeholder": "Rechercher un fichier..."
-    },
-
-    "sort": {
-      "newest": "Plus récent d'abord",
-      "oldest": "Plus ancien d'abord",
-      "nameAsc": "Nom (A à Z)",
-      "nameDesc": "Nom (Z à A)",
-      "recentlyUpdated": "Dernière modification",
-      "oldestUpdated": "Première modification"
-    },
-
-    "filters": {
-      "title": "Filtres",
-      "addFilter": "Ajouter un filtre",
-      "selectField": "Sélectionner un champ",
-      "selectOperator": "Sélectionner un opérateur",
-      "selectValue": "Sélectionner une valeur",
-      "createdAt": "Date de création",
-      "updatedAt": "Date de modification",
-      "type": "Type",
-      "is": "est",
-      "isNot": "n'est pas",
-      "isGreaterThan": "est supérieur à",
-      "isGreaterThanOrEqual": "est supérieur ou égal à",
-      "isLowerThan": "est inférieur à",
-      "isLowerThanOrEqual": "est inférieur ou égal à",
-      "audio": "Audio",
-      "file": "Fichier",
-      "image": "Image",
-      "video": "Vidéo",
-      "activeFilters": "Filtres actifs",
-      "clearAll": "Tout effacer"
+    "breadcrumb": {
+      "root": "Bibliothèque de médias"
     },
 
     "actions": {
       "upload": "Téléverser",
       "createFolder": "Créer un dossier",
-      "cancel": "Annuler",
-      "save": "Enregistrer",
-      "create": "Créer",
       "edit": "Modifier",
-      "delete": "Supprimer",
       "move": "Déplacer",
-      "view": "Voir",
-      "deleteSelected": "Supprimer la sélection"
+      "delete": "Supprimer",
+      "download": "Télécharger",
+      "copyLink": "Copier le lien"
     },
 
-    "selection": {
-      "selected": "sélectionné(s)",
-      "selectAll": "Tout sélectionner",
-      "clear": "Effacer la sélection"
+    "sort": {
+      "newest": "Plus récents",
+      "oldest": "Plus anciens",
+      "nameAsc": "Nom (A-Z)",
+      "nameDesc": "Nom (Z-A)",
+      "recentlyUpdated": "Récemment modifiés",
+      "oldestUpdated": "Modifications les plus anciennes"
     },
 
-    "folder": {
-      "label": "Dossier",
-      "itemCount": "{{count}} élément(s)"
+    "filters": {
+      "title": "Filtres",
+      "addFilter": "Ajouter un filtre",
+      "add": "Ajouter",
+      "selectField": "Sélectionner un champ",
+      "selectOperator": "Sélectionner un opérateur",
+      "selectValue": "Sélectionner une valeur",
+      "activeFilters": "Filtres actifs",
+      "clearAll": "Tout effacer",
+      "alreadyApplied": "Ce filtre est déjà appliqué",
+
+      "createdAt": "Date de création",
+      "updatedAt": "Date de modification",
+      "type": "Type",
+      "mime": "Type de fichier",
+
+      "is": "est",
+      "isNot": "n'est pas",
+      "greaterThan": "est supérieur à",
+      "greaterOrEqual": "est supérieur ou égal à",
+      "lessThan": "est inférieur à",
+      "lessOrEqual": "est inférieur ou égal à",
+
+      "image": "Image",
+      "video": "Vidéo",
+      "audio": "Audio",
+      "file": "Fichier"
+    },
+
+    "search": {
+      "placeholder": "Rechercher..."
     },
 
     "table": {
-      "preview": "Aperçu",
       "name": "Nom",
       "type": "Type",
       "size": "Taille",
-      "created": "Créé le",
-      "actions": "Actions"
+      "createdAt": "Créé le",
+      "updatedAt": "Modifié le"
     },
 
     "upload": {
       "title": "Téléverser des fichiers",
-      "selected": "{{count}} fichier(s) sélectionné(s)"
+      "uploadTo": "Téléverser dans",
+      "selectFiles": "Sélectionner des fichiers",
+      "selectedFiles": "Fichiers sélectionnés",
+      "upload": "Téléverser"
     },
 
     "createFolder": {
-      "title": "Créer un dossier",
-      "name": "Nom du dossier"
+      "title": "Créer un nouveau dossier",
+      "createIn": "Créer dans",
+      "name": "Nom du dossier",
+      "namePlaceholder": "Entrez le nom du dossier",
+      "create": "Créer"
     },
 
-    "editFile": {
-      "title": "Modifier le fichier",
-      "name": "Nom",
-      "altText": "Texte alternatif",
-      "caption": "Légende"
-    },
-
-    "editFolder": {
-      "title": "Modifier le dossier",
-      "name": "Nom du dossier"
+    "edit": {
+      "fileTitle": "Modifier le fichier",
+      "folderTitle": "Modifier le dossier",
+      "fileName": "Nom du fichier",
+      "folderName": "Nom du dossier",
+      "alternativeText": "Texte alternatif",
+      "alternativeTextPlaceholder": "Description pour l'accessibilité",
+      "caption": "Légende",
+      "captionPlaceholder": "Entrez une légende"
     },
 
     "move": {
-      "title": "Déplacer",
+      "title": "Déplacer les éléments",
+      "root": "Racine",
       "moving": "Déplacement de",
+      "items": "élément(s)",
       "destination": "Destination",
-      "root": "Racine"
+      "itemsList": "Éléments à déplacer",
+      "move": "Déplacer"
     },
 
-    "bulkDelete": {
-      "title": "Supprimer les éléments",
-      "message": "Êtes-vous sûr de vouloir supprimer {{count}} élément(s) ?",
-      "confirm": "Supprimer"
+    "confirm": {
+      "bulkDelete": {
+        "title": "Supprimer les éléments",
+        "message": "Êtes-vous sûr de vouloir supprimer {{count}} élément(s) ? Cette action est irréversible."
+      }
     },
 
     "empty": {
@@ -146,7 +152,18 @@
 
     "warnings": {
       "nothingToMove": "Aucun élément à déplacer",
+      "cannotUploadHere": "Impossible de téléverser des fichiers ici",
       "cannotCreateFolderHere": "Impossible de créer un dossier ici"
     }
+  },
+
+  "common": {
+    "loading": "Chargement...",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "all": "Tous",
+    "view": "Voir"
   }
 }

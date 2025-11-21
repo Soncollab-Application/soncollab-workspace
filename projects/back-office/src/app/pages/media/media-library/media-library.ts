@@ -1,32 +1,37 @@
-// projects/back-office/src/app/pages/media/media-library/media-library.ts
-
-import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Router, ActivatedRoute } from '@angular/router';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { Subject, takeUntil, distinctUntilChanged } from 'rxjs';
-
-// Services
-import { MediaService } from '../../../core/services/media/media.service';
-import { ToastService, ConfirmDialogService } from 'shared-lib';
-
-// State
-import { MediaLibraryState } from './media-library.state';
-
-// Models
+import {Component, computed, inject, OnDestroy, OnInit, signal} from '@angular/core';
+import {MediaLibraryState} from './media-library.state';
+import {distinctUntilChanged, Subject, takeUntil} from 'rxjs';
+import {MediaFilterBar, MediaFilterField} from './components/media-filter-bar/media-filter-bar';
+import {BreadcrumbItem, getBreadcrumbData} from './utils/breadcrumb.utils';
 import {FolderTreeNode, MediaFile, MediaFolder, SortOption} from '../../../core/models/media/media-file.model';
+import {MediaService} from '../../../core/services/media/media.service';
+import {ConfirmDialogService, ToastService} from 'shared-lib';
+import {TranslateModule, TranslateService} from '@ngx-translate/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {environment} from '../../../../environments/environment';
+import {MediaCreateFolderModal} from './components/media-create-folder-modal/media-create-folder-modal';
+import {MediaEditModal} from './components/media-edit-modal/media-edit-modal';
+import {MediaMoveModal} from './components/media-move-modal/media-move-modal';
+import {MediaUploadModal} from './components/media-upload-modal/media-upload-modal';
+import {MediaAssetItem} from './components/media-asset-item/media-asset-item';
+import {MediaFolderItem} from './components/media-folder-item/media-folder-item';
+import {CommonModule} from '@angular/common';
 
-// Utils
-import { getBreadcrumbData, BreadcrumbItem } from './utils/breadcrumb.utils';
-
-// Environment
-import { environment } from '../../../../environments/environment';
-import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-media-library',
   standalone: true,
-  imports: [CommonModule, TranslateModule, FormsModule],
+  imports: [
+    CommonModule,
+    TranslateModule,
+    MediaFilterBar,
+    MediaFolderItem,
+    MediaAssetItem,
+    MediaUploadModal,
+    MediaCreateFolderModal,
+    MediaEditModal,
+    MediaMoveModal
+  ],
   templateUrl: './media-library.html',
   styleUrls: ['./media-library.css']
 })
@@ -49,64 +54,57 @@ export class MediaLibrary implements OnInit, OnDestroy {
   showUploadModal = signal(false);
   showCreateFolderModal = signal(false);
   showEditFileModal = signal(false);
+  showEditFolderModal = signal(false);
   showMoveModal = signal(false);
+
   fileToEdit = signal<MediaFile | null>(null);
-  newFolderName = signal('');
-  uploadingFiles = signal<File[]>([]);
+  folderToEdit = signal<MediaFolder | null>(null);
 
   // Move functionality
-  availableFolders = signal<MediaFolder[]>([]);
+  folderStructure = signal<FolderTreeNode[]>([]);
   selectedDestinationFolder = signal<string | null>(null);
   filesToMove = signal<Array<MediaFile | MediaFolder>>([]);
-
-  folderStructure = signal<FolderTreeNode[]>([]);
-  showEditFolderModal = signal(false);
-  folderToEdit = signal<MediaFolder | null>(null);
-  newFolderNameEdit = signal('');
 
   // Filters
   selectedFilterField = signal<string | null>(null);
   selectedFilterOperator = signal<string | null>(null);
   selectedFilterValue = signal<string | null>(null);
-  appliedFilters = signal<Array<{
-    field: string;
-    operator: string;
-    value: string;
-  }>>([]);
+  appliedFilters = signal<MediaFilterField[]>([]);
 
   // Breadcrumb
   breadcrumbs = signal<BreadcrumbItem[]>([]);
 
-  ngOnInit() {
-    // Query params subscription
-    this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
-      this.handleRouteChange(params);
-    });
+  // Computed
+  hasSelection = computed(() =>
+    this.state.selectedItems().length > 0 &&
+    this.state.selectedItems().length < (this.state.folders().length + this.state.files().length)
+  );
 
-    // Recherche uniquement sur Enter ou clear
-    this.searchSubject$.pipe(
-      distinctUntilChanged(),
-      takeUntil(this.destroy$)
-    ).subscribe(query => {
-      this.executeSearch(query);
-    });
+  ngOnInit(): void {
+    this.route.queryParams
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(params => this.handleRouteChange(params));
+
+    this.searchSubject$
+      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe(query => this.executeSearch(query));
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
 
-  // ==================== QUERY PARAMS ====================
+  // ==================== ROUTE HANDLING ====================
 
-  private handleRouteChange(params: any) {
+  private handleRouteChange(params: any): void {
     const folderId = params['folder'] || null;
+
     this.state.currentPage.set(parseInt(params['page']) || 1);
     this.state.pageSize.set(parseInt(params['pageSize']) || 10);
     this.state.currentSort.set(params['sort'] || 'createdAt:DESC');
     this.state.searchQuery.set(params['_q'] || '');
 
-    // ✅ Restaurer les filtres depuis les query params
     this.restoreFiltersFromQuery(params);
 
     if (folderId) {
@@ -117,12 +115,10 @@ export class MediaLibrary implements OnInit, OnDestroy {
     }
   }
 
-  private restoreFiltersFromQuery(params: any) {
-    const filters: Array<{ field: string; operator: string; value: string }> = [];
+  private restoreFiltersFromQuery(params: any): void {
+    const filters: MediaFilterField[] = [];
 
-    // ✅ Parcourir tous les params pour trouver les filtres
     Object.keys(params).forEach(key => {
-      // Format: filters[$and][0][createdAt][$eq]
       const match = key.match(/filters\[\$and\]\[(\d+)\]\[(\w+)\]\[(\$\w+)\]/);
       if (match) {
         const index = parseInt(match[1]);
@@ -130,7 +126,6 @@ export class MediaLibrary implements OnInit, OnDestroy {
         const operator = match[3];
         const value = params[key];
 
-        // ✅ S'assurer que l'array est assez grand
         while (filters.length <= index) {
           filters.push(null as any);
         }
@@ -139,12 +134,11 @@ export class MediaLibrary implements OnInit, OnDestroy {
       }
     });
 
-    // ✅ Nettoyer les null et mettre à jour
     const validFilters = filters.filter(f => f !== null && f !== undefined);
     this.appliedFilters.set(validFilters);
   }
 
-  private updateQueryParams(params: Record<string, any>) {
+  private updateQueryParams(params: Record<string, any>): void {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: params,
@@ -154,7 +148,7 @@ export class MediaLibrary implements OnInit, OnDestroy {
 
   // ==================== DATA LOADING ====================
 
-  private loadFolderById(documentId: string) {
+  private loadFolderById(documentId: string): void {
     this.mediaService.getFolder(documentId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -174,7 +168,7 @@ export class MediaLibrary implements OnInit, OnDestroy {
       });
   }
 
-  private loadData() {
+  private loadData(): void {
     this.state.isLoading.set(true);
     this.state.files.set([]);
     this.state.folders.set([]);
@@ -186,15 +180,8 @@ export class MediaLibrary implements OnInit, OnDestroy {
     const pageSize = this.state.pageSize();
     const sort = this.state.currentSort();
     const search = this.state.searchQuery();
-
-    // ✅ CORRECTION : Pour la racine, ne pas envoyer folderPath
-    // Le backend va automatiquement charger depuis le dossier email de l'utilisateur
     const folderPath = search ? undefined : (currentFolder?.path || undefined);
-
-    // ✅ Récupérer TOUS les query params (incluant les filtres)
     const currentParams = this.route.snapshot.queryParams;
-
-    // ✅ Vérifier s'il y a un filtre sur le mime (type de fichier)
     const hasAnyFilter = this.appliedFilters().length > 0;
 
     // Load files
@@ -229,20 +216,17 @@ export class MediaLibrary implements OnInit, OnDestroy {
     this.updateBreadcrumbs();
   }
 
-  private updateBreadcrumbs() {
+  private updateBreadcrumbs(): void {
     this.breadcrumbs.set(getBreadcrumbData(this.state.currentFolder()));
   }
 
   // ==================== NAVIGATION ====================
 
-  onFolderClick(folder: MediaFolder) {
+  onFolderClick(folder: MediaFolder): void {
     this.state.isLoading.set(true);
     this.state.searchQuery.set('');
-
-    // ✅ Supprimer tous les filtres lors du changement de dossier
     this.appliedFilters.set([]);
 
-    // ✅ Construire les query params en supprimant tous les filtres
     const currentParams = this.route.snapshot.queryParams;
     const cleanParams: any = {
       folder: folder.documentId,
@@ -250,7 +234,6 @@ export class MediaLibrary implements OnInit, OnDestroy {
       _q: undefined
     };
 
-    // Supprimer tous les paramètres de filtres
     Object.keys(currentParams).forEach(key => {
       if (key.startsWith('filters[$and]')) {
         cleanParams[key] = undefined;
@@ -265,22 +248,18 @@ export class MediaLibrary implements OnInit, OnDestroy {
     });
   }
 
-  onBreadcrumbClick(item: BreadcrumbItem) {
+  onBreadcrumbClick(item: BreadcrumbItem): void {
     this.state.isLoading.set(true);
     this.state.searchQuery.set('');
-
-    // ✅ Supprimer tous les filtres lors du changement de dossier
     this.appliedFilters.set([]);
 
-    // ✅ Construire les query params en supprimant tous les filtres
     const currentParams = this.route.snapshot.queryParams;
     const cleanParams: any = {
-      folder: item.id === null ? null : item.folder?.documentId,
+      folder: item.id === null ? undefined : item.folder?.documentId,
       page: 1,
       _q: undefined
     };
 
-    // Supprimer tous les paramètres de filtres
     Object.keys(currentParams).forEach(key => {
       if (key.startsWith('filters[$and]')) {
         cleanParams[key] = undefined;
@@ -290,47 +269,62 @@ export class MediaLibrary implements OnInit, OnDestroy {
     this.updateQueryParams(cleanParams);
   }
 
-  // ==================== VIEW MODE ====================
+  // ==================== FILTER BAR HANDLERS ====================
 
-  toggleViewMode() {
-    const newMode = this.state.viewMode() === 'grid' ? 'list' : 'grid';
-    this.state.viewMode.set(newMode);
+  onSortChange(sort: string): void {
+    this.state.currentSort.set(sort as SortOption);
+    this.updateQueryParams({ sort, page: 1 });
+  }
+
+  onSearchChange(searchTerm: string): void {
+    this.searchSubject$.next(searchTerm);
+  }
+
+  onClearSearch(): void {
+    this.state.searchQuery.set('');
+    this.searchSubject$.next('');
+  }
+
+  private executeSearch(query: string): void {
+    this.updateQueryParams({ _q: query || undefined, page: 1 });
+  }
+
+  onViewModeChange(mode: 'grid' | 'list'): void {
+    this.state.viewMode.set(mode);
+  }
+
+  onSelectAllChange(): void {
+    if (this.state.allSelected()) {
+      this.state.clearSelection();
+    } else {
+      this.state.selectAll();
+    }
   }
 
   // ==================== FILTERS ====================
 
-  onFilterFieldChange(field: string) {
+  onFilterFieldChange(field: string): void {
     this.selectedFilterField.set(field);
     this.selectedFilterOperator.set(null);
     this.selectedFilterValue.set(null);
   }
 
-  onFilterOperatorChange(operator: string) {
+  onFilterOperatorChange(operator: string): void {
     this.selectedFilterOperator.set(operator);
     this.selectedFilterValue.set(null);
   }
 
-  onFilterValueChange(value: string) {
+  onFilterValueChange(value: string): void {
     this.selectedFilterValue.set(value);
   }
 
-  canAddFilter(): boolean {
-    return !!(
-      this.selectedFilterField() &&
-      this.selectedFilterOperator() &&
-      this.selectedFilterValue()
-    );
-  }
-
-
-  addFilter() {
+  onAddFilter(): void {
     const field = this.selectedFilterField();
     const operator = this.selectedFilterOperator();
     const value = this.selectedFilterValue();
 
     if (!field || !operator || !value) return;
 
-    // ✅ Vérifier si ce filtre existe déjà
     const isDuplicate = this.appliedFilters().some(filter =>
       filter.field === field &&
       filter.operator === operator &&
@@ -344,39 +338,33 @@ export class MediaLibrary implements OnInit, OnDestroy {
       return;
     }
 
-    // Add to applied filters
     this.appliedFilters.update(filters => [
       ...filters,
       { field, operator, value }
     ]);
 
-    // Reset form
     this.selectedFilterField.set(null);
     this.selectedFilterOperator.set(null);
     this.selectedFilterValue.set(null);
 
-    // Apply filters to query
     this.applyFiltersToQuery();
   }
 
-
-
-  removeFilter(index: number) {
+  onRemoveFilter(index: number): void {
     this.appliedFilters.update(filters =>
       filters.filter((_, i) => i !== index)
     );
     this.applyFiltersToQuery();
   }
 
-  clearAllFilters() {
+  onClearFilters(): void {
     this.appliedFilters.set([]);
     this.applyFiltersToQuery();
   }
 
-  private applyFiltersToQuery() {
+  private applyFiltersToQuery(): void {
     const filters = this.appliedFilters();
 
-    // ✅ Supprimer TOUS les anciens filtres d'abord
     const currentParams = this.route.snapshot.queryParams;
     const cleanParams: any = { page: 1 };
 
@@ -386,7 +374,6 @@ export class MediaLibrary implements OnInit, OnDestroy {
       }
     });
 
-    // ✅ Ajouter les nouveaux filtres avec les bons index
     if (filters.length > 0) {
       filters.forEach((filter, index) => {
         const key = `filters[$and][${index}][${filter.field}][${filter.operator}]`;
@@ -397,68 +384,6 @@ export class MediaLibrary implements OnInit, OnDestroy {
     this.updateQueryParams(cleanParams);
   }
 
-  getFilterLabel(filter: any): string {
-    const fieldLabel = this.translate.instant(`mediaLibrary.filters.${filter.field}`);
-
-    let operatorLabel = '';
-    switch (filter.operator) {
-      case '$eq':
-        operatorLabel = this.translate.instant('mediaLibrary.filters.is');
-        break;
-      case '$ne':
-        operatorLabel = this.translate.instant('mediaLibrary.filters.isNot');
-        break;
-      case '$gt':
-        operatorLabel = '>';
-        break;
-      case '$gte':
-        operatorLabel = '≥';
-        break;
-      case '$lt':
-        operatorLabel = '<';
-        break;
-      case '$lte':
-        operatorLabel = '≤';
-        break;
-      case '$contains':
-        operatorLabel = this.translate.instant('mediaLibrary.filters.is');
-        break;
-      case '$notContains':
-        operatorLabel = this.translate.instant('mediaLibrary.filters.isNot');
-        break;
-    }
-
-    let valueLabel = filter.value;
-    if (filter.field === 'mime') {
-      valueLabel = this.translate.instant(`mediaLibrary.filters.${filter.value}`);
-    }
-
-    return `${fieldLabel} ${operatorLabel} ${valueLabel}`;
-  }
-
-  // ==================== SEARCH ====================
-
-  onSearchEnter() {
-    const searchValue = (event?.target as HTMLInputElement)?.value || this.state.searchQuery();
-    this.searchSubject$.next(searchValue);
-  }
-
-  clearSearch() {
-    this.state.searchQuery.set('');
-    this.searchSubject$.next('');
-  }
-
-  private executeSearch(query: string) {
-    this.updateQueryParams({ _q: query || undefined, page: 1 });
-  }
-
-  // ==================== SORT ====================
-
-  onSortChange(sort: string) {
-    this.state.currentSort.set(sort as SortOption);
-    this.updateQueryParams({ sort, page: 1 });
-  }
-
   // ==================== SELECTION ====================
 
   isSelected(item: MediaFile | MediaFolder): boolean {
@@ -467,152 +392,81 @@ export class MediaLibrary implements OnInit, OnDestroy {
     );
   }
 
-  onToggleSelection(item: MediaFile | MediaFolder) {
+  onToggleSelection(item: MediaFile | MediaFolder): void {
     this.state.toggleSelection(item);
   }
 
-  onSelectAll() {
-    if (this.state.allSelected()) {
-      this.state.clearSelection();
-    } else {
-      this.state.selectAll();
-    }
-  }
+  // ==================== ACTIONS ====================
 
-  // ==================== UPLOAD ====================
-
-  openUploadDialog() {
+  // Upload
+  onOpenUpload(): void {
     if (!this.state.canUpload()) {
       this.toastService.showWarning(this.translate.instant('mediaLibrary.warnings.cannotUploadHere'));
       return;
     }
-    this.uploadingFiles.set([]);
     this.showUploadModal.set(true);
   }
 
-  closeUploadDialog() {
+  onCloseUpload(): void {
     this.showUploadModal.set(false);
-    this.uploadingFiles.set([]);
   }
 
-  onFilesSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files) {
-      this.uploadingFiles.set(Array.from(input.files));
-    }
+  onUploadComplete(): void {
+    this.loadData();
   }
 
-  uploadFiles() {
-    const files = this.uploadingFiles();
-    if (files.length === 0) return;
-
-    const currentFolder = this.state.currentFolder();
-    const folderId = currentFolder?.documentId;
-
-    this.mediaService.uploadFiles(files, folderId)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: () => {
-          this.toastService.showSuccess(this.translate.instant('mediaLibrary.success.fileUploaded'));
-          this.closeUploadDialog();
-          this.loadData();
-        },
-        error: (error) => {
-          this.toastService.showError(this.translate.instant('mediaLibrary.errors.uploadFailed'));
-        }
-      });
-  }
-
-  // ==================== CREATE FOLDER ====================
-
-  openCreateFolderDialog() {
+  // Create Folder
+  onOpenCreateFolder(): void {
     if (!this.state.canCreateFolder()) {
       this.toastService.showWarning(this.translate.instant('mediaLibrary.warnings.cannotCreateFolderHere'));
       return;
     }
-    this.newFolderName.set('');
     this.showCreateFolderModal.set(true);
   }
 
-  closeCreateFolderDialog() {
+  onCloseCreateFolder(): void {
     this.showCreateFolderModal.set(false);
-    this.newFolderName.set('');
   }
 
-  createFolder() {
-    const name = this.newFolderName().trim();
-    if (!name) return;
-
-    const parentId = this.state.currentFolder()?.documentId;
-
-    this.mediaService.createFolder({ name, parentId })
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: () => {
-          this.toastService.showSuccess(
-            this.translate.instant('mediaLibrary.success.folderCreated', { name })
-          );
-          this.closeCreateFolderDialog();
-          this.loadData();
-        },
-        error: (error) => {
-          this.toastService.showError(
-            this.translate.instant('mediaLibrary.errors.createFolderFailed', { message: error.message })
-          );
-        }
-      });
+  onFolderCreated(): void {
+    this.loadData();
   }
 
-  // ==================== EDIT FILE ====================
-
-  openEditFileDialog(file: MediaFile) {
+  // Edit
+  onEditFile(file: MediaFile): void {
     this.fileToEdit.set(file);
     this.showEditFileModal.set(true);
   }
 
-  closeEditFileDialog() {
+  onEditFolder(folder: MediaFolder): void {
+    this.folderToEdit.set(folder);
+    this.showEditFolderModal.set(true);
+  }
+
+  onCloseEdit(): void {
     this.showEditFileModal.set(false);
+    this.showEditFolderModal.set(false);
     this.fileToEdit.set(null);
+    this.folderToEdit.set(null);
   }
 
-  updateFile(data: { name?: string; alternativeText?: string; caption?: string }) {
-    const file = this.fileToEdit();
-    if (!file) return;
-
-    this.mediaService.updateFile(file.documentId, data)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: () => {
-          this.toastService.showSuccess(
-            this.translate.instant('mediaLibrary.success.fileUpdated')
-          );
-          this.closeEditFileDialog();
-          this.loadData();
-        },
-        error: (error) => {
-          this.toastService.showError(
-            this.translate.instant('mediaLibrary.errors.updateFileFailed', { message: error.message })
-          );
-        }
-      });
+  onEditComplete(): void {
+    this.loadData();
   }
 
-  // ==================== MOVE ====================
-
-  moveItem(item: MediaFile | MediaFolder) {
+  // Move
+  onMoveItem(item: MediaFile | MediaFolder): void {
     this.filesToMove.set([item]);
-    this.openMoveDialog();
+    this.loadFolderStructureAndOpenModal();
   }
 
-  openMoveDialog(item?: MediaFile | MediaFolder) {
-    if (item) {
-      this.filesToMove.set([item]);
-    }
+  onMoveBulk(): void {
+    this.filesToMove.set(this.state.selectedItems());
+    this.loadFolderStructureAndOpenModal();
+  }
 
-    const itemsToMove = this.filesToMove().length > 0
-      ? this.filesToMove()
-      : this.state.selectedItems();
-
+  private loadFolderStructureAndOpenModal(): void {
+    const itemsToMove = this.filesToMove();
     const folderIdsToMove = itemsToMove
       .filter(i => i.type === 'folder')
       .map(i => i.documentId);
@@ -636,11 +490,9 @@ export class MediaLibrary implements OnInit, OnDestroy {
               label: this.translate.instant('mediaLibrary.move.root'),
               children: filteredStructure
             });
-
             this.selectedDestinationFolder.set(null);
           } else {
             structure.push(...filteredStructure);
-
             if (filteredStructure.length > 0) {
               this.selectedDestinationFolder.set(filteredStructure[0].value);
             }
@@ -650,9 +502,7 @@ export class MediaLibrary implements OnInit, OnDestroy {
           this.showMoveModal.set(true);
         },
         error: () => {
-          this.toastService.showError(
-            this.translate.instant('mediaLibrary.errors.loadStructure')
-          );
+          this.toastService.showError(this.translate.instant('mediaLibrary.errors.loadStructure'));
         }
       });
   }
@@ -663,161 +513,34 @@ export class MediaLibrary implements OnInit, OnDestroy {
     currentFolderId?: string
   ): FolderTreeNode[] {
     return nodes
-      .map(node => {
-        const filteredChildren = node.children
+      .filter(node =>
+        node.value !== currentFolderId &&
+        !folderIdsToMove.includes(node.value!)
+      )
+      .map(node => ({
+        ...node,
+        children: node.children
           ? this.filterInvalidDestinations(node.children, folderIdsToMove, currentFolderId)
-          : undefined;
-
-        return {
-          ...node,
-          children: filteredChildren
-        };
-      })
-      .filter(node => {
-        if (node.value && folderIdsToMove.includes(node.value)) {
-          return false;
-        }
-
-        return true;
-      });
+          : undefined
+      }));
   }
 
-  flattenFolderStructure(nodes: FolderTreeNode[], level = 0): Array<{ value: string | null; label: string; level: number }> {
-    const result: Array<{ value: string | null; label: string; level: number }> = [];
-
-    for (const node of nodes) {
-      result.push({
-        value: node.value,
-        label: node.label,
-        level
-      });
-
-      if (node.children && node.children.length > 0) {
-        result.push(...this.flattenFolderStructure(node.children, level + 1));
-      }
-    }
-
-    return result;
-  }
-
-  editFolder(folder: MediaFolder) {
-    this.folderToEdit.set(folder);
-    this.newFolderNameEdit.set(folder.name);
-    this.showEditFolderModal.set(true);
-  }
-
-  closeEditFolderDialog() {
-    this.showEditFolderModal.set(false);
-    this.folderToEdit.set(null);
-    this.newFolderNameEdit.set('');
-  }
-
-  updateFolderName() {
-    const folder = this.folderToEdit();
-    const newName = this.newFolderNameEdit().trim();
-
-    if (!folder || !newName) return;
-
-    this.mediaService.updateFolder(folder.documentId, { name: newName })
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: () => {
-          this.toastService.showSuccess(
-            this.translate.instant('mediaLibrary.success.folderUpdated', { name: newName })
-          );
-          this.closeEditFolderDialog();
-          this.loadData();
-        },
-        error: (error) => {
-          this.toastService.showError(
-            this.translate.instant('mediaLibrary.errors.updateFolderFailed', { message: error.error?.error || error.message })
-          );
-        }
-      });
-  }
-
-  closeMoveDialog() {
+  onCloseMove(): void {
     this.showMoveModal.set(false);
-    this.selectedDestinationFolder.set(null);
     this.filesToMove.set([]);
   }
 
-  selectDestinationFolder(folderId: string | null) {
-    this.selectedDestinationFolder.set(folderId);
+  onMoveComplete(): void {
+    this.state.clearSelection();
+    this.loadData();
   }
 
-  confirmMove() {
-    const destinationFolderId = this.selectedDestinationFolder();
-
-    const items = this.filesToMove().length > 0
-      ? this.filesToMove()
-      : this.state.selectedItems();
-
-    const fileIds = items
-      .filter(item => item.type === 'asset')
-      .map(item => item.documentId);
-
-    const folderIds = items
-      .filter(item => item.type === 'folder')
-      .map(item => item.documentId);
-
-    if (fileIds.length === 0 && folderIds.length === 0) {
-      this.toastService.showWarning(this.translate.instant('mediaLibrary.warnings.nothingToMove'));
-      return;
-    }
-
-    const moveRequest: any = {
-      fileIds,
-      folderIds
-    };
-
-    if (destinationFolderId !== null) {
-      moveRequest.destinationFolderId = destinationFolderId;
-    }
-
-    this.mediaService.bulkMove(moveRequest)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (response) => {
-          const successCount = response.data.success.length;
-          this.toastService.showSuccess(
-            this.translate.instant('mediaLibrary.success.itemsMoved', { count: successCount })
-          );
-          this.closeMoveDialog();
-          this.state.clearSelection();
-
-          // ✅ Si on a déplacé vers "root" (null), naviguer vers la racine
-          if (destinationFolderId === null) {
-            this.router.navigate([], {
-              relativeTo: this.route,
-              queryParams: { folder: null, page: 1 },
-              queryParamsHandling: 'merge'
-            });
-          }
-          // ✅ Si on a déplacé vers un dossier, naviguer vers ce dossier
-          else if (destinationFolderId !== this.state.currentFolder()?.documentId) {
-            this.router.navigate([], {
-              relativeTo: this.route,
-              queryParams: { folder: destinationFolderId, page: 1 },
-              queryParamsHandling: 'merge'
-            });
-          }
-          // ✅ Sinon juste recharger
-          else {
-            this.loadData();
-          }
-        },
-        error: (error) => {
-          this.toastService.showError(
-            this.translate.instant('mediaLibrary.errors.moveFailed', { message: error.message })
-          );
-        }
-      });
+  onDestinationChange(destination: string | null): void {
+    this.selectedDestinationFolder.set(destination);
   }
 
-  // ==================== DELETE ====================
-
-  async deleteFile(file: MediaFile) {
+  // Delete
+  async onDeleteFile(file: MediaFile): Promise<void> {
     const confirmed = await this.confirmDialog.confirmDelete(file.name);
     if (!confirmed) return;
 
@@ -838,7 +561,7 @@ export class MediaLibrary implements OnInit, OnDestroy {
       });
   }
 
-  async deleteFolder(folder: MediaFolder) {
+  async onDeleteFolder(folder: MediaFolder): Promise<void> {
     const confirmed = await this.confirmDialog.confirmDelete(folder.name);
     if (!confirmed) return;
 
@@ -859,23 +582,23 @@ export class MediaLibrary implements OnInit, OnDestroy {
       });
   }
 
-  // ==================== BULK DELETE ====================
-
-  async bulkDelete() {
-    const fileIds = this.state.selectedFiles().map(f => f.documentId);
-    const folderIds = this.state.selectedFolders().map(f => f.documentId);
-    const total = fileIds.length + folderIds.length;
-
+  async onBulkDelete(): Promise<void> {
     const confirmed = await this.confirmDialog.open({
-      title: this.translate.instant('mediaLibrary.bulkDelete.title'),
-      message: this.translate.instant('mediaLibrary.bulkDelete.message', { count: total }),
-      confirmText: this.translate.instant('mediaLibrary.bulkDelete.confirm'),
+      title: this.translate.instant('mediaLibrary.confirm.bulkDelete.title'),
+      message: this.translate.instant('mediaLibrary.confirm.bulkDelete.message', {
+        count: this.state.selectedItems().length
+      }),
+      confirmText: this.translate.instant('common.delete'),
       confirmClass: 'btn-danger',
       icon: 'delete',
       iconClass: 'text-danger'
     });
 
     if (!confirmed) return;
+
+    const items = this.state.selectedItems();
+    const fileIds = items.filter(item => item.type === 'asset').map(item => item.documentId);
+    const folderIds = items.filter(item => item.type === 'folder').map(item => item.documentId);
 
     this.mediaService.bulkDelete({ fileIds, folderIds })
       .pipe(takeUntil(this.destroy$))
@@ -896,53 +619,22 @@ export class MediaLibrary implements OnInit, OnDestroy {
       });
   }
 
-  // ==================== PAGINATION ====================
-
-  onPageChange(page: number) {
-    this.updateQueryParams({ page });
+  // Download & Copy
+  onDownloadFile(file: MediaFile): void {
+    const url = file.url.startsWith('http') ? file.url : environment.api.baseUrl + file.url;
+    window.open(url, '_blank');
   }
 
-  onPageSizeChange(pageSize: number) {
-    this.updateQueryParams({ pageSize, page: 1 });
-  }
-
-  // ==================== HELPERS ====================
-
-  getFileIcon(mime: string): string {
-    if (mime.startsWith('image/')) return 'image';
-    if (mime.startsWith('video/')) return 'videocam';
-    if (mime.startsWith('audio/')) return 'audio_file';
-    if (mime.includes('pdf')) return 'picture_as_pdf';
-    return 'insert_drive_file';
-  }
-
-  formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return `${Math.round(bytes / Math.pow(k, i) * 100) / 100} ${sizes[i]}`;
-  }
-
-  getThumbnail(file: MediaFile): string {
-    return file.formats?.thumbnail?.url || file.url;
-  }
-
-  getFileUrl(url: string): string {
-    if (url.startsWith('http')) {
-      return url;
-    }
-    return environment.api.baseUrl + url;
-  }
-
-  downloadFile(file: MediaFile) {
-    window.open(this.getFileUrl(file.url), '_blank');
-  }
-
-  copyLink(file: MediaFile) {
-    const fullUrl = this.getFileUrl(file.url);
-    navigator.clipboard.writeText(fullUrl).then(() => {
+  onCopyLink(file: MediaFile): void {
+    const url = file.url.startsWith('http') ? file.url : environment.api.baseUrl + file.url;
+    navigator.clipboard.writeText(url).then(() => {
       this.toastService.showSuccess(this.translate.instant('mediaLibrary.success.linkCopied'));
     });
+  }
+
+  // ==================== PAGINATION ====================
+
+  onPageChange(page: number): void {
+    this.updateQueryParams({ page });
   }
 }

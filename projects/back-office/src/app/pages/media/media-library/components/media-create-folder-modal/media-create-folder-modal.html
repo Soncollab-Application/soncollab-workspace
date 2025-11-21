@@ -1,0 +1,50 @@
+@if (show()) {
+  <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ 'mediaLibrary.createFolder.title' | translate }}</h5>
+          <button type="button" class="btn-close" (click)="close.emit()"></button>
+        </div>
+        <div class="modal-body">
+
+          @if (currentFolder()) {
+            <div class="alert alert-info">
+              <span class="material-symbols-outlined me-2">folder</span>
+              {{ 'mediaLibrary.createFolder.createIn' | translate }}: <strong>{{ currentFolder()!.name }}</strong>
+            </div>
+          }
+
+          <div class="mb-3">
+            <label class="form-label">{{ 'mediaLibrary.createFolder.name' | translate }}</label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="folderName"
+              [placeholder]="'mediaLibrary.createFolder.namePlaceholder' | translate"
+              (keyup.enter)="createFolder()">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="close.emit()"
+            [disabled]="isCreating()">
+            {{ 'common.cancel' | translate }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            [disabled]="!folderName().trim() || isCreating()"
+            (click)="createFolder()">
+            @if (isCreating()) {
+              <span class="spinner-border spinner-border-sm me-2"></span>
+            }
+            {{ 'mediaLibrary.createFolder.create' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

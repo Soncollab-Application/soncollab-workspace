@@ -1,0 +1,28 @@
+.file-card {
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.file-card:hover {
+  box-shadow: 0 0.25rem 0.75rem rgba(15, 23, 42, 0.08);
+}
+
+.file-card.selected {
+  border-color: var(--fn-primary);
+  background-color: rgba(var(--fn-primary-rgb), 0.05);
+}
+
+.edit-btn {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.file-card:hover .edit-btn {
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .edit-btn {
+    opacity: 1;
+  }
+}

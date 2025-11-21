@@ -6,3 +6,42 @@
   opacity: 0.6;
   pointer-events: none;
 }
+
+/* Table hover improvements */
+.table-hover tbody tr {
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.table-hover tbody tr.table-active {
+  background-color: rgba(var(--fn-primary-rgb), 0.1);
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(var(--fn-secondary-rgb), 0.05);
+}
+
+/* Breadcrumb styling */
+.breadcrumb-item a {
+  text-decoration: none;
+  color: var(--fn-primary);
+}
+
+.breadcrumb-item a:hover {
+  text-decoration: underline;
+}
+
+/* Pagination styling */
+.pagination {
+  margin-bottom: 0;
+}
+
+.page-link {
+  cursor: pointer;
+}
+
+/* Empty state */
+.display-1 {
+  font-size: 4rem;
+  opacity: 0.3;
+}

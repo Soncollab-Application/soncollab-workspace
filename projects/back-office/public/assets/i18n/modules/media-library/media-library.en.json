@@ -1,111 +1,117 @@
 {
   "mediaLibrary": {
     "title": "Media Library",
-    "items": "items",
-    "loading": "Loading...",
+    "items": "item(s)",
+    "selected": "selected",
+    "folder": "Folder",
+    "noPreview": "No preview available",
 
-    "search": {
-      "placeholder": "Search for a file..."
+    "breadcrumb": {
+      "root": "Media Library"
+    },
+
+    "actions": {
+      "upload": "Upload",
+      "createFolder": "Create Folder",
+      "edit": "Edit",
+      "move": "Move",
+      "delete": "Delete",
+      "download": "Download",
+      "copyLink": "Copy Link"
     },
 
     "sort": {
-      "newest": "Newest first",
-      "oldest": "Oldest first",
-      "nameAsc": "Name (A to Z)",
-      "nameDesc": "Name (Z to A)",
-      "recentlyUpdated": "Recently updated",
-      "oldestUpdated": "Oldest updated"
+      "newest": "Most recent uploads",
+      "oldest": "Oldest uploads",
+      "nameAsc": "Alphabetical order (A to Z)",
+      "nameDesc": "Reverse alphabetical order (Z to A)",
+      "recentlyUpdated": "Most recent updates",
+      "oldestUpdated": "Oldest updates"
     },
 
     "filters": {
       "title": "Filters",
       "addFilter": "Add filter",
+      "add": "Add",
       "selectField": "Select a field",
       "selectOperator": "Select an operator",
       "selectValue": "Select a value",
+      "activeFilters": "Active filters",
+      "clearAll": "Clear all",
+      "alreadyApplied": "This filter is already applied",
+
       "createdAt": "Created at",
       "updatedAt": "Updated at",
       "type": "Type",
+      "mime": "File type",
+
       "is": "is",
       "isNot": "is not",
-      "isGreaterThan": "is greater than",
-      "isGreaterThanOrEqual": "is greater than or equal to",
-      "isLowerThan": "is lower than",
-      "isLowerThanOrEqual": "is lower than or equal to",
-      "audio": "Audio",
-      "file": "File",
+      "greaterThan": "is greater than",
+      "greaterOrEqual": "is greater than or equal to",
+      "lessThan": "is less than",
+      "lessOrEqual": "is less than or equal to",
+
       "image": "Image",
       "video": "Video",
-      "activeFilters": "Active filters",
-      "clearAll": "Clear all"
+      "audio": "Audio",
+      "file": "File"
     },
 
-    "actions": {
-      "upload": "Upload",
-      "createFolder": "Create folder",
-      "cancel": "Cancel",
-      "save": "Save",
-      "create": "Create",
-      "edit": "Edit",
-      "delete": "Delete",
-      "move": "Move",
-      "view": "View",
-      "deleteSelected": "Delete selected"
-    },
-
-    "selection": {
-      "selected": "selected",
-      "selectAll": "Select all",
-      "clear": "Clear selection"
-    },
-
-    "folder": {
-      "label": "Folder",
-      "itemCount": "{{count}} item(s)"
+    "search": {
+      "placeholder": "Search..."
     },
 
     "table": {
-      "preview": "Preview",
       "name": "Name",
       "type": "Type",
       "size": "Size",
-      "created": "Created",
-      "actions": "Actions"
+      "createdAt": "Created at",
+      "updatedAt": "Updated at"
     },
 
     "upload": {
-      "title": "Upload files",
-      "selected": "{{count}} file(s) selected"
+      "title": "Upload Files",
+      "uploadTo": "Upload to",
+      "selectFiles": "Select files",
+      "selectedFiles": "Selected files",
+      "upload": "Upload"
     },
 
     "createFolder": {
-      "title": "Create folder",
-      "name": "Folder name"
+      "title": "Create New Folder",
+      "createIn": "Create in",
+      "name": "Folder name",
+      "namePlaceholder": "Enter folder name",
+      "create": "Create"
     },
 
-    "editFile": {
-      "title": "Edit file",
-      "name": "Name",
-      "altText": "Alternative text",
-      "caption": "Caption"
-    },
-
-    "editFolder": {
-      "title": "Edit folder",
-      "name": "Folder name"
+    "edit": {
+      "fileTitle": "Edit File",
+      "folderTitle": "Edit Folder",
+      "fileName": "File name",
+      "folderName": "Folder name",
+      "alternativeText": "Alternative text",
+      "alternativeTextPlaceholder": "Description for accessibility",
+      "caption": "Caption",
+      "captionPlaceholder": "Enter a caption"
     },
 
     "move": {
-      "title": "Move",
+      "title": "Move Items",
+      "root": "Root",
       "moving": "Moving",
+      "items": "item(s)",
       "destination": "Destination",
-      "root": "Root"
+      "itemsList": "Items to move",
+      "move": "Move"
     },
 
-    "bulkDelete": {
-      "title": "Delete items",
-      "message": "Are you sure you want to delete {{count}} item(s)?",
-      "confirm": "Delete"
+    "confirm": {
+      "bulkDelete": {
+        "title": "Delete Items",
+        "message": "Are you sure you want to delete {{count}} item(s)? This action cannot be undone."
+      }
     },
 
     "empty": {
@@ -146,7 +152,19 @@
 
     "warnings": {
       "nothingToMove": "Nothing to move",
+      "cannotUploadHere": "Cannot upload files here",
       "cannotCreateFolderHere": "Cannot create folder here"
     }
+  },
+
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "all": "All",
+    "view": "View"
   }
 }
+
