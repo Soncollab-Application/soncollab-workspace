@@ -1,0 +1,48 @@
+.asset-card {
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.asset-card:hover {
+  box-shadow: 0 0.25rem 0.75rem rgba(15, 23, 42, 0.08);
+}
+
+.asset-card.selected {
+  border-color: var(--fn-primary);
+  box-shadow: 0 0 0 2px rgba(var(--fn-primary-rgb), 0.25);
+}
+
+.asset-preview {
+  height: 160px;
+  background-color: #f8f9fb;
+  overflow: hidden;
+}
+
+.btn-icon {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-btn {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.asset-card:hover .edit-btn {
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .edit-btn {
+    opacity: 1;
+  }
+}
+
+.asset-footer {
+  min-height: 60px;
+}

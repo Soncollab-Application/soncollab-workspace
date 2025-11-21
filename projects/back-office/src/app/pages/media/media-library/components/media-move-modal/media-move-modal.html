@@ -1,0 +1,81 @@
+@if (show()) {
+  <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ 'mediaLibrary.move.title' | translate }}</h5>
+          <button type="button" class="btn-close" (click)="close.emit()"></button>
+        </div>
+        <div class="modal-body">
+
+          <div class="alert alert-info">
+            <span class="material-symbols-outlined me-2">info</span>
+            {{ 'mediaLibrary.move.moving' | translate }}
+            <strong>{{ itemsToMove().length }}</strong>
+            {{ 'mediaLibrary.move.items' | translate }}
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">{{ 'mediaLibrary.move.destination' | translate }}</label>
+            <select
+              class="form-select"
+              [value]="selectedDestination()"
+              (change)="onDestinationChange($any($event.target).value)">
+              @for (node of folderStructure(); track node.value) {
+                @if (node.value === null) {
+                  <option [value]="null">{{ node.label }}</option>
+                } @else {
+                  <option [value]="node.value">{{ node.label }}</option>
+                }
+                @if (node.children) {
+                  @for (child of node.children; track child.value) {
+                    <option [value]="child.value">&nbsp;&nbsp;└─ {{ child.label }}</option>
+                    @if (child.children) {
+                      @for (subChild of child.children; track subChild.value) {
+                        <option [value]="subChild.value">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ {{ subChild.label }}</option>
+                      }
+                    }
+                  }
+                }
+              }
+            </select>
+          </div>
+
+          <!-- Liste des items à déplacer -->
+          <div class="border rounded p-3 bg-light">
+            <h6 class="mb-3">{{ 'mediaLibrary.move.itemsList' | translate }}</h6>
+            <div class="d-flex flex-column gap-2" style="max-height: 300px; overflow-y: auto;">
+              @for (item of itemsToMove(); track item.documentId) {
+                <div class="d-flex align-items-center gap-2 p-2 bg-white rounded border">
+                      <span class="material-symbols-outlined text-secondary">
+                        {{ item.type === 'folder' ? 'folder' : 'insert_drive_file' }}
+                      </span>
+                  <span class="text-truncate">{{ item.name }}</span>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="close.emit()"
+            [disabled]="isMoving()">
+            {{ 'common.cancel' | translate }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            [disabled]="isMoving()"
+            (click)="move()">
+            @if (isMoving()) {
+              <span class="spinner-border spinner-border-sm me-2"></span>
+            }
+            {{ 'mediaLibrary.move.move' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

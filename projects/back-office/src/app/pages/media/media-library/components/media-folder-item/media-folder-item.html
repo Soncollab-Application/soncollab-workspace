@@ -1,0 +1,53 @@
+<div class="card p-2 file-card" [class.selected]="isSelected()">
+  <div class="d-flex align-items-center justify-content-between">
+
+    <div class="d-flex align-items-center flex-grow-1" style="cursor: pointer;" (click)="folderClick.emit()">
+
+      <div class="form-check me-2 mb-0" (click)="$event.stopPropagation()">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          [checked]="isSelected()"
+          (change)="toggleSelection.emit()">
+      </div>
+
+      <span class="material-symbols-outlined text-primary fs-3 me-2">folder</span>
+
+      <div>
+        <div class="fw-semibold">{{ folder().name }}</div>
+        <small class="text-muted">
+          {{ folder().files?.count || 0 }} {{ 'mediaLibrary.items' | translate }}
+        </small>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="dropdown" (click)="$event.stopPropagation()">
+      <button class="btn btn-sm btn-light border edit-btn" data-bs-toggle="dropdown">
+        <span class="material-symbols-outlined">more_vert</span>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li>
+          <a class="dropdown-item" href="javascript:void(0)" (click)="editClick.emit()">
+            <span class="material-symbols-outlined me-2">edit</span>
+            {{ 'mediaLibrary.actions.edit' | translate }}
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item" href="javascript:void(0)" (click)="moveClick.emit()">
+            <span class="material-symbols-outlined me-2">drive_file_move</span>
+            {{ 'mediaLibrary.actions.move' | translate }}
+          </a>
+        </li>
+        <li><hr class="dropdown-divider"></li>
+        <li>
+          <a class="dropdown-item text-danger" href="javascript:void(0)" (click)="deleteClick.emit()">
+            <span class="material-symbols-outlined me-2">delete</span>
+            {{ 'mediaLibrary.actions.delete' | translate }}
+          </a>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</div>

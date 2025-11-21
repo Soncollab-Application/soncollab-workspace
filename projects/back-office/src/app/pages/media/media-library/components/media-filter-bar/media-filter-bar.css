@@ -1,0 +1,30 @@
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icon.active {
+  background-color: var(--fn-primary);
+  color: white;
+  border-color: var(--fn-primary);
+}
+
+.checkbox-wrapper {
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-select {
+  min-width: 200px;
+}
+
+.badge {
+  font-weight: 500;
+}

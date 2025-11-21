@@ -1,0 +1,72 @@
+@if (show()) {
+  <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ 'mediaLibrary.upload.title' | translate }}</h5>
+          <button type="button" class="btn-close" (click)="close.emit()"></button>
+        </div>
+        <div class="modal-body">
+
+          @if (currentFolder()) {
+            <div class="alert alert-info">
+              <span class="material-symbols-outlined me-2">folder</span>
+              {{ 'mediaLibrary.upload.uploadTo' | translate }}: <strong>{{ currentFolder()!.name }}</strong>
+            </div>
+          }
+
+          <div class="mb-3">
+            <label class="form-label">{{ 'mediaLibrary.upload.selectFiles' | translate }}</label>
+            <input
+              type="file"
+              class="form-control"
+              multiple
+              #fileInput
+              (change)="onFilesSelected($event)">
+          </div>
+
+          @if (selectedFiles().length > 0) {
+            <div class="mb-3">
+              <h6>{{ 'mediaLibrary.upload.selectedFiles' | translate }} ({{ selectedFiles().length }})</h6>
+              <ul class="list-group">
+                @for (file of selectedFiles(); track file.name) {
+                  <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span class="text-truncate">{{ file.name }}</span>
+                    <span class="badge bg-secondary">{{ formatFileSize(file.size) }}</span>
+                  </li>
+                }
+              </ul>
+            </div>
+          }
+
+          @if (isUploading()) {
+            <div class="progress">
+              <div class="progress-bar progress-bar-striped progress-bar-animated"
+                   role="progressbar"
+                   style="width: 100%"></div>
+            </div>
+          }
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="close.emit()"
+            [disabled]="isUploading()">
+            {{ 'common.cancel' | translate }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            [disabled]="selectedFiles().length === 0 || isUploading()"
+            (click)="upload()">
+            @if (isUploading()) {
+              <span class="spinner-border spinner-border-sm me-2"></span>
+            }
+            {{ 'mediaLibrary.upload.upload' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

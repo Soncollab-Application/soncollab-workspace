@@ -1,0 +1,120 @@
+<div class="card asset-card position-relative" [class.selected]="isSelected()">
+
+  <!-- Checkbox -->
+  <div class="form-check position-absolute top-0 start-0 m-3" style="z-index: 10;" (click)="$event.stopPropagation()">
+    <input
+      class="form-check-input"
+      type="checkbox"
+      [checked]="isSelected()"
+      (change)="toggleSelection.emit()">
+  </div>
+
+  <!-- Edit + menu -->
+  <div class="position-absolute top-0 end-0 m-2 d-flex align-items-center" style="z-index: 10;">
+
+    <!-- Desktop : edit au hover -->
+    <button
+      class="btn btn-icon btn-dark edit-btn d-none d-md-inline"
+      (click)="editClick.emit(); $event.stopPropagation()">
+      <span class="material-symbols-outlined">edit</span>
+    </button>
+
+    <!-- Mobile : menu -->
+    <div class="dropdown d-inline d-md-none">
+      <button
+        class="btn btn-icon btn-dark"
+        data-bs-toggle="dropdown"
+        (click)="$event.stopPropagation()">
+        <span class="material-symbols-outlined">more_vert</span>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li>
+          <a class="dropdown-item" href="javascript:void(0)" (click)="editClick.emit()">
+            <span class="material-symbols-outlined me-2">edit</span>
+            {{ 'mediaLibrary.actions.edit' | translate }}
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item" href="javascript:void(0)" (click)="moveClick.emit()">
+            <span class="material-symbols-outlined me-2">drive_file_move</span>
+            {{ 'mediaLibrary.actions.move' | translate }}
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item" href="javascript:void(0)" (click)="downloadClick.emit()">
+            <span class="material-symbols-outlined me-2">download</span>
+            {{ 'mediaLibrary.actions.download' | translate }}
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item" href="javascript:void(0)" (click)="copyLinkClick.emit()">
+            <span class="material-symbols-outlined me-2">link</span>
+            {{ 'mediaLibrary.actions.copyLink' | translate }}
+          </a>
+        </li>
+        <li><hr class="dropdown-divider"></li>
+        <li>
+          <a class="dropdown-item text-danger" href="javascript:void(0)" (click)="deleteClick.emit()">
+            <span class="material-symbols-outlined me-2">delete</span>
+            {{ 'mediaLibrary.actions.delete' | translate }}
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Preview -->
+  <div
+    class="asset-preview d-flex flex-column align-items-center justify-content-center"
+    (click)="assetClick.emit()"
+    style="cursor: pointer;">
+
+    @if (isImage()) {
+      <img
+        [src]="thumbnailUrl()"
+        [alt]="asset().name"
+        class="img-fluid"
+        style="max-height: 160px; object-fit: cover; width: 100%;">
+    }
+
+    @else if (isAudio()) {
+      <audio controls style="width: 100%; max-width: 250px;" (click)="$event.stopPropagation()">
+        <source [src]="fullUrl()" [type]="asset().mime">
+        Your browser does not support the audio element.
+      </audio>
+    }
+
+    @else if (isVideo()) {
+      <video controls style="width: 100%; max-height: 160px;" (click)="$event.stopPropagation()">
+        <source [src]="fullUrl()" [type]="asset().mime">
+        Your browser does not support the video element.
+      </video>
+    }
+
+    @else if (isPDF()) {
+      <span class="material-symbols-outlined mb-1" style="font-size:40px;">
+            picture_as_pdf
+          </span>
+      <small class="text-muted">{{ 'mediaLibrary.noPreview' | translate }}</small>
+    }
+
+    @else {
+      <span class="material-symbols-outlined mb-1" style="font-size:40px;">
+            {{ getFileIcon() }}
+          </span>
+      <small class="text-muted">{{ 'mediaLibrary.noPreview' | translate }}</small>
+    }
+  </div>
+
+  <!-- Footer -->
+  <div class="asset-footer border-top px-3 py-2 d-flex align-items-center justify-content-between">
+    <div class="me-2 text-truncate">
+      <div class="fw-semibold text-truncate" [title]="asset().name">
+        {{ asset().name }}
+      </div>
+      <small class="text-muted">{{ asset().ext.toUpperCase() }}</small>
+    </div>
+    <span class="badge text-bg-dark border">{{ getTypeBadge() }}</span>
+  </div>
+
+</div>
