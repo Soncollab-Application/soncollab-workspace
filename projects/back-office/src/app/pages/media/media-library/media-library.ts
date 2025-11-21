@@ -677,4 +677,8 @@ export class MediaLibrary implements OnInit, OnDestroy {
     return 'text-warning bg-warning-subtle';
   }
 
+  canSelectItem(item: MediaFile | MediaFolder): boolean {
+    return this.state.canSelectItem(item);
+  }
+
 }

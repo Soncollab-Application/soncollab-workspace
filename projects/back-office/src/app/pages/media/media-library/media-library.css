@@ -58,3 +58,20 @@
 .page-link {
   cursor: pointer;
 }
+
+
+.breadcrumb-item span.text-muted {
+  cursor: default;
+  user-select: none;
+}
+
+.breadcrumb-item a {
+  text-decoration: none;
+  color: var(--fn-primary);
+  transition: color 0.2s ease;
+}
+
+
+.breadcrumb-item.active {
+  font-weight: 500;
+}

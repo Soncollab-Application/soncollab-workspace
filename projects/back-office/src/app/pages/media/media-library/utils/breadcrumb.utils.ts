@@ -4,6 +4,7 @@ export interface BreadcrumbItem {
   id: number | null;
   label: string;
   folder?: MediaFolder;
+  isEllipsis?: boolean;
 }
 
 export function getBreadcrumbData(currentFolder: MediaFolder | null): BreadcrumbItem[] {
@@ -25,16 +26,26 @@ export function getBreadcrumbData(currentFolder: MediaFolder | null): Breadcrumb
   const filteredPath = fullPath.filter(item => {
     const folderName = item.folder?.name || '';
 
-    // Exclure les dossiers système
-    if (folderName === 'users') return false;
+    // Exclure uniquement les dossiers système techniques
     if (folderName === 'soncollab_admin') return false;
     if (folderName === 'soncollab_content') return false;
-
-    // Exclure les emails (contiennent un @)
-    if (folderName.includes('@')) return false;
 
     return true;
   });
 
-  return [...breadcrumbs, ...filteredPath];
+  const allItems = [...breadcrumbs, ...filteredPath];
+  if (allItems.length > 4) {
+    const first = allItems[0];
+    const secondLast = allItems[allItems.length - 2];
+    const last = allItems[allItems.length - 1];
+
+    return [
+      first,
+      { id: -1, label: '...', isEllipsis: true },
+      secondLast,
+      last
+    ];
+  }
+
+  return allItems;
 }
