@@ -95,8 +95,6 @@ export class MediaLibrary implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  // ==================== ROUTE HANDLING ====================
-
   private handleRouteChange(params: any): void {
     const folderId = params['folder'] || null;
 
@@ -146,7 +144,6 @@ export class MediaLibrary implements OnInit, OnDestroy {
     });
   }
 
-  // ==================== DATA LOADING ====================
 
   private loadFolderById(documentId: string): void {
     this.mediaService.getFolder(documentId)
@@ -269,8 +266,6 @@ export class MediaLibrary implements OnInit, OnDestroy {
     this.updateQueryParams(cleanParams);
   }
 
-  // ==================== FILTER BAR HANDLERS ====================
-
   onSortChange(sort: string): void {
     this.state.currentSort.set(sort as SortOption);
     this.updateQueryParams({ sort, page: 1 });
@@ -301,7 +296,6 @@ export class MediaLibrary implements OnInit, OnDestroy {
     }
   }
 
-  // ==================== FILTERS ====================
 
   onFilterFieldChange(field: string): void {
     this.selectedFilterField.set(field);
@@ -384,7 +378,6 @@ export class MediaLibrary implements OnInit, OnDestroy {
     this.updateQueryParams(cleanParams);
   }
 
-  // ==================== SELECTION ====================
 
   isSelected(item: MediaFile | MediaFolder): boolean {
     return this.state.selectedItems().some(
@@ -396,7 +389,6 @@ export class MediaLibrary implements OnInit, OnDestroy {
     this.state.toggleSelection(item);
   }
 
-  // ==================== ACTIONS ====================
 
   // Upload
   onOpenUpload(): void {
@@ -632,9 +624,57 @@ export class MediaLibrary implements OnInit, OnDestroy {
     });
   }
 
-  // ==================== PAGINATION ====================
 
   onPageChange(page: number): void {
     this.updateQueryParams({ page });
   }
+
+  formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${Math.round(bytes / Math.pow(k, i) * 100) / 100} ${sizes[i]}`;
+  }
+
+  getFileIcon(mime: string): string {
+    if (mime.startsWith('image/')) return 'image';
+    if (mime.startsWith('video/')) return 'videocam';
+    if (mime.startsWith('audio/')) return 'audio_file';
+    if (mime.includes('pdf')) return 'picture_as_pdf';
+    if (mime.includes('word') || mime.includes('document')) return 'description';
+    if (mime.includes('sheet') || mime.includes('excel')) return 'table_chart';
+    if (mime.includes('presentation') || mime.includes('powerpoint')) return 'slideshow';
+    if (mime.includes('zip') || mime.includes('rar') || mime.includes('7z')) return 'folder_zip';
+    return 'insert_drive_file';
+  }
+
+  getFileIconClass(file: MediaFile): string {
+    const mime = file.mime;
+    if (mime.startsWith('image/')) return 'text-success';
+    if (mime.startsWith('video/')) return 'text-danger';
+    if (mime.startsWith('audio/')) return 'text-info';
+    if (mime.includes('pdf')) return 'text-danger';
+    if (mime.includes('word') || mime.includes('document')) return 'text-primary';
+    if (mime.includes('sheet') || mime.includes('excel')) return 'text-success';
+    if (mime.includes('presentation') || mime.includes('powerpoint')) return 'text-warning';
+    return 'text-secondary';
+  }
+
+  getTypeBadge(file: MediaFile): string {
+    return file.ext.toUpperCase();
+  }
+
+  getTypeBadgeClass(file: MediaFile): string {
+    const mime = file.mime;
+    if (mime.startsWith('image/')) return 'text-success bg-success-subtle';
+    if (mime.startsWith('video/')) return 'text-danger bg-danger-subtle';
+    if (mime.startsWith('audio/')) return 'text-info bg-info-subtle';
+    if (mime.includes('pdf')) return 'text-danger bg-danger-subtle';
+    if (mime.includes('word') || mime.includes('document')) return 'text-primary bg-primary-subtle';
+    if (mime.includes('sheet') || mime.includes('excel')) return 'text-success bg-success-subtle';
+    if (mime.includes('presentation') || mime.includes('powerpoint')) return 'text-warning bg-warning-subtle';
+    return 'text-warning bg-warning-subtle';
+  }
+
 }

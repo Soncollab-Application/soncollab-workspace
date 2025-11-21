@@ -1,4 +1,4 @@
-<div class="card p-2 file-card" [class.selected]="isSelected()">
+<div class="card p-3  file-card" [class.selected]="isSelected()">
   <div class="d-flex align-items-center justify-content-between">
 
     <div class="d-flex align-items-center flex-grow-1" style="cursor: pointer;" (click)="folderClick.emit()">
@@ -16,7 +16,7 @@
       <div>
         <div class="fw-semibold">{{ folder().name }}</div>
         <small class="text-muted">
-          {{ folder().files?.count || 0 }} {{ 'mediaLibrary.items' | translate }}
+          {{ getFolderStats() }}
         </small>
       </div>
     </div>

@@ -7,6 +7,25 @@
   pointer-events: none;
 }
 
+
+.table-responsive {
+  overflow: visible !important;
+}
+
+.dropdown.position-static {
+  position: static !important;
+}
+
+.table tbody tr td .dropdown-menu {
+  position: fixed !important;
+  z-index: 1050;
+}
+
+.table tbody tr td {
+  position: relative;
+  overflow: visible;
+}
+
 /* Table hover improvements */
 .table-hover tbody tr {
   cursor: pointer;
@@ -38,10 +57,4 @@
 
 .page-link {
   cursor: pointer;
-}
-
-/* Empty state */
-.display-1 {
-  font-size: 4rem;
-  opacity: 0.3;
 }

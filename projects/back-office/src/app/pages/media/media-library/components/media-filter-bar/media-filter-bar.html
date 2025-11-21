@@ -5,7 +5,7 @@
     <div class="d-flex align-items-center mb-2">
 
       <!-- Checkbox select all -->
-      <div class="border rounded checkbox-wrapper me-2">
+      <div class="border rounded checkbox-wrapper me-2 p-1">
         <input
           class="form-check-input"
           type="checkbox"
@@ -120,19 +120,14 @@
 
     <!-- Applied Filters Tags -->
     @if (appliedFilters().length > 0) {
-      <div class="d-flex gap-2 flex-wrap align-items-center mt-2">
+      <div class="d-flex gap-2 flex-wrap align-items-center mt-4 mb-2">
         <small class="text-muted">{{ 'mediaLibrary.filters.activeFilters' | translate }}:</small>
 
         @for (filter of appliedFilters(); track $index) {
-          <span class="badge bg-primary d-flex align-items-center gap-1 py-1 px-2">
-                {{ getFilterLabel(filter) }}
-            <span
-              class="material-symbols-outlined cursor-pointer"
-              style="font-size: 14px; cursor: pointer;"
-              (click)="removeFilterClick.emit($index)">
-                  close
-                </span>
-              </span>
+          <button type="button" class="btn btn-sm bg-primary" (click)="removeFilterClick.emit($index)">
+            <i class="fi-close fs-sm ms-n1 me-1"></i>
+            {{ getFilterLabel(filter) }}
+          </button>
         }
 
         <button

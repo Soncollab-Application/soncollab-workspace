@@ -16,9 +16,15 @@
 .checkbox-wrapper {
   width: 36px;
   height: 36px;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.checkbox-wrapper .form-check-input {
+  margin: 0;
+  position: relative;
+  cursor: pointer;
 }
 
 .form-select {
