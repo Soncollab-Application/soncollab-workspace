@@ -19,4 +19,25 @@ export class MediaFolderItem {
   editClick = output<void>();
   moveClick = output<void>();
   deleteClick = output<void>();
+
+  getFolderStats(): string {
+    const folder = this.folder();
+    const foldersCount = folder.children?.length || 0;
+    const assetsCount = folder.files?.count || 0;
+    const parts: string[] = [];
+
+    if (foldersCount > 0) {
+      parts.push(`${foldersCount} folder${foldersCount > 1 ? 's' : ''}`);
+    } else {
+      parts.push('0 folder');
+    }
+
+    if (assetsCount > 0) {
+      parts.push(`${assetsCount} asset${assetsCount > 1 ? 's' : ''}`);
+    } else {
+      parts.push('0 asset');
+    }
+
+    return parts.join(', ');
+  }
 }

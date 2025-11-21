@@ -10,6 +10,11 @@
       "root": "Media Library"
     },
 
+    "sections": {
+      "folders": "Folders",
+      "assets": "Assets"
+    },
+
     "actions": {
       "upload": "Upload",
       "createFolder": "Create Folder",
@@ -155,16 +160,6 @@
       "cannotUploadHere": "Cannot upload files here",
       "cannotCreateFolderHere": "Cannot create folder here"
     }
-  },
-
-  "common": {
-    "loading": "Loading...",
-    "save": "Save",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "edit": "Edit",
-    "all": "All",
-    "view": "View"
   }
 }
 

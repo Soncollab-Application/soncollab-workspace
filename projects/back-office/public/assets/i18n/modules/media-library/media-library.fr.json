@@ -10,6 +10,11 @@
       "root": "Bibliothèque de médias"
     },
 
+    "sections": {
+      "folders": "Dossiers",
+      "assets": "Fichiers"
+    },
+
     "actions": {
       "upload": "Téléverser",
       "createFolder": "Créer un dossier",
@@ -155,15 +160,5 @@
       "cannotUploadHere": "Impossible de téléverser des fichiers ici",
       "cannotCreateFolderHere": "Impossible de créer un dossier ici"
     }
-  },
-
-  "common": {
-    "loading": "Chargement...",
-    "save": "Enregistrer",
-    "cancel": "Annuler",
-    "delete": "Supprimer",
-    "edit": "Modifier",
-    "all": "Tous",
-    "view": "Voir"
   }
 }

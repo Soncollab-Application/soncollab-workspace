@@ -70,7 +70,7 @@
 
   <!-- ==================== BULK ACTIONS ==================== -->
   @if (state.hasSelection()) {
-    <div class="alert alert-info d-flex justify-content-between align-items-center mb-4">
+    <div class="alert alert-info d-flex justify-content-between align-items-center mb-3 mt-4">
       <span>
         {{ state.selectedItems().length }} {{ 'mediaLibrary.selected' | translate }}
       </span>
@@ -111,152 +111,241 @@
   <!-- ==================== CONTENT ==================== -->
   @if (!state.isLoading()) {
 
-    <!-- ==================== FOLDERS ROW ==================== -->
-    @if (state.folders().length > 0) {
-      <div class="row row-cols-xxl-4 row-cols-xl-4 row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-3 mb-4">
-        @for (folder of state.folders(); track folder.documentId) {
-          <div class="col">
-            <app-media-folder-item
-              [folder]="folder"
-              [isSelected]="isSelected(folder)"
-              (folderClick)="onFolderClick(folder)"
-              (toggleSelection)="onToggleSelection(folder)"
-              (editClick)="onEditFolder(folder)"
-              (moveClick)="onMoveItem(folder)"
-              (deleteClick)="onDeleteFolder(folder)"
-            />
-          </div>
-        }
-      </div>
-    }
-
-    <!-- Séparateur si on a des folders ET des files -->
-    @if (state.folders().length > 0 && state.files().length > 0) {
-      <hr class="my-4">
-    }
-
     <!-- ==================== GRID VIEW ==================== -->
     @if (state.viewMode() === 'grid') {
-      <div class="row row-cols-xxl-4 row-cols-xl-4 row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-3">
-        @for (file of state.files(); track file.documentId) {
-          <div class="col">
-            <app-media-asset-item
-              [asset]="file"
-              [isSelected]="isSelected(file)"
-              (assetClick)="onEditFile(file)"
-              (toggleSelection)="onToggleSelection(file)"
-              (editClick)="onEditFile(file)"
-              (moveClick)="onMoveItem(file)"
-              (deleteClick)="onDeleteFile(file)"
-              (downloadClick)="onDownloadFile(file)"
-              (copyLinkClick)="onCopyLink(file)"
-            />
+
+      <!-- Section Folders -->
+      @if (state.folders().length > 0) {
+        <div class="mt-4 mb-3 py-2">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <h6 class="text-muted mb-0 text-uppercase" style="font-size: 0.875rem; font-weight: 600; letter-spacing: 0.5px;">
+              {{ 'mediaLibrary.sections.folders' | translate }} ({{ state.folders().length }})
+            </h6>
           </div>
-        }
-      </div>
+
+          <div class="row row-cols-xxl-4 row-cols-xl-4 row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-3">
+            @for (folder of state.folders(); track folder.documentId) {
+              <div class="col">
+                <app-media-folder-item
+                  [folder]="folder"
+                  [isSelected]="isSelected(folder)"
+                  (folderClick)="onFolderClick(folder)"
+                  (toggleSelection)="onToggleSelection(folder)"
+                  (editClick)="onEditFolder(folder)"
+                  (moveClick)="onMoveItem(folder)"
+                  (deleteClick)="onDeleteFolder(folder)"
+                />
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <hr class="my-5">
+
+      <!-- Section Assets -->
+      @if (state.files().length > 0) {
+        <div class="mb-5">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <h6 class="text-muted mb-0 text-uppercase" style="font-size: 0.875rem; font-weight: 600; letter-spacing: 0.5px;">
+              {{ 'mediaLibrary.sections.assets' | translate }} ({{ state.files().length }})
+            </h6>
+          </div>
+
+          <div class="row row-cols-xxl-4 row-cols-xl-4 row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-3">
+            @for (file of state.files(); track file.documentId) {
+              <div class="col">
+                <app-media-asset-item
+                  [asset]="file"
+                  [isSelected]="isSelected(file)"
+                  (assetClick)="onEditFile(file)"
+                  (toggleSelection)="onToggleSelection(file)"
+                  (editClick)="onEditFile(file)"
+                  (moveClick)="onMoveItem(file)"
+                  (deleteClick)="onDeleteFile(file)"
+                  (downloadClick)="onDownloadFile(file)"
+                  (copyLinkClick)="onCopyLink(file)"
+                />
+              </div>
+            }
+          </div>
+        </div>
+      }
     }
 
     <!-- ==================== LIST VIEW ==================== -->
     @if (state.viewMode() === 'list') {
-      <div class="table-responsive">
-        <table class="table table-hover align-middle">
-          <thead>
-          <tr>
-            <th style="width: 40px;">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                [checked]="state.allSelected()"
-                [indeterminate]="hasSelection()"
-                (change)="onSelectAllChange()">
-            </th>
-            <th style="width: 60px;"></th>
-            <th>{{ 'mediaLibrary.table.name' | translate }}</th>
-            <th style="width: 120px;">{{ 'mediaLibrary.table.type' | translate }}</th>
-            <th style="width: 100px;">{{ 'mediaLibrary.table.size' | translate }}</th>
-            <th style="width: 150px;">{{ 'mediaLibrary.table.createdAt' | translate }}</th>
-            <th style="width: 80px;"></th>
-          </tr>
-          </thead>
-          <tbody>
-            @for (file of state.files(); track file.documentId) {
-              <tr [class.table-active]="isSelected(file)">
-                <td>
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    [checked]="isSelected(file)"
-                    (change)="onToggleSelection(file)">
-                </td>
-                <td>
-                  <span class="material-symbols-outlined text-secondary">
-                    insert_drive_file
-                  </span>
-                </td>
-                <td>
-                  <a
-                    href="javascript:void(0)"
-                    class="text-decoration-none text-dark"
-                    (click)="onEditFile(file)">
-                    {{ file.name }}
-                  </a>
-                </td>
-                <td>
-                  <span class="badge bg-light text-dark">{{ file.ext }}</span>
-                </td>
-                <td>
-                  <small class="text-muted">{{ file.size }}</small>
-                </td>
-                <td>
-                  <small class="text-muted">{{ file.createdAt | date:'short' }}</small>
-                </td>
-                <td>
-                  <div class="dropdown">
-                    <button
-                      class="btn btn-sm btn-light"
-                      type="button"
-                      data-bs-toggle="dropdown">
-                      <span class="material-symbols-outlined">more_vert</span>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                      <li>
-                        <a class="dropdown-item" href="javascript:void(0)" (click)="onEditFile(file)">
-                          <span class="material-symbols-outlined me-2">edit</span>
-                          {{ 'mediaLibrary.actions.edit' | translate }}
-                        </a>
-                      </li>
-                      <li>
-                        <a class="dropdown-item" href="javascript:void(0)" (click)="onMoveItem(file)">
-                          <span class="material-symbols-outlined me-2">drive_file_move</span>
-                          {{ 'mediaLibrary.actions.move' | translate }}
-                        </a>
-                      </li>
-                      <li>
-                        <a class="dropdown-item" href="javascript:void(0)" (click)="onDownloadFile(file)">
-                          <span class="material-symbols-outlined me-2">download</span>
-                          {{ 'mediaLibrary.actions.download' | translate }}
-                        </a>
-                      </li>
-                      <li>
-                        <a class="dropdown-item" href="javascript:void(0)" (click)="onCopyLink(file)">
-                          <span class="material-symbols-outlined me-2">link</span>
-                          {{ 'mediaLibrary.actions.copyLink' | translate }}
-                        </a>
-                      </li>
-                      <li><hr class="dropdown-divider"></li>
-                      <li>
-                        <a class="dropdown-item text-danger" href="javascript:void(0)" (click)="onDeleteFile(file)">
-                          <span class="material-symbols-outlined me-2">delete</span>
-                          {{ 'mediaLibrary.actions.delete' | translate }}
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
+      <div class="mt-4">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead>
+            <tr>
+              <th style="width: 40px;">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  [checked]="state.allSelected()"
+                  [indeterminate]="hasSelection()"
+                  (change)="onSelectAllChange()">
+              </th>
+              <th style="width: 60px;"></th>
+              <th>{{ 'mediaLibrary.table.name' | translate }}</th>
+              <th style="width: 120px;">{{ 'mediaLibrary.table.type' | translate }}</th>
+              <th style="width: 100px;">{{ 'mediaLibrary.table.size' | translate }}</th>
+              <th style="width: 150px;">{{ 'mediaLibrary.table.createdAt' | translate }}</th>
+              <th style="width: 80px;"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- FOLDERS -->
+              @for (folder of state.folders(); track folder.documentId) {
+                <tr
+                  [class.table-active]="isSelected(folder)"
+                  class="folder-row"
+                  style="cursor: pointer;">
+                  <td (click)="$event.stopPropagation()">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      [checked]="isSelected(folder)"
+                      (change)="onToggleSelection(folder)">
+                  </td>
+                  <td (click)="onFolderClick(folder)">
+                    <span class="material-symbols-outlined text-primary">
+                      folder
+                    </span>
+                  </td>
+                  <td (click)="onFolderClick(folder)">
+                    <span class="fw-semibold">{{ folder.name }}</span>
+                  </td>
+                  <td (click)="onFolderClick(folder)">
+                    <span class="badge text-warning bg-warning-subtle">
+                      {{ 'mediaLibrary.folder' | translate }}
+                    </span>
+                  </td>
+                  <td (click)="onFolderClick(folder)">
+                    <small class="text-muted">-</small>
+                  </td>
+                  <td (click)="onFolderClick(folder)">
+                    <small class="text-muted">{{ folder.createdAt | date:'short' }}</small>
+                  </td>
+                  <td (click)="$event.stopPropagation()">
+                    <div class="dropdown">
+                      <button
+                        class="btn btn-sm btn-light"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        data-bs-auto-close="true">
+                        <span class="material-symbols-outlined">more_vert</span>
+                      </button>
+                      <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                          <a class="dropdown-item" href="javascript:void(0)" (click)="onEditFolder(folder)">
+                            <span class="material-symbols-outlined me-2">edit</span>
+                            {{ 'mediaLibrary.actions.edit' | translate }}
+                          </a>
+                        </li>
+                        <li>
+                          <a class="dropdown-item" href="javascript:void(0)" (click)="onMoveItem(folder)">
+                            <span class="material-symbols-outlined me-2">drive_file_move</span>
+                            {{ 'mediaLibrary.actions.move' | translate }}
+                          </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                          <a class="dropdown-item text-danger" href="javascript:void(0)" (click)="onDeleteFolder(folder)">
+                            <span class="material-symbols-outlined me-2">delete</span>
+                            {{ 'mediaLibrary.actions.delete' | translate }}
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+              }
+
+            <!-- FILES -->
+              @for (file of state.files(); track file.documentId) {
+                <tr [class.table-active]="isSelected(file)">
+                  <td>
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      [checked]="isSelected(file)"
+                      (change)="onToggleSelection(file)">
+                  </td>
+                  <td>
+      <span class="material-symbols-outlined" [class]="getFileIconClass(file)">
+        {{ getFileIcon(file.mime) }}
+      </span>
+                  </td>
+                  <td>
+                    <a href="javascript:void(0)"
+                       class="text-decoration-none"
+                       (click)="onEditFile(file)">
+                      {{ file.name }}
+                    </a>
+                  </td>
+                  <td>
+      <span class="badge" [class]="getTypeBadgeClass(file)">
+        {{ getTypeBadge(file) }}
+      </span>
+                  </td>
+                  <td>
+                    <small class="text-muted">{{ formatFileSize(file.size) }}</small>
+                  </td>
+                  <td>
+                    <small class="text-muted">{{ file.createdAt | date:'short' }}</small>
+                  </td>
+                  <td>
+                    <div class="dropdown">
+                      <button
+                        class="btn btn-sm btn-light"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        data-bs-auto-close="true">
+                        <span class="material-symbols-outlined">more_vert</span>
+                      </button>
+                      <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                          <a class="dropdown-item" href="javascript:void(0)" (click)="onEditFile(file)">
+                            <span class="material-symbols-outlined me-2">edit</span>
+                            {{ 'mediaLibrary.actions.edit' | translate }}
+                          </a>
+                        </li>
+                        <li>
+                          <a class="dropdown-item" href="javascript:void(0)" (click)="onMoveItem(file)">
+                            <span class="material-symbols-outlined me-2">drive_file_move</span>
+                            {{ 'mediaLibrary.actions.move' | translate }}
+                          </a>
+                        </li>
+                        <li>
+                          <a class="dropdown-item" href="javascript:void(0)" (click)="onDownloadFile(file)">
+                            <span class="material-symbols-outlined me-2">download</span>
+                            {{ 'mediaLibrary.actions.download' | translate }}
+                          </a>
+                        </li>
+                        <li>
+                          <a class="dropdown-item" href="javascript:void(0)" (click)="onCopyLink(file)">
+                            <span class="material-symbols-outlined me-2">link</span>
+                            {{ 'mediaLibrary.actions.copyLink' | translate }}
+                          </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                          <a class="dropdown-item text-danger" href="javascript:void(0)" (click)="onDeleteFile(file)">
+                            <span class="material-symbols-outlined me-2">delete</span>
+                            {{ 'mediaLibrary.actions.delete' | translate }}
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
       </div>
     }
 

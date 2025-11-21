@@ -66,6 +66,8 @@
   <!-- Preview -->
   <div
     class="asset-preview d-flex flex-column align-items-center justify-content-center"
+    [class.p-3]="isAudio() || isVideo()"
+    [class.p-2]="isImage()"
     (click)="assetClick.emit()"
     style="cursor: pointer;">
 
@@ -73,19 +75,18 @@
       <img
         [src]="thumbnailUrl()"
         [alt]="asset().name"
-        class="img-fluid"
-        style="max-height: 160px; object-fit: cover; width: 100%;">
+        class="img-fluid asset-preview-image">
     }
 
     @else if (isAudio()) {
-      <audio controls style="width: 100%; max-width: 250px;" (click)="$event.stopPropagation()">
+      <audio controls class="audio-player" (click)="$event.stopPropagation()">
         <source [src]="fullUrl()" [type]="asset().mime">
         Your browser does not support the audio element.
       </audio>
     }
 
     @else if (isVideo()) {
-      <video controls style="width: 100%; max-height: 160px;" (click)="$event.stopPropagation()">
+      <video controls class="video-player" (click)="$event.stopPropagation()">
         <source [src]="fullUrl()" [type]="asset().mime">
         Your browser does not support the video element.
       </video>
@@ -93,15 +94,15 @@
 
     @else if (isPDF()) {
       <span class="material-symbols-outlined mb-1" style="font-size:40px;">
-            picture_as_pdf
-          </span>
+      picture_as_pdf
+    </span>
       <small class="text-muted">{{ 'mediaLibrary.noPreview' | translate }}</small>
     }
 
     @else {
       <span class="material-symbols-outlined mb-1" style="font-size:40px;">
-            {{ getFileIcon() }}
-          </span>
+      {{ getFileIcon() }}
+    </span>
       <small class="text-muted">{{ 'mediaLibrary.noPreview' | translate }}</small>
     }
   </div>
