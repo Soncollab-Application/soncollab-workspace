@@ -5,7 +5,7 @@ import {MediaFilterBar, MediaFilterField} from './components/media-filter-bar/me
 import {BreadcrumbItem, getBreadcrumbData} from './utils/breadcrumb.utils';
 import {FolderTreeNode, MediaFile, MediaFolder, SortOption} from '../../../core/models/media/media-file.model';
 import {MediaService} from '../../../core/services/media/media.service';
-import {ConfirmDialogService, ToastService} from 'shared-lib';
+import {ConfirmDialogService, DropdownSingleDirective, ToastService} from 'shared-lib';
 import {TranslateModule, TranslateService} from '@ngx-translate/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {environment} from '../../../../environments/environment';
@@ -30,7 +30,8 @@ import {CommonModule} from '@angular/common';
     MediaUploadModal,
     MediaCreateFolderModal,
     MediaEditModal,
-    MediaMoveModal
+    MediaMoveModal,
+    DropdownSingleDirective
   ],
   templateUrl: './media-library.html',
   styleUrls: ['./media-library.css']
@@ -97,7 +98,6 @@ export class MediaLibrary implements OnInit, OnDestroy {
 
   private handleRouteChange(params: any): void {
     const folderId = params['folder'] || null;
-
     this.state.currentPage.set(parseInt(params['page']) || 1);
     this.state.pageSize.set(parseInt(params['pageSize']) || 10);
     this.state.currentSort.set(params['sort'] || 'createdAt:DESC');
@@ -188,6 +188,13 @@ export class MediaLibrary implements OnInit, OnDestroy {
         next: (response) => {
           this.state.files.set(response.data.map(f => ({ ...f, type: 'asset' as const, isSelectable: true })));
           this.state.totalItems.set(response.meta.pagination.total);
+
+          const maxPage = Math.ceil(response.meta.pagination.total / pageSize);
+          if (page > 1 && page > maxPage && response.meta.pagination.total > 0) {
+            this.updateQueryParams({ page: 1 });
+            return;
+          }
+
           this.state.isLoading.set(false);
         },
         error: () => {
@@ -196,8 +203,7 @@ export class MediaLibrary implements OnInit, OnDestroy {
         }
       });
 
-    // Load folders (page 1 TOUJOURS et sans filtres)
-    if (this.state.currentPage() === 1 && !hasAnyFilter) {
+    if (!hasAnyFilter) {
       this.mediaService.getFolders(folderId, sort, search, currentParams)
         .pipe(takeUntil(this.destroy$))
         .subscribe({
@@ -208,6 +214,9 @@ export class MediaLibrary implements OnInit, OnDestroy {
             this.toastService.showError(this.translate.instant('mediaLibrary.errors.loadFolders'));
           }
         });
+    } else {
+      // Si filtres actifs, vider les folders
+      this.state.folders.set([]);
     }
 
     this.updateBreadcrumbs();
@@ -267,8 +276,13 @@ export class MediaLibrary implements OnInit, OnDestroy {
   }
 
   onSortChange(sort: string): void {
+    const currentSort = this.state.currentSort();
     this.state.currentSort.set(sort as SortOption);
-    this.updateQueryParams({ sort, page: 1 });
+    if (currentSort !== sort) {
+      this.updateQueryParams({ sort, page: 1 });
+    } else {
+      this.updateQueryParams({ sort });
+    }
   }
 
   onSearchChange(searchTerm: string): void {
@@ -404,7 +418,12 @@ export class MediaLibrary implements OnInit, OnDestroy {
   }
 
   onUploadComplete(): void {
-    this.loadData();
+    this.refreshCurrentPage();
+  }
+
+  private refreshCurrentPage(): void {
+    const currentParams = this.route.snapshot.queryParams;
+    this.handleRouteChange(currentParams);
   }
 
   // Create Folder
@@ -421,7 +440,7 @@ export class MediaLibrary implements OnInit, OnDestroy {
   }
 
   onFolderCreated(): void {
-    this.loadData();
+    this.refreshCurrentPage();
   }
 
   // Edit
@@ -443,7 +462,7 @@ export class MediaLibrary implements OnInit, OnDestroy {
   }
 
   onEditComplete(): void {
-    this.loadData();
+    this.refreshCurrentPage();
   }
 
   // Move
@@ -463,27 +482,41 @@ export class MediaLibrary implements OnInit, OnDestroy {
       .filter(i => i.type === 'folder')
       .map(i => i.documentId);
 
+    const onlyFiles = folderIdsToMove.length === 0;
+
     this.mediaService.getFolderStructure()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
+          const currentFolder = this.state.currentFolder();
+
+          // Si on déplace uniquement des fichiers, le dossier courant est une destination valide
+          const currentFolderId = onlyFiles ? undefined : currentFolder?.documentId;
+
           const filteredStructure = this.filterInvalidDestinations(
             response.data,
             folderIdsToMove,
-            this.state.currentFolder()?.documentId
+            currentFolderId
           );
 
-          const currentFolder = this.state.currentFolder();
           const structure: FolderTreeNode[] = [];
 
           if (currentFolder !== null) {
+            // On est dans un sous-dossier
             structure.push({
               value: null,
               label: this.translate.instant('mediaLibrary.move.root'),
               children: filteredStructure
             });
-            this.selectedDestinationFolder.set(null);
+
+            // Sélectionner par défaut le dossier courant si on déplace des fichiers
+            if (onlyFiles && currentFolder) {
+              this.selectedDestinationFolder.set(currentFolder.documentId);
+            } else {
+              this.selectedDestinationFolder.set(null);
+            }
           } else {
+            // On est à la racine
             structure.push(...filteredStructure);
             if (filteredStructure.length > 0) {
               this.selectedDestinationFolder.set(filteredStructure[0].value);
@@ -524,7 +557,7 @@ export class MediaLibrary implements OnInit, OnDestroy {
 
   onMoveComplete(): void {
     this.state.clearSelection();
-    this.loadData();
+    this.refreshCurrentPage();
   }
 
   onDestinationChange(destination: string | null): void {
@@ -543,7 +576,7 @@ export class MediaLibrary implements OnInit, OnDestroy {
           this.toastService.showSuccess(
             this.translate.instant('mediaLibrary.success.fileDeleted', { name: file.name })
           );
-          this.loadData();
+          this.refreshCurrentPage();
         },
         error: (error) => {
           this.toastService.showError(
@@ -564,7 +597,7 @@ export class MediaLibrary implements OnInit, OnDestroy {
           this.toastService.showSuccess(
             this.translate.instant('mediaLibrary.success.folderDeleted', { name: folder.name })
           );
-          this.loadData();
+          this.refreshCurrentPage();
         },
         error: (error) => {
           this.toastService.showError(
@@ -601,7 +634,7 @@ export class MediaLibrary implements OnInit, OnDestroy {
             this.translate.instant('mediaLibrary.success.bulkDeleted', { count: successCount })
           );
           this.state.clearSelection();
-          this.loadData();
+          this.refreshCurrentPage();
         },
         error: (error) => {
           this.toastService.showError(

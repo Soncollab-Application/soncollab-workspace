@@ -1,4 +1,4 @@
-import {Component, computed, input, output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, input, output} from '@angular/core';
 import {MediaFile, MediaFolder} from '../../../../../core/models/media/media-file.model';
 import {environment} from '../../../../../../environments/environment';
 import {TranslatePipe} from '@ngx-translate/core';
@@ -8,7 +8,8 @@ import {TranslatePipe} from '@ngx-translate/core';
   standalone: true,
   imports: [TranslatePipe],
   templateUrl: './media-asset-item.html',
-  styleUrl: './media-asset-item.css'
+  styleUrl: './media-asset-item.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MediaAssetItem {
   asset = input.required<MediaFile>();

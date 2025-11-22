@@ -111,7 +111,8 @@
       "alternativeText": "Alternative text",
       "alternativeTextPlaceholder": "Description for accessibility",
       "caption": "Caption",
-      "captionPlaceholder": "Enter a caption"
+      "captionPlaceholder": "Enter a caption",
+      "dimensions": "Dimensions"
     },
 
     "move": {
@@ -121,7 +122,8 @@
       "items": "item(s)",
       "destination": "Destination",
       "itemsList": "Items to move",
-      "move": "Move"
+      "move": "Move",
+      "selectDestination": "Select a destination"
     },
 
     "confirm": {
@@ -170,7 +172,8 @@
     "warnings": {
       "nothingToMove": "Nothing to move",
       "cannotUploadHere": "Cannot upload files here",
-      "cannotCreateFolderHere": "Cannot create folder here"
+      "cannotCreateFolderHere": "Cannot create folder here",
+      "noDestinationsAvailable": "No destinations available. You are already at the root level or all folders are being moved."
     }
   }
 }

@@ -19,8 +19,13 @@
 }
 
 .table .dropdown-menu {
-  position: absolute;
-  z-index: 1050;
+  position: fixed !important;
+  z-index: 99999 !important;
+  margin: 0 !important;
+}
+
+.table th {
+  user-select: none;
 }
 
 /* Sortable headers */
@@ -47,25 +52,3 @@
   vertical-align: middle;
 }
 
-/* Breadcrumb ellipsis */
-.breadcrumb-item span.text-muted {
-  cursor: default;
-  user-select: none;
-}
-
-
-.breadcrumb-item span.text-muted {
-  cursor: default;
-  user-select: none;
-}
-
-.breadcrumb-item a {
-  text-decoration: none;
-  color: var(--fn-primary);
-  transition: color 0.2s ease;
-}
-
-
-.breadcrumb-item.active {
-  font-weight: 500;
-}

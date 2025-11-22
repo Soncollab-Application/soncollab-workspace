@@ -1,13 +1,14 @@
-import {Component, input, output, computed} from '@angular/core';
-import {TranslatePipe} from '@ngx-translate/core';
+import {ChangeDetectionStrategy, Component, computed, input, output} from '@angular/core';
 import {MediaFolder} from '../../../../../core/models/media/media-file.model';
+import {TranslatePipe} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-media-folder-item',
   standalone: true,
   imports: [TranslatePipe],
   templateUrl: './media-folder-item.html',
-  styleUrl: './media-folder-item.css'
+  styleUrl: './media-folder-item.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MediaFolderItem {
   folder = input.required<MediaFolder>();
@@ -22,10 +23,9 @@ export class MediaFolderItem {
   canSelect = computed(() => {
     const folder = this.folder();
 
-    // Ne pas permettre la sélection du dossier users
+    // Vérifier si c'est le dossier users ou un dossier dans users
     if (folder.name === 'users') return false;
 
-    // Vérifier si on est dans le dossier users
     let current: MediaFolder | null | undefined = folder.parent;
     while (current) {
       if (current.name === 'users') return false;
