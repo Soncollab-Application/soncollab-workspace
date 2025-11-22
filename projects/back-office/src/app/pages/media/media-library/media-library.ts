@@ -677,4 +677,35 @@ export class MediaLibrary implements OnInit, OnDestroy {
     return 'text-warning bg-warning-subtle';
   }
 
+  canSelectItem(item: MediaFile | MediaFolder): boolean {
+    return this.state.canSelectItem(item);
+  }
+
+  onTableSort(field: 'name' | 'createdAt'): void {
+    const currentSort = this.state.currentSort();
+    const [currentField, currentDirection] = currentSort.split(':') as [string, 'ASC' | 'DESC'];
+
+    let newSort: SortOption;
+
+    if (currentField === field) {
+      newSort = `${field}:${currentDirection === 'ASC' ? 'DESC' : 'ASC'}` as SortOption;
+    } else {
+      newSort = `${field}:DESC` as SortOption;
+    }
+
+    this.state.currentSort.set(newSort);
+    this.updateQueryParams({ sort: newSort, page: 1 });
+  }
+
+  getSortIcon(field: 'name' | 'createdAt'): string {
+    const currentSort = this.state.currentSort();
+    const [currentField, currentDirection] = currentSort.split(':');
+
+    if (currentField !== field) {
+      return 'unfold_more';
+    }
+
+    return currentDirection === 'ASC' ? 'arrow_upward' : 'arrow_downward';
+  }
+
 }

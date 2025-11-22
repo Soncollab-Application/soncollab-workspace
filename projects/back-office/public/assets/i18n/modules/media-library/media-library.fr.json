@@ -38,9 +38,13 @@
       "title": "Filtres",
       "addFilter": "Ajouter un filtre",
       "add": "Ajouter",
+      "field": "Champ",
+      "operator": "Opérateur",
+      "value": "Valeur",
       "selectField": "Sélectionner un champ",
       "selectOperator": "Sélectionner un opérateur",
       "selectValue": "Sélectionner une valeur",
+      "selectDate": "Sélectionner une date",
       "activeFilters": "Filtres actifs",
       "clearAll": "Tout effacer",
       "alreadyApplied": "Ce filtre est déjà appliqué",
@@ -56,6 +60,8 @@
       "greaterOrEqual": "est supérieur ou égal à",
       "lessThan": "est inférieur à",
       "lessOrEqual": "est inférieur ou égal à",
+      "contains": "contient",
+      "notContains": "ne contient pas",
 
       "image": "Image",
       "video": "Vidéo",
@@ -80,48 +86,46 @@
       "uploadTo": "Téléverser dans",
       "selectFiles": "Sélectionner des fichiers",
       "selectedFiles": "Fichiers sélectionnés",
-      "upload": "Téléverser"
+      "dropZone": "Glissez-déposez des fichiers ici ou cliquez pour sélectionner",
+      "uploading": "Téléversement en cours...",
+      "success": "Fichiers téléversés avec succès",
+      "error": "Erreur lors du téléversement"
     },
 
     "createFolder": {
       "title": "Créer un nouveau dossier",
-      "createIn": "Créer dans",
       "name": "Nom du dossier",
-      "namePlaceholder": "Entrez le nom du dossier",
-      "create": "Créer"
+      "placeholder": "Entrez le nom du dossier",
+      "create": "Créer",
+      "cancel": "Annuler"
     },
 
     "edit": {
-      "fileTitle": "Modifier le fichier",
-      "folderTitle": "Modifier le dossier",
-      "fileName": "Nom du fichier",
-      "folderName": "Nom du dossier",
+      "titleFile": "Modifier le fichier",
+      "titleFolder": "Modifier le dossier",
+      "name": "Nom",
       "alternativeText": "Texte alternatif",
-      "alternativeTextPlaceholder": "Description pour l'accessibilité",
       "caption": "Légende",
-      "captionPlaceholder": "Entrez une légende"
+      "save": "Enregistrer",
+      "cancel": "Annuler"
     },
 
     "move": {
-      "title": "Déplacer les éléments",
-      "root": "Racine",
-      "moving": "Déplacement de",
-      "items": "élément(s)",
+      "title": "Déplacer",
+      "selectDestination": "Sélectionner la destination",
       "destination": "Destination",
-      "itemsList": "Éléments à déplacer",
-      "move": "Déplacer"
+      "move": "Déplacer",
+      "cancel": "Annuler",
+      "root": "Racine"
     },
 
-    "confirm": {
-      "bulkDelete": {
-        "title": "Supprimer les éléments",
-        "message": "Êtes-vous sûr de vouloir supprimer {{count}} élément(s) ? Cette action est irréversible."
-      }
-    },
-
-    "empty": {
-      "title": "Aucun fichier",
-      "message": "Commencez par téléverser des fichiers ou créer un dossier"
+    "delete": {
+      "confirmFile": "Êtes-vous sûr de vouloir supprimer ce fichier ?",
+      "confirmFolder": "Êtes-vous sûr de vouloir supprimer ce dossier ?",
+      "confirmBulk": "Êtes-vous sûr de vouloir supprimer {{count}} élément(s) ?",
+      "title": "Confirmer la suppression",
+      "cancel": "Annuler",
+      "delete": "Supprimer"
     },
 
     "pagination": {
@@ -129,36 +133,33 @@
       "next": "Suivant"
     },
 
-    "success": {
-      "fileUploaded": "Fichier téléversé avec succès",
-      "fileDeleted": "{{name}} supprimé avec succès",
-      "fileUpdated": "Fichier mis à jour avec succès",
-      "folderCreated": "Dossier {{name}} créé avec succès",
-      "folderDeleted": "{{name}} supprimé avec succès",
-      "folderUpdated": "Dossier {{name}} mis à jour avec succès",
-      "itemsMoved": "{{count}} élément(s) déplacé(s) avec succès",
-      "bulkDeleted": "{{count}} élément(s) supprimé(s) avec succès",
-      "linkCopied": "Lien copié dans le presse-papier"
+    "empty": {
+      "title": "Aucun fichier ou dossier",
+      "message": "Téléversez des fichiers ou créez un dossier pour commencer"
+    },
+
+    "warnings": {
+      "cannotUploadHere": "Vous ne pouvez pas téléverser de fichiers dans ce dossier",
+      "cannotCreateFolderHere": "Vous ne pouvez pas créer de dossiers ici"
     },
 
     "errors": {
       "loadFiles": "Erreur lors du chargement des fichiers",
       "loadFolders": "Erreur lors du chargement des dossiers",
-      "uploadFailed": "Erreur lors du téléversement",
-      "deleteFileFailed": "Erreur lors de la suppression : {{message}}",
-      "deleteFolderFailed": "Erreur lors de la suppression : {{message}}",
-      "updateFileFailed": "Erreur lors de la mise à jour : {{message}}",
-      "updateFolderFailed": "Erreur lors de la mise à jour : {{message}}",
-      "createFolderFailed": "Erreur lors de la création : {{message}}",
-      "moveFailed": "Erreur lors du déplacement : {{message}}",
-      "bulkDeleteFailed": "Erreur lors de la suppression : {{message}}",
-      "loadStructure": "Erreur lors du chargement de la structure"
+      "uploadFailed": "Échec du téléversement",
+      "createFolderFailed": "Échec de la création du dossier",
+      "updateFailed": "Échec de la mise à jour",
+      "deleteFailed": "Échec de la suppression",
+      "moveFailed": "Échec du déplacement"
     },
 
-    "warnings": {
-      "nothingToMove": "Aucun élément à déplacer",
-      "cannotUploadHere": "Impossible de téléverser des fichiers ici",
-      "cannotCreateFolderHere": "Impossible de créer un dossier ici"
+    "success": {
+      "uploaded": "Fichier(s) téléversé(s) avec succès",
+      "folderCreated": "Dossier créé avec succès",
+      "updated": "Mis à jour avec succès",
+      "deleted": "Supprimé avec succès",
+      "moved": "Déplacé avec succès",
+      "linkCopied": "Lien copié dans le presse-papiers"
     }
   }
 }

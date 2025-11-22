@@ -39,8 +39,14 @@ export class MediaLibraryState {
 
   hasSelection = computed(() => this.selectedItems().length > 0);
 
+  // Compte les folders et assets séparément
+  selectedFoldersCount = computed(() => this.selectedFolders().length);
+  selectedFilesCount = computed(() => this.selectedFiles().length);
+
   allSelected = computed(() => {
-    const total = this.files().length + this.folders().length;
+    const selectableFolders = this.folders().filter(f => this.canSelectItem(f));
+    const selectableFiles = this.files().filter(f => this.canSelectItem(f));
+    const total = selectableFolders.length + selectableFiles.length;
     return total > 0 && this.selectedItems().length === total;
   });
 
@@ -53,8 +59,8 @@ export class MediaLibraryState {
 
   canUpload = computed(() => {
     const folder = this.currentFolder();
-    if (!folder) return true; // Racine = OK
-    return folder.name !== 'users'; // Pas d'upload dans /users
+    if (!folder) return true;
+    return folder.name !== 'users';
   });
 
   canCreateFolder = computed(() => {
@@ -63,8 +69,50 @@ export class MediaLibraryState {
     return folder.name !== 'users';
   });
 
+  isInUsersFolder = computed(() => {
+    const folder = this.currentFolder();
+    if (!folder) return false;
+
+    let current: MediaFolder | null | undefined = folder;
+    while (current) {
+      if (current.name === 'users') return true;
+      current = current.parent;
+    }
+
+    return false;
+  });
+
+  canSelectItem(item: MediaFile | MediaFolder): boolean {
+    // Si c'est le dossier users lui-même
+    if (item.type === 'folder' && item.name === 'users') return false;
+
+    // Si on est dans le dossier users
+    if (this.isInUsersFolder()) return false;
+
+    // Pour les folders, vérifier si c'est un enfant de users
+    if (item.type === 'folder') {
+      let current: MediaFolder | null | undefined = (item as MediaFolder).parent;
+      while (current) {
+        if (current.name === 'users') return false;
+        current = current.parent;
+      }
+    }
+
+    // Pour les fichiers, vérifier si leur dossier parent est dans users
+    if (item.type === 'asset') {
+      let current: MediaFolder | null | undefined = (item as MediaFile).folder;
+      while (current) {
+        if (current.name === 'users') return false;
+        current = current.parent;
+      }
+    }
+
+    return true;
+  }
+
   // Actions
   toggleSelection(item: MediaFile | MediaFolder) {
+    if (!this.canSelectItem(item)) return;
     const selected = this.selectedItems();
     const exists = selected.find(s => s.documentId === item.documentId && s.type === item.type);
 
@@ -76,7 +124,9 @@ export class MediaLibraryState {
   }
 
   selectAll() {
-    this.selectedItems.set([...this.folders(), ...this.files()]);
+    const selectableFolders = this.folders().filter(f => this.canSelectItem(f));
+    const selectableFiles = this.files().filter(f => this.canSelectItem(f));
+    this.selectedItems.set([...selectableFolders, ...selectableFiles]);
   }
 
   clearSelection() {

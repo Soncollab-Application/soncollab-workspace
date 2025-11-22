@@ -1,16 +1,14 @@
 import {Component, computed, input, output} from '@angular/core';
-import {MediaFile} from '../../../../../core/models/media/media-file.model';
+import {MediaFile, MediaFolder} from '../../../../../core/models/media/media-file.model';
 import {environment} from '../../../../../../environments/environment';
 import {TranslatePipe} from '@ngx-translate/core';
 
-
 @Component({
   selector: 'app-media-asset-item',
-  imports: [
-    TranslatePipe
-  ],
+  standalone: true,
+  imports: [TranslatePipe],
   templateUrl: './media-asset-item.html',
-  styleUrl: './media-asset-item.css',
+  styleUrl: './media-asset-item.css'
 })
 export class MediaAssetItem {
   asset = input.required<MediaFile>();
@@ -23,6 +21,19 @@ export class MediaAssetItem {
   deleteClick = output<void>();
   downloadClick = output<void>();
   copyLinkClick = output<void>();
+
+  canSelect = computed(() => {
+    const asset = this.asset();
+
+    // Vérifier si le fichier est dans le dossier users
+    let current: MediaFolder | null | undefined = asset.folder;
+    while (current) {
+      if (current.name === 'users') return false;
+      current = current.parent;
+    }
+
+    return true;
+  });
 
   isImage = computed(() => this.asset().mime.startsWith('image/'));
   isAudio = computed(() => this.asset().mime.startsWith('audio/'));
@@ -61,5 +72,16 @@ export class MediaAssetItem {
     if (mime.includes('sheet') || mime.includes('excel')) return 'XLS';
     if (mime.includes('presentation') || mime.includes('powerpoint')) return 'PPT';
     return 'FILE';
+  }
+
+  formatFileSize(): string {
+    const bytes = this.asset().size;
+    if (bytes === 0) return '0 B';
+
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+    return `${(bytes / Math.pow(k, i)).toFixed(1)} ${sizes[i]}`;
   }
 }

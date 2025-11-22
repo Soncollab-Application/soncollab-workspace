@@ -7,54 +7,48 @@
   pointer-events: none;
 }
 
-
+/* Table responsive avec scroll horizontal uniquement */
 .table-responsive {
-  overflow: visible !important;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
-.dropdown.position-static {
-  position: static !important;
+/* Permettre aux dropdowns de sortir de la table */
+.table .dropdown {
+  position: static;
 }
 
-.table tbody tr td .dropdown-menu {
-  position: fixed !important;
+.table .dropdown-menu {
+  position: absolute;
   z-index: 1050;
 }
 
-.table tbody tr td {
-  position: relative;
-  overflow: visible;
-}
-
-/* Table hover improvements */
-.table-hover tbody tr {
+/* Sortable headers */
+.sortable-header {
   cursor: pointer;
+  user-select: none;
   transition: background-color 0.15s ease-in-out;
 }
 
-.table-hover tbody tr.table-active {
-  background-color: rgba(var(--fn-primary-rgb), 0.1);
+.sortable-header:hover {
+  background-color: rgba(0, 0, 0, 0.025);
 }
 
-.table-hover tbody tr:hover {
-  background-color: rgba(var(--fn-secondary-rgb), 0.05);
+.sortable-header .sort-icon {
+  font-size: 18px;
+  transition: color 0.2s ease;
 }
 
-/* Breadcrumb styling */
-.breadcrumb-item a {
-  text-decoration: none;
+.sortable-header:hover .sort-icon {
   color: var(--fn-primary);
 }
 
-.breadcrumb-item a:hover {
-  text-decoration: underline;
+.sortable-header .material-symbols-outlined {
+  vertical-align: middle;
 }
 
-/* Pagination styling */
-.pagination {
-  margin-bottom: 0;
-}
-
-.page-link {
-  cursor: pointer;
+/* Breadcrumb ellipsis */
+.breadcrumb-item span.text-muted {
+  cursor: default;
+  user-select: none;
 }

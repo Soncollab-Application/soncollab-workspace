@@ -2,10 +2,10 @@
 
   <!-- Colonne gauche : checkbox + select + filters -->
   <div class="col">
-    <div class="d-flex align-items-center mb-2">
+    <div class="d-flex align-items-center mb-2 flex-wrap gap-2">
 
-      <!-- Checkbox select all -->
-      <div class="border rounded checkbox-wrapper me-2 p-1">
+      <!-- Checkbox select all - Desktop uniquement -->
+      <div class="border rounded checkbox-wrapper p-1 d-none d-md-flex">
         <input
           class="form-check-input"
           type="checkbox"
@@ -14,119 +14,42 @@
           (change)="selectAllChange.emit()">
       </div>
 
-      <!-- Select de tri -->
-      <div class="me-2">
-        <select
-          class="form-select"
-          [value]="currentSort()"
-          (change)="sortChange.emit($any($event.target).value)">
-          <option value="createdAt:DESC">{{ 'mediaLibrary.sort.newest' | translate }}</option>
-          <option value="createdAt:ASC">{{ 'mediaLibrary.sort.oldest' | translate }}</option>
-          <option value="name:ASC">{{ 'mediaLibrary.sort.nameAsc' | translate }}</option>
-          <option value="name:DESC">{{ 'mediaLibrary.sort.nameDesc' | translate }}</option>
-          <option value="updatedAt:DESC">{{ 'mediaLibrary.sort.recentlyUpdated' | translate }}</option>
-          <option value="updatedAt:ASC">{{ 'mediaLibrary.sort.oldestUpdated' | translate }}</option>
-        </select>
+      <!-- Sort avec lib-choice - Plus large -->
+      <div class="flex-grow-1 flex-md-grow-0 sort-select">
+        <lib-choice
+          type="select-one"
+          [options]="sortOptions()"
+          [config]="sortChoiceConfig()"
+          cssClass="form-select"
+          (valueChange)="sortChange.emit($event)"
+        />
       </div>
 
-      <!-- Dropdown Filters avancés -->
-      <div class="dropdown">
-        <button
-          class="btn btn-light d-flex align-items-center"
-          type="button"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-          (click)="$event.stopPropagation()">
-          <span class="material-symbols-outlined me-1" style="font-size:18px;">add</span>
-          {{ 'mediaLibrary.filters.title' | translate }}
-          @if (appliedFilters().length > 0) {
-            <span class="badge bg-primary ms-2">{{ appliedFilters().length }}</span>
-          }
-        </button>
-
-        <div class="dropdown-menu dropdown-menu-end rounded-3 p-3" style="width: 400px;" (click)="$event.stopPropagation()">
-          <h6 class="mb-3">{{ 'mediaLibrary.filters.addFilter' | translate }}</h6>
-
-          <!-- Select Field -->
-          <select
-            class="form-select form-select-sm mb-2"
-            [value]="selectedField()"
-            (change)="onFieldChange($any($event.target).value)">
-            <option [value]="null">{{ 'mediaLibrary.filters.selectField' | translate }}</option>
-            <option value="createdAt">{{ 'mediaLibrary.filters.createdAt' | translate }}</option>
-            <option value="updatedAt">{{ 'mediaLibrary.filters.updatedAt' | translate }}</option>
-            <option value="mime">{{ 'mediaLibrary.filters.type' | translate }}</option>
-          </select>
-
-          @if (selectedField()) {
-            <!-- Select Operator -->
-            <select
-              class="form-select form-select-sm mb-2"
-              [value]="selectedOperator()"
-              (change)="onOperatorChange($any($event.target).value)">
-              <option [value]="null">{{ 'mediaLibrary.filters.selectOperator' | translate }}</option>
-
-              @if (selectedField() === 'createdAt' || selectedField() === 'updatedAt') {
-                <option value="$eq">{{ 'mediaLibrary.filters.is' | translate }}</option>
-                <option value="$ne">{{ 'mediaLibrary.filters.isNot' | translate }}</option>
-                <option value="$gt">{{ 'mediaLibrary.filters.greaterThan' | translate }}</option>
-                <option value="$gte">{{ 'mediaLibrary.filters.greaterOrEqual' | translate }}</option>
-                <option value="$lt">{{ 'mediaLibrary.filters.lessThan' | translate }}</option>
-                <option value="$lte">{{ 'mediaLibrary.filters.lessOrEqual' | translate }}</option>
-              }
-
-              @if (selectedField() === 'mime') {
-                <option value="$contains">{{ 'mediaLibrary.filters.is' | translate }}</option>
-                <option value="$notContains">{{ 'mediaLibrary.filters.isNot' | translate }}</option>
-              }
-            </select>
-
-            @if (selectedOperator()) {
-              <!-- Select Value -->
-              @if (selectedField() === 'createdAt' || selectedField() === 'updatedAt') {
-                <input
-                  type="date"
-                  class="form-control form-control-sm mb-2"
-                  [value]="selectedValue()"
-                  (change)="onValueChange($any($event.target).value)">
-              }
-
-              @if (selectedField() === 'mime') {
-                <select
-                  class="form-select form-select-sm mb-2"
-                  [value]="selectedValue()"
-                  (change)="onValueChange($any($event.target).value)">
-                  <option [value]="null">{{ 'mediaLibrary.filters.selectValue' | translate }}</option>
-                  <option value="audio">{{ 'mediaLibrary.filters.audio' | translate }}</option>
-                  <option value="file">{{ 'mediaLibrary.filters.file' | translate }}</option>
-                  <option value="image">{{ 'mediaLibrary.filters.image' | translate }}</option>
-                  <option value="video">{{ 'mediaLibrary.filters.video' | translate }}</option>
-                </select>
-              }
-
-              <button
-                class="btn btn-primary btn-sm w-100"
-                [disabled]="!canAddFilter()"
-                (click)="addFilterClick.emit()">
-                <span class="material-symbols-outlined me-1" style="font-size:16px;">add</span>
-                {{ 'mediaLibrary.filters.add' | translate }}
-              </button>
-            }
-          }
-        </div>
-      </div>
+      <!-- Button Filters avancés - Style Bootstrap -->
+      <button
+        class="btn btn-outline-secondary d-flex align-items-center gap-2"
+        type="button"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#filterOffcanvas"
+        aria-controls="filterOffcanvas">
+        <span class="material-symbols-outlined" style="font-size:18px;">tune</span>
+        <span class="d-none d-md-inline">{{ 'mediaLibrary.filters.title' | translate }}</span>
+        @if (appliedFilters().length > 0) {
+          <span class="badge bg-primary rounded-pill">{{ appliedFilters().length }}</span>
+        }
+      </button>
 
     </div>
 
     <!-- Applied Filters Tags -->
     @if (appliedFilters().length > 0) {
-      <div class="d-flex gap-2 flex-wrap align-items-center mt-4 mb-2">
-        <small class="text-muted">{{ 'mediaLibrary.filters.activeFilters' | translate }}:</small>
+      <div class="d-flex gap-2 flex-wrap align-items-center mt-3 mb-2">
+        <small class="text-muted d-none d-md-inline">{{ 'mediaLibrary.filters.activeFilters' | translate }}:</small>
 
         @for (filter of appliedFilters(); track $index) {
-          <button type="button" class="btn btn-sm bg-primary" (click)="removeFilterClick.emit($index)">
-            <i class="fi-close fs-sm ms-n1 me-1"></i>
-            {{ getFilterLabel(filter) }}
+          <button type="button" class="btn btn-sm btn-primary d-flex align-items-center gap-1" (click)="removeFilterClick.emit($index)">
+            <span class="material-symbols-outlined" style="font-size: 16px;">close</span>
+            <span class="filter-label">{{ getFilterLabel(filter) }}</span>
           </button>
         }
 
@@ -141,25 +64,29 @@
 
   <!-- Colonne droite : vues + search -->
   <div class="col">
-    <div class="d-flex align-items-center justify-content-end mb-2">
+    <div class="d-flex align-items-center justify-content-end mb-2 gap-2">
 
-      <button
-        type="button"
-        class="btn btn-icon border me-2"
-        [class.active]="viewMode() === 'list'"
-        (click)="viewModeChange.emit('list')">
-        <span class="material-symbols-outlined">list</span>
-      </button>
+      <!-- View buttons - Desktop uniquement -->
+      <div class="d-none d-md-flex gap-2">
+        <button
+          type="button"
+          class="btn btn-icon border"
+          [class.active]="viewMode() === 'list'"
+          (click)="viewModeChange.emit('list')">
+          <span class="material-symbols-outlined">list</span>
+        </button>
 
-      <button
-        type="button"
-        class="btn btn-icon border me-2"
-        [class.active]="viewMode() === 'grid'"
-        (click)="viewModeChange.emit('grid')">
-        <span class="material-symbols-outlined">grid_view</span>
-      </button>
+        <button
+          type="button"
+          class="btn btn-icon border"
+          [class.active]="viewMode() === 'grid'"
+          (click)="viewModeChange.emit('grid')">
+          <span class="material-symbols-outlined">grid_view</span>
+        </button>
+      </div>
 
-      <div class="position-relative">
+      <!-- Search -->
+      <div class="position-relative flex-grow-1">
         <input
           type="search"
           class="form-control"
@@ -173,15 +100,123 @@
             class="material-symbols-outlined position-absolute top-50 end-0 translate-middle-y me-2"
             style="cursor: pointer;"
             (click)="clearSearchClick.emit()">
-                close
-              </span>
+            close
+          </span>
         } @else {
           <span class="material-symbols-outlined position-absolute top-50 end-0 translate-middle-y me-2">
-                search
-              </span>
+            search
+          </span>
         }
       </div>
 
+      <!-- View buttons - Mobile (dropdown) -->
+      <div class="dropdown d-md-none">
+        <button
+          class="btn btn-icon border"
+          type="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false">
+          <span class="material-symbols-outlined">
+            {{ viewMode() === 'grid' ? 'grid_view' : 'list' }}
+          </span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li>
+            <a class="dropdown-item" href="javascript:void(0)" (click)="viewModeChange.emit('grid')">
+              <span class="material-symbols-outlined me-2">grid_view</span>
+              Grid
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="javascript:void(0)" (click)="viewModeChange.emit('list')">
+              <span class="material-symbols-outlined me-2">list</span>
+              List
+            </a>
+          </li>
+        </ul>
+      </div>
+
     </div>
+  </div>
+</div>
+
+<!-- Offcanvas Filters - Style Bootstrap -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="filterOffcanvas" aria-labelledby="filterOffcanvasLabel">
+  <div class="offcanvas-header border-bottom">
+    <h5 class="offcanvas-title" id="filterOffcanvasLabel">
+      <span class="material-symbols-outlined me-2 align-middle">tune</span>
+      {{ 'mediaLibrary.filters.addFilter' | translate }}
+    </h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+
+    <!-- Select Field avec lib-choice -->
+    <div class="mb-3">
+      <label class="form-label fw-semibold">{{ 'mediaLibrary.filters.field' | translate }}</label>
+      <lib-choice
+        type="select-one"
+        [options]="fieldOptions()"
+        [config]="filterChoiceConfig()"
+        cssClass="form-select"
+        [placeholder]="'mediaLibrary.filters.selectField' | translate"
+        (valueChange)="fieldChange.emit($event)"
+      />
+    </div>
+
+    @if (selectedField()) {
+      <!-- Select Operator avec lib-choice -->
+      <div class="mb-3">
+        <label class="form-label fw-semibold">{{ 'mediaLibrary.filters.operator' | translate }}</label>
+        <lib-choice
+          type="select-one"
+          [options]="selectedField() === 'mime' ? mimeOperatorOptions() : dateOperatorOptions()"
+          [config]="filterChoiceConfig()"
+          cssClass="form-select"
+          [placeholder]="'mediaLibrary.filters.selectOperator' | translate"
+          (valueChange)="operatorChange.emit($event)"
+        />
+      </div>
+
+      @if (selectedOperator()) {
+        <!-- Select Value -->
+        @if (selectedField() === 'createdAt' || selectedField() === 'updatedAt') {
+          <div class="mb-3">
+            <label class="form-label fw-semibold">{{ 'mediaLibrary.filters.value' | translate }}</label>
+            <lib-datepicker
+              mode="date"
+              [placeholder]="'mediaLibrary.filters.selectDate' | translate"
+              icon="material-symbols-outlined calendar_month"
+              (valueChange)="onDateChange($any($event))"
+            />
+          </div>
+        }
+
+        @if (selectedField() === 'mime') {
+          <div class="mb-3">
+            <label class="form-label fw-semibold">{{ 'mediaLibrary.filters.value' | translate }}</label>
+            <lib-choice
+              type="select-one"
+              [options]="mimeTypeOptions()"
+              [config]="filterChoiceConfig()"
+              cssClass="form-select"
+              [placeholder]="'mediaLibrary.filters.selectValue' | translate"
+              (valueChange)="valueChange.emit($event)"
+            />
+          </div>
+        }
+
+        <div class="d-grid gap-2">
+          <button
+            class="btn btn-primary"
+            [disabled]="!canAddFilter()"
+            data-bs-dismiss="offcanvas"
+            (click)="addFilterClick.emit()">
+            <span class="material-symbols-outlined me-2" style="font-size:18px;">add</span>
+            {{ 'mediaLibrary.filters.add' | translate }}
+          </button>
+        </div>
+      }
+    }
   </div>
 </div>
