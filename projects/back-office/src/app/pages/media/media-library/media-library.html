@@ -153,7 +153,9 @@
         </div>
       }
 
+    @if (state.folders().length > 0 && state.files().length > 0) {
       <hr class="my-5">
+    }
 
       <!-- Section Assets -->
       @if (state.files().length > 0) {
@@ -188,11 +190,11 @@
     <!-- ==================== LIST VIEW ==================== -->
     @if (state.viewMode() === 'list') {
       <div class="mt-4">
-        <div class="table-responsive">
-          <table class="table table-hover align-middle">
+        <div class="table-responsive card">
+          <table class="table table-hover align-middle mb-0">
             <thead>
             <tr>
-              <th style="width: 40px;">
+              <th style="width: 40px;" class="text-center">
                 @if (!state.isInUsersFolder()) {
                   <input
                     class="form-check-input"
@@ -203,21 +205,39 @@
                 }
               </th>
               <th style="width: 60px;"></th>
-              <th>{{ 'mediaLibrary.table.name' | translate }}</th>
+
+              <!-- Name - Sortable -->
+              <th class="sortable-header" (click)="onTableSort('name')">
+                <div class="d-flex align-items-center gap-2">
+                  <span>{{ 'mediaLibrary.table.name' | translate }}</span>
+                  <span class="material-symbols-outlined sort-icon">
+                {{ getSortIcon('name') }}
+              </span>
+                </div>
+              </th>
+
               <th style="width: 120px;">{{ 'mediaLibrary.table.type' | translate }}</th>
               <th style="width: 100px;">{{ 'mediaLibrary.table.size' | translate }}</th>
-              <th style="width: 150px;">{{ 'mediaLibrary.table.createdAt' | translate }}</th>
+
+              <!-- CreatedAt - Sortable -->
+              <th style="width: 150px;" class="sortable-header" (click)="onTableSort('createdAt')">
+                <div class="d-flex align-items-center gap-2">
+                  <span>{{ 'mediaLibrary.table.createdAt' | translate }}</span>
+                  <span class="material-symbols-outlined sort-icon">
+                {{ getSortIcon('createdAt') }}
+              </span>
+                </div>
+              </th>
+
               <th style="width: 80px;"></th>
             </tr>
             </thead>
             <tbody>
+
             <!-- FOLDERS -->
               @for (folder of state.folders(); track folder.documentId) {
-                <tr
-                  [class.table-active]="isSelected(folder)"
-                  class="folder-row"
-                  style="cursor: pointer;">
-                  <td (click)="$event.stopPropagation()">
+                <tr [class.table-active]="isSelected(folder)">
+                  <td class="text-center" (click)="$event.stopPropagation()">
                     @if (canSelectItem(folder)) {
                       <input
                         class="form-check-input"
@@ -226,33 +246,29 @@
                         (change)="onToggleSelection(folder)">
                     }
                   </td>
-                  <td (click)="onFolderClick(folder)">
-                    <span class="material-symbols-outlined text-primary">
-                      folder
-                    </span>
+                  <td (click)="onFolderClick(folder)" style="cursor: pointer;">
+                    <span class="material-symbols-outlined text-primary">folder</span>
                   </td>
-                  <td (click)="onFolderClick(folder)">
+                  <td (click)="onFolderClick(folder)" style="cursor: pointer;">
                     <span class="fw-semibold">{{ folder.name }}</span>
                   </td>
-                  <td (click)="onFolderClick(folder)">
-                    <span class="badge text-warning bg-warning-subtle">
-                      {{ 'mediaLibrary.folder' | translate }}
-                    </span>
+                  <td (click)="onFolderClick(folder)" style="cursor: pointer;">
+                    <span class="badge text-bg-warning">{{ 'mediaLibrary.folder' | translate }}</span>
                   </td>
-                  <td (click)="onFolderClick(folder)">
+                  <td (click)="onFolderClick(folder)" style="cursor: pointer;">
                     <small class="text-muted">-</small>
                   </td>
-                  <td (click)="onFolderClick(folder)">
+                  <td (click)="onFolderClick(folder)" style="cursor: pointer;">
                     <small class="text-muted">{{ folder.createdAt | date:'short' }}</small>
                   </td>
                   <td (click)="$event.stopPropagation()">
                     @if (canSelectItem(folder)) {
                       <div class="dropdown">
                         <button
-                          class="btn btn-sm btn-light"
+                          class="btn btn-sm btn-light border"
                           type="button"
                           data-bs-toggle="dropdown"
-                          data-bs-auto-close="true">
+                          aria-expanded="false">
                           <span class="material-symbols-outlined">more_vert</span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
@@ -285,7 +301,7 @@
             <!-- FILES -->
               @for (file of state.files(); track file.documentId) {
                 <tr [class.table-active]="isSelected(file)">
-                  <td>
+                  <td class="text-center">
                     @if (canSelectItem(file)) {
                       <input
                         class="form-check-input"
@@ -294,10 +310,10 @@
                         (change)="onToggleSelection(file)">
                     }
                   </td>
-                    <td>
-                      <span class="material-symbols-outlined" [class]="getFileIconClass(file)">
-                        {{ getFileIcon(file.mime) }}
-                      </span>
+                  <td>
+              <span class="material-symbols-outlined" [class]="getFileIconClass(file)">
+                {{ getFileIcon(file.mime) }}
+              </span>
                   </td>
                   <td>
                     <a href="javascript:void(0)"
@@ -307,59 +323,61 @@
                     </a>
                   </td>
                   <td>
-                    <span class="badge" [class]="getTypeBadgeClass(file)">
-                      {{ getTypeBadge(file) }}
-                    </span>
+              <span class="badge" [class]="getTypeBadgeClass(file)">
+                {{ getTypeBadge(file) }}
+              </span>
                   </td>
                   <td>
-                    <small class="text-muted">{{ formatFileSize(file.size) }}</small>
+                    <small class="text-body-secondary">{{ formatFileSize(file.size) }}</small>
                   </td>
                   <td>
-                    <small class="text-muted">{{ file.createdAt | date:'short' }}</small>
+                    <small class="text-body-secondary">{{ file.createdAt | date:'short' }}</small>
                   </td>
                   <td>
-                    <div class="dropdown">
-                      <button
-                        class="btn btn-sm btn-light"
-                        type="button"
-                        data-bs-toggle="dropdown"
-                        data-bs-auto-close="true">
-                        <span class="material-symbols-outlined">more_vert</span>
-                      </button>
-                      <ul class="dropdown-menu dropdown-menu-end">
-                        <li>
-                          <a class="dropdown-item" href="javascript:void(0)" (click)="onEditFile(file)">
-                            <span class="material-symbols-outlined me-2">edit</span>
-                            {{ 'mediaLibrary.actions.edit' | translate }}
-                          </a>
-                        </li>
-                        <li>
-                          <a class="dropdown-item" href="javascript:void(0)" (click)="onMoveItem(file)">
-                            <span class="material-symbols-outlined me-2">drive_file_move</span>
-                            {{ 'mediaLibrary.actions.move' | translate }}
-                          </a>
-                        </li>
-                        <li>
-                          <a class="dropdown-item" href="javascript:void(0)" (click)="onDownloadFile(file)">
-                            <span class="material-symbols-outlined me-2">download</span>
-                            {{ 'mediaLibrary.actions.download' | translate }}
-                          </a>
-                        </li>
-                        <li>
-                          <a class="dropdown-item" href="javascript:void(0)" (click)="onCopyLink(file)">
-                            <span class="material-symbols-outlined me-2">link</span>
-                            {{ 'mediaLibrary.actions.copyLink' | translate }}
-                          </a>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li>
-                          <a class="dropdown-item text-danger" href="javascript:void(0)" (click)="onDeleteFile(file)">
-                            <span class="material-symbols-outlined me-2">delete</span>
-                            {{ 'mediaLibrary.actions.delete' | translate }}
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
+                    @if (canSelectItem(file)) {
+                      <div class="dropdown">
+                        <button
+                          class="btn btn-sm btn-light border"
+                          type="button"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false">
+                          <span class="material-symbols-outlined">more_vert</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                          <li>
+                            <a class="dropdown-item" href="javascript:void(0)" (click)="onEditFile(file)">
+                              <span class="material-symbols-outlined me-2">edit</span>
+                              {{ 'mediaLibrary.actions.edit' | translate }}
+                            </a>
+                          </li>
+                          <li>
+                            <a class="dropdown-item" href="javascript:void(0)" (click)="onDownloadFile(file)">
+                              <span class="material-symbols-outlined me-2">download</span>
+                              {{ 'mediaLibrary.actions.download' | translate }}
+                            </a>
+                          </li>
+                          <li>
+                            <a class="dropdown-item" href="javascript:void(0)" (click)="onCopyLink(file)">
+                              <span class="material-symbols-outlined me-2">link</span>
+                              {{ 'mediaLibrary.actions.copyLink' | translate }}
+                            </a>
+                          </li>
+                          <li>
+                            <a class="dropdown-item" href="javascript:void(0)" (click)="onMoveItem(file)">
+                              <span class="material-symbols-outlined me-2">drive_file_move</span>
+                              {{ 'mediaLibrary.actions.move' | translate }}
+                            </a>
+                          </li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li>
+                            <a class="dropdown-item text-danger" href="javascript:void(0)" (click)="onDeleteFile(file)">
+                              <span class="material-symbols-outlined me-2">delete</span>
+                              {{ 'mediaLibrary.actions.delete' | translate }}
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    }
                   </td>
                 </tr>
               }

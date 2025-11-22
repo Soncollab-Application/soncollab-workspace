@@ -1,10 +1,10 @@
 <div class="card p-3 file-card" [class.selected]="isSelected()">
-  <div class="d-flex align-items-center justify-content-between">
+  <div class="d-flex align-items-center justify-content-between gap-2">
 
-    <div class="d-flex align-items-center flex-grow-1" style="cursor: pointer;" (click)="folderClick.emit()">
+    <div class="d-flex align-items-center flex-grow-1 min-w-0" style="cursor: pointer;" (click)="folderClick.emit()">
 
       @if (canSelect()) {
-        <div class="form-check me-2 mb-0" (click)="$event.stopPropagation()">
+        <div class="form-check me-2 mb-0 flex-shrink-0" (click)="$event.stopPropagation()">
           <input
             class="form-check-input"
             type="checkbox"
@@ -12,14 +12,14 @@
             (change)="toggleSelection.emit()">
         </div>
       } @else {
-        <div class="me-2" style="width: 20px;"></div>
+        <div class="me-2 flex-shrink-0" style="width: 20px;"></div>
       }
 
-      <span class="material-symbols-outlined text-primary fs-3 me-2">folder</span>
+      <span class="material-symbols-outlined text-primary fs-3 me-2 flex-shrink-0">folder</span>
 
-      <div>
-        <div class="fw-semibold">{{ folder().name }}</div>
-        <small class="text-muted">
+      <div class="min-w-0 flex-grow-1">
+        <div class="fw-semibold text-truncate" [title]="folder().name">{{ folder().name }}</div>
+        <small class="text-muted text-truncate d-block">
           {{ getFolderStats() }}
         </small>
       </div>
@@ -27,7 +27,7 @@
 
     <!-- Actions -->
     @if (canSelect()) {
-      <div class="dropdown" (click)="$event.stopPropagation()">
+      <div class="dropdown flex-shrink-0" (click)="$event.stopPropagation()">
         <button class="btn btn-sm btn-light border edit-btn" data-bs-toggle="dropdown">
           <span class="material-symbols-outlined">more_vert</span>
         </button>
