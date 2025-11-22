@@ -1,13 +1,16 @@
-import {Component, inject, input, output, signal} from '@angular/core';
+import {Component, computed, effect, inject, input, output, signal, viewChild} from '@angular/core';
+import {TranslatePipe, TranslateService} from '@ngx-translate/core';
 import {Subject, takeUntil} from 'rxjs';
 import {MediaService} from '../../../../../core/services/media/media.service';
-import {ToastService} from 'shared-lib';
-import {TranslatePipe, TranslateService} from '@ngx-translate/core';
+import {Choice, ChoiceOption, ToastService} from 'shared-lib';
 import {FolderTreeNode, MediaFile, MediaFolder} from '../../../../../core/models/media/media-file.model';
 
 @Component({
   selector: 'app-media-move-modal',
-  imports: [TranslatePipe],
+  imports: [
+    TranslatePipe,
+    Choice
+  ],
   templateUrl: './media-move-modal.html',
   styleUrl: './media-move-modal.css',
 })
@@ -28,21 +31,67 @@ export class MediaMoveModal {
 
   isMoving = signal(false);
 
+  choiceRef = viewChild<Choice>(Choice);
+
+  hasDestinations = computed(() => {
+    const structure = this.folderStructure();
+    return structure.length > 0;
+  });
+
+  destinationOptions = computed<ChoiceOption[]>(() => {
+    const structure = this.folderStructure();
+    const options: ChoiceOption[] = [];
+    const selectedValue = this.selectedDestination();
+
+    const buildOptions = (nodes: FolderTreeNode[], level = 0): void => {
+      for (const node of nodes) {
+        // Indentation visuelle avec des espaces insécables
+        const indent = level > 0 ? '\u00A0\u00A0'.repeat(level) + '└─ ' : '';
+
+        options.push({
+          value: node.value ?? '',
+          label: indent + node.label,
+          selected: (node.value ?? '') === (selectedValue ?? '')
+        });
+
+        if (node.children && node.children.length > 0) {
+          buildOptions(node.children, level + 1);
+        }
+      }
+    };
+
+    buildOptions(structure);
+    return options;
+  });
+
+  constructor() {
+    // Sync la valeur sélectionnée avec le Choice component
+    effect(() => {
+      const destination = this.selectedDestination();
+      const choice = this.choiceRef();
+      if (choice && this.show() && this.hasDestinations()) {
+        // Petit délai pour que le Choice soit initialisé
+        setTimeout(() => {
+          choice.writeValue(destination ?? '');
+        }, 100);
+      }
+    });
+  }
+
   onDestinationChange(value: string): void {
-    const destination = value === 'null' ? null : value;
-    this.destinationChange.emit(destination);
+    this.destinationChange.emit(value || null);
   }
 
   move(): void {
+    const destination = this.selectedDestination();
     const items = this.itemsToMove();
-    const destinationFolderId = this.selectedDestination();
 
     if (items.length === 0) {
-      this.toastService.showWarning(
-        this.translate.instant('mediaLibrary.warnings.nothingToMove')
-      );
+      this.toastService.showWarning(this.translate.instant('mediaLibrary.warnings.nothingToMove'));
       return;
     }
+
+    this.isMoving.set(true);
 
     const fileIds = items
       .filter(item => item.type === 'asset')
@@ -52,24 +101,16 @@ export class MediaMoveModal {
       .filter(item => item.type === 'folder')
       .map(item => item.documentId);
 
-    this.isMoving.set(true);
-
-    const moveRequest: any = {
+    this.mediaService.bulkMove({
       fileIds,
-      folderIds
-    };
-
-    if (destinationFolderId !== null) {
-      moveRequest.destinationFolderId = destinationFolderId;
-    }
-
-    this.mediaService.bulkMove(moveRequest)
+      folderIds,
+      destinationFolderId: destination || undefined
+    })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (response) => {
-          const successCount = response.data.success.length;
+        next: () => {
           this.toastService.showSuccess(
-            this.translate.instant('mediaLibrary.success.itemsMoved', { count: successCount })
+            this.translate.instant('mediaLibrary.success.itemsMoved', { count: items.length })
           );
           this.isMoving.set(false);
           this.moveComplete.emit();

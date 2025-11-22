@@ -5,7 +5,7 @@ import {MediaFilterBar, MediaFilterField} from './components/media-filter-bar/me
 import {BreadcrumbItem, getBreadcrumbData} from './utils/breadcrumb.utils';
 import {FolderTreeNode, MediaFile, MediaFolder, SortOption} from '../../../core/models/media/media-file.model';
 import {MediaService} from '../../../core/services/media/media.service';
-import {ConfirmDialogService, ToastService} from 'shared-lib';
+import {ConfirmDialogService, DropdownSingleDirective, ToastService} from 'shared-lib';
 import {TranslateModule, TranslateService} from '@ngx-translate/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {environment} from '../../../../environments/environment';
@@ -30,7 +30,8 @@ import {CommonModule} from '@angular/common';
     MediaUploadModal,
     MediaCreateFolderModal,
     MediaEditModal,
-    MediaMoveModal
+    MediaMoveModal,
+    DropdownSingleDirective
   ],
   templateUrl: './media-library.html',
   styleUrls: ['./media-library.css']
@@ -463,27 +464,41 @@ export class MediaLibrary implements OnInit, OnDestroy {
       .filter(i => i.type === 'folder')
       .map(i => i.documentId);
 
+    const onlyFiles = folderIdsToMove.length === 0;
+
     this.mediaService.getFolderStructure()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
+          const currentFolder = this.state.currentFolder();
+
+          // Si on déplace uniquement des fichiers, le dossier courant est une destination valide
+          const currentFolderId = onlyFiles ? undefined : currentFolder?.documentId;
+
           const filteredStructure = this.filterInvalidDestinations(
             response.data,
             folderIdsToMove,
-            this.state.currentFolder()?.documentId
+            currentFolderId
           );
 
-          const currentFolder = this.state.currentFolder();
           const structure: FolderTreeNode[] = [];
 
           if (currentFolder !== null) {
+            // On est dans un sous-dossier
             structure.push({
               value: null,
               label: this.translate.instant('mediaLibrary.move.root'),
               children: filteredStructure
             });
-            this.selectedDestinationFolder.set(null);
+
+            // Sélectionner par défaut le dossier courant si on déplace des fichiers
+            if (onlyFiles && currentFolder) {
+              this.selectedDestinationFolder.set(currentFolder.documentId);
+            } else {
+              this.selectedDestinationFolder.set(null);
+            }
           } else {
+            // On est à la racine
             structure.push(...filteredStructure);
             if (filteredStructure.length > 0) {
               this.selectedDestinationFolder.set(filteredStructure[0].value);

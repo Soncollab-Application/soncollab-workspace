@@ -1,8 +1,8 @@
-<div class="media-library-container" [class.loading]="state.isLoading()">
+<div class="media-library-container mt-4" [class.loading]="state.isLoading()">
 
 
   <!-- ==================== BREADCRUMB ==================== -->
-  <div class="d-flex justify-content-between align-items-center mb-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb mb-0">
         @for (item of breadcrumbs(); track item.id) {
@@ -26,7 +26,7 @@
     </nav>
 
     <!-- Actions principales -->
-    <div class="d-flex gap-2">
+    <div class="d-flex gap-2 mt-sm-3">
       @if (state.canUpload()) {
         <button
           type="button"
@@ -263,7 +263,7 @@
                   </td>
                   <td (click)="$event.stopPropagation()">
                     @if (canSelectItem(folder)) {
-                      <div class="dropdown">
+                      <div class="dropdown" libDropdownSingle>
                         <button
                           class="btn btn-sm btn-light border"
                           type="button"
@@ -335,7 +335,7 @@
                   </td>
                   <td>
                     @if (canSelectItem(file)) {
-                      <div class="dropdown">
+                      <div class="dropdown" libDropdownSingle>
                         <button
                           class="btn btn-sm btn-light border"
                           type="button"

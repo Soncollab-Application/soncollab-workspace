@@ -1,10 +1,11 @@
-import {Component, effect, inject, input, output, signal} from '@angular/core';
+import {Component, computed, effect, inject, input, output, signal} from '@angular/core';
 import {TranslatePipe, TranslateService} from '@ngx-translate/core';
 import {Subject, takeUntil} from 'rxjs';
 import {MediaService} from '../../../../../core/services/media/media.service';
 import {ToastService} from 'shared-lib';
 import {MediaFile, MediaFolder} from '../../../../../core/models/media/media-file.model';
 import {FormsModule} from '@angular/forms';
+import {environment} from '../../../../../../environments/environment';
 
 @Component({
   selector: 'app-media-edit-modal',
@@ -33,11 +34,45 @@ export class MediaEditModal {
   editCaption = signal('');
   isSaving = signal(false);
 
-  isFile = () => this.file() !== null;
-  isFolder = () => this.folder() !== null;
+  isFile = computed(() => this.file() !== null);
+  isFolder = computed(() => this.folder() !== null);
+
+  // Preview computed
+  isImage = computed(() => {
+    const file = this.file();
+    return file ? file.mime.startsWith('image/') : false;
+  });
+
+  isVideo = computed(() => {
+    const file = this.file();
+    return file ? file.mime.startsWith('video/') : false;
+  });
+
+  isAudio = computed(() => {
+    const file = this.file();
+    return file ? file.mime.startsWith('audio/') : false;
+  });
+
+  isPDF = computed(() => {
+    const file = this.file();
+    return file ? file.mime.includes('pdf') : false;
+  });
+
+  thumbnailUrl = computed(() => {
+    const file = this.file();
+    if (!file) return '';
+    const url = file.formats?.thumbnail?.url || file.url;
+    return url.startsWith('http') ? url : environment.api.baseUrl + url;
+  });
+
+  fullUrl = computed(() => {
+    const file = this.file();
+    if (!file) return '';
+    const url = file.url;
+    return url.startsWith('http') ? url : environment.api.baseUrl + url;
+  });
 
   constructor() {
-    // Effect pour initialiser les champs quand file/folder change
     effect(() => {
       const file = this.file();
       const folder = this.folder();
@@ -88,8 +123,9 @@ export class MediaEditModal {
         });
     } else if (this.isFolder()) {
       const folder = this.folder()!;
+      const data = { name };
 
-      this.mediaService.updateFolder(folder.documentId, { name })
+      this.mediaService.updateFolder(folder.documentId, data)
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: () => {
@@ -108,6 +144,29 @@ export class MediaEditModal {
           }
         });
     }
+  }
+
+  getFileIcon(): string {
+    const file = this.file();
+    if (!file) return 'insert_drive_file';
+
+    const mime = file.mime;
+    if (mime.startsWith('image/')) return 'image';
+    if (mime.startsWith('video/')) return 'videocam';
+    if (mime.startsWith('audio/')) return 'audio_file';
+    if (mime.includes('pdf')) return 'picture_as_pdf';
+    if (mime.includes('word') || mime.includes('document')) return 'description';
+    if (mime.includes('sheet') || mime.includes('excel')) return 'table_chart';
+    if (mime.includes('presentation') || mime.includes('powerpoint')) return 'slideshow';
+    return 'insert_drive_file';
+  }
+
+  formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${Math.round(bytes / Math.pow(k, i) * 100) / 100} ${sizes[i]}`;
   }
 
   ngOnDestroy(): void {

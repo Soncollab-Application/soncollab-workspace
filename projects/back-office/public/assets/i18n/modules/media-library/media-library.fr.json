@@ -111,7 +111,8 @@
       "alternativeText": "Texte alternatif",
       "alternativeTextPlaceholder": "Description pour l'accessibilité",
       "caption": "Légende",
-      "captionPlaceholder": "Entrez une légende"
+      "captionPlaceholder": "Entrez une légende",
+      "dimensions": "Dimensions"
     },
 
     "move": {
@@ -121,7 +122,8 @@
       "items": "élément(s)",
       "destination": "Destination",
       "itemsList": "Éléments à déplacer",
-      "move": "Déplacer"
+      "move": "Déplacer",
+      "selectDestination": "Sélectionner une destination"
     },
 
     "confirm": {
@@ -170,7 +172,8 @@
     "warnings": {
       "nothingToMove": "Aucun élément à déplacer",
       "cannotUploadHere": "Impossible de téléverser des fichiers ici",
-      "cannotCreateFolderHere": "Impossible de créer un dossier ici"
+      "cannotCreateFolderHere": "Impossible de créer un dossier ici",
+      "noDestinationsAvailable": "Aucune destination disponible. Vous êtes déjà à la racine ou tous les dossiers sont en cours de déplacement."
     }
   }
 }

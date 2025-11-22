@@ -83,14 +83,14 @@
     }
 
     @else if (isAudio()) {
-      <audio controls class="audio-player" (click)="$event.stopPropagation()">
+      <audio controls class="audio-player" preload="none" (click)="$event.stopPropagation()">
         <source [src]="fullUrl()" [type]="asset().mime">
         Your browser does not support the audio element.
       </audio>
     }
 
     @else if (isVideo()) {
-      <video controls class="video-player" (click)="$event.stopPropagation()">
+      <video controls class="video-player" preload="none" (click)="$event.stopPropagation()">
         <source [src]="fullUrl()" [type]="asset().mime">
         Your browser does not support the video element.
       </video>
