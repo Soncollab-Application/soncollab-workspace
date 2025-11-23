@@ -250,7 +250,7 @@
                     <span class="material-symbols-outlined text-primary">folder</span>
                   </td>
                   <td (click)="onFolderClick(folder)" style="cursor: pointer;">
-                    <span class="fw-semibold">{{ folder.name }}</span>
+                    <span class="fw-semibold">{{ folder.displayName || folder.userEmail || folder.name }}</span>
                   </td>
                   <td (click)="onFolderClick(folder)" style="cursor: pointer;">
                     <span class="badge text-bg-warning">{{ 'mediaLibrary.folder' | translate }}</span>

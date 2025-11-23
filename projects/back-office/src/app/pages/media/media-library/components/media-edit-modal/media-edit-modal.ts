@@ -37,6 +37,19 @@ export class MediaEditModal {
   isFile = computed(() => this.file() !== null);
   isFolder = computed(() => this.folder() !== null);
 
+  isUserFolder = computed(() => {
+    const folder = this.folder();
+    if (!folder) return false;
+    // Si le nom est un documentId (longueur > 20) ou si displayName existe
+    return folder.name.length > 20 || !!folder.displayName || !!folder.userEmail;
+  });
+
+  folderDisplayName = computed(() => {
+    const folder = this.folder();
+    if (!folder) return '';
+    return folder.displayName || folder.userEmail || folder.name;
+  });
+
   // Preview computed
   isImage = computed(() => {
     const file = this.file();
@@ -82,7 +95,11 @@ export class MediaEditModal {
         this.editAlternativeText.set(file.alternativeText || '');
         this.editCaption.set(file.caption || '');
       } else if (folder) {
-        this.editName.set(folder.name);
+        if (this.isUserFolder()) {
+          this.editName.set(''); // Vide car non éditable
+        } else {
+          this.editName.set(folder.name);
+        }
         this.editAlternativeText.set('');
         this.editCaption.set('');
       }
@@ -91,6 +108,14 @@ export class MediaEditModal {
 
   save(): void {
     const name = this.editName().trim();
+
+    if (this.isFolder() && this.isUserFolder()) {
+      this.toastService.showWarning(
+        this.translate.instant('mediaLibrary.warnings.cannotRenameUserFolder')
+      );
+      return;
+    }
+
     if (!name) return;
 
     this.isSaving.set(true);

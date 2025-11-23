@@ -18,7 +18,9 @@
       <span class="material-symbols-outlined text-primary fs-3 me-2 flex-shrink-0">folder</span>
 
       <div class="min-w-0 flex-grow-1">
-        <div class="fw-semibold text-truncate" [title]="folder().name">{{ folder().name }}</div>
+        <div class="fw-semibold text-truncate" [title]="folder().displayName || folder().userEmail || folder().name">
+          {{ folder().displayName || folder().userEmail || folder().name }}
+        </div>
         <small class="text-muted text-truncate d-block">
           {{ getFolderStats() }}
         </small>

@@ -173,7 +173,9 @@
       "nothingToMove": "Aucun élément à déplacer",
       "cannotUploadHere": "Impossible de téléverser des fichiers ici",
       "cannotCreateFolderHere": "Impossible de créer un dossier ici",
-      "noDestinationsAvailable": "Aucune destination disponible. Vous êtes déjà à la racine ou tous les dossiers sont en cours de déplacement."
+      "noDestinationsAvailable": "Aucune destination disponible. Vous êtes déjà à la racine ou tous les dossiers sont en cours de déplacement.",
+      "cannotRenameUserFolder": "Les dossiers utilisateur ne peuvent pas être renommés",
+      "userFolderCannotBeRenamed": "Ceci est un dossier utilisateur et ne peut pas être renommé"
     }
   }
 }

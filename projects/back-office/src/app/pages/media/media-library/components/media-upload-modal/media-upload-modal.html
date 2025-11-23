@@ -11,7 +11,8 @@
           @if (currentFolder()) {
             <div class="alert alert-info">
               <span class="material-symbols-outlined me-2">folder</span>
-              {{ 'mediaLibrary.upload.uploadTo' | translate }}: <strong>{{ currentFolder()!.name }}</strong>
+              {{ 'mediaLibrary.upload.uploadTo' | translate }}:
+              <strong>{{ currentFolder()!.displayName || currentFolder()!.userEmail || currentFolder()!.name }}</strong>
             </div>
           }
 

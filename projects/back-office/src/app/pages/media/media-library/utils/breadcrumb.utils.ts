@@ -19,7 +19,7 @@ function isInUsersHierarchy(folder: MediaFolder): boolean {
 }
 
 function isEmailFolder(folderName: string): boolean {
-  return folderName.includes('@');
+  return folderName.includes('@') || folderName.length > 20;
 }
 
 function isSystemFolder(folderName: string): boolean {
@@ -38,7 +38,11 @@ export function getBreadcrumbData(currentFolder: MediaFolder | null): Breadcrumb
     if (folder.parent) {
       items.push(...buildPath(folder.parent));
     }
-    items.push({ id: folder.id, label: folder.name, folder });
+    items.push({
+      id: folder.id,
+      label: folder.displayName || folder.userEmail || folder.name,
+      folder
+    });
     return items;
   };
 

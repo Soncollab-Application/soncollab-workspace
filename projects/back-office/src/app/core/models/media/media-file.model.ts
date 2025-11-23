@@ -56,6 +56,14 @@ export interface MediaFolder {
   id: number;
   documentId: string;
   name: string;
+  displayName?: string;
+  userEmail?: string;
+  userInfo?: {
+    email: string;
+    username: string;
+    firstName: string;
+    lastName: string;
+  };
   pathId: number;
   path: string;
   createdAt: string;

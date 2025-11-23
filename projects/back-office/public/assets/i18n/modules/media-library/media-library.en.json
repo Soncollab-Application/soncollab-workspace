@@ -173,7 +173,9 @@
       "nothingToMove": "Nothing to move",
       "cannotUploadHere": "Cannot upload files here",
       "cannotCreateFolderHere": "Cannot create folder here",
-      "noDestinationsAvailable": "No destinations available. You are already at the root level or all folders are being moved."
+      "noDestinationsAvailable": "No destinations available. You are already at the root level or all folders are being moved.",
+      "cannotRenameUserFolder": "User folders cannot be renamed",
+      "userFolderCannotBeRenamed": "This is a user folder and cannot be renamed"
     }
   }
 }

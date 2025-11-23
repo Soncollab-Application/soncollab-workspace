@@ -90,13 +90,25 @@
           }
 
           @if (isFolder()) {
-            <div class="mb-3">
-              <label class="form-label">{{ 'mediaLibrary.edit.folderName' | translate }}</label>
-              <input
-                type="text"
-                class="form-control"
-                [(ngModel)]="editName">
-            </div>
+            @if (isUserFolder()) {
+              <div class="alert alert-info d-flex align-items-center">
+                <span class="material-symbols-outlined me-2">info</span>
+                <div>
+                  <strong>{{ folderDisplayName() }}</strong>
+                  <p class="mb-0 mt-1 small">
+                    {{ 'mediaLibrary.warnings.userFolderCannotBeRenamed' | translate }}
+                  </p>
+                </div>
+              </div>
+            } @else {
+              <div class="mb-3">
+                <label class="form-label">{{ 'mediaLibrary.edit.folderName' | translate }}</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="editName">
+              </div>
+            }
           }
         </div>
         <div class="modal-footer">
@@ -107,16 +119,19 @@
             [disabled]="isSaving()">
             {{ 'common.cancel' | translate }}
           </button>
-          <button
-            type="button"
-            class="btn btn-primary"
-            [disabled]="!editName().trim() || isSaving()"
-            (click)="save()">
-            @if (isSaving()) {
-              <span class="spinner-border spinner-border-sm me-2"></span>
-            }
-            {{ 'common.save' | translate }}
-          </button>
+
+          @if (!isUserFolder()) {
+            <button
+              type="button"
+              class="btn btn-primary"
+              [disabled]="!editName().trim() || isSaving()"
+              (click)="save()">
+              @if (isSaving()) {
+                <span class="spinner-border spinner-border-sm me-2"></span>
+              }
+              {{ 'common.save' | translate }}
+            </button>
+          }
         </div>
       </div>
     </div>
