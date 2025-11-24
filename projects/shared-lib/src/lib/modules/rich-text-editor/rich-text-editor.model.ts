@@ -13,3 +13,10 @@ export interface EditorCommand {
   action: () => void;
   isActive?: () => boolean;
 }
+
+export interface ImageResult {
+  url: string;
+  alt?: string;
+  width?: number;
+  height?: number;
+}

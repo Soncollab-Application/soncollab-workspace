@@ -132,6 +132,13 @@
       "selectDestination": "Sélectionner une destination"
     },
 
+    "picker": {
+      "title": "Sélectionner une image",
+      "select": "Sélectionner",
+      "noImages": "Aucune image disponible",
+      "imageSelected": "Image sélectionnée"
+    },
+
     "confirm": {
       "bulkDelete": {
         "title": "Supprimer les éléments",

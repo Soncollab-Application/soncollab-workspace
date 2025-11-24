@@ -1,0 +1,112 @@
+<div
+  class="modal fade"
+  id="mediaPickerModal"
+  tabindex="-1"
+  aria-labelledby="mediaPickerModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="mediaPickerModalLabel">
+          <i class="bi bi-images me-2"></i>
+          {{ 'mediaLibrary.picker.title' | translate }}
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          (click)="onClose()"
+          aria-label="Close">
+        </button>
+      </div>
+
+      <div class="modal-body">
+
+        <nav aria-label="breadcrumb" class="mb-3">
+          <ol class="breadcrumb mb-0">
+            @for (item of breadcrumbs(); track item.id; let isLast = $last) {
+              @if (isLast) {
+                <li class="breadcrumb-item active">{{ item.label }}</li>
+              } @else {
+                <li class="breadcrumb-item">
+                  <a href="javascript:void(0)" (click)="onBreadcrumbClick(item); $event.preventDefault()">
+                    {{ item.label }}
+                  </a>
+                </li>
+              }
+            }
+          </ol>
+        </nav>
+
+        @if (state.isLoading()) {
+          <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
+            </div>
+          </div>
+        } @else {
+
+          @if (state.folders().length > 0) {
+            <h6 class="text-muted mb-3">
+              <i class="bi bi-folder me-1"></i>
+              {{ 'mediaLibrary.sections.folders' | translate }}
+            </h6>
+            <div class="row row-cols-xxl-4 row-cols-xl-4 row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-3 mb-4">
+              @for (folder of state.folders(); track folder.id) {
+                <div class="col" (click)="onFolderClick(folder); $event.stopPropagation()">
+                  <app-media-folder-item
+                    [folder]="folder"
+                    [isSelected]="false">
+                  </app-media-folder-item>
+                </div>
+              }
+            </div>
+          }
+
+          @if (state.files().length > 0) {
+            <h6 class="text-muted mb-3">
+              <i class="bi bi-image me-1"></i>
+              {{ 'mediaLibrary.sections.assets' | translate }}
+            </h6>
+            <div class="row row-cols-xxl-4 row-cols-xl-4 row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-3">
+              @for (file of state.files(); track file.id) {
+                <div class="col" (click)="onFileClick(file); $event.stopPropagation()">
+                  <app-media-asset-item
+                    [asset]="file"
+                    [isSelected]="selectedFile()?.id === file.id">
+                  </app-media-asset-item>
+                </div>
+              }
+            </div>
+          }
+
+          @if (state.folders().length === 0 && state.files().length === 0) {
+            <div class="text-center py-5">
+              <i class="bi bi-images display-1 text-muted mb-3"></i>
+              <p class="text-muted">{{ 'mediaLibrary.picker.noImages' | translate }}</p>
+            </div>
+          }
+        }
+      </div>
+
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="onClose()">
+          <i class="bi bi-x-circle me-1"></i>
+          {{ 'common.cancel' | translate }}
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          [disabled]="!selectedFile()"
+          (click)="confirmSelection()">
+          <i class="bi bi-check-circle me-1"></i>
+          {{ 'mediaLibrary.picker.select' | translate }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

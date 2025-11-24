@@ -1,0 +1,16 @@
+/* Cacher TOUS les boutons d'action et checkboxes */
+#mediaPickerModal app-media-asset-item ::ng-deep .dropdown,
+#mediaPickerModal app-media-folder-item ::ng-deep .dropdown,
+#mediaPickerModal app-media-asset-item ::ng-deep .btn-group,
+#mediaPickerModal app-media-folder-item ::ng-deep .btn-group,
+#mediaPickerModal app-media-asset-item ::ng-deep .form-check,
+#mediaPickerModal app-media-folder-item ::ng-deep .form-check,
+#mediaPickerModal app-media-asset-item ::ng-deep button:not(.card),
+#mediaPickerModal app-media-folder-item ::ng-deep button:not(.card) {
+  display: none !important;
+}
+
+/* Cursor pointer sur les items */
+.col {
+  cursor: pointer;
+}

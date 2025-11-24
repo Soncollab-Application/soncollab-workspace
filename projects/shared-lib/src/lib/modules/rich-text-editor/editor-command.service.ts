@@ -82,36 +82,88 @@ export class EditorCommandService {
       return;
     }
 
-    const selection = window.getSelection();
-    if (!selection || selection.rangeCount === 0) {
-      console.warn('Aucune sélection active');
-      return;
+    let selection = window.getSelection();
+    let range: Range | null = null;
+
+    if (selection && selection.rangeCount > 0) {
+      range = selection.getRangeAt(0);
+
+      let node = range.commonAncestorContainer;
+      let isInEditor = false;
+
+      while (node) {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          const element = node as HTMLElement;
+          if (element.getAttribute('contenteditable') === 'true') {
+            isInEditor = true;
+            break;
+          }
+        }
+        node = node.parentNode as Node;
+      }
+
+      if (!isInEditor) {
+        range = null;
+      }
     }
 
-    const range = selection.getRangeAt(0);
+    if (!range) {
+      const editableElement = document.querySelector('.editor-content[contenteditable="true"]') as HTMLElement;
+
+      if (!editableElement) {
+        console.error('Impossible de trouver l\'éditeur');
+        return;
+      }
+
+      editableElement.focus();
+      range = document.createRange();
+
+      if (editableElement.lastChild) {
+        range.setStartAfter(editableElement.lastChild);
+      } else {
+        range.setStart(editableElement, 0);
+      }
+      range.collapse(true);
+
+      selection = window.getSelection();
+      if (selection) {
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+    }
+
+    // Créer l'image avec taille contrôlée
     const img = document.createElement('img');
     img.src = src;
     img.alt = alt;
-    img.style.maxWidth = '100%';
+    img.style.width = '200px'; // Largeur fixe au lieu de maxWidth
     img.style.height = 'auto';
-    img.style.display = 'block';
-    img.style.margin = '0.5rem 0';
     img.classList.add('img-fluid');
 
-    // Créer un wrapper pour l'image (style Notion)
-    const wrapper = document.createElement('div');
-    wrapper.style.textAlign = 'center';
-    wrapper.style.margin = '1rem 0';
-    wrapper.appendChild(img);
+    // Wrapper dans un paragraphe aligné à gauche par défaut
+    const paragraph = document.createElement('p');
+    paragraph.style.textAlign = 'left'; // Alignement start par défaut
+    paragraph.appendChild(img);
 
+    // Supprimer le contenu sélectionné et insérer l'image
     range.deleteContents();
-    range.insertNode(wrapper);
+    range.insertNode(paragraph);
 
-    // Placer le curseur après l'image
-    range.setStartAfter(wrapper);
-    range.collapse(true);
-    selection.removeAllRanges();
-    selection.addRange(range);
+    // Ajouter un paragraphe vide après
+    const emptyParagraph = document.createElement('p');
+    emptyParagraph.innerHTML = '<br>';
+
+    if (paragraph.parentNode) {
+      paragraph.parentNode.insertBefore(emptyParagraph, paragraph.nextSibling);
+
+      range.setStart(emptyParagraph, 0);
+      range.collapse(true);
+
+      if (selection) {
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+    }
   }
 
   /**
@@ -163,10 +215,10 @@ export class EditorCommandService {
    */
   public getSelectedRange(): Range | null {
     const selection = window.getSelection();
-    if (!selection || selection.rangeCount === 0) {
-      return null;
+    if (selection && selection.rangeCount > 0) {
+      return selection.getRangeAt(0).cloneRange();
     }
-    return selection.getRangeAt(0);
+    return null;
   }
 
   /**

@@ -1,1 +1,17 @@
-admin-dashboard works!
+<div class="container py-4">
+  <div class="card">
+    <div class="card-body">
+      <lib-rich-text-editor
+        [(ngModel)]="content"
+        [enableMediaPicker]="true"
+        (imageSelectRequested)="onImageSelectRequested($event)">
+      </lib-rich-text-editor>
+    </div>
+  </div>
+</div>
+
+<app-media-picker-modal
+  [show]="showMediaPicker()"
+  (fileSelected)="onFileSelected($event)"
+  (close)="onMediaPickerClose()">
+</app-media-picker-modal>

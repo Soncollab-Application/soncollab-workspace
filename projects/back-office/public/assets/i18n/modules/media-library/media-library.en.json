@@ -132,6 +132,12 @@
       "selectDestination": "Select a destination"
     },
 
+    "picker": {
+      "title": "Select Image",
+      "select": "Select",
+      "noImages": "No images available",
+      "imageSelected": "Image selected"
+    },
     "confirm": {
       "bulkDelete": {
         "title": "Delete Items",

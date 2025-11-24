@@ -12,7 +12,8 @@ import {
   AfterViewInit,
   ViewChild,
   ElementRef,
-  effect, computed
+  effect,
+  computed
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
@@ -21,7 +22,8 @@ import { NgxEditorModule } from 'ngx-editor';
 import { Subject, takeUntil } from 'rxjs';
 import { EditorCommandService } from './editor-command.service';
 import { HtmlToMarkdownService } from './html-to-markdown.service';
-import {DomSanitizer} from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
+import { ImageResult } from './rich-text-editor.model';
 
 @Component({
   selector: 'lib-rich-text-editor',
@@ -43,7 +45,6 @@ import {DomSanitizer} from '@angular/platform-browser';
 export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, ControlValueAccessor {
   @ViewChild('editorContent', { static: false }) editorContent?: ElementRef<HTMLDivElement>;
 
-
   private translate = inject(TranslateService);
   private editorCommandService = inject(EditorCommandService);
   private htmlToMarkdownService = inject(HtmlToMarkdownService);
@@ -56,14 +57,13 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
   @Input() readonly = false;
 
   @Output() contentChange = new EventEmitter<string>();
+  @Output() imageSelectRequested = new EventEmitter<(result: ImageResult | null) => void>();
 
-  // État du contenu
   html = signal('');
   markdown = signal('');
   isFullScreen = signal(false);
   isPreview = signal(false);
 
-  // État des boutons de formatage
   isBold = signal(false);
   isItalic = signal(false);
   isUnderline = signal(false);
@@ -74,7 +74,6 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
 
   safeHtml = computed(() => this.sanitizer.bypassSecurityTrustHtml(this.html()));
 
-  // Commandes de blocs avec traduction
   blockCommands = [
     { command: 'p', translationKey: 'richTextEditorShared.commands.paragraph' },
     { command: 'h1', translationKey: 'richTextEditorShared.commands.heading1' },
@@ -83,12 +82,10 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
     { command: 'blockquote', translationKey: 'richTextEditorShared.commands.blockquote' }
   ];
 
-  // ControlValueAccessor
   onChange: (value: string) => void = () => {};
   onTouched: () => void = () => {};
 
   constructor() {
-    // Effect pour gérer le changement de langue
     effect(() => {
       const parentNode = this.editorCommandService.getParentBlockNode();
       if (parentNode) {
@@ -100,7 +97,6 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
   }
 
   ngOnInit(): void {
-    // Écouter les changements de langue
     this.translate.onLangChange
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
@@ -118,7 +114,6 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
     this.destroy$.next();
     this.destroy$.complete();
 
-    // Nettoyer le mode fullscreen si actif
     if (this.isFullScreen()) {
       document.body.style.overflow = '';
       const wrapper = this.editorContent?.nativeElement.closest('.rich-text-editor-wrapper');
@@ -128,7 +123,6 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
     }
   }
 
-  // ControlValueAccessor implementation
   writeValue(value: string): void {
     this.html.set(value || '');
     if (this.editorContent) {
@@ -148,9 +142,6 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
     this.readonly = isDisabled;
   }
 
-  /**
-   * Gestion du contenu de l'éditeur
-   */
   onContentChanged(): void {
     if (this.editorContent) {
       const htmlContent = this.editorCommandService.sanitizeHTML(this.editorContent.nativeElement.innerHTML);
@@ -161,9 +152,6 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
     }
   }
 
-  /**
-   * Met à jour l'état des boutons de formatage
-   */
   updateButtonStates(): void {
     this.isBold.set(this.editorCommandService.queryCommandState('bold'));
     this.isItalic.set(this.editorCommandService.queryCommandState('italic'));
@@ -172,7 +160,6 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
     this.isOrderedList.set(this.editorCommandService.queryCommandState('insertOrderedList'));
     this.isUnorderedList.set(this.editorCommandService.queryCommandState('insertUnorderedList'));
 
-    // Mise à jour du tag de bloc actuel avec traduction
     const parentNode = this.editorCommandService.getParentBlockNode();
     if (parentNode) {
       const tag = parentNode.tagName.toLowerCase();
@@ -183,9 +170,6 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
     }
   }
 
-  /**
-   * Applique une commande de formatage
-   */
   applyFormat(command: string): void {
     this.editorCommandService.executeCommand(command);
     this.updateButtonStates();
@@ -195,9 +179,6 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
     }
   }
 
-  /**
-   * Applique un format de bloc
-   */
   applyBlockFormat(tag: string): void {
     this.editorCommandService.formatBlock(tag);
     this.updateButtonStates();
@@ -207,9 +188,6 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
     }
   }
 
-  /**
-   * Insère un lien
-   */
   insertLink(): void {
     const url = prompt(this.translate.instant('richTextEditorShared.prompts.insertLink'));
     if (url) {
@@ -221,95 +199,66 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
     }
   }
 
-  /**
-   * Insère une image depuis le Media Picker
-   */
   insertImageFromMediaPicker(): void {
-    console.log('insertImageFromMediaPicker called', {
-      enableMediaPicker: this.enableMediaPicker
-    });
+    const savedRange = this.editorCommandService.getSelectedRange();
 
-    if (this.enableMediaPicker) {
-      console.log('Opening media picker...');
-    } else {
-      console.log('enableMediaPicker is false');
-    }
-  }
-
-  /**
-   * Bascule le mode plein écran
-   */
-  toggleFullScreen(): void {
-    const newValue = !this.isFullScreen();
-    this.isFullScreen.set(newValue);
-
-    if (newValue) {
-      const wrapper = this.editorContent?.nativeElement.closest('.rich-text-editor-wrapper');
-      if (wrapper) {
-        wrapper.classList.add('fullscreen');
-        document.body.style.overflow = 'hidden';
-      }
-    } else {
-      const wrapper = this.editorContent?.nativeElement.closest('.rich-text-editor-wrapper');
-      if (wrapper) {
-        wrapper.classList.remove('fullscreen');
-        document.body.style.overflow = '';
-      }
-    }
-  }
-
-  /**
-   * Bascule le mode prévisualisation
-   */
-  togglePreview(): void {
-    const wasInPreview = this.isPreview();
-
-    if (wasInPreview) {
-      // Revenir en mode édition
-      this.isPreview.set(false);
-
-      // Attendre que le DOM soit mis à jour puis restaurer le contenu
-      setTimeout(() => {
+    this.imageSelectRequested.emit((result: ImageResult | null) => {
+      if (result) {
         if (this.editorContent) {
-          this.editorContent.nativeElement.innerHTML = this.html();
           this.editorContent.nativeElement.focus();
+
+          if (savedRange) {
+            const selection = window.getSelection();
+            if (selection) {
+              selection.removeAllRanges();
+              selection.addRange(savedRange);
+            }
+          } else {
+            const selection = window.getSelection();
+            if (selection) {
+              const range = document.createRange();
+              const editorEl = this.editorContent.nativeElement;
+
+              if (editorEl.lastChild) {
+                range.setStartAfter(editorEl.lastChild);
+              } else {
+                range.setStart(editorEl, 0);
+              }
+              range.collapse(true);
+
+              selection.removeAllRanges();
+              selection.addRange(range);
+            }
+          }
         }
-      }, 0);
-    } else {
-      // Passer en mode preview - sauvegarder le contenu actuel
-      if (this.editorContent) {
-        const htmlContent = this.editorCommandService.sanitizeHTML(this.editorContent.nativeElement.innerHTML);
-        this.html.set(htmlContent);
-        this.markdown.set(this.htmlToMarkdownService.convert(htmlContent));
+
+        setTimeout(() => {
+          this.editorCommandService.insertImage(result.url, result.alt || '');
+          this.onContentChanged();
+
+          if (this.editorContent) {
+            this.editorContent.nativeElement.focus();
+          }
+        }, 50);
       }
-      this.isPreview.set(true);
+    });
+  }
+
+
+  toggleFullScreen(): void {
+    this.isFullScreen.update(v => !v);
+    const wrapper = this.editorContent?.nativeElement.closest('.rich-text-editor-wrapper');
+
+    if (this.isFullScreen()) {
+      document.body.style.overflow = 'hidden';
+      wrapper?.classList.add('fullscreen');
+    } else {
+      document.body.style.overflow = '';
+      wrapper?.classList.remove('fullscreen');
     }
   }
 
-  /**
-   * Récupère le contenu en Markdown
-   */
-  getMarkdown(): string {
-    return this.markdown();
-  }
-
-  /**
-   * Récupère le contenu en HTML
-   */
-  getHTML(): string {
-    return this.html();
-  }
-
-  /**
-   * Réinitialise le contenu de l'éditeur
-   */
-  clear(): void {
-    this.html.set('');
-    this.markdown.set('');
-    if (this.editorContent) {
-      this.editorContent.nativeElement.innerHTML = '';
-    }
-    this.onChange('');
-    this.contentChange.emit('');
+  togglePreview(): void {
+    this.isPreview.update(v => !v);
   }
 }

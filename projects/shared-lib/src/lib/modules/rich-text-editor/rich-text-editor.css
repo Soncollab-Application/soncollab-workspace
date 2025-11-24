@@ -159,3 +159,27 @@
 .editor-preview div[style*="text-align"] {
   width: 100%;
 }
+
+
+/* Styles pour les images - force la taille */
+.editor-content img {
+  width: 200px !important; /* 🔥 Force la largeur */
+  max-width: 100% !important; /* 🔥 Mais responsive */
+  height: auto !important;
+  display: inline-block;
+  margin: 0.5rem 0;
+  border-radius: 0.25rem;
+  transition: opacity 0.2s;
+}
+
+.editor-content img:hover {
+  opacity: 0.9;
+  cursor: pointer;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .editor-content img {
+    width: 100% !important;
+  }
+}
