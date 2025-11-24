@@ -1,147 +1,313 @@
-import { Injectable, signal, computed } from '@angular/core';
-import {FileUploadConfig, UploadedFile} from './file-upload.model';
+import { Injectable } from '@angular/core';
+import { signal, computed, Signal } from '@angular/core';
+import { FileUploadConfig, UploadedFile } from './file-upload.model';
 
-@Injectable({ providedIn: 'root' })
+export interface FileUploadInstance {
+  files: Signal<UploadedFile[]>;
+  config: Signal<FileUploadConfig>;
+  hasPendingFiles: Signal<boolean>;
+  hasUploadingFiles: Signal<boolean>;
+  hasSuccessFiles: Signal<boolean>;
+  hasErrorFiles: Signal<boolean>;
+  allFilesUploaded: Signal<boolean>;
+  totalSize: Signal<number>;
+  addFiles: (newFiles: UploadedFile[]) => { success: boolean; error?: string; max?: number; count?: number };
+  removeFile: (index: number) => void;
+  clearAll: () => void;
+  clearUploaded: () => void;
+  clearErrors: () => void;
+  updateFileStatus: (index: number, status: UploadedFile['status'], progress?: number, error?: string, metadata?: any) => void;
+  updateFileMetadata: (index: number, metadata: any) => void;
+  setConfig: (newConfig: Partial<FileUploadConfig>) => void;
+  getFileByName: (name: string) => UploadedFile | undefined;
+  getFileByIndex: (index: number) => UploadedFile | undefined;
+  reset: () => void;
+}
+
+@Injectable()
 export class FileUploadService {
-  private files = signal<UploadedFile[]>([]);
-  private config = signal<FileUploadConfig>({
-    multiple: false,
-    accept: 'image/*',
-    maxSize: 10,
-    maxFiles: 5,
-    autoUpload: false,
-    allowDuplicates: false
-  });
 
-  files$ = computed(() => this.files());
-  config$ = computed(() => this.config());
+  createInstance(): FileUploadInstance {
+    const files = signal<UploadedFile[]>([]);
+    const config = signal<FileUploadConfig>({
+      multiple: true,
+      accept: 'image/*',
+      maxSize: 10,
+      maxFiles: 8,
+      autoUpload: false,
+      allowDuplicates: false
+    });
 
-  setConfig(config: FileUploadConfig): void {
-    this.config.update(current => ({ ...current, ...config }));
-  }
+    const hasPendingFiles = computed(() =>
+      files().some(f => f.status === 'pending')
+    );
 
-  addFiles(fileList: FileList): UploadedFile[] {
-    const newFiles: UploadedFile[] = [];
-    const currentFiles = this.files();
-    const maxFiles = this.config().maxFiles || 5;
-    const allowDuplicates = this.config().allowDuplicates || false;
+    const hasUploadingFiles = computed(() =>
+      files().some(f => f.status === 'uploading')
+    );
 
-    if (!this.config().multiple && fileList.length > 1) {
-      throw new Error('Multiple files not allowed');
-    }
+    const hasSuccessFiles = computed(() =>
+      files().some(f => f.status === 'success')
+    );
 
-    if (currentFiles.length + fileList.length > maxFiles) {
-      throw new Error(`Maximum ${maxFiles} files allowed`);
-    }
+    const hasErrorFiles = computed(() =>
+      files().some(f => f.status === 'error')
+    );
 
-    for (let i = 0; i < fileList.length; i++) {
-      const file = fileList[i];
-      const maxSize = (this.config().maxSize || 10) * 1024 * 1024;
+    const allFilesUploaded = computed(() => {
+      const filesList = files();
+      return filesList.length > 0 && filesList.every(f => f.status === 'success');
+    });
 
-      if (!allowDuplicates) {
-        const isDuplicate = currentFiles.some(
-          existingFile =>
-            existingFile.name === file.name &&
-            existingFile.size === file.size &&
-            existingFile.type === file.type
-        );
+    const totalSize = computed(() =>
+      files().reduce((sum, file) => sum + file.size, 0)
+    );
 
-        if (isDuplicate) {
-          console.warn(`File ${file.name} already exists, skipping...`);
-          continue;
+    const addFiles = (newFiles: UploadedFile[]): { success: boolean; error?: string; max?: number; count?: number } => {
+      const currentConfig = config();
+
+      if (!currentConfig.multiple && files().length > 0) {
+        return { success: false, error: 'multipleNotAllowed' };
+      }
+
+      const totalFiles = files().length + newFiles.length;
+      if (currentConfig.maxFiles && totalFiles > currentConfig.maxFiles) {
+        return { success: false, error: 'maxFiles', max: currentConfig.maxFiles };
+      }
+
+      let filteredFiles = newFiles;
+      if (!currentConfig.allowDuplicates) {
+        if (currentConfig.validateDuplicateFn) {
+          filteredFiles = newFiles.filter(newFile => {
+            const file = newFile.file;
+            if (!file) return true;
+            return !currentConfig.validateDuplicateFn!(file, files());
+          });
+        } else {
+          filteredFiles = newFiles.filter(newFile =>
+            !files().some(f => f.name === newFile.name)
+          );
         }
       }
 
-      if (file.size > maxSize) {
-        throw new Error(`File ${file.name} exceeds maximum size of ${this.config().maxSize}MB`);
+      if (filteredFiles.length === 0) {
+        return { success: false, error: 'duplicates' };
       }
 
-      const uploadedFile: UploadedFile = {
-        name: file.name,
-        size: file.size,
-        type: file.type,
-        file: file,
-        status: 'pending',
-        progress: 0,
-        loadingPreview: file.type.startsWith('image/')
+      files.update(current => [...current, ...filteredFiles]);
+
+      return { success: true, count: filteredFiles.length };
+    };
+
+    const removeFile = (index: number): void => {
+      files.update(current => current.filter((_, i) => i !== index));
+    };
+
+    const clearAll = (): void => {
+      files.set([]);
+    };
+
+    const clearUploaded = (): void => {
+      files.update(current => current.filter(f => f.status !== 'success'));
+    };
+
+    const clearErrors = (): void => {
+      files.update(current => current.filter(f => f.status !== 'error'));
+    };
+
+    const updateFileStatus = (
+      index: number,
+      status: UploadedFile['status'],
+      progress?: number,
+      error?: string,
+      metadata?: any
+    ): void => {
+      files.update(current =>
+        current.map((f, i) =>
+          i === index
+            ? {
+              ...f,
+              status,
+              progress: progress !== undefined ? progress : f.progress,
+              error: error !== undefined ? error : f.error,
+              metadata: metadata !== undefined ? { ...f.metadata, ...metadata } : f.metadata
+            }
+            : f
+        )
+      );
+    };
+
+    const updateFileMetadata = (index: number, metadata: any): void => {
+      files.update(current =>
+        current.map((f, i) =>
+          i === index
+            ? { ...f, metadata: { ...f.metadata, ...metadata } }
+            : f
+        )
+      );
+    };
+
+    const setConfig = (newConfig: Partial<FileUploadConfig>): void => {
+      config.update(current => ({ ...current, ...newConfig }));
+    };
+
+    const getFileByName = (name: string): UploadedFile | undefined => {
+      return files().find(f => f.name === name);
+    };
+
+    const getFileByIndex = (index: number): UploadedFile | undefined => {
+      return files()[index];
+    };
+
+    const reset = (): void => {
+      files.set([]);
+      config.set({
+        multiple: true,
+        accept: 'image/*',
+        maxSize: 10,
+        maxFiles: 8,
+        autoUpload: false,
+        allowDuplicates: false
+      });
+    };
+
+    return {
+      files: files.asReadonly(),
+      config: config.asReadonly(),
+      hasPendingFiles,
+      hasUploadingFiles,
+      hasSuccessFiles,
+      hasErrorFiles,
+      allFilesUploaded,
+      totalSize,
+      addFiles,
+      removeFile,
+      clearAll,
+      clearUploaded,
+      clearErrors,
+      updateFileStatus,
+      updateFileMetadata,
+      setConfig,
+      getFileByName,
+      getFileByIndex,
+      reset
+    };
+  }
+
+  validateFileSize(file: File, maxSize: number): boolean {
+    return file.size <= maxSize * 1024 * 1024;
+  }
+
+  validateFileType(file: File, accept: string): boolean {
+    if (!accept || accept === '*/*') return true;
+
+    const acceptedTypes = accept.split(',').map(type => type.trim());
+
+    return acceptedTypes.some(type => {
+      if (type.startsWith('.')) {
+        return file.name.toLowerCase().endsWith(type.toLowerCase());
+      }
+
+      if (type.endsWith('/*')) {
+        const mimeType = type.split('/')[0];
+        return file.type.startsWith(mimeType + '/');
+      }
+
+      return file.type === type;
+    });
+  }
+
+  async generatePreview(file: File): Promise<string | null> {
+    if (!file.type.startsWith('image/')) {
+      return null;
+    }
+
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        resolve(result);
       };
 
-      newFiles.push(uploadedFile);
-    }
+      reader.onerror = () => {
+        resolve(null);
+      };
 
-    if (newFiles.length === 0 && fileList.length > 0) {
-      throw new Error('All files are duplicates');
-    }
-
-    // Ajouter les fichiers AVANT de générer les previews
-    this.files.update(current => [...current, ...newFiles]);
-
-    // Générer les previews après l'ajout
-    newFiles.forEach((uploadedFile, i) => {
-      if (uploadedFile.file && uploadedFile.file.type.startsWith('image/')) {
-        const actualIndex = currentFiles.length + i; // Index correct
-        this.generatePreview(uploadedFile.file, actualIndex);
-      }
+      reader.readAsDataURL(file);
     });
-
-    return newFiles;
   }
 
-  private generatePreview(file: File, index: number): void {
-    const reader = new FileReader();
+  async generateVideoPreview(file: File): Promise<string | null> {
+    if (!file.type.startsWith('video/')) {
+      return null;
+    }
 
-    reader.onload = (e) => {
-      this.files.update(current =>
-        current.map((f, i) =>
-          i === index
-            ? { ...f, preview: e.target?.result as string, loadingPreview: false }
-            : f
-        )
-      );
-    };
+    return new Promise((resolve) => {
+      const video = document.createElement('video');
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
 
-    reader.onerror = () => {
-      this.files.update(current =>
-        current.map((f, i) =>
-          i === index
-            ? { ...f, loadingPreview: false }
-            : f
-        )
-      );
-    };
+      video.preload = 'metadata';
+      video.muted = true;
+      video.playsInline = true;
 
-    reader.readAsDataURL(file);
+      video.onloadedmetadata = () => {
+        video.currentTime = 1;
+      };
+
+      video.onseeked = () => {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context?.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        const preview = canvas.toDataURL('image/jpeg', 0.8);
+        URL.revokeObjectURL(video.src);
+        resolve(preview);
+      };
+
+      video.onerror = () => {
+        URL.revokeObjectURL(video.src);
+        resolve(null);
+      };
+
+      video.src = URL.createObjectURL(file);
+    });
   }
 
-  removeFile(index: number): void {
-    this.files.update(current => current.filter((_, i) => i !== index));
+  formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 B';
+
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    const size = bytes / Math.pow(k, i);
+
+    return `${size.toFixed(i === 0 ? 0 : 1)} ${sizes[i]}`;
   }
 
-  clearFiles(): void {
-    this.files.set([]);
+  getFileExtension(filename: string): string {
+    const parts = filename.split('.');
+    return parts.length > 1 ? parts[parts.length - 1].toLowerCase() : '';
   }
 
-  updateFileProgress(index: number, progress: number): void {
-    this.files.update(current =>
-      current.map((file, i) =>
-        i === index ? { ...file, progress, status: 'uploading' as const } : file
-      )
-    );
+  isImage(file: File | UploadedFile): boolean {
+    const type = 'file' in file && file.file ? file.file.type : file.type;
+    return type.startsWith('image/');
   }
 
-  updateFileStatus(index: number, status: UploadedFile['status'], error?: string, url?: string): void {
-    this.files.update(current =>
-      current.map((file, i) =>
-        i === index ? { ...file, status, error, url, progress: status === 'success' ? 100 : file.progress } : file
-      )
-    );
+  isVideo(file: File | UploadedFile): boolean {
+    const type = 'file' in file && file.file ? file.file.type : file.type;
+    return type.startsWith('video/');
   }
 
-  getFiles(): UploadedFile[] {
-    return this.files();
+  isAudio(file: File | UploadedFile): boolean {
+    const type = 'file' in file && file.file ? file.file.type : file.type;
+    return type.startsWith('audio/');
   }
 
-  getFile(index: number): UploadedFile | undefined {
-    return this.files()[index];
+  isPDF(file: File | UploadedFile): boolean {
+    const type = 'file' in file && file.file ? file.file.type : file.type;
+    return type === 'application/pdf';
   }
 }

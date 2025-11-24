@@ -6,6 +6,9 @@
     "uploadFiles": "Upload photos / videos",
     "dropHere": "Drop your files here",
     "addMore": "Add More",
+    "totalSize": "Total size",
+    "clearUploaded": "Clear uploaded",
+    "clearErrors": "Clear errors",
     "clearAll": "Clear All",
     "remove": "Remove",
     "cover": "Cover",
@@ -15,6 +18,7 @@
     "uploading": "Uploading {{progress}}%",
     "uploaded": "Uploaded",
     "error": "Error",
+
     "errors": {
       "maxFiles": "Maximum {{max}} files allowed",
       "maxSize": "File too large (max {{maxSize}}MB)",
