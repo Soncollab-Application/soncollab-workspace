@@ -7,7 +7,7 @@
     "folders": "folders",
     "assets": "assets",
     "noPreview": "No preview available",
-
+    "root": "Root",
     "breadcrumb": {
       "root": "Media Library"
     },
@@ -97,7 +97,8 @@
       "uploadTo": "Upload to",
       "selectFiles": "Select files",
       "selectedFiles": "Selected files",
-      "upload": "Upload"
+      "upload": "Upload",
+      "destination": "Destination"
     },
 
     "createFolder": {

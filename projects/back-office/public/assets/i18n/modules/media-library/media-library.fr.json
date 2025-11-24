@@ -7,7 +7,7 @@
     "folders": "dossiers",
     "assets": "fichiers",
     "noPreview": "Aucun aperçu disponible",
-
+    "root": "Racine",
     "breadcrumb": {
       "root": "Bibliothèque de médias"
     },
@@ -97,7 +97,8 @@
       "uploadTo": "Téléverser dans",
       "selectFiles": "Sélectionner des fichiers",
       "selectedFiles": "Fichiers sélectionnés",
-      "upload": "Téléverser"
+      "upload": "Téléverser",
+      "destination": "Destination"
     },
 
     "createFolder": {
@@ -135,7 +136,8 @@
       "bulkDelete": {
         "title": "Supprimer les éléments",
         "message": "Êtes-vous sûr de vouloir supprimer {{count}} élément(s) ? Cette action est irréversible."
-      }
+      },
+      "cancelUpload": "Un upload est en cours. Voulez-vous vraiment fermer ?"
     },
 
     "empty": {
