@@ -1,3 +1,13 @@
 :host {
   display: block;
 }
+
+.hover-overlay {
+  opacity: 0;
+  transition: opacity 0.2s;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.card:hover .hover-overlay {
+  opacity: 1;
+}
