@@ -14,6 +14,7 @@ import {TranslatePipe} from '@ngx-translate/core';
 export class MediaAssetItem {
   asset = input.required<MediaFile>();
   isSelected = input.required<boolean>();
+  currentUserDocumentId = input<string | null>(null);
 
   assetClick = output<void>();
   toggleSelection = output<void>();
@@ -23,15 +24,22 @@ export class MediaAssetItem {
   downloadClick = output<void>();
   copyLinkClick = output<void>();
 
+
   canSelect = computed(() => {
     const asset = this.asset();
+    const userId = this.currentUserDocumentId();
 
-    // Vérifier si le fichier est dans le dossier users
-    let current: MediaFolder | null | undefined = asset.folder;
-    while (current) {
-      if (current.name === 'users') return false;
-      current = current.parent;
+    // Si le fichier appartient à l'utilisateur connecté
+    if (userId && asset.ownerDocumentId === userId) {
+      return true;
     }
+
+    // Vérifier hierarchy du folder parent
+    if (asset.folder?.hierarchy && asset.folder.hierarchy.length > 0) {
+      return false;
+    }
+
+    if (asset.folder?.name === 'users') return false;
 
     return true;
   });

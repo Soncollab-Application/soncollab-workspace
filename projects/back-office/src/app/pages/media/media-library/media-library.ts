@@ -1,8 +1,8 @@
-import {Component, computed, inject, OnDestroy, OnInit, signal} from '@angular/core';
+import {Component, computed, effect, inject, OnDestroy, OnInit, signal} from '@angular/core';
 import {MediaLibraryState} from './media-library.state';
 import {distinctUntilChanged, Subject, takeUntil} from 'rxjs';
 import {MediaFilterBar, MediaFilterField} from './components/media-filter-bar/media-filter-bar';
-import {BreadcrumbItem, getBreadcrumbData} from './utils/breadcrumb.utils';
+import {BreadcrumbItem, getBreadcrumbData, getEllipsisItems} from './utils/breadcrumb.utils';
 import {FolderTreeNode, MediaFile, MediaFolder, SortOption} from '../../../core/models/media/media-file.model';
 import {MediaService} from '../../../core/services/media/media.service';
 import {ConfirmDialogService, DropdownSingleDirective, ToastService} from 'shared-lib';
@@ -16,6 +16,7 @@ import {MediaUploadModal} from './components/media-upload-modal/media-upload-mod
 import {MediaAssetItem} from './components/media-asset-item/media-asset-item';
 import {MediaFolderItem} from './components/media-folder-item/media-folder-item';
 import {CommonModule} from '@angular/common';
+import {AuthService} from '../../../core/services/auth.service';
 
 
 @Component({
@@ -47,6 +48,7 @@ export class MediaLibrary implements OnInit, OnDestroy {
   private translate = inject(TranslateService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private authService = inject(AuthService);
 
   // State
   state = new MediaLibraryState();
@@ -72,14 +74,56 @@ export class MediaLibrary implements OnInit, OnDestroy {
   selectedFilterValue = signal<string | null>(null);
   appliedFilters = signal<MediaFilterField[]>([]);
 
-  // Breadcrumb
-  breadcrumbs = signal<BreadcrumbItem[]>([]);
 
   // Computed
+
+  currentUserDocumentId = computed(() => {
+    const user = this.authService.currentUser;
+    return user?.documentId || null;
+  });
+
+  breadcrumbs = computed(() =>
+    getBreadcrumbData(this.state.currentFolder(), this.currentUserDocumentId())
+  );
+
+
+
+  ellipsisItems = computed(() =>
+    getEllipsisItems(this.state.currentFolder(), this.currentUserDocumentId())
+  );
+
   hasSelection = computed(() =>
     this.state.selectedItems().length > 0 &&
     this.state.selectedItems().length < (this.state.folders().length + this.state.files().length)
   );
+
+  canUpload = computed(() =>
+    this.state.canUpload(this.currentUserDocumentId())
+  );
+
+  canCreateFolder = computed(() =>
+    this.state.canCreateFolder(this.currentUserDocumentId())
+  );
+
+  showSelectAll = computed(() => {
+    const folder = this.state.currentFolder();
+    if (!folder) return true; // Racine OK
+
+    const userId = this.currentUserDocumentId();
+
+    // Si le dossier appartient à l'utilisateur connecté, afficher
+    if (userId && folder.ownerDocumentId === userId) {
+      return true;
+    }
+
+    // Si on a hierarchy (= dans users mais pas le propriétaire), cacher
+    if (folder.hierarchy && folder.hierarchy.length > 0) {
+      return false;
+    }
+
+    return true;
+  });
+
 
   ngOnInit(): void {
     this.route.queryParams
@@ -218,13 +262,8 @@ export class MediaLibrary implements OnInit, OnDestroy {
       // Si filtres actifs, vider les folders
       this.state.folders.set([]);
     }
-
-    this.updateBreadcrumbs();
   }
 
-  private updateBreadcrumbs(): void {
-    this.breadcrumbs.set(getBreadcrumbData(this.state.currentFolder()));
-  }
 
   // ==================== NAVIGATION ====================
 
@@ -406,7 +445,7 @@ export class MediaLibrary implements OnInit, OnDestroy {
 
   // Upload
   onOpenUpload(): void {
-    if (!this.state.canUpload()) {
+    if (!this.canUpload()) {
       this.toastService.showWarning(this.translate.instant('mediaLibrary.warnings.cannotUploadHere'));
       return;
     }
@@ -428,7 +467,7 @@ export class MediaLibrary implements OnInit, OnDestroy {
 
   // Create Folder
   onOpenCreateFolder(): void {
-    if (!this.state.canCreateFolder()) {
+    if (!this.canCreateFolder()) {
       this.toastService.showWarning(this.translate.instant('mediaLibrary.warnings.cannotCreateFolderHere'));
       return;
     }
@@ -711,8 +750,9 @@ export class MediaLibrary implements OnInit, OnDestroy {
   }
 
   canSelectItem(item: MediaFile | MediaFolder): boolean {
-    return this.state.canSelectItem(item);
+    return this.state.canSelectItem(item, this.currentUserDocumentId());
   }
+
 
   onTableSort(field: 'name' | 'createdAt'): void {
     const currentSort = this.state.currentSort();

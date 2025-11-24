@@ -2,51 +2,78 @@
 
 
   <!-- ==================== BREADCRUMB ==================== -->
-  <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
-    <nav aria-label="breadcrumb">
+  <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center gap-3 mb-4">
+
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="flex-grow-1 w-100 w-lg-auto">
       <ol class="breadcrumb mb-0">
-        @for (item of breadcrumbs(); track item.id) {
-          @if (item.isEllipsis) {
-            <li class="breadcrumb-item">
-              <span class="text-muted">{{ item.label }}</span>
-            </li>
-          } @else if ($last) {
-            <li class="breadcrumb-item active" aria-current="page">
-              {{ item.label }}
-            </li>
-          } @else {
-            <li class="breadcrumb-item">
-              <a href="javascript:void(0)" (click)="onBreadcrumbClick(item)">
-                {{ item.label }}
+        @for (crumb of breadcrumbs(); track crumb.id) {
+          <li class="breadcrumb-item" [class.active]="$last">
+            @if (crumb.isEllipsis) {
+              <!-- Ellipsis avec dropdown -->
+              <div class="dropdown d-inline">
+                <a
+                  class="text-decoration-none"
+                  href="javascript:void(0)"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  style="cursor: pointer;">
+                  {{ crumb.label }}
+                </a>
+                <ul class="dropdown-menu">
+                  @for (item of ellipsisItems(); track item.id) {
+                    <li>
+                      <a
+                        class="dropdown-item"
+                        href="javascript:void(0)"
+                        (click)="onBreadcrumbClick(item)">
+                        {{ item.label }}
+                      </a>
+                    </li>
+                  }
+                </ul>
+              </div>
+            } @else if (!$last) {
+              <!-- Item cliquable -->
+
+                class="text-decoration-none"
+                href="javascript:void(0)"
+                (click)="onBreadcrumbClick(crumb)"
+                style="cursor: pointer;">
+              {{ crumb.label }}
               </a>
-            </li>
-          }
+            } @else {
+              <!-- Dernier item (non cliquable) -->
+              <span>{{ crumb.label }}</span>
+            }
+          </li>
         }
       </ol>
     </nav>
 
     <!-- Actions principales -->
-    <div class="d-flex gap-2 mt-sm-3">
-      @if (state.canUpload()) {
+    <div class="d-flex gap-2 flex-wrap flex-sm-nowrap w-100 w-lg-auto">
+      @if (canUpload()) {
         <button
-          type="button"
-          class="btn btn-primary"
-          (click)="onOpenUpload()">
-          <span class="material-symbols-outlined me-1">upload</span>
-          {{ 'mediaLibrary.actions.upload' | translate }}
+          class="btn btn-primary flex-grow-1 flex-sm-grow-0"
+          (click)="onOpenUpload()"
+          [disabled]="!canUpload()">
+          <span class="material-symbols-outlined">upload</span>
+          <span class="d-none d-sm-inline ms-1">{{ 'mediaLibrary.actions.upload' | translate }}</span>
         </button>
       }
 
-      @if (state.canCreateFolder()) {
+      @if (canCreateFolder()) {
         <button
-          type="button"
-          class="btn btn-outline-primary"
-          (click)="onOpenCreateFolder()">
-          <span class="material-symbols-outlined me-1">create_new_folder</span>
-          {{ 'mediaLibrary.actions.createFolder' | translate }}
+          class="btn btn-outline-primary flex-grow-1 flex-sm-grow-0"
+          (click)="onOpenCreateFolder()"
+          [disabled]="!canCreateFolder()">
+          <span class="material-symbols-outlined">create_new_folder</span>
+          <span class="d-none d-sm-inline ms-1">{{ 'mediaLibrary.actions.createFolder' | translate }}</span>
         </button>
       }
     </div>
+
   </div>
 
   <!-- ==================== FILTER BAR ==================== -->
@@ -57,6 +84,7 @@
     [allSelected]="state.allSelected()"
     [hasSelection]="hasSelection()"
     [appliedFilters]="appliedFilters()"
+    [showSelectAll]="showSelectAll()"
     [selectedField]="selectedFilterField()"
     [selectedOperator]="selectedFilterOperator()"
     [selectedValue]="selectedFilterValue()"
@@ -140,6 +168,7 @@
               <div class="col">
                 <app-media-folder-item
                   [folder]="folder"
+                  [currentUserDocumentId]="currentUserDocumentId()"
                   [isSelected]="isSelected(folder)"
                   (folderClick)="onFolderClick(folder)"
                   (toggleSelection)="onToggleSelection(folder)"
@@ -171,6 +200,7 @@
               <div class="col">
                 <app-media-asset-item
                   [asset]="file"
+                  [currentUserDocumentId]="currentUserDocumentId()"
                   [isSelected]="isSelected(file)"
                   (assetClick)="onEditFile(file)"
                   (toggleSelection)="onToggleSelection(file)"

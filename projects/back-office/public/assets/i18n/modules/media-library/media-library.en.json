@@ -40,6 +40,11 @@
       "updatedAtAsc": "Oldest updates"
     },
 
+    "viewMode": {
+      "grid": "Grid",
+      "list": "List"
+    },
+
     "filters": {
       "title": "Filters",
       "addFilter": "Add filter",

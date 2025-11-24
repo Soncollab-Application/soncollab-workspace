@@ -13,6 +13,7 @@ import {TranslatePipe} from '@ngx-translate/core';
 export class MediaFolderItem {
   folder = input.required<MediaFolder>();
   isSelected = input.required<boolean>();
+  currentUserDocumentId = input<string | null>(null);
 
   folderClick = output<void>();
   toggleSelection = output<void>();
@@ -22,15 +23,19 @@ export class MediaFolderItem {
 
   canSelect = computed(() => {
     const folder = this.folder();
+    const userId = this.currentUserDocumentId();
 
-    // Vérifier si c'est le dossier users ou un dossier dans users
-    if (folder.name === 'users') return false;
-
-    let current: MediaFolder | null | undefined = folder.parent;
-    while (current) {
-      if (current.name === 'users') return false;
-      current = current.parent;
+    // Si le dossier appartient à l'utilisateur connecté
+    if (userId && folder.ownerDocumentId === userId) {
+      return true;
     }
+
+    // Si hierarchy existe, on est dans users (et pas le propriétaire)
+    if (folder.hierarchy && folder.hierarchy.length > 0) {
+      return false;
+    }
+
+    if (folder.name === 'users') return false;
 
     return true;
   });

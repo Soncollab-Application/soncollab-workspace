@@ -1,21 +1,23 @@
-<div class="row row-cols-xxl-2 row-cols-xl-2 row-cols-lg-2 row-cols-md-2 row-cols-sm-1 pt-3">
+<div class="row g-2 pt-3">
 
   <!-- Colonne gauche : checkbox + select + filters -->
-  <div class="col">
+  <div class="col-12 col-lg-6">
     <div class="d-flex align-items-center mb-2 flex-wrap gap-2">
 
-      <!-- Checkbox select all - Desktop uniquement -->
-      <div class="border rounded checkbox-wrapper p-1 d-none d-md-flex">
-        <input
-          class="form-check-input"
-          type="checkbox"
-          [checked]="allSelected()"
-          [indeterminate]="hasSelection()"
-          (change)="selectAllChange.emit()">
-      </div>
+      <!-- Checkbox select all -->
+      @if (showSelectAll()) {
+        <div class="border rounded checkbox-wrapper p-1">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            [checked]="allSelected()"
+            [indeterminate]="hasSelection()"
+            (change)="selectAllChange.emit()">
+        </div>
+      }
 
-      <!-- Sort avec lib-choice - Plus large -->
-      <div class="flex-grow-1 flex-md-grow-0 sort-select">
+      <!-- Sort avec lib-choice -->
+      <div class="flex-grow-1 flex-lg-grow-0 sort-select">
         <lib-choice
           type="select-one"
           [options]="sortOptions()"
@@ -25,7 +27,7 @@
         />
       </div>
 
-      <!-- Button Filters avancés - Style Bootstrap -->
+      <!-- Button Filters avancés -->
       <button
         class="btn btn-outline-secondary d-flex align-items-center gap-2"
         type="button"
@@ -33,7 +35,7 @@
         data-bs-target="#filterOffcanvas"
         aria-controls="filterOffcanvas">
         <span class="material-symbols-outlined" style="font-size:18px;">tune</span>
-        <span class="d-none d-md-inline">{{ 'mediaLibrary.filters.title' | translate }}</span>
+        <span class="d-none d-sm-inline">{{ 'mediaLibrary.filters.title' | translate }}</span>
         @if (appliedFilters().length > 0) {
           <span class="badge bg-primary rounded-pill">{{ appliedFilters().length }}</span>
         }
@@ -43,11 +45,14 @@
 
     <!-- Applied Filters Tags -->
     @if (appliedFilters().length > 0) {
-      <div class="d-flex gap-2 flex-wrap align-items-center mt-3 mb-2">
-        <small class="text-muted d-none d-md-inline">{{ 'mediaLibrary.filters.activeFilters' | translate }}:</small>
+      <div class="d-flex gap-2 flex-wrap align-items-center mt-2">
+        <small class="text-muted d-none d-sm-inline">{{ 'mediaLibrary.filters.activeFilters' | translate }}:</small>
 
         @for (filter of appliedFilters(); track $index) {
-          <button type="button" class="btn btn-sm btn-primary d-flex align-items-center gap-1" (click)="removeFilterClick.emit($index)">
+          <button
+            type="button"
+            class="btn btn-sm btn-primary d-flex align-items-center gap-1"
+            (click)="removeFilterClick.emit($index)">
             <span class="material-symbols-outlined" style="font-size: 16px;">close</span>
             <span class="filter-label">{{ getFilterLabel(filter) }}</span>
           </button>
@@ -63,11 +68,11 @@
   </div>
 
   <!-- Colonne droite : vues + search -->
-  <div class="col">
-    <div class="d-flex align-items-center justify-content-end mb-2 gap-2">
+  <div class="col-12 col-lg-6">
+    <div class="d-flex align-items-center justify-content-lg-end mb-2 gap-2">
 
-      <!-- View buttons - Desktop uniquement -->
-      <div class="d-none d-md-flex gap-2">
+      <!-- View buttons - Tablette et Desktop -->
+      <div class="d-none d-sm-flex gap-2">
         <button
           type="button"
           class="btn btn-icon border"
@@ -110,7 +115,7 @@
       </div>
 
       <!-- View buttons - Mobile (dropdown) -->
-      <div class="dropdown d-md-none">
+      <div class="dropdown d-sm-none">
         <button
           class="btn btn-icon border"
           type="button"
@@ -124,13 +129,13 @@
           <li>
             <a class="dropdown-item" href="javascript:void(0)" (click)="viewModeChange.emit('grid')">
               <span class="material-symbols-outlined me-2">grid_view</span>
-              Grid
+              {{ 'mediaLibrary.viewMode.grid' | translate }}
             </a>
           </li>
           <li>
             <a class="dropdown-item" href="javascript:void(0)" (click)="viewModeChange.emit('list')">
               <span class="material-symbols-outlined me-2">list</span>
-              List
+              {{ 'mediaLibrary.viewMode.list' | translate }}
             </a>
           </li>
         </ul>
@@ -140,7 +145,7 @@
   </div>
 </div>
 
-<!-- Offcanvas Filters - Style Bootstrap -->
+<!-- Offcanvas Filters -->
 <div class="offcanvas offcanvas-end" tabindex="-1" id="filterOffcanvas" aria-labelledby="filterOffcanvasLabel">
   <div class="offcanvas-header border-bottom">
     <h5 class="offcanvas-title" id="filterOffcanvasLabel">
@@ -151,7 +156,7 @@
   </div>
   <div class="offcanvas-body">
 
-    <!-- Select Field avec lib-choice -->
+    <!-- Select Field -->
     <div class="mb-3">
       <label class="form-label fw-semibold">{{ 'mediaLibrary.filters.field' | translate }}</label>
       <lib-choice
@@ -165,7 +170,7 @@
     </div>
 
     @if (selectedField()) {
-      <!-- Select Operator avec lib-choice -->
+      <!-- Select Operator -->
       <div class="mb-3">
         <label class="form-label fw-semibold">{{ 'mediaLibrary.filters.operator' | translate }}</label>
         <lib-choice

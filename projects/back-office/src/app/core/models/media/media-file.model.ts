@@ -1,5 +1,3 @@
-// projects/back-office/src/app/core/models/media/media-file.model.ts
-
 export interface MediaFile {
   id: number;
   documentId: string;
@@ -23,6 +21,7 @@ export interface MediaFile {
   folder?: MediaFolder | null;
   type?: 'asset';
   isSelectable?: boolean;
+  ownerDocumentId?: string;
 }
 
 export interface MediaFormats {
@@ -71,9 +70,24 @@ export interface MediaFolder {
   parent?: MediaFolder | null;
   children?: MediaFolder[];
   files?: { count: number };
+  hierarchy?: Array<{
+    id: number;
+    documentId: string;
+    name: string;
+    path: string;
+    pathId: number;
+    displayName?: string;
+    userInfo?: {
+      email: string;
+      username: string;
+      firstName: string;
+      lastName: string;
+    };
+  }>;
   type?: 'folder';
   folderURL?: string;
   isSelectable?: boolean;
+  ownerDocumentId?: string;
 }
 
 export interface MediaResponse {

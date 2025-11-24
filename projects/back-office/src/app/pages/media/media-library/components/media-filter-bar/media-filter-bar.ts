@@ -31,6 +31,7 @@ export class MediaFilterBar {
   selectedField = input.required<string | null>();
   selectedOperator = input.required<string | null>();
   selectedValue = input.required<string | null>();
+  showSelectAll = input<boolean>(true);
 
   // Outputs
   sortChange = output<SortOption>();

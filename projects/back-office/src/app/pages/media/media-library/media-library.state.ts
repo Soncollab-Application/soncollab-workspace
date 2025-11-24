@@ -57,54 +57,88 @@ export class MediaLibraryState {
   shouldShowFolders = computed(() => this.currentPage() === 1);
   currentFolderPath = computed(() => this.currentFolder()?.path || '/');
 
-  canUpload = computed(() => {
+  canUpload(currentUserDocumentId?: string | null): boolean {
     const folder = this.currentFolder();
-    if (!folder) return true;
-    return folder.name !== 'users';
-  });
+    if (!folder) return true; // Racine OK
 
-  canCreateFolder = computed(() => {
+    // Si le dossier appartient à l'utilisateur connecté, il PEUT uploader
+    if (currentUserDocumentId && folder.ownerDocumentId === currentUserDocumentId) {
+      return true;
+    }
+
+    // Vérifier si on a hierarchy (= dans users mais pas le propriétaire)
+    if (folder.hierarchy && folder.hierarchy.length > 0) {
+      return false;
+    }
+
+    return true;
+  }
+
+  canCreateFolder(currentUserDocumentId?: string | null): boolean {
     const folder = this.currentFolder();
     if (!folder) return true;
-    return folder.name !== 'users';
-  });
+
+    // Si le dossier appartient à l'utilisateur connecté, il PEUT créer
+    if (currentUserDocumentId && folder.ownerDocumentId === currentUserDocumentId) {
+      return true;
+    }
+
+    // Vérifier si on a hierarchy (= dans users mais pas le propriétaire)
+    if (folder.hierarchy && folder.hierarchy.length > 0) {
+      return false;
+    }
+
+    return true;
+  }
 
   isInUsersFolder = computed(() => {
     const folder = this.currentFolder();
     if (!folder) return false;
 
-    let current: MediaFolder | null | undefined = folder;
-    while (current) {
-      if (current.name === 'users') return true;
-      current = current.parent;
+    // Vérifier par hierarchy
+    if (folder.hierarchy && folder.hierarchy.length > 0) {
+      return folder.hierarchy.some(ancestor => ancestor.name === 'users');
     }
 
-    return false;
+    // Vérifier par nom
+    return folder.name === 'users';
   });
 
-  canSelectItem(item: MediaFile | MediaFolder): boolean {
-    // Si c'est le dossier users lui-même
-    if (item.type === 'folder' && item.name === 'users') return false;
-
-    // Si on est dans le dossier users
-    if (this.isInUsersFolder()) return false;
-
-    // Pour les folders, vérifier si c'est un enfant de users
+  canSelectItem(item: MediaFile | MediaFolder, currentUserDocumentId?: string | null): boolean {
     if (item.type === 'folder') {
-      let current: MediaFolder | null | undefined = (item as MediaFolder).parent;
-      while (current) {
-        if (current.name === 'users') return false;
-        current = current.parent;
+      const folder = item as MediaFolder;
+
+      // Si le dossier appartient à l'utilisateur connecté, il PEUT le sélectionner
+      if (currentUserDocumentId && folder.ownerDocumentId === currentUserDocumentId) {
+        return true;
       }
+
+      // Vérifier si on a hierarchy (= dans users mais pas le propriétaire)
+      if (folder.hierarchy && folder.hierarchy.length > 0) {
+        return false;
+      }
+
+      if (folder.name === 'users') return false;
+
+      return true;
     }
 
-    // Pour les fichiers, vérifier si leur dossier parent est dans users
     if (item.type === 'asset') {
-      let current: MediaFolder | null | undefined = (item as MediaFile).folder;
-      while (current) {
-        if (current.name === 'users') return false;
-        current = current.parent;
+      const file = item as MediaFile;
+
+      // Si le fichier appartient à l'utilisateur connecté, il PEUT le sélectionner
+      if (currentUserDocumentId && file.ownerDocumentId === currentUserDocumentId) {
+        return true;
       }
+
+      // Vérifier hierarchy du folder parent
+      if (file.folder?.hierarchy && file.folder.hierarchy.length > 0) {
+        return false;
+      }
+
+      if (file.folder?.name === 'users') return false;
+
+      return true;
     }
 
     return true;
