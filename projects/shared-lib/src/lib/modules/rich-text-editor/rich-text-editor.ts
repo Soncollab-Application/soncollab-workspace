@@ -144,11 +144,47 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
 
   onContentChanged(): void {
     if (this.editorContent) {
-      const htmlContent = this.editorCommandService.sanitizeHTML(this.editorContent.nativeElement.innerHTML);
-      this.html.set(htmlContent);
-      this.markdown.set(this.htmlToMarkdownService.convert(htmlContent));
-      this.onChange(htmlContent);
-      this.contentChange.emit(htmlContent);
+      const content = this.editorContent.nativeElement.innerHTML;
+      this.html.set(content);
+      this.markdown.set(this.htmlToMarkdownService.convert(content));
+      this.onChange(content);
+      this.contentChange.emit(content);
+    }
+  }
+
+  onKeyDown(event: KeyboardEvent): void {
+    if (event.key === 'Enter') {
+      const selection = window.getSelection();
+      if (!selection || selection.rangeCount === 0) return;
+
+      let node = selection.getRangeAt(0).startContainer;
+
+      while (node && node !== this.editorContent?.nativeElement) {
+        if (node.nodeName === 'BLOCKQUOTE') {
+          event.preventDefault();
+
+          const range = selection.getRangeAt(0);
+
+          // Insérer 2 <br> pour un vrai saut de ligne
+          const br1 = document.createElement('br');
+          const br2 = document.createElement('br');
+
+          range.deleteContents();
+          range.insertNode(br1);
+          range.setStartAfter(br1);
+          range.insertNode(br2);
+
+          // Positionner le curseur après les 2 <br>
+          range.setStartAfter(br2);
+          range.collapse(true);
+          selection.removeAllRanges();
+          selection.addRange(range);
+
+          this.onContentChanged();
+          return;
+        }
+        node = node.parentNode as Node;
+      }
     }
   }
 
@@ -244,7 +280,6 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
     });
   }
 
-
   toggleFullScreen(): void {
     this.isFullScreen.update(v => !v);
     const wrapper = this.editorContent?.nativeElement.closest('.rich-text-editor-wrapper');
@@ -252,6 +287,13 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
     if (this.isFullScreen()) {
       document.body.style.overflow = 'hidden';
       wrapper?.classList.add('fullscreen');
+
+      // En fullscreen, forcer le mode preview à true pour afficher les deux côtés
+      if (!this.isPreview() && this.editorContent) {
+        const currentHtml = this.editorContent.nativeElement.innerHTML;
+        this.html.set(currentHtml);
+      }
+      this.isPreview.set(true);
     } else {
       document.body.style.overflow = '';
       wrapper?.classList.remove('fullscreen');
@@ -259,6 +301,10 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
   }
 
   togglePreview(): void {
+    if (!this.isPreview() && this.editorContent) {
+      const currentHtml = this.editorContent.nativeElement.innerHTML;
+      this.html.set(currentHtml);
+    }
     this.isPreview.update(v => !v);
   }
 }

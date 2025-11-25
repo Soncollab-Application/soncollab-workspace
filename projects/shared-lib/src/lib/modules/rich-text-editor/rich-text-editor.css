@@ -1,3 +1,15 @@
+/* Backdrop pour le fullscreen */
+.rich-text-editor-wrapper.fullscreen::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: -1;
+}
+
 /* Mode plein écran */
 .rich-text-editor-wrapper.fullscreen {
   position: fixed;
@@ -7,24 +19,57 @@
   bottom: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 9999;
-  background: var(--fn-body-bg);
+  z-index: 1050;
+  background: transparent;
   display: flex;
   flex-direction: column;
-  padding: 1rem;
+  padding: 5rem;
 }
 
 .rich-text-editor-wrapper.fullscreen .card {
   height: 100%;
-  display: flex;
-  flex-direction: column;
+  width: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
   margin: 0;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.rich-text-editor-wrapper.fullscreen .card-header {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  flex-shrink: 0;
 }
 
 .rich-text-editor-wrapper.fullscreen .card-body {
   flex: 1;
   overflow-y: auto;
   min-height: unset !important;
+}
+
+.rich-text-editor-wrapper.fullscreen .editor-content {
+  grid-column: 1;
+  grid-row: 2;
+  border-right: 1px solid var(--fn-border-color);
+  max-height: unset;
+  height: 100%;
+}
+
+.rich-text-editor-wrapper.fullscreen .editor-preview {
+  grid-column: 2;
+  grid-row: 2;
+  max-height: unset;
+  height: 100%;
+  display: block !important;
+}
+
+.rich-text-editor-wrapper.fullscreen .card-footer {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  flex-shrink: 0;
+  margin-top: auto;
 }
 
 /* Styles communs éditeur et preview */
@@ -160,11 +205,9 @@
   width: 100%;
 }
 
-
-/* Styles pour les images - force la taille */
 .editor-content img {
-  width: 200px !important; /* 🔥 Force la largeur */
-  max-width: 100% !important; /* 🔥 Mais responsive */
+  width: 200px !important;
+  max-width: 100% !important;
   height: auto !important;
   display: inline-block;
   margin: 0.5rem 0;
@@ -182,4 +225,51 @@
   .editor-content img {
     width: 100% !important;
   }
+}
+
+/* Scrollable editor */
+.editor-content[contenteditable="true"],
+.editor-preview {
+  max-height: 400px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Scrollbar personnalisée */
+.editor-content::-webkit-scrollbar,
+.editor-preview::-webkit-scrollbar {
+  width: 8px;
+}
+
+.editor-content::-webkit-scrollbar-track,
+.editor-preview::-webkit-scrollbar-track {
+  background: var(--fn-secondary-bg);
+  border-radius: 4px;
+}
+
+.editor-content::-webkit-scrollbar-thumb,
+.editor-preview::-webkit-scrollbar-thumb {
+  background: var(--fn-border-color);
+  border-radius: 4px;
+}
+
+.editor-content::-webkit-scrollbar-thumb:hover,
+.editor-preview::-webkit-scrollbar-thumb:hover {
+  background: var(--fn-secondary);
+}
+
+/* Toolbar désactivée en mode preview */
+.card-header.disabled-toolbar {
+  opacity: 0.5;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* S'assurer que les modals Bootstrap passent au-dessus */
+.modal {
+  z-index: 1060 !important;
+}
+
+.modal-backdrop {
+  z-index: 1055 !important;
 }

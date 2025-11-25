@@ -32,11 +32,13 @@
       "horizontalRule": "Horizontal rule",
       "table": "Insert table",
       "removeFormat": "Remove formatting",
-      "preview": "Preview",
-      "edit": "Edit",
       "fullscreen": "Fullscreen",
       "exitFullscreen": "Exit fullscreen",
-      "imageAlt": "Image alt text"
+      "imageAlt": "Image alt text",
+      "preview": "Preview",
+      "edit": "Edit",
+      "expand": "Expand",
+      "collapse": "Collapse"
     },
     "prompts": {
       "insertLink": "Enter the link URL:",
