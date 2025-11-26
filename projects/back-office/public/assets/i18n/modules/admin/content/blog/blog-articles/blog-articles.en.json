@@ -84,24 +84,28 @@
       "error": "Error rejecting article"
     },
     "empty": {
-      "title": "No Articles",
+      "title": "No articles",
       "message": "No blog articles found for this language"
     },
     "error": {
       "loading": "Error loading articles"
     },
     "messages": {
-      "created": "Article created successfully",
-      "updated": "Article updated successfully",
+      "created_success": "Article created successfully",
+      "updated_success": "Article updated successfully",
+      "save_error": "Error saving article",
+      "error_loading": "Error loading article",
+      "fill_required": "Please fill in all required fields",
       "all_translations_exist": "All translations already exist",
       "translation_created": "Translation created successfully",
       "translation_opened": "Translation opened",
-      "error_saving": "Error saving article",
-      "error_loading": "Error loading article",
-      "fill_required": "Please fill in all required fields"
+      "image_uploaded": "Image uploaded successfully",
+      "image_upload_error": "Error uploading image",
+      "image_removed": "Image removed successfully",
+      "image_remove_error": "Error removing image"
     },
     "translations_modal": {
-      "title": "Available Translations",
+      "title": "Available translations",
       "subtitle": "Select a translation to view",
       "no_translations": "No translations available"
     },
@@ -110,33 +114,32 @@
       "subtitle_create": "Create a new blog article",
       "subtitle_edit": "Edit blog article",
       "loading": "Loading article...",
-      "content_info": "Content Information",
-      "seo_info": "SEO Optimization",
+      "content_section": "Article Content",
+      "seo_section": "SEO",
       "tabs": {
         "content": "Content",
         "seo": "SEO"
       },
-      "fields": {
-        "title": "Title",
-        "excerpt": "Excerpt",
-        "content": "Content",
-        "category": "Category",
-        "status": "Status",
-        "featured": "Featured",
-        "reading_time": "Reading Time",
-        "seo_title": "SEO Title",
-        "seo_description": "SEO Description",
-        "seo_keywords": "SEO Keywords",
-        "canonical_url": "Canonical URL"
-      },
-      "placeholders": {
-        "title": "Enter article title",
-        "excerpt": "Enter a brief summary of the article",
-        "content": "Write your article in Markdown",
-        "seo_title": "Search engine optimized title",
-        "seo_description": "Search engine optimized description",
-        "seo_keywords": "keywords, separated, by, commas"
-      },
+      "title_label": "Title",
+      "title_placeholder": "Enter article title",
+      "excerpt": "Excerpt",
+      "excerpt_placeholder": "Enter a short summary of the article",
+      "featured_image": "Featured Image",
+      "og_image": "Open Graph Image",
+      "select_image": "Select an image",
+      "content": "Content",
+      "category": "Category",
+      "select_category": "Select a category",
+      "status": "Status",
+      "is_featured": "Feature this article",
+      "reading_time": "Reading time (minutes)",
+      "seo_title": "SEO Title",
+      "seo_title_placeholder": "Title optimized for search engines",
+      "seo_description": "SEO Description",
+      "seo_description_placeholder": "Description optimized for search engines",
+      "seo_keywords": "SEO Keywords",
+      "seo_keywords_placeholder": "keywords, separated, by, commas",
+      "canonical_url": "Canonical URL",
       "hints": {
         "excerpt": "Maximum 300 characters",
         "markdown": "You can use Markdown to format your content",
@@ -144,17 +147,11 @@
         "seo_description": "Ideally between 150-160 characters",
         "seo_keywords": "Separate keywords with commas"
       },
-      "errors": {
-        "title_required": "Title is required",
-        "content_required": "Content is required",
-        "category_required": "Category is required"
-      },
       "buttons": {
         "cancel": "Cancel",
         "create": "Create",
         "save": "Save"
-      },
-      "select_category": "Select a category"
+      }
     }
   }
 }

@@ -91,14 +91,18 @@
       "loading": "Erreur lors du chargement des articles"
     },
     "messages": {
-      "created": "Article créé avec succès",
-      "updated": "Article mis à jour avec succès",
+      "created_success": "Article créé avec succès",
+      "updated_success": "Article mis à jour avec succès",
+      "save_error": "Erreur lors de l'enregistrement de l'article",
+      "error_loading": "Erreur lors du chargement de l'article",
+      "fill_required": "Veuillez remplir tous les champs obligatoires",
       "all_translations_exist": "Toutes les traductions existent déjà",
       "translation_created": "Traduction créée avec succès",
       "translation_opened": "Traduction ouverte",
-      "error_saving": "Erreur lors de l'enregistrement de l'article",
-      "error_loading": "Erreur lors du chargement de l'article",
-      "fill_required": "Veuillez remplir tous les champs obligatoires"
+      "image_uploaded": "Image téléchargée avec succès",
+      "image_upload_error": "Erreur lors du téléchargement de l'image",
+      "image_removed": "Image supprimée avec succès",
+      "image_remove_error": "Erreur lors de la suppression de l'image"
     },
     "translations_modal": {
       "title": "Traductions disponibles",
@@ -110,33 +114,32 @@
       "subtitle_create": "Créer un nouvel article de blog",
       "subtitle_edit": "Modifier l'article de blog",
       "loading": "Chargement de l'article...",
-      "content_info": "Informations de contenu",
-      "seo_info": "Optimisation SEO",
+      "content_section": "Contenu de l'article",
+      "seo_section": "Référencement (SEO)",
       "tabs": {
         "content": "Contenu",
         "seo": "SEO"
       },
-      "fields": {
-        "title": "Titre",
-        "excerpt": "Extrait",
-        "content": "Contenu",
-        "category": "Catégorie",
-        "status": "Statut",
-        "featured": "Mis en avant",
-        "reading_time": "Temps de lecture",
-        "seo_title": "Titre SEO",
-        "seo_description": "Description SEO",
-        "seo_keywords": "Mots-clés SEO",
-        "canonical_url": "URL canonique"
-      },
-      "placeholders": {
-        "title": "Entrez le titre de l'article",
-        "excerpt": "Entrez un court résumé de l'article",
-        "content": "Rédigez votre article en Markdown",
-        "seo_title": "Titre optimisé pour les moteurs de recherche",
-        "seo_description": "Description optimisée pour les moteurs de recherche",
-        "seo_keywords": "mots-clés, séparés, par, virgules"
-      },
+      "title_label": "Titre",
+      "title_placeholder": "Entrez le titre de l'article",
+      "excerpt": "Extrait",
+      "excerpt_placeholder": "Entrez un court résumé de l'article",
+      "featured_image": "Image mise en avant",
+      "og_image": "Image Open Graph",
+      "select_image": "Sélectionner une image",
+      "content": "Contenu",
+      "category": "Catégorie",
+      "select_category": "Sélectionnez une catégorie",
+      "status": "Statut",
+      "is_featured": "Mettre en avant cet article",
+      "reading_time": "Temps de lecture (minutes)",
+      "seo_title": "Titre SEO",
+      "seo_title_placeholder": "Titre optimisé pour les moteurs de recherche",
+      "seo_description": "Description SEO",
+      "seo_description_placeholder": "Description optimisée pour les moteurs de recherche",
+      "seo_keywords": "Mots-clés SEO",
+      "seo_keywords_placeholder": "mots-clés, séparés, par, virgules",
+      "canonical_url": "URL canonique",
       "hints": {
         "excerpt": "Maximum 300 caractères",
         "markdown": "Vous pouvez utiliser Markdown pour formater votre contenu",
@@ -144,17 +147,11 @@
         "seo_description": "Idéalement entre 150-160 caractères",
         "seo_keywords": "Séparez les mots-clés par des virgules"
       },
-      "errors": {
-        "title_required": "Le titre est requis",
-        "content_required": "Le contenu est requis",
-        "category_required": "La catégorie est requise"
-      },
       "buttons": {
         "cancel": "Annuler",
         "create": "Créer",
         "save": "Enregistrer"
-      },
-      "select_category": "Sélectionnez une catégorie"
+      }
     }
   }
 }

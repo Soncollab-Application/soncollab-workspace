@@ -2,12 +2,17 @@ import { Component, computed, inject, OnDestroy, OnInit, signal, effect, untrack
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { Choice, ChoiceOption, ChoiceConfig, ToastService, Offcanvas } from 'shared-lib';
+import { Choice, ChoiceOption, ChoiceConfig, ToastService, Offcanvas, RichTextEditor, ImageResult } from 'shared-lib';
 import { Subject, takeUntil } from 'rxjs';
 import { MarkdownModule } from 'ngx-markdown';
 import { BlogCategoryFilters } from '../../../models/content/blog-category.model';
 import { BlogArticleOffcanvasService } from '../../../services/admin/blog-article-offcanvas.service';
 import { AdminContentService } from '../../../services/admin/admin-content.service';
+import { MediaFile } from '../../../models/media/media-file.model';
+import { MediaPickerModal } from '../../../../pages/media/media-library/components/media-picker-modal/media-picker-modal';
+import { marked } from 'marked';
+import TurndownService from 'turndown';
+import {environment} from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-blog-article-offcanvas',
@@ -19,7 +24,9 @@ import { AdminContentService } from '../../../services/admin/admin-content.servi
     MarkdownModule,
     Choice,
     FormsModule,
-    Offcanvas
+    Offcanvas,
+    RichTextEditor,
+    MediaPickerModal
   ],
   templateUrl: './blog-article-offcanvas.html',
   styleUrl: './blog-article-offcanvas.css'
@@ -31,6 +38,8 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
   private toast = inject(ToastService);
   private translate = inject(TranslateService);
   private destroy$ = new Subject<void>();
+
+  private turndownService = new TurndownService();
 
   isOpen = computed(() => this.offcanvasService.getState().isOpen);
   mode = signal<'create' | 'edit'>('create');
@@ -45,11 +54,12 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
   articleForm!: FormGroup;
   categories = signal<any[]>([]);
 
-  title = computed(() =>
-    this.mode() === 'create'
-      ? this.translate.instant('blog-articles.offcanvas.title')
-      : this.translate.instant('blog-articles.offcanvas.title')
-  );
+  featuredImage = signal<MediaFile | null>(null);
+  ogImage = signal<MediaFile | null>(null);
+
+  showMediaPicker = signal(false);
+  currentImageField = signal<'featured_image' | 'og_image' | 'rich_text' | null>(null);
+  richTextImageCallback = signal<((result: ImageResult) => void) | null>(null);
 
   categoryOptions = computed<ChoiceOption[]>(() =>
     this.categories().map(cat => ({
@@ -77,6 +87,7 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
     allowHTML: false,
     itemSelectText: '',
     shouldSort: false,
+    removeItemButton: false
   };
 
   constructor() {
@@ -99,6 +110,33 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+
+  private async markdownToHtml(markdown: string): Promise<string> {
+    if (!markdown) return '';
+
+    try {
+      const html = await marked.parse(markdown, {
+        breaks: true,
+        gfm: true
+      });
+      return html;
+    } catch (error) {
+      console.error('Error converting markdown to HTML:', error);
+      return markdown;
+    }
+  }
+
+  private htmlToMarkdown(html: string): string {
+    if (!html) return '';
+
+    try {
+      return this.turndownService.turndown(html);
+    } catch (error) {
+      console.error('Error converting HTML to markdown:', error);
+      return html;
+    }
+  }
+
   private initForm(): void {
     this.articleForm = this.fb.group({
       title: ['', [Validators.required, Validators.maxLength(200)]],
@@ -114,15 +152,12 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
       content_status: ['draft']
     });
 
-
-
-
-    // Auto-calculate reading time from content
     this.articleForm.get('content')?.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(content => {
         if (content) {
-          const words = content.split(/\s+/).length;
+          const markdown = this.htmlToMarkdown(content);
+          const words = markdown.split(/\s+/).length;
           const readingTime = Math.ceil(words / 200);
           this.articleForm.patchValue({ reading_time: readingTime }, { emitEvent: false });
         }
@@ -135,6 +170,9 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
     this.articleId.set(data.articleId);
     this.activeTab.set('content');
     this.showPreview.set(false);
+
+    this.featuredImage.set(null);
+    this.ogImage.set(null);
 
     this.loadCategories();
 
@@ -167,20 +205,21 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
       });
   }
 
-  private loadArticle(documentId: string): void {
+  private async loadArticle(documentId: string): Promise<void> {
     this.loading.set(true);
 
     this.contentService.getBlogArticleById(documentId, this.locale())
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (response) => {
-          this.loading.set(false);
+        next: async (response) => {
           const article = response.data;
+
+          const htmlContent = await this.markdownToHtml(article.content || '');
 
           this.articleForm.patchValue({
             title: article.title,
             excerpt: article.excerpt,
-            content: article.content,
+            content: htmlContent,
             category: article.category?.documentId,
             is_featured: article.is_featured,
             reading_time: article.reading_time,
@@ -190,13 +229,31 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
             canonical_url: article.canonical_url,
             content_status: article.content_status
           });
+
+          if (article.featured_image) {
+            this.featuredImage.set(article.featured_image as any);
+          }
+
+          if (article.og_image) {
+            this.ogImage.set(article.og_image as any);
+          }
+
+          this.loading.set(false);
         },
-        error: (error) => {
+        error: () => {
           this.loading.set(false);
           this.toast.showError(this.translate.instant('blog-articles.messages.error_loading'));
           this.close();
         }
       });
+  }
+
+  setActiveTab(tab: 'content' | 'seo'): void {
+    this.activeTab.set(tab);
+  }
+
+  togglePreview(): void {
+    this.showPreview.update(val => !val);
   }
 
   close(): void {
@@ -206,6 +263,147 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
       content_status: 'draft',
       reading_time: 0
     });
+    this.featuredImage.set(null);
+    this.ogImage.set(null);
+  }
+
+  openMediaPickerForImage(field: 'featured_image' | 'og_image'): void {
+    this.currentImageField.set(field);
+    this.showMediaPicker.set(true);
+  }
+
+  onMediaPickerFileSelected(file: MediaFile): void {
+    const field = this.currentImageField();
+
+    // Cas du rich text editor
+    if (field === 'rich_text') {
+      const callback = this.richTextImageCallback();
+      if (callback) {
+        callback({
+          url: environment.api.baseUrl + file.url,
+          alt: file.alternativeText || file.name
+        });
+      }
+      this.showMediaPicker.set(false);
+      this.currentImageField.set(null);
+      this.richTextImageCallback.set(null);
+      return;
+    }
+
+    if (!field || (field !== 'featured_image' && field !== 'og_image')) return;
+
+    // Stocker l'image sélectionnée (pour CREATE et EDIT)
+    if (field === 'featured_image') {
+      this.featuredImage.set(file);
+    } else {
+      this.ogImage.set(file);
+    }
+
+    this.showMediaPicker.set(false);
+    this.currentImageField.set(null);
+
+    // En mode EDIT, faire la liaison immédiatement
+    if (this.mode() === 'edit' && this.articleId()) {
+      this.linkImageToArticle(field, file);
+    }
+  }
+
+  private linkImageToArticle(field: 'featured_image' | 'og_image', file: MediaFile): void {
+    const articleId = this.articleId();
+    if (!articleId) return;
+
+    this.saving.set(true);
+
+    // Mettre à jour l'article avec l'ID de l'image
+    const payload: any = {};
+    payload[field] = file.id;
+
+    this.contentService.updateBlogArticle(articleId, payload)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.saving.set(false);
+          this.toast.showSuccess(
+            this.translate.instant('blog-articles.messages.image_uploaded')
+          );
+        },
+        error: () => {
+          this.saving.set(false);
+          this.toast.showError(
+            this.translate.instant('blog-articles.messages.image_upload_error')
+          );
+          // Rollback en cas d'erreur
+          if (field === 'featured_image') {
+            this.featuredImage.set(null);
+          } else {
+            this.ogImage.set(null);
+          }
+        }
+      });
+  }
+
+  onMediaPickerClose(): void {
+    this.showMediaPicker.set(false);
+    this.currentImageField.set(null);
+    this.richTextImageCallback.set(null);
+  }
+
+  removeImage(field: 'featured_image' | 'og_image'): void {
+    const image = field === 'featured_image' ? this.featuredImage() : this.ogImage();
+
+    if (!image) return;
+
+    // En mode EDIT, supprimer la liaison immédiatement
+    if (this.mode() === 'edit' && this.articleId()) {
+      this.unlinkImageFromArticle(field);
+    } else {
+      if (field === 'featured_image') {
+        this.featuredImage.set(null);
+      } else {
+        this.ogImage.set(null);
+      }
+    }
+  }
+
+  private unlinkImageFromArticle(field: 'featured_image' | 'og_image'): void {
+    const articleId = this.articleId();
+    if (!articleId) return;
+
+    this.saving.set(true);
+
+    // Mettre à jour l'article en retirant l'image
+    const payload: any = {};
+    payload[field] = null;
+
+    this.contentService.updateBlogArticle(articleId, payload)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.saving.set(false);
+          if (field === 'featured_image') {
+            this.featuredImage.set(null);
+          } else {
+            this.ogImage.set(null);
+          }
+          this.toast.showSuccess(
+            this.translate.instant('blog-articles.messages.image_removed')
+          );
+        },
+        error: () => {
+          this.saving.set(false);
+          this.toast.showError(
+            this.translate.instant('blog-articles.messages.image_remove_error')
+          );
+        }
+      });
+  }
+
+
+
+  onImageSelectRequestedForRichText(callback: (result: ImageResult) => void): void {
+    this.richTextImageCallback.set(callback);
+    this.currentImageField.set('rich_text');
+    this.showMediaPicker.set(true);
   }
 
   onSubmit(): void {
@@ -218,10 +416,25 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
     this.saving.set(true);
     const formValue = this.articleForm.value;
 
-    const payload = {
+    const htmlContent = formValue.content;
+    const markdownContent = this.htmlToMarkdown(htmlContent);
+
+    const payload: any = {
       ...formValue,
+      content: markdownContent,
       locale: this.locale()
     };
+
+    // En mode CREATE, ajouter les IDs des images au payload
+    if (this.mode() === 'create') {
+      if (this.featuredImage()) {
+        payload.featured_image = this.featuredImage()!.id;
+      }
+
+      if (this.ogImage()) {
+        payload.og_image = this.ogImage()!.id;
+      }
+    }
 
     const request = this.mode() === 'create'
       ? this.contentService.createBlogArticle(payload)
@@ -234,44 +447,24 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
           this.toast.showSuccess(
             this.translate.instant(
               this.mode() === 'create'
-                ? 'blog-articles.messages.created'
-                : 'blog-articles.messages.updated'
+                ? 'blog-articles.messages.created_success'
+                : 'blog-articles.messages.updated_success'
             )
           );
 
           const state = this.offcanvasService.getState();
           if (state.onSuccess) {
-            state.onSuccess(response.data?.documentId);
+            state.onSuccess(response.data.documentId);
           }
 
           this.close();
         },
-        error: (error) => {
+        error: () => {
           this.saving.set(false);
-          this.toast.showError(this.translate.instant('blog-articles.messages.error_saving'));
+          this.toast.showError(this.translate.instant('blog-articles.messages.save_error'));
         }
       });
   }
 
-  togglePreview(): void {
-    this.showPreview.update(v => !v);
-  }
-
-  setActiveTab(tab: 'content' | 'seo'): void {
-    this.activeTab.set(tab);
-  }
-
-  onCategoryChange(event: any): void {
-    const categoryId = event?.detail?.[0];
-    if (categoryId) {
-      this.articleForm.patchValue({ category: categoryId });
-    }
-  }
-
-  onStatusChange(event: any): void {
-    const status = event?.detail?.[0];
-    if (status) {
-      this.articleForm.patchValue({ content_status: status });
-    }
-  }
+  protected readonly environment = environment;
 }

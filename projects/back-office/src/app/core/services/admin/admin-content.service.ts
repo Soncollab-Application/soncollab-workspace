@@ -208,6 +208,39 @@ export class AdminContentService {
     );
   }
 
+
+  uploadFileToEntry(
+    file: File,
+    refId: string,
+    ref: string,
+    field: string
+  ): Observable<any> {
+    const formData = new FormData();
+    formData.append('files', file);
+    formData.append('refId', refId);
+    formData.append('ref', ref);
+    formData.append('field', field);
+
+    return this.http.post(`${this.API_URL}/upload`, formData);
+  }
+
+  unlinkFileFromEntry(
+    fileId: number,
+    refId: string,
+    ref: string,
+    field: string
+  ): Observable<void> {
+    const params = new HttpParams()
+      .set('refId', refId)
+      .set('ref', ref)
+      .set('field', field);
+
+    return this.http.delete<void>(
+      `${this.API_URL}/upload/files/${fileId}`,
+      { params }
+    );
+  }
+
   getAvailableLocales() {
     return AVAILABLE_LOCALES;
   }
