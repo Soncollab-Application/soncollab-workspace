@@ -1,36 +1,67 @@
 import { Component, inject, input, output, signal, effect, computed, OnDestroy } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
-import { takeUntil } from 'rxjs';
-import { Subject } from 'rxjs';
-import {BreadcrumbItem, getBreadcrumbData} from '../../utils/breadcrumb.utils';
-import {MediaAssetItem} from '../media-asset-item/media-asset-item';
-import {MediaFolderItem} from '../media-folder-item/media-folder-item';
-import {MediaService} from '../../../../../core/services/media/media.service';
-import {MediaFile, MediaFolder} from '../../../../../core/models/media/media-file.model';
-import {MediaLibraryState} from '../../media-library.state';
-import {AuthService} from '../../../../../core/services/auth.service';
+import { takeUntil, Subject, debounceTime } from 'rxjs';
+import { BreadcrumbItem, getBreadcrumbData } from '../../utils/breadcrumb.utils';
+import { MediaAssetItem } from '../media-asset-item/media-asset-item';
+import { MediaFolderItem } from '../media-folder-item/media-folder-item';
+import { MediaService } from '../../../../../core/services/media/media.service';
+import { MediaFile, MediaFolder } from '../../../../../core/models/media/media-file.model';
+import { MediaLibraryState } from '../../media-library.state';
+import { AuthService } from '../../../../../core/services/auth.service';
+import { MediaUploadModal } from '../media-upload-modal/media-upload-modal';
+import { MediaCreateFolderModal } from '../media-create-folder-modal/media-create-folder-modal';
+import { MediaEditModal } from '../media-edit-modal/media-edit-modal';
+import { ToastService } from 'shared-lib';
+import { TranslateService } from '@ngx-translate/core';
+import { FormsModule } from '@angular/forms';
+
+type ActiveModal = 'picker' | 'upload' | 'createFolder' | 'edit' | null;
 
 @Component({
   selector: 'app-media-picker-modal',
   standalone: true,
-  imports: [CommonModule, TranslatePipe, MediaAssetItem, MediaFolderItem],
+  imports: [
+    CommonModule,
+    TranslatePipe,
+    MediaAssetItem,
+    MediaFolderItem,
+    MediaUploadModal,
+    MediaCreateFolderModal,
+    MediaEditModal,
+    FormsModule
+  ],
   templateUrl: './media-picker-modal.html',
   styleUrl: './media-picker-modal.css'
 })
 export class MediaPickerModal implements OnDestroy {
   private mediaService = inject(MediaService);
   private authService = inject(AuthService);
+  private toastService = inject(ToastService);
+  private translate = inject(TranslateService);
   private destroy$ = new Subject<void>();
+  private searchSubject$ = new Subject<string>();
 
   show = input.required<boolean>();
-
   close = output<void>();
   fileSelected = output<MediaFile>();
 
   state = new MediaLibraryState();
   breadcrumbs = signal<BreadcrumbItem[]>([]);
   selectedFile = signal<MediaFile | null>(null);
+  activeModal = signal<ActiveModal>(null);
+
+  showUploadModal = signal(false);
+  showCreateFolderModal = signal(false);
+  showEditModal = signal(false);
+
+  fileToEdit = signal<MediaFile | null>(null);
+  folderToEdit = signal<MediaFolder | null>(null);
+
+  searchQuery = signal('');
+  currentPage = signal(1);
+  pageSize = signal(20);
+  totalPages = signal(1);
 
   currentUserDocumentId = computed(() => {
     const user = this.authService.currentUser;
@@ -43,11 +74,12 @@ export class MediaPickerModal implements OnDestroy {
   constructor() {
     effect(() => {
       const shouldShow = this.show();
-
       if (shouldShow) {
         if (!this.isInitialized) {
           this.state.currentFolder.set(null);
           this.selectedFile.set(null);
+          this.activeModal.set('picker');
+          this.setupSearch();
           this.loadData();
           this.isInitialized = true;
         }
@@ -57,12 +89,27 @@ export class MediaPickerModal implements OnDestroy {
         this.closeModal();
       }
     });
+
+    effect(() => {
+      const currentFolder = this.state.currentFolder();
+      this.updateBreadcrumbs(currentFolder);
+    });
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
     this.cleanup();
+  }
+
+  private setupSearch(): void {
+    this.searchSubject$
+      .pipe(debounceTime(300), takeUntil(this.destroy$))
+      .subscribe(query => {
+        this.searchQuery.set(query);
+        this.currentPage.set(1);
+        this.loadData();
+      });
   }
 
   private openModal(): void {
@@ -88,9 +135,17 @@ export class MediaPickerModal implements OnDestroy {
     document.body.classList.remove('modal-open');
     document.body.style.overflow = '';
     document.body.style.paddingRight = '';
-
     const backdrops = document.querySelectorAll('.modal-backdrop');
     backdrops.forEach(backdrop => backdrop.remove());
+  }
+
+  private isInUsersFolder(folder?: MediaFolder | null): boolean {
+    if (!folder) return false;
+    if (folder.name === 'users') return true;
+    if (folder.hierarchy && folder.hierarchy.length > 0) {
+      return folder.hierarchy.some(h => h.name === 'users');
+    }
+    return false;
   }
 
   private loadData(): void {
@@ -100,16 +155,20 @@ export class MediaPickerModal implements OnDestroy {
 
     const currentFolder = this.state.currentFolder();
     const folderId = currentFolder?.id || null;
+    const search = this.searchQuery();
+    const page = this.currentPage();
+    const size = this.pageSize();
 
-    this.mediaService.getFiles(folderId, undefined, 1, 50, 'createdAt:DESC')
+    this.mediaService.getFiles(folderId, undefined, page, size, 'createdAt:DESC', search)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
           const imageFiles = response.data
             .filter(f => f.mime.startsWith('image/'))
+            .filter(f => !this.isInUsersFolder(f.folder))
             .map(f => ({ ...f, type: 'asset' as const, isSelectable: false }));
-
           this.state.files.set(imageFiles);
+          this.totalPages.set(response.meta.pagination.pageCount);
           this.state.isLoading.set(false);
         },
         error: () => {
@@ -117,52 +176,106 @@ export class MediaPickerModal implements OnDestroy {
         }
       });
 
-    this.mediaService.getFolders(folderId, 'name:ASC')
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (response) => {
-          const userId = this.currentUserDocumentId();
-          const folders = response.data
-            .filter(f => {
-              if (!userId) return true;
-              if (f.name === 'users') return false;
-              return true;
-            })
-            .map(f => ({ ...f, type: 'folder' as const, isSelectable: false }));
-
-          this.state.folders.set(folders);
-        }
-      });
-
-    this.updateBreadcrumbs();
+    if (page === 1) {
+      if (currentFolder) {
+        this.mediaService.getFolders(currentFolder.id, 'name:ASC', search)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe({
+            next: (response) => {
+              const folders = response.data
+                .filter(f => f.name !== 'users')
+                .filter(f => !this.isInUsersFolder(f))
+                .filter(f => !this.isInUsersFolder(f.parent))
+                .map(f => ({
+                  ...f,
+                  type: 'folder' as const,
+                  isSelectable: false
+                }));
+              this.state.folders.set(folders);
+            }
+          });
+      } else {
+        this.mediaService.getFolders(null, 'name:ASC', search)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe({
+            next: (response) => {
+              const folders = response.data
+                .filter(f => f.name !== 'users')
+                .filter(f => !this.isInUsersFolder(f))
+                .filter(f => !this.isInUsersFolder(f.parent))
+                .map(f => ({
+                  ...f,
+                  type: 'folder' as const,
+                  isSelectable: false
+                }));
+              this.state.folders.set(folders);
+            }
+          });
+      }
+    }
   }
 
-  private updateBreadcrumbs(): void {
-    this.breadcrumbs.set(getBreadcrumbData(this.state.currentFolder()));
+  private updateBreadcrumbs(currentFolder: MediaFolder | null): void {
+    this.breadcrumbs.set(getBreadcrumbData(currentFolder, this.currentUserDocumentId()));
   }
 
-  onFolderClick(folder: MediaFolder): void {
-    this.mediaService.getFolder(folder.documentId)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (response) => {
-          this.state.currentFolder.set(response.data);
-          this.loadData();
-        }
-      });
+  onSearchInput(value: string): void {
+    this.searchSubject$.next(value);
+  }
+
+  onClearSearch(): void {
+    this.searchQuery.set('');
+    this.currentPage.set(1);
+    this.loadData();
+  }
+
+  onPageChange(page: number): void {
+    if (page < 1 || page > this.totalPages()) return;
+    this.currentPage.set(page);
+    this.loadData();
   }
 
   onBreadcrumbClick(item: BreadcrumbItem): void {
     if (item.id === null) {
       this.state.currentFolder.set(null);
+      this.selectedFile.set(null);
+      this.currentPage.set(1);
+      this.searchQuery.set('');
+      this.loadData();
     } else if (item.folder) {
-      this.state.currentFolder.set(item.folder);
+      this.loadFolderById(item.folder.documentId);
     }
-    this.loadData();
+  }
+
+  onFolderClick(folder: MediaFolder): void {
+    this.loadFolderById(folder.documentId);
+  }
+
+  private loadFolderById(documentId: string): void {
+    this.state.isLoading.set(true);
+
+    this.mediaService.getFolder(documentId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.state.currentFolder.set(response.data);
+          this.selectedFile.set(null);
+          this.currentPage.set(1);
+          this.searchQuery.set('');
+          this.loadData();
+        },
+        error: () => {
+          this.state.isLoading.set(false);
+          this.toastService.showError(
+            this.translate.instant('mediaLibrary.messages.folderLoadError')
+          );
+        }
+      });
   }
 
   onFileClick(file: MediaFile): void {
-    if (this.selectedFile()?.id === file.id) {
+    const current = this.selectedFile();
+    if (current?.id === file.id) {
       this.selectedFile.set(null);
     } else {
       this.selectedFile.set(file);
@@ -171,14 +284,66 @@ export class MediaPickerModal implements OnDestroy {
 
   confirmSelection(): void {
     const selected = this.selectedFile();
-
     if (selected) {
       this.fileSelected.emit(selected);
-      this.close.emit();
+      this.onClose();
     }
   }
 
   onClose(): void {
     this.close.emit();
+  }
+
+  onOpenUpload(): void {
+    this.activeModal.set('upload');
+    this.showUploadModal.set(true);
+  }
+
+  onCloseUpload(): void {
+    this.showUploadModal.set(false);
+    this.activeModal.set('picker');
+  }
+
+  onUploadComplete(): void {
+    this.loadData();
+  }
+
+  onOpenCreateFolder(): void {
+    this.activeModal.set('createFolder');
+    this.showCreateFolderModal.set(true);
+  }
+
+  onCloseCreateFolder(): void {
+    this.showCreateFolderModal.set(false);
+    this.activeModal.set('picker');
+  }
+
+  onFolderCreated(): void {
+    this.loadData();
+  }
+
+  onEditFile(file: MediaFile): void {
+    this.fileToEdit.set(file);
+    this.folderToEdit.set(null);
+    this.activeModal.set('edit');
+    this.showEditModal.set(true);
+  }
+
+  onEditFolder(folder: MediaFolder): void {
+    this.folderToEdit.set(folder);
+    this.fileToEdit.set(null);
+    this.activeModal.set('edit');
+    this.showEditModal.set(true);
+  }
+
+  onCloseEdit(): void {
+    this.showEditModal.set(false);
+    this.fileToEdit.set(null);
+    this.folderToEdit.set(null);
+    this.activeModal.set('picker');
+  }
+
+  onEditComplete(): void {
+    this.loadData();
   }
 }

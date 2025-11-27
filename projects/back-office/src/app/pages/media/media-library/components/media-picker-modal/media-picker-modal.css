@@ -1,16 +1,48 @@
-/* Cacher TOUS les boutons d'action et checkboxes */
+/* projects/back-office/src/app/pages/media/media-library/components/media-picker-modal/media-picker-modal.css */
+#mediaPickerModal {
+  z-index: 1055;
+}
+
+#mediaPickerModal + .modal-backdrop {
+  z-index: 1054;
+}
+
+#mediaPickerModal app-media-asset-item,
+#mediaPickerModal app-media-folder-item {
+  cursor: pointer;
+}
+
+#mediaPickerModal .modal-xl {
+  max-width: 1200px;
+}
+
 #mediaPickerModal app-media-asset-item ::ng-deep .dropdown,
 #mediaPickerModal app-media-folder-item ::ng-deep .dropdown,
 #mediaPickerModal app-media-asset-item ::ng-deep .btn-group,
 #mediaPickerModal app-media-folder-item ::ng-deep .btn-group,
 #mediaPickerModal app-media-asset-item ::ng-deep .form-check,
-#mediaPickerModal app-media-folder-item ::ng-deep .form-check,
-#mediaPickerModal app-media-asset-item ::ng-deep button:not(.card),
-#mediaPickerModal app-media-folder-item ::ng-deep button:not(.card) {
+#mediaPickerModal app-media-folder-item ::ng-deep .form-check {
   display: none !important;
 }
 
-/* Cursor pointer sur les items */
-.col {
-  cursor: pointer;
+#mediaPickerModal app-media-asset-item ::ng-deep .edit-btn,
+#mediaPickerModal app-media-folder-item ::ng-deep .edit-btn {
+  display: inline-flex !important;
+}
+
+#mediaPickerModal .asset-card.selected {
+  border: 2px solid var(--fn-primary) !important;
+  box-shadow: 0 0 0 3px rgba(var(--fn-primary-rgb), 0.2) !important;
+}
+
+app-media-upload-modal .modal,
+app-media-create-folder-modal .modal,
+app-media-edit-modal .modal {
+  z-index: 1060 !important;
+}
+
+app-media-upload-modal .modal-backdrop,
+app-media-create-folder-modal .modal-backdrop,
+app-media-edit-modal .modal-backdrop {
+  z-index: 1059 !important;
 }
