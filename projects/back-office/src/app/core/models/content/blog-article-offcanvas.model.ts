@@ -1,7 +1,7 @@
 import {BlogArticle} from './blog-article.model';
 
 export interface BlogArticleOffcanvasData {
-  mode: 'create' | 'edit';
+  mode: 'create' | 'edit' | 'view';
   articleId?: string;
   locale: string;
   sourceDocumentId?: string;

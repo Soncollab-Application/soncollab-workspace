@@ -618,10 +618,16 @@ export class BlogArticles implements OnInit, OnDestroy {
   }
 
   viewArticle(article: BlogArticle): void {
-    this.router.navigate(['/admin/content/blog-articles', article.documentId], {
-      queryParams: { locale: this.currentLocale() }
-    });
+    this.offcanvasService.open(
+      {
+        mode: 'view',
+        articleId: article.documentId,
+        locale: article.locale
+      },
+      () => {}
+    );
   }
+
 
   editArticle(article: BlogArticle): void {
     this.offcanvasService.open(

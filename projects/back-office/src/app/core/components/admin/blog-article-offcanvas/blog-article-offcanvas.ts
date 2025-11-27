@@ -2,7 +2,16 @@ import { Component, computed, inject, OnDestroy, OnInit, signal, effect, untrack
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { Choice, ChoiceOption, ChoiceConfig, ToastService, Offcanvas, RichTextEditor, ImageResult } from 'shared-lib';
+import {
+  Choice,
+  ChoiceOption,
+  ChoiceConfig,
+  ToastService,
+  Offcanvas,
+  RichTextEditor,
+  ImageResult,
+  PermissionService
+} from 'shared-lib';
 import { Subject, takeUntil } from 'rxjs';
 import { MarkdownModule } from 'ngx-markdown';
 import { BlogCategoryFilters } from '../../../models/content/blog-category.model';
@@ -38,11 +47,12 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
   private toast = inject(ToastService);
   private translate = inject(TranslateService);
   private destroy$ = new Subject<void>();
+  private permissionsService = inject(PermissionService);
 
   private turndownService = new TurndownService();
 
   isOpen = computed(() => this.offcanvasService.getState().isOpen);
-  mode = signal<'create' | 'edit'>('create');
+  mode = signal<'create' | 'edit' | 'view'>('create');
   locale = signal('fr');
   articleId = signal<string | undefined>(undefined);
   loading = signal(false);
@@ -50,6 +60,11 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
 
   activeTab = signal<'content' | 'seo'>('content');
   showPreview = signal(false);
+
+  isViewMode = computed(() => this.mode() === 'view');
+  isEditMode = computed(() => this.mode() === 'edit');
+  isCreateMode = computed(() => this.mode() === 'create');
+  canEdit = computed(() => this.mode() !== 'view');
 
   articleForm!: FormGroup;
   categories = signal<any[]>([]);
@@ -66,6 +81,10 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
       value: cat.documentId,
       label: cat.name
     }))
+  );
+
+  canReviewArticle = computed(() =>
+    this.permissionsService.hasPermission('blog-article', 'blog-article', 'reviewContent')
   );
 
   statusOptions = computed<ChoiceOption[]>(() => [
@@ -149,7 +168,8 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
       seo_description: ['', [Validators.maxLength(160)]],
       seo_keywords: [''],
       canonical_url: [''],
-      content_status: ['draft']
+      content_status: ['draft'],
+      review_notes: ['']
     });
 
     this.articleForm.get('content')?.valueChanges
@@ -169,16 +189,18 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
     this.locale.set(data.locale);
     this.articleId.set(data.articleId);
     this.activeTab.set('content');
-    this.showPreview.set(false);
+    this.showPreview.set(data.mode === 'view');
 
     this.featuredImage.set(null);
     this.ogImage.set(null);
 
     this.loadCategories();
 
-    if (data.mode === 'edit' && data.articleId) {
+    if ((data.mode === 'edit' || data.mode === 'view') && data.articleId) {
       this.loadArticle(data.articleId);
     } else {
+      // Réactiver le formulaire en mode create
+      this.articleForm.enable();
       this.articleForm.reset({
         is_featured: false,
         content_status: 'draft',
@@ -227,8 +249,16 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
             seo_description: article.seo_description,
             seo_keywords: article.seo_keywords,
             canonical_url: article.canonical_url,
-            content_status: article.content_status
+            content_status: article.content_status,
+            review_notes: article.review_notes || ''
           });
+
+          // Gérer l'état du formulaire selon le mode
+          if (this.mode() === 'view') {
+            this.articleForm.disable();
+          } else {
+            this.articleForm.enable();
+          }
 
           if (article.featured_image) {
             this.featuredImage.set(article.featured_image as any);
@@ -258,6 +288,7 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
 
   close(): void {
     this.offcanvasService.close();
+    this.articleForm.enable();
     this.articleForm.reset({
       is_featured: false,
       content_status: 'draft',
@@ -420,10 +451,24 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
     const markdownContent = this.htmlToMarkdown(htmlContent);
 
     const payload: any = {
-      ...formValue,
+      title: formValue.title,
+      excerpt: formValue.excerpt,
       content: markdownContent,
+      category: formValue.category,
+      is_featured: formValue.is_featured,
+      reading_time: formValue.reading_time,
+      content_status: formValue.content_status,
+      seo_title: formValue.seo_title,
+      seo_description: formValue.seo_description,
+      seo_keywords: formValue.seo_keywords,
+      canonical_url: formValue.canonical_url,
       locale: this.locale()
     };
+
+    // Inclure review_notes uniquement si l'utilisateur est admin
+    if (this.canReviewArticle()) {
+      payload.review_notes = formValue.review_notes;
+    }
 
     // En mode CREATE, ajouter les IDs des images au payload
     if (this.mode() === 'create') {

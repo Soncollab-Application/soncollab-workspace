@@ -20,7 +20,9 @@
       <p class="mb-0 small text-muted">
         {{ mode() === 'create'
         ? ('blog-articles.offcanvas.subtitle_create' | translate)
-        : ('blog-articles.offcanvas.subtitle_edit' | translate) }}
+        : mode() === 'edit'
+          ? ('blog-articles.offcanvas.subtitle_edit' | translate)
+          : ('blog-articles.offcanvas.subtitle_view' | translate) }}
         <span class="badge bg-secondary ms-2">{{ locale().toUpperCase() }}</span>
       </p>
     </div>
@@ -40,28 +42,30 @@
     @if (!showPreview()) {
       <form [formGroup]="articleForm" (ngSubmit)="onSubmit()">
 
-        <div class="border-bottom">
-          <ul class="nav nav-tabs border-0 px-4">
-            <li class="nav-item">
-              <button type="button"
-                      class="nav-link"
-                      [class.active]="activeTab() === 'content'"
-                      (click)="setActiveTab('content')">
-                <span class="material-symbols-outlined me-2">article</span>
-                {{ 'blog-articles.offcanvas.tabs.content' | translate }}
-              </button>
-            </li>
-            <li class="nav-item">
-              <button type="button"
-                      class="nav-link"
-                      [class.active]="activeTab() === 'seo'"
-                      (click)="setActiveTab('seo')">
-                <span class="material-symbols-outlined me-2">search</span>
-                {{ 'blog-articles.offcanvas.tabs.seo' | translate }}
-              </button>
-            </li>
-          </ul>
-        </div>
+        @if (!isViewMode()) {
+          <div class="border-bottom">
+            <ul class="nav nav-tabs border-0 px-4">
+              <li class="nav-item">
+                <button type="button"
+                        class="nav-link"
+                        [class.active]="activeTab() === 'content'"
+                        (click)="setActiveTab('content')">
+                  <span class="material-symbols-outlined me-2">article</span>
+                  {{ 'blog-articles.offcanvas.tabs.content' | translate }}
+                </button>
+              </li>
+              <li class="nav-item">
+                <button type="button"
+                        class="nav-link"
+                        [class.active]="activeTab() === 'seo'"
+                        (click)="setActiveTab('seo')">
+                  <span class="material-symbols-outlined me-2">search</span>
+                  {{ 'blog-articles.offcanvas.tabs.seo' | translate }}
+                </button>
+              </li>
+            </ul>
+          </div>
+        }
 
         <div class="p-4">
           @if (activeTab() === 'content') {
@@ -105,13 +109,15 @@
                          [alt]="featuredImage()!.name"
                          class="img-thumbnail"
                          style="max-width: 200px; height: auto;">
-                    <button type="button"
-                            class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1"
-                            (click)="removeImage('featured_image')">
-                      <span class="material-symbols-outlined" style="font-size: 16px;">close</span>
-                    </button>
+                    @if (!isViewMode()) {
+                      <button type="button"
+                              class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1"
+                              (click)="removeImage('featured_image')">
+                        <span class="material-symbols-outlined" style="font-size: 16px;">close</span>
+                      </button>
+                    }
                   </div>
-                } @else {
+                } @else if (!isViewMode()) {
                   <button type="button"
                           class="btn btn-outline-primary btn-sm"
                           (click)="openMediaPickerForImage('featured_image')">
@@ -150,7 +156,7 @@
                 </label>
                 <lib-rich-text-editor
                   formControlName="content"
-                  [enableMediaPicker]="true"
+                  [enableMediaPicker]="!isViewMode()"
                   (imageSelectRequested)="onImageSelectRequestedForRichText($event)">
                 </lib-rich-text-editor>
               </div>
@@ -217,13 +223,15 @@
                          [alt]="ogImage()!.name"
                          class="img-thumbnail"
                          style="max-width: 200px; height: auto;">
-                    <button type="button"
-                            class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1"
-                            (click)="removeImage('og_image')">
-                      <span class="material-symbols-outlined" style="font-size: 16px;">close</span>
-                    </button>
+                    @if (!isViewMode()) {
+                      <button type="button"
+                              class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1"
+                              (click)="removeImage('og_image')">
+                        <span class="material-symbols-outlined" style="font-size: 16px;">close</span>
+                      </button>
+                    }
                   </div>
-                } @else {
+                } @else if (!isViewMode()) {
                   <button type="button"
                           class="btn btn-outline-primary btn-sm"
                           (click)="openMediaPickerForImage('og_image')">
@@ -242,6 +250,29 @@
                        formControlName="canonical_url"
                        placeholder="https://...">
               </div>
+
+              @if (mode() === 'edit' || mode() === 'view') {
+                <div class="mb-3">
+                  <label class="form-label small fw-semibold d-flex align-items-center">
+                    <span class="material-symbols-outlined me-1 text-info">comment</span>
+                    {{ 'blog-articles.offcanvas.review_notes' | translate }}
+                  </label>
+                  <textarea
+                    class="form-control"
+                    formControlName="review_notes"
+                    rows="3"
+                    [placeholder]="'blog-articles.offcanvas.review_notes_placeholder' | translate"
+                    maxlength="500"
+                    [readonly]="!canReviewArticle()"></textarea>
+                  <small class="text-muted d-block mt-1">
+                    @if (canReviewArticle()) {
+                      {{ 'blog-articles.offcanvas.review_notes_hint_admin' | translate }}
+                    } @else {
+                      {{ 'blog-articles.offcanvas.review_notes_hint_readonly' | translate }}
+                    }
+                  </small>
+                </div>
+              }
             </div>
           }
         </div>
@@ -273,39 +304,41 @@
             class="btn btn-outline-secondary flex-fill"
             (click)="close()"
             [disabled]="saving() || loading()">
-      {{ 'common.cancel' | translate }}
+      {{ isViewMode() ? ('common.close' | translate) : ('common.cancel' | translate) }}
     </button>
 
-    @if (!showPreview()) {
-      <button type="button"
-              class="btn btn-outline-primary"
-              (click)="togglePreview()"
-              [disabled]="loading()">
-        <span class="material-symbols-outlined">visibility</span>
-      </button>
-    } @else {
-      <button type="button"
-              class="btn btn-outline-primary"
-              (click)="togglePreview()"
-              [disabled]="loading()">
-        <span class="material-symbols-outlined">edit</span>
+    @if (!isViewMode()) {
+      @if (!showPreview()) {
+        <button type="button"
+                class="btn btn-outline-primary"
+                (click)="togglePreview()"
+                [disabled]="loading()">
+          <span class="material-symbols-outlined">visibility</span>
+        </button>
+      } @else {
+        <button type="button"
+                class="btn btn-outline-primary"
+                (click)="togglePreview()"
+                [disabled]="loading()">
+          <span class="material-symbols-outlined">edit</span>
+        </button>
+      }
+
+      <button type="submit"
+              class="btn btn-primary flex-fill d-flex align-items-center justify-content-center"
+              [disabled]="articleForm.invalid || saving() || loading()"
+              (click)="onSubmit()">
+        @if (saving()) {
+          <span class="spinner-border spinner-border-sm me-2"></span>
+        } @else {
+          <span class="material-symbols-outlined me-2">{{ mode() === 'create' ? 'add' : 'save' }}</span>
+        }
+        {{ mode() === 'create'
+        ? ('blog-articles.offcanvas.buttons.create' | translate)
+        : ('blog-articles.offcanvas.buttons.save' | translate)
+        }}
       </button>
     }
-
-    <button type="submit"
-            class="btn btn-primary flex-fill d-flex align-items-center justify-content-center"
-            [disabled]="articleForm.invalid || saving() || loading()"
-            (click)="onSubmit()">
-      @if (saving()) {
-        <span class="spinner-border spinner-border-sm me-2"></span>
-      } @else {
-        <span class="material-symbols-outlined me-2">{{ mode() === 'create' ? 'add' : 'save' }}</span>
-      }
-      {{ mode() === 'create'
-      ? ('blog-articles.offcanvas.buttons.create' | translate)
-      : ('blog-articles.offcanvas.buttons.save' | translate)
-      }}
-    </button>
   </div>
 </lib-offcanvas>
 

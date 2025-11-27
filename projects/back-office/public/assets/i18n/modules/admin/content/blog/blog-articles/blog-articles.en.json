@@ -140,6 +140,11 @@
       "seo_keywords": "SEO Keywords",
       "seo_keywords_placeholder": "keywords, separated, by, commas",
       "canonical_url": "Canonical URL",
+      "review_notes": "Review Notes",
+      "review_notes_placeholder": "Administrator notes about the review...",
+      "review_notes_hint_admin": "Internal notes editable only by administrators",
+      "review_notes_hint_readonly": "Administrator notes (read-only)",
+      "subtitle_view": "Article Preview",
       "hints": {
         "excerpt": "Maximum 300 characters",
         "markdown": "You can use Markdown to format your content",

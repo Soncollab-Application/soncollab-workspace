@@ -140,6 +140,11 @@
       "seo_keywords": "Mots-clés SEO",
       "seo_keywords_placeholder": "mots-clés, séparés, par, virgules",
       "canonical_url": "URL canonique",
+      "review_notes": "Notes de révision",
+      "review_notes_placeholder": "Notes de l'administrateur concernant la révision...",
+      "review_notes_hint_admin": "Notes internes modifiables uniquement par les administrateurs",
+      "review_notes_hint_readonly": "Notes de l'administrateur (lecture seule)",
+      "subtitle_view": "Prévisualisation de l'article",
       "hints": {
         "excerpt": "Maximum 300 caractères",
         "markdown": "Vous pouvez utiliser Markdown pour formater votre contenu",
