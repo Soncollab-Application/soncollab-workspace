@@ -1,11 +1,11 @@
-import {Component, computed, effect, inject, OnDestroy, OnInit, signal} from '@angular/core';
+import {Component, computed, inject, OnDestroy, OnInit, signal} from '@angular/core';
 import {MediaLibraryState} from './media-library.state';
 import {distinctUntilChanged, Subject, takeUntil} from 'rxjs';
 import {MediaFilterBar, MediaFilterField} from './components/media-filter-bar/media-filter-bar';
 import {BreadcrumbItem, getBreadcrumbData, getEllipsisItems} from './utils/breadcrumb.utils';
 import {FolderTreeNode, MediaFile, MediaFolder, SortOption} from '../../../core/models/media/media-file.model';
 import {MediaService} from '../../../core/services/media/media.service';
-import {ConfirmDialogService, DropdownSingleDirective, ToastService} from 'shared-lib';
+import {ConfirmDialogService, DropdownSingleDirective, ToastService, PermissionService} from 'shared-lib';
 import {TranslateModule, TranslateService} from '@ngx-translate/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {environment} from '../../../../environments/environment';
@@ -41,7 +41,6 @@ export class MediaLibrary implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private searchSubject$ = new Subject<string>();
 
-  // Services
   private mediaService = inject(MediaService);
   private toastService = inject(ToastService);
   private confirmDialog = inject(ConfirmDialogService);
@@ -49,11 +48,10 @@ export class MediaLibrary implements OnInit, OnDestroy {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private authService = inject(AuthService);
+  private permissionService = inject(PermissionService);
 
-  // State
   state = new MediaLibraryState();
 
-  // UI State
   showUploadModal = signal(false);
   showCreateFolderModal = signal(false);
   showEditFileModal = signal(false);
@@ -63,20 +61,53 @@ export class MediaLibrary implements OnInit, OnDestroy {
   fileToEdit = signal<MediaFile | null>(null);
   folderToEdit = signal<MediaFolder | null>(null);
 
-  // Move functionality
   folderStructure = signal<FolderTreeNode[]>([]);
   selectedDestinationFolder = signal<string | null>(null);
   filesToMove = signal<Array<MediaFile | MediaFolder>>([]);
 
-  // Filters
   selectedFilterField = signal<string | null>(null);
   selectedFilterOperator = signal<string | null>(null);
   selectedFilterValue = signal<string | null>(null);
   appliedFilters = signal<MediaFilterField[]>([]);
 
+  // Permissions API
+  hasPermissionFind = computed(() =>
+    this.permissionService.hasPermission('media-library', 'media-library', 'find')
+  );
 
-  // Computed
+  hasPermissionUpload = computed(() =>
+    this.permissionService.hasPermission('media-library', 'media-library', 'upload')
+  );
 
+  hasPermissionUpdate = computed(() =>
+    this.permissionService.hasPermission('media-library', 'media-library', 'update')
+  );
+
+  hasPermissionDelete = computed(() =>
+    this.permissionService.hasPermission('media-library', 'media-library', 'delete')
+  );
+
+  hasPermissionCreateFolder = computed(() =>
+    this.permissionService.hasPermission('media-library', 'media-library', 'createFolder')
+  );
+
+  hasPermissionDeleteFolder = computed(() =>
+    this.permissionService.hasPermission('media-library', 'media-library', 'deleteFolder')
+  );
+
+  hasPermissionBulkDelete = computed(() =>
+    this.permissionService.hasPermission('media-library', 'media-library', 'bulkDelete')
+  );
+
+  hasPermissionBulkMove = computed(() =>
+    this.permissionService.hasPermission('media-library', 'media-library', 'bulkMove')
+  );
+
+  hasPermissionUpdateFolder = computed(() =>
+    this.permissionService.hasPermission('media-library', 'media-library', 'updateFolder')
+  );
+
+  // Computed - Logique métier
   currentUserDocumentId = computed(() => {
     const user = this.authService.currentUser;
     return user?.documentId || null;
@@ -85,8 +116,6 @@ export class MediaLibrary implements OnInit, OnDestroy {
   breadcrumbs = computed(() =>
     getBreadcrumbData(this.state.currentFolder(), this.currentUserDocumentId())
   );
-
-
 
   ellipsisItems = computed(() =>
     getEllipsisItems(this.state.currentFolder(), this.currentUserDocumentId())
@@ -98,25 +127,30 @@ export class MediaLibrary implements OnInit, OnDestroy {
   );
 
   canUpload = computed(() =>
-    this.state.canUpload(this.currentUserDocumentId())
+    this.hasPermissionUpload() && this.state.canUpload(this.currentUserDocumentId())
   );
 
   canCreateFolder = computed(() =>
-    this.state.canCreateFolder(this.currentUserDocumentId())
+    this.hasPermissionCreateFolder() && this.state.canCreateFolder(this.currentUserDocumentId())
   );
+
+  canEditFile = computed(() => this.hasPermissionUpdate());
+  canEditFolder = computed(() => this.hasPermissionUpdateFolder());
+  canDeleteFile = computed(() => this.hasPermissionDelete());
+  canDeleteFolder = computed(() => this.hasPermissionDeleteFolder());
+  canMoveItems = computed(() => this.hasPermissionBulkMove());
+  canBulkDeleteItems = computed(() => this.hasPermissionBulkDelete());
 
   showSelectAll = computed(() => {
     const folder = this.state.currentFolder();
-    if (!folder) return true; // Racine OK
+    if (!folder) return true;
 
     const userId = this.currentUserDocumentId();
 
-    // Si le dossier appartient à l'utilisateur connecté, afficher
     if (userId && folder.ownerDocumentId === userId) {
       return true;
     }
 
-    // Si on a hierarchy (= dans users mais pas le propriétaire), cacher
     if (folder.hierarchy && folder.hierarchy.length > 0) {
       return false;
     }
@@ -225,7 +259,6 @@ export class MediaLibrary implements OnInit, OnDestroy {
     const currentParams = this.route.snapshot.queryParams;
     const hasAnyFilter = this.appliedFilters().length > 0;
 
-    // Load files
     this.mediaService.getFiles(folderId, folderPath, page, pageSize, sort, search, currentParams)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -259,13 +292,10 @@ export class MediaLibrary implements OnInit, OnDestroy {
           }
         });
     } else {
-      // Si filtres actifs, vider les folders
       this.state.folders.set([]);
     }
   }
 
-
-  // ==================== NAVIGATION ====================
 
   onFolderClick(folder: MediaFolder): void {
     this.state.isLoading.set(true);
@@ -443,10 +473,9 @@ export class MediaLibrary implements OnInit, OnDestroy {
   }
 
 
-  // Upload
   onOpenUpload(): void {
     if (!this.canUpload()) {
-      this.toastService.showWarning(this.translate.instant('mediaLibrary.warnings.cannotUploadHere'));
+      this.toastService.showWarning(this.translate.instant('mediaLibrary.warnings.noPermission'));
       return;
     }
     this.showUploadModal.set(true);
@@ -465,10 +494,9 @@ export class MediaLibrary implements OnInit, OnDestroy {
     this.handleRouteChange(currentParams);
   }
 
-  // Create Folder
   onOpenCreateFolder(): void {
     if (!this.canCreateFolder()) {
-      this.toastService.showWarning(this.translate.instant('mediaLibrary.warnings.cannotCreateFolderHere'));
+      this.toastService.showWarning(this.translate.instant('mediaLibrary.warnings.noPermission'));
       return;
     }
     this.showCreateFolderModal.set(true);
@@ -482,13 +510,20 @@ export class MediaLibrary implements OnInit, OnDestroy {
     this.refreshCurrentPage();
   }
 
-  // Edit
   onEditFile(file: MediaFile): void {
+    if (!this.canEditFile()) {
+      this.toastService.showWarning(this.translate.instant('mediaLibrary.warnings.noPermission'));
+      return;
+    }
     this.fileToEdit.set(file);
     this.showEditFileModal.set(true);
   }
 
   onEditFolder(folder: MediaFolder): void {
+    if (!this.canEditFolder()) {
+      this.toastService.showWarning(this.translate.instant('mediaLibrary.warnings.noPermission'));
+      return;
+    }
     this.folderToEdit.set(folder);
     this.showEditFolderModal.set(true);
   }
@@ -504,13 +539,20 @@ export class MediaLibrary implements OnInit, OnDestroy {
     this.refreshCurrentPage();
   }
 
-  // Move
   onMoveItem(item: MediaFile | MediaFolder): void {
+    if (!this.canMoveItems()) {
+      this.toastService.showWarning(this.translate.instant('mediaLibrary.warnings.noPermission'));
+      return;
+    }
     this.filesToMove.set([item]);
     this.loadFolderStructureAndOpenModal();
   }
 
   onMoveBulk(): void {
+    if (!this.canMoveItems()) {
+      this.toastService.showWarning(this.translate.instant('mediaLibrary.warnings.noPermission'));
+      return;
+    }
     this.filesToMove.set(this.state.selectedItems());
     this.loadFolderStructureAndOpenModal();
   }
@@ -529,7 +571,6 @@ export class MediaLibrary implements OnInit, OnDestroy {
         next: (response) => {
           const currentFolder = this.state.currentFolder();
 
-          // Si on déplace uniquement des fichiers, le dossier courant est une destination valide
           const currentFolderId = onlyFiles ? undefined : currentFolder?.documentId;
 
           const filteredStructure = this.filterInvalidDestinations(
@@ -541,21 +582,18 @@ export class MediaLibrary implements OnInit, OnDestroy {
           const structure: FolderTreeNode[] = [];
 
           if (currentFolder !== null) {
-            // On est dans un sous-dossier
             structure.push({
               value: null,
               label: this.translate.instant('mediaLibrary.move.root'),
               children: filteredStructure
             });
 
-            // Sélectionner par défaut le dossier courant si on déplace des fichiers
             if (onlyFiles && currentFolder) {
               this.selectedDestinationFolder.set(currentFolder.documentId);
             } else {
               this.selectedDestinationFolder.set(null);
             }
           } else {
-            // On est à la racine
             structure.push(...filteredStructure);
             if (filteredStructure.length > 0) {
               this.selectedDestinationFolder.set(filteredStructure[0].value);
@@ -603,8 +641,12 @@ export class MediaLibrary implements OnInit, OnDestroy {
     this.selectedDestinationFolder.set(destination);
   }
 
-  // Delete
   async onDeleteFile(file: MediaFile): Promise<void> {
+    if (!this.canDeleteFile()) {
+      this.toastService.showWarning(this.translate.instant('mediaLibrary.warnings.noPermission'));
+      return;
+    }
+
     const confirmed = await this.confirmDialog.confirmDelete(file.name);
     if (!confirmed) return;
 
@@ -626,6 +668,11 @@ export class MediaLibrary implements OnInit, OnDestroy {
   }
 
   async onDeleteFolder(folder: MediaFolder): Promise<void> {
+    if (!this.canDeleteFolder()) {
+      this.toastService.showWarning(this.translate.instant('mediaLibrary.warnings.noPermission'));
+      return;
+    }
+
     const confirmed = await this.confirmDialog.confirmDelete(folder.name);
     if (!confirmed) return;
 
@@ -647,6 +694,11 @@ export class MediaLibrary implements OnInit, OnDestroy {
   }
 
   async onBulkDelete(): Promise<void> {
+    if (!this.canBulkDeleteItems()) {
+      this.toastService.showWarning(this.translate.instant('mediaLibrary.warnings.noPermission'));
+      return;
+    }
+
     const confirmed = await this.confirmDialog.open({
       title: this.translate.instant('mediaLibrary.confirm.bulkDelete.title'),
       message: this.translate.instant('mediaLibrary.confirm.bulkDelete.message', {
@@ -683,7 +735,6 @@ export class MediaLibrary implements OnInit, OnDestroy {
       });
   }
 
-  // Download & Copy
   onDownloadFile(file: MediaFile): void {
     const url = file.url.startsWith('http') ? file.url : environment.api.baseUrl + file.url;
     window.open(url, '_blank');

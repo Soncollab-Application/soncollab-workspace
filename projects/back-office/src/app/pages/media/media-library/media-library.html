@@ -10,40 +10,37 @@
         @for (crumb of breadcrumbs(); track crumb.id) {
           <li class="breadcrumb-item" [class.active]="$last">
             @if (crumb.isEllipsis) {
-              <!-- Ellipsis avec dropdown -->
               <div class="dropdown d-inline">
                 <a
-                  class="text-decoration-none"
-                  href="javascript:void(0)"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                  style="cursor: pointer;">
-                  {{ crumb.label }}
+                class="text-decoration-none"
+                href="javascript:void(0)"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                style="cursor: pointer;">
+                {{ crumb.label }}
                 </a>
                 <ul class="dropdown-menu">
                   @for (item of ellipsisItems(); track item.id) {
                     <li>
                       <a
-                        class="dropdown-item"
-                        href="javascript:void(0)"
-                        (click)="onBreadcrumbClick(item)">
-                        {{ item.label }}
+                      class="dropdown-item"
+                      href="javascript:void(0)"
+                      (click)="onBreadcrumbClick(item)">
+                      {{ item.label }}
                       </a>
                     </li>
                   }
                 </ul>
               </div>
             } @else if (!$last) {
-              <!-- Item cliquable -->
-                <a
-                class="text-decoration-none"
+              <a
+              class="text-decoration-none"
                 href="javascript:void(0)"
                 (click)="onBreadcrumbClick(crumb)"
                 style="cursor: pointer;">
               {{ crumb.label }}
               </a>
             } @else {
-              <!-- Dernier item (non cliquable) -->
               <span>{{ crumb.label }}</span>
             }
           </li>
@@ -56,8 +53,7 @@
       @if (canUpload()) {
         <button
           class="btn btn-primary flex-grow-1 flex-sm-grow-0"
-          (click)="onOpenUpload()"
-          [disabled]="!canUpload()">
+          (click)="onOpenUpload()">
           <span class="material-symbols-outlined">upload</span>
           <span class="d-none d-sm-inline ms-1">{{ 'mediaLibrary.actions.upload' | translate }}</span>
         </button>
@@ -66,8 +62,7 @@
       @if (canCreateFolder()) {
         <button
           class="btn btn-outline-primary flex-grow-1 flex-sm-grow-0"
-          (click)="onOpenCreateFolder()"
-          [disabled]="!canCreateFolder()">
+          (click)="onOpenCreateFolder()">
           <span class="material-symbols-outlined">create_new_folder</span>
           <span class="d-none d-sm-inline ms-1">{{ 'mediaLibrary.actions.createFolder' | translate }}</span>
         </button>
@@ -115,20 +110,24 @@
       }
     </span>
       <div class="d-flex gap-2">
-        <button
-          type="button"
-          class="btn btn-sm btn-outline-primary"
-          (click)="onMoveBulk()">
-          <span class="material-symbols-outlined me-1">drive_file_move</span>
-          {{ 'mediaLibrary.actions.move' | translate }}
-        </button>
-        <button
-          type="button"
-          class="btn btn-sm btn-outline-danger"
-          (click)="onBulkDelete()">
-          <span class="material-symbols-outlined me-1">delete</span>
-          {{ 'mediaLibrary.actions.delete' | translate }}
-        </button>
+        @if (canMoveItems()) {
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-primary"
+            (click)="onMoveBulk()">
+            <span class="material-symbols-outlined me-1">drive_file_move</span>
+            {{ 'mediaLibrary.actions.move' | translate }}
+          </button>
+        }
+        @if (canBulkDeleteItems()) {
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-danger"
+            (click)="onBulkDelete()">
+            <span class="material-symbols-outlined me-1">delete</span>
+            {{ 'mediaLibrary.actions.delete' | translate }}
+          </button>
+        }
         <button
           type="button"
           class="btn btn-sm btn-outline-secondary"
@@ -182,9 +181,9 @@
         </div>
       }
 
-    @if (state.folders().length > 0 && state.files().length > 0) {
-      <hr class="my-5">
-    }
+      @if (state.folders().length > 0 && state.files().length > 0) {
+        <hr class="my-5">
+      }
 
       <!-- Section Assets -->
       @if (state.files().length > 0) {
@@ -225,7 +224,7 @@
             <thead>
             <tr>
               <th style="width: 40px;" class="text-center">
-                @if (!state.isInUsersFolder()) {
+                @if (showSelectAll()) {
                   <input
                     class="form-check-input"
                     type="checkbox"
@@ -236,7 +235,6 @@
               </th>
               <th style="width: 60px;"></th>
 
-              <!-- Name - Sortable -->
               <th class="sortable-header" (click)="onTableSort('name')">
                 <div class="d-flex align-items-center gap-2">
                   <span>{{ 'mediaLibrary.table.name' | translate }}</span>
@@ -249,7 +247,6 @@
               <th style="width: 120px;">{{ 'mediaLibrary.table.type' | translate }}</th>
               <th style="width: 100px;">{{ 'mediaLibrary.table.size' | translate }}</th>
 
-              <!-- CreatedAt - Sortable -->
               <th style="width: 150px;" class="sortable-header" (click)="onTableSort('createdAt')">
                 <div class="d-flex align-items-center gap-2">
                   <span>{{ 'mediaLibrary.table.createdAt' | translate }}</span>
@@ -302,25 +299,31 @@
                           <span class="material-symbols-outlined">more_vert</span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
-                          <li>
-                            <a class="dropdown-item" href="javascript:void(0)" (click)="onEditFolder(folder)">
-                              <span class="material-symbols-outlined me-2">edit</span>
-                              {{ 'mediaLibrary.actions.edit' | translate }}
-                            </a>
-                          </li>
-                          <li>
-                            <a class="dropdown-item" href="javascript:void(0)" (click)="onMoveItem(folder)">
-                              <span class="material-symbols-outlined me-2">drive_file_move</span>
-                              {{ 'mediaLibrary.actions.move' | translate }}
-                            </a>
-                          </li>
-                          <li><hr class="dropdown-divider"></li>
-                          <li>
-                            <a class="dropdown-item text-danger" href="javascript:void(0)" (click)="onDeleteFolder(folder)">
-                              <span class="material-symbols-outlined me-2">delete</span>
-                              {{ 'mediaLibrary.actions.delete' | translate }}
-                            </a>
-                          </li>
+                          @if (canEditFolder()) {
+                            <li>
+                              <a class="dropdown-item" href="javascript:void(0)" (click)="onEditFolder(folder)">
+                                <span class="material-symbols-outlined me-2">edit</span>
+                                {{ 'mediaLibrary.actions.edit' | translate }}
+                              </a>
+                            </li>
+                          }
+                          @if (canMoveItems()) {
+                            <li>
+                              <a class="dropdown-item" href="javascript:void(0)" (click)="onMoveItem(folder)">
+                                <span class="material-symbols-outlined me-2">drive_file_move</span>
+                                {{ 'mediaLibrary.actions.move' | translate }}
+                              </a>
+                            </li>
+                          }
+                          @if (canDeleteFolder()) {
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                              <a class="dropdown-item text-danger" href="javascript:void(0)" (click)="onDeleteFolder(folder)">
+                                <span class="material-symbols-outlined me-2">delete</span>
+                                {{ 'mediaLibrary.actions.delete' | translate }}
+                              </a>
+                            </li>
+                          }
                         </ul>
                       </div>
                     }
@@ -374,12 +377,14 @@
                           <span class="material-symbols-outlined">more_vert</span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
-                          <li>
-                            <a class="dropdown-item" href="javascript:void(0)" (click)="onEditFile(file)">
-                              <span class="material-symbols-outlined me-2">edit</span>
-                              {{ 'mediaLibrary.actions.edit' | translate }}
-                            </a>
-                          </li>
+                          @if (canEditFile()) {
+                            <li>
+                              <a class="dropdown-item" href="javascript:void(0)" (click)="onEditFile(file)">
+                                <span class="material-symbols-outlined me-2">edit</span>
+                                {{ 'mediaLibrary.actions.edit' | translate }}
+                              </a>
+                            </li>
+                          }
                           <li>
                             <a class="dropdown-item" href="javascript:void(0)" (click)="onDownloadFile(file)">
                               <span class="material-symbols-outlined me-2">download</span>
@@ -392,19 +397,23 @@
                               {{ 'mediaLibrary.actions.copyLink' | translate }}
                             </a>
                           </li>
-                          <li>
-                            <a class="dropdown-item" href="javascript:void(0)" (click)="onMoveItem(file)">
-                              <span class="material-symbols-outlined me-2">drive_file_move</span>
-                              {{ 'mediaLibrary.actions.move' | translate }}
-                            </a>
-                          </li>
-                          <li><hr class="dropdown-divider"></li>
-                          <li>
-                            <a class="dropdown-item text-danger" href="javascript:void(0)" (click)="onDeleteFile(file)">
-                              <span class="material-symbols-outlined me-2">delete</span>
-                              {{ 'mediaLibrary.actions.delete' | translate }}
-                            </a>
-                          </li>
+                          @if (canMoveItems()) {
+                            <li>
+                              <a class="dropdown-item" href="javascript:void(0)" (click)="onMoveItem(file)">
+                                <span class="material-symbols-outlined me-2">drive_file_move</span>
+                                {{ 'mediaLibrary.actions.move' | translate }}
+                              </a>
+                            </li>
+                          }
+                          @if (canDeleteFile()) {
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                              <a class="dropdown-item text-danger" href="javascript:void(0)" (click)="onDeleteFile(file)">
+                                <span class="material-symbols-outlined me-2">delete</span>
+                                {{ 'mediaLibrary.actions.delete' | translate }}
+                              </a>
+                            </li>
+                          }
                         </ul>
                       </div>
                     }
