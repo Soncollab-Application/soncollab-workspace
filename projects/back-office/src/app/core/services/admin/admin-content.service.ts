@@ -11,6 +11,8 @@ import {
 
 import { ContentStatsResponse } from '../../models/content/content-stats.model';
 import {BlogCategoryFilters, BlogCategoryListResponse} from '../../models/content/blog-category.model';
+import {HelpArticle, HelpArticleFilters, HelpArticleListResponse} from '../../models/content/help-article.model';
+import {HelpCategoryFilters, HelpCategoryListResponse} from '../../models/content/help-category.model';
 
 @Injectable({ providedIn: 'root' })
 export class AdminContentService {
@@ -243,5 +245,140 @@ export class AdminContentService {
 
   getAvailableLocales() {
     return AVAILABLE_LOCALES;
+  }
+
+  getHelpArticles(
+    page = 1,
+    pageSize = 25,
+    filters?: HelpArticleFilters,
+    sortField = 'createdAt',
+    sortOrder: 'asc' | 'desc' = 'desc',
+    locale?: string
+  ): Observable<HelpArticleListResponse> {
+    let params = new HttpParams()
+      .set('pagination[page]', page.toString())
+      .set('pagination[pageSize]', pageSize.toString())
+      .set('sort[0]', `${sortField}:${sortOrder}`)
+      .set('populate[0]', 'author')
+      .set('populate[1]', 'category')
+      .set('populate[2]', 'reviewed_by')
+      .set('populate[3]', 'attachments')
+      .set('populate[4]', 'localizations');
+
+    if (locale) {
+      params = params.set('locale', locale);
+    }
+
+    if (filters?.content_status) {
+      params = params.set('filters[content_status][$eq]', filters.content_status);
+    }
+
+    if (filters?.category) {
+      params = params.set('filters[category][documentId][$eq]', filters.category);
+    }
+
+    if (filters?.difficulty) {
+      params = params.set('filters[difficulty_level][$eq]', filters.difficulty);
+    }
+
+    if (filters?.is_featured !== undefined) {
+      params = params.set('filters[is_featured][$eq]', filters.is_featured.toString());
+    }
+
+    if (filters?.search) {
+      params = params.set('filters[$or][0][title][$containsi]', filters.search);
+      params = params.set('filters[$or][1][excerpt][$containsi]', filters.search);
+    }
+
+    return this.http.get<HelpArticleListResponse>(
+      this.CONTENT_ENDPOINTS.help_articles,
+      { params }
+    );
+  }
+
+  getHelpCategories(
+    page = 1,
+    pageSize = 100,
+    filters?: HelpCategoryFilters,
+    sortField = 'order',
+    sortOrder: 'asc' | 'desc' = 'asc'
+  ): Observable<HelpCategoryListResponse> {
+    let params = new HttpParams()
+      .set('pagination[page]', page.toString())
+      .set('pagination[pageSize]', pageSize.toString())
+      .set('sort[0]', `${sortField}:${sortOrder}`)
+      .set('populate[0]', 'articles');
+
+    if (filters?.locale) {
+      params = params.set('locale', filters.locale);
+    }
+
+    if (filters?.parent_only) {
+      params = params.set('filters[parent_category][$null]', 'true');
+    }
+
+    if (filters?.search) {
+      params = params.set('filters[name][$containsi]', filters.search);
+    }
+
+    return this.http.get<HelpCategoryListResponse>(
+      this.CONTENT_ENDPOINTS.help_categories,
+      { params }
+    );
+  }
+
+  getHelpArticleById(documentId: string, locale?: string): Observable<{ data: HelpArticle }> {
+    let params = new HttpParams()
+      .set('populate[0]', 'author')
+      .set('populate[1]', 'category')
+      .set('populate[2]', 'reviewed_by')
+      .set('populate[3]', 'attachments')
+      .set('populate[4]', 'related_articles')
+      .set('populate[5]', 'localizations');
+
+    if (locale) {
+      params = params.set('locale', locale);
+    }
+
+    return this.http.get<{ data: HelpArticle }>(
+      this.CONTENT_ENDPOINTS.help_article_by_id(documentId),
+      { params }
+    );
+  }
+
+  createHelpArticle(data: Partial<HelpArticle>): Observable<{ data: HelpArticle }> {
+    return this.http.post<{ data: HelpArticle }>(
+      this.CONTENT_ENDPOINTS.help_articles,
+      { data }
+    );
+  }
+
+  updateHelpArticle(documentId: string, data: Partial<HelpArticle>): Observable<{ data: HelpArticle }> {
+    return this.http.put<{ data: HelpArticle }>(
+      this.CONTENT_ENDPOINTS.help_article_by_id(documentId),
+      { data }
+    );
+  }
+
+  deleteHelpArticle(documentId: string): Observable<void> {
+    return this.http.delete<void>(this.CONTENT_ENDPOINTS.help_article_by_id(documentId));
+  }
+
+  submitHelpArticleForReview(documentId: string): Observable<{ data: HelpArticle }> {
+    return this.http.post<{ data: HelpArticle }>(
+      this.CONTENT_ENDPOINTS.help_article_submit,
+      { documentId }
+    );
+  }
+
+  reviewHelpArticle(
+    documentId: string,
+    action: 'approve' | 'reject',
+    reviewNotes?: string
+  ): Observable<{ data: HelpArticle }> {
+    return this.http.post<{ data: HelpArticle }>(
+      this.CONTENT_ENDPOINTS.help_article_review,
+      { documentId, action, review_notes: reviewNotes }
+    );
   }
 }

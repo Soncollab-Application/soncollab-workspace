@@ -43,6 +43,7 @@ export class MediaPickerModal implements OnDestroy {
   private searchSubject$ = new Subject<string>();
 
   show = input.required<boolean>();
+  acceptedTypes = input<string[]>(['image', 'video', 'audio', 'document', 'archive']);
   close = output<void>();
   fileSelected = output<MediaFile>();
 
@@ -50,6 +51,7 @@ export class MediaPickerModal implements OnDestroy {
   breadcrumbs = signal<BreadcrumbItem[]>([]);
   selectedFile = signal<MediaFile | null>(null);
   activeModal = signal<ActiveModal>(null);
+
 
   showUploadModal = signal(false);
   showCreateFolderModal = signal(false);
@@ -148,6 +150,44 @@ export class MediaPickerModal implements OnDestroy {
     return false;
   }
 
+  private isFileTypeAccepted(mime: string): boolean {
+    const accepted = this.acceptedTypes();
+
+    for (const type of accepted) {
+      switch (type) {
+        case 'image':
+          if (mime.startsWith('image/')) return true;
+          break;
+        case 'video':
+          if (mime.startsWith('video/')) return true;
+          break;
+        case 'audio':
+          if (mime.startsWith('audio/')) return true;
+          break;
+        case 'document':
+          if (mime.includes('pdf') ||
+            mime.includes('word') ||
+            mime.includes('document') ||
+            mime.includes('sheet') ||
+            mime.includes('excel') ||
+            mime.includes('presentation') ||
+            mime.includes('powerpoint')) return true;
+          break;
+        case 'archive':
+          if (mime.includes('zip') ||
+            mime.includes('rar') ||
+            mime.includes('7z') ||
+            mime.includes('tar') ||
+            mime.includes('gz')) return true;
+          break;
+        case 'all':
+          return true;
+      }
+    }
+
+    return false;
+  }
+
   private loadData(): void {
     this.state.isLoading.set(true);
     this.state.files.set([]);
@@ -163,11 +203,11 @@ export class MediaPickerModal implements OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
-          const imageFiles = response.data
-            .filter(f => f.mime.startsWith('image/'))
+          const filteredFiles = response.data
+            .filter(f => this.isFileTypeAccepted(f.mime))
             .filter(f => !this.isInUsersFolder(f.folder))
             .map(f => ({ ...f, type: 'asset' as const, isSelectable: false }));
-          this.state.files.set(imageFiles);
+          this.state.files.set(filteredFiles);
           this.totalPages.set(response.meta.pagination.pageCount);
           this.state.isLoading.set(false);
         },

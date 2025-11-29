@@ -32,4 +32,5 @@ export interface HelpCategoryListResponse {
 export interface HelpCategoryFilters {
   search?: string;
   parent_only?: boolean;
+  locale?: string;
 }

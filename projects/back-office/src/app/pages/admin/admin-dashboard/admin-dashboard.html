@@ -12,6 +12,7 @@
 
 <app-media-picker-modal
   [show]="showMediaPicker()"
+  [acceptedTypes]="['all']"
   (fileSelected)="onFileSelected($event)"
   (close)="onMediaPickerClose()">
 </app-media-picker-modal>

@@ -1,0 +1,165 @@
+{
+  "help-articles": {
+    "page_title": "Help Articles",
+    "new_article": "New Article",
+    "search": "Search for an article...",
+    "kpi": {
+      "language": "Active Language",
+      "total": "Total",
+      "published": "Published",
+      "pending": "Pending",
+      "draft": "Drafts",
+      "approved": "Approved"
+    },
+    "filters": {
+      "status": "Status",
+      "category": "Category",
+      "difficulty": "Difficulty",
+      "featured": "Featured",
+      "featured_yes": "Yes",
+      "featured_no": "No"
+    },
+    "sort": {
+      "createdAt": "Created Date",
+      "updatedAt": "Last Modified",
+      "title": "Title",
+      "views": "Views",
+      "order": "Order"
+    },
+    "columns": {
+      "title": "Title",
+      "locale": "Language",
+      "category": "Category",
+      "difficulty": "Difficulty",
+      "translations": "Translations",
+      "status": "Status",
+      "featured": "Featured",
+      "views": "Views",
+      "createdAt": "Created"
+    },
+    "statuses": {
+      "draft": "Draft",
+      "pending_review": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "outdated": "Outdated"
+    },
+    "difficulty": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
+    },
+    "badges": {
+      "featured": "⭐ Featured",
+      "not_featured": "Not Featured",
+      "has_translations": "✓ Translated",
+      "no_translations": "⚠ Not translated"
+    },
+    "actions": {
+      "create": "Create Article",
+      "view": "View",
+      "edit": "Edit",
+      "create_translation": "Create translation",
+      "view_translations": "View translations",
+      "delete": "Delete",
+      "approve": "Approve",
+      "reject": "Reject"
+    },
+    "delete": {
+      "title": "Delete Article",
+      "message": "Are you sure you want to delete \"{{title}}\"?",
+      "confirm": "Delete",
+      "cancel": "Cancel",
+      "success": "Article deleted successfully",
+      "error": "Error deleting article"
+    },
+    "approve": {
+      "title": "Approve Article",
+      "message": "Do you want to approve \"{{title}}\"?",
+      "confirm": "Approve",
+      "cancel": "Cancel",
+      "success": "Article approved successfully",
+      "error": "Error approving article"
+    },
+    "reject": {
+      "title": "Reject Article",
+      "message": "Do you want to reject \"{{title}}\"?",
+      "confirm": "Reject",
+      "cancel": "Cancel",
+      "success": "Article rejected",
+      "error": "Error rejecting article"
+    },
+    "empty": {
+      "title": "No articles",
+      "message": "No help articles found for this language"
+    },
+    "error": {
+      "loading": "Error loading articles"
+    },
+    "messages": {
+      "created_success": "Article created successfully",
+      "updated_success": "Article updated successfully",
+      "save_error": "Error saving article",
+      "error_loading": "Error loading article",
+      "fill_required": "Please fill in all required fields",
+      "all_translations_exist": "All translations already exist",
+      "translation_created": "Translation created successfully",
+      "translation_opened": "Translation opened",
+      "image_uploaded": "Image uploaded successfully",
+      "image_upload_error": "Error uploading image",
+      "image_removed": "Image removed successfully",
+      "image_remove_error": "Error removing image"
+    },
+    "translations_modal": {
+      "title": "Available translations",
+      "subtitle": "Select a translation to view",
+      "no_translations": "No translations available"
+    },
+    "offcanvas": {
+      "title": "Help Article",
+      "subtitle_create": "Create a new help article",
+      "subtitle_edit": "Edit help article",
+      "subtitle_view": "View help article",
+      "loading": "Loading article...",
+      "content_section": "Article Content",
+      "seo_section": "SEO",
+      "tabs": {
+        "content": "Content",
+        "seo": "SEO"
+      },
+      "title_label": "Title",
+      "title_placeholder": "Enter article title",
+      "title_required": "Title is required",
+      "excerpt": "Excerpt",
+      "excerpt_placeholder": "Enter a short summary of the article",
+      "excerpt_hint": "A short summary that will appear in lists and search results",
+      "content": "Content",
+      "content_placeholder": "Write the article content...",
+      "content_required": "Content is required",
+      "category": "Category",
+      "select_category": "Select a category",
+      "difficulty": "Difficulty Level",
+      "status": "Status",
+      "is_featured": "Feature this article",
+      "reading_time": "Reading time (minutes)",
+      "reading_time_hint": "Automatically calculated (in minutes)",
+      "order": "Display Order",
+      "attachments": "Attachments",
+      "add_attachment": "Add Attachment",
+      "seo_title": "SEO Title",
+      "seo_title_placeholder": "Optimized title for search engines",
+      "seo_title_hint": "Recommended: 50-60 characters",
+      "seo_description": "SEO Description",
+      "seo_description_placeholder": "Description for search engines",
+      "seo_description_hint": "Recommended: 150-160 characters",
+      "canonical_url": "Canonical URL",
+      "search_keywords": "Search Keywords",
+      "search_keywords_placeholder": "keywords, separated, by, commas",
+      "search_keywords_hint": "Keywords to improve internal search",
+      "review_notes": "Review Notes",
+      "review_notes_placeholder": "Notes for the review team...",
+      "review_notes_hint_admin": "These notes are visible to the review team",
+      "review_notes_hint_readonly": "Review team notes (read-only)"
+    }
+  }
+}

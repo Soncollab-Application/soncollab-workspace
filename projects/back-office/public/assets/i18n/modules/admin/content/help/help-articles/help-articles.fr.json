@@ -1,0 +1,165 @@
+{
+  "help-articles": {
+    "page_title": "Articles d'aide",
+    "new_article": "Nouvel article",
+    "search": "Rechercher un article...",
+    "kpi": {
+      "language": "Langue active",
+      "total": "Total",
+      "published": "Publiés",
+      "pending": "En attente",
+      "draft": "Brouillons",
+      "approved": "Approuvés"
+    },
+    "filters": {
+      "status": "Statut",
+      "category": "Catégorie",
+      "difficulty": "Difficulté",
+      "featured": "Mis en avant",
+      "featured_yes": "Oui",
+      "featured_no": "Non"
+    },
+    "sort": {
+      "createdAt": "Date de création",
+      "updatedAt": "Dernière modification",
+      "title": "Titre",
+      "views": "Vues",
+      "order": "Ordre"
+    },
+    "columns": {
+      "title": "Titre",
+      "locale": "Langue",
+      "category": "Catégorie",
+      "difficulty": "Difficulté",
+      "translations": "Traductions",
+      "status": "Statut",
+      "featured": "Mis en avant",
+      "views": "Vues",
+      "createdAt": "Créé le"
+    },
+    "statuses": {
+      "draft": "Brouillon",
+      "pending_review": "En attente",
+      "approved": "Approuvé",
+      "rejected": "Rejeté",
+      "outdated": "Obsolète"
+    },
+    "difficulty": {
+      "beginner": "Débutant",
+      "intermediate": "Intermédiaire",
+      "advanced": "Avancé"
+    },
+    "badges": {
+      "featured": "⭐ Mis en avant",
+      "not_featured": "Non mis en avant",
+      "has_translations": "✓ Traduit",
+      "no_translations": "⚠ Non traduit"
+    },
+    "actions": {
+      "create": "Créer un article",
+      "view": "Voir",
+      "edit": "Modifier",
+      "create_translation": "Créer une traduction",
+      "view_translations": "Voir les traductions",
+      "delete": "Supprimer",
+      "approve": "Approuver",
+      "reject": "Rejeter"
+    },
+    "delete": {
+      "title": "Supprimer l'article",
+      "message": "Êtes-vous sûr de vouloir supprimer \"{{title}}\" ?",
+      "confirm": "Supprimer",
+      "cancel": "Annuler",
+      "success": "Article supprimé avec succès",
+      "error": "Erreur lors de la suppression de l'article"
+    },
+    "approve": {
+      "title": "Approuver l'article",
+      "message": "Voulez-vous approuver \"{{title}}\" ?",
+      "confirm": "Approuver",
+      "cancel": "Annuler",
+      "success": "Article approuvé avec succès",
+      "error": "Erreur lors de l'approbation de l'article"
+    },
+    "reject": {
+      "title": "Rejeter l'article",
+      "message": "Voulez-vous rejeter \"{{title}}\" ?",
+      "confirm": "Rejeter",
+      "cancel": "Annuler",
+      "success": "Article rejeté",
+      "error": "Erreur lors du rejet de l'article"
+    },
+    "empty": {
+      "title": "Aucun article",
+      "message": "Aucun article d'aide trouvé pour cette langue"
+    },
+    "error": {
+      "loading": "Erreur lors du chargement des articles"
+    },
+    "messages": {
+      "created_success": "Article créé avec succès",
+      "updated_success": "Article mis à jour avec succès",
+      "save_error": "Erreur lors de l'enregistrement de l'article",
+      "error_loading": "Erreur lors du chargement de l'article",
+      "fill_required": "Veuillez remplir tous les champs requis",
+      "all_translations_exist": "Toutes les traductions existent déjà",
+      "translation_created": "Traduction créée avec succès",
+      "translation_opened": "Traduction ouverte",
+      "image_uploaded": "Image téléchargée avec succès",
+      "image_upload_error": "Erreur lors du téléchargement de l'image",
+      "image_removed": "Image supprimée avec succès",
+      "image_remove_error": "Erreur lors de la suppression de l'image"
+    },
+    "translations_modal": {
+      "title": "Traductions disponibles",
+      "subtitle": "Sélectionnez une traduction à consulter",
+      "no_translations": "Aucune traduction disponible"
+    },
+    "offcanvas": {
+      "title": "Article d'aide",
+      "subtitle_create": "Créer un nouvel article d'aide",
+      "subtitle_edit": "Modifier l'article d'aide",
+      "subtitle_view": "Consulter l'article d'aide",
+      "loading": "Chargement de l'article...",
+      "content_section": "Contenu de l'article",
+      "seo_section": "SEO",
+      "tabs": {
+        "content": "Contenu",
+        "seo": "SEO"
+      },
+      "title_label": "Titre",
+      "title_placeholder": "Entrez le titre de l'article",
+      "title_required": "Le titre est requis",
+      "excerpt": "Extrait",
+      "excerpt_placeholder": "Entrez un court résumé de l'article",
+      "excerpt_hint": "Un résumé court qui apparaîtra dans les listes et recherches",
+      "content": "Contenu",
+      "content_placeholder": "Rédigez le contenu de l'article...",
+      "content_required": "Le contenu est requis",
+      "category": "Catégorie",
+      "select_category": "Sélectionnez une catégorie",
+      "difficulty": "Niveau de difficulté",
+      "status": "Statut",
+      "is_featured": "Mettre cet article en avant",
+      "reading_time": "Temps de lecture (minutes)",
+      "reading_time_hint": "Calculé automatiquement (en minutes)",
+      "order": "Ordre d'affichage",
+      "attachments": "Pièces jointes",
+      "add_attachment": "Ajouter une pièce jointe",
+      "seo_title": "Titre SEO",
+      "seo_title_placeholder": "Titre optimisé pour les moteurs de recherche",
+      "seo_title_hint": "Recommandé : 50-60 caractères",
+      "seo_description": "Description SEO",
+      "seo_description_placeholder": "Description pour les moteurs de recherche",
+      "seo_description_hint": "Recommandé : 150-160 caractères",
+      "canonical_url": "URL canonique",
+      "search_keywords": "Mots-clés de recherche",
+      "search_keywords_placeholder": "mots, clés, séparés, par, virgules",
+      "search_keywords_hint": "Mots-clés pour améliorer la recherche interne",
+      "review_notes": "Notes de révision",
+      "review_notes_placeholder": "Notes pour l'équipe de révision...",
+      "review_notes_hint_admin": "Ces notes sont visibles par l'équipe de révision",
+      "review_notes_hint_readonly": "Notes de l'équipe de révision (lecture seule)"
+    }
+  }
+}

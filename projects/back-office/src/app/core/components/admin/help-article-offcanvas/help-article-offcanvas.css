@@ -1,0 +1,112 @@
+:host ::ng-deep .offcanvas {
+  width: 900px !important;
+  max-width: 100vw;
+}
+
+:host ::ng-deep .help-preview img,
+:host ::ng-deep .markdown-content img {
+  width: 200px !important;
+  max-width: 200px !important;
+  height: auto !important;
+  display: inline-block !important;
+  margin: 0.5rem 0 !important;
+  border-radius: 0.25rem !important;
+}
+
+.help-preview,
+:host ::ng-deep .markdown-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+:host ::ng-deep .help-preview h1,
+:host ::ng-deep .markdown-content h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--fn-body-color);
+}
+
+:host ::ng-deep .help-preview h2,
+:host ::ng-deep .markdown-content h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 0.875rem;
+  margin-top: 2rem;
+  color: var(--fn-body-color);
+}
+
+:host ::ng-deep .help-preview h3,
+:host ::ng-deep .markdown-content h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  margin-top: 1.5rem;
+  color: var(--fn-body-color);
+}
+
+:host ::ng-deep .help-preview p,
+:host ::ng-deep .markdown-content p {
+  margin-bottom: 1rem;
+  line-height: 1.7;
+}
+
+:host ::ng-deep .help-preview ul,
+:host ::ng-deep .markdown-content ul,
+:host ::ng-deep .help-preview ol,
+:host ::ng-deep .markdown-content ol {
+  margin-bottom: 1rem;
+  padding-left: 2rem;
+}
+
+:host ::ng-deep .help-preview li,
+:host ::ng-deep .markdown-content li {
+  margin-bottom: 0.5rem;
+}
+
+:host ::ng-deep .help-preview blockquote,
+:host ::ng-deep .markdown-content blockquote {
+  border-left: 4px solid var(--fn-primary);
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  color: var(--fn-secondary);
+}
+
+:host ::ng-deep .help-preview a,
+:host ::ng-deep .markdown-content a {
+  color: var(--fn-link-color);
+  text-decoration: underline;
+}
+
+:host ::ng-deep .help-preview code,
+:host ::ng-deep .markdown-content code {
+  background-color: var(--fn-secondary-bg);
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-family: monospace;
+  font-size: 0.875em;
+}
+
+:host ::ng-deep .help-preview pre,
+:host ::ng-deep .markdown-content pre {
+  background-color: var(--fn-secondary-bg);
+  padding: 1rem;
+  border-radius: 0.25rem;
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+:host ::ng-deep .help-preview pre code,
+:host ::ng-deep .markdown-content pre code {
+  background: none;
+  padding: 0;
+}
+
+@media (max-width: 768px) {
+  :host ::ng-deep .help-preview img,
+  :host ::ng-deep .markdown-content img {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}

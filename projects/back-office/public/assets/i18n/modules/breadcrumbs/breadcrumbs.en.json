@@ -42,6 +42,11 @@
       "dashboard": "Dashboard",
       "content": "Content",
       "blog_articles": "Blog Articles"
+    },
+    "help-articles": {
+      "dashboard": "Dashboard",
+      "content": "Content",
+      "help_articles": "Help Articles"
     }
   }
 }

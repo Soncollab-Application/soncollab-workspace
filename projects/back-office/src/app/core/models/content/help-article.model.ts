@@ -2,6 +2,16 @@ import {ContentBase, ContentFilters, DifficultyLevel} from './content-common.mod
 import { HelpCategory } from './help-category.model';
 import { BackofficeUser } from '../auth.model';
 
+
+export interface HelpArticleLocalization {
+  id: number;
+  documentId: string;
+  locale: string;
+  title: string;
+  publishedAt: string;
+}
+
+
 export interface HelpArticle extends ContentBase {
   title: string;
   slug: string;
@@ -26,6 +36,7 @@ export interface HelpArticle extends ContentBase {
   canonical_url?: string;
   search_keywords?: string;
   locale?: string;
+  localizations?: HelpArticleLocalization[];
 }
 
 export interface HelpArticleListResponse {
@@ -43,5 +54,6 @@ export interface HelpArticleListResponse {
 export interface HelpArticleFilters extends ContentFilters {
   category?: string;
   difficulty?: DifficultyLevel;
+  locale?: string;
+  content_status?: string;
 }
-

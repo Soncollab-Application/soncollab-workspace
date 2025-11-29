@@ -42,6 +42,11 @@
       "dashboard": "Tableau de bord",
       "content": "Contenu",
       "blog_articles": "Articles de blog"
+    },
+    "help-articles": {
+      "dashboard": "Tableau de bord",
+      "content": "Contenu",
+      "help_articles": "Articles d'aide"
     }
   }
 }

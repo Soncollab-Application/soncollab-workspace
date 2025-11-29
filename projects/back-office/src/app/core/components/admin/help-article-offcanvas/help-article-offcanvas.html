@@ -1,0 +1,385 @@
+<lib-offcanvas
+  placement="end"
+  [backdrop]="'static'"
+  [keyboard]="false"
+  [showHeader]="true"
+  [showCloseButton]="true"
+  [hasFooter]="true"
+  [closeLabel]="'common.close' | translate"
+  ariaLabelledby="helpArticleOffcanvasTitle"
+  headerClass="border-bottom"
+  bodyClass="p-0"
+  footerClass="border-top p-3">
+
+  <div offcanvas-header class="d-flex align-items-center justify-content-between w-100">
+    <div class="d-flex align-items-center gap-3">
+      <div>
+        <h5 id="helpArticleOffcanvasTitle" class="offcanvas-title fw-bold mb-1 d-flex align-items-center">
+          <span class="material-symbols-outlined me-2 text-primary">help</span>
+          {{ 'help-articles.offcanvas.title' | translate }}
+        </h5>
+        <p class="mb-0 small text-muted">
+          {{ mode() === 'create'
+          ? ('help-articles.offcanvas.subtitle_create' | translate)
+          : mode() === 'edit'
+            ? ('help-articles.offcanvas.subtitle_edit' | translate)
+            : ('help-articles.offcanvas.subtitle_view' | translate)
+          }}
+        </p>
+      </div>
+      <div>
+      <span class="badge bg-secondary ms-2">
+        {{ locale().toUpperCase() }}
+      </span>
+      </div>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="d-flex justify-content-center align-items-center p-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">{{ 'help-articles.offcanvas.loading' | translate }}</span>
+      </div>
+    </div>
+  } @else {
+
+    @if (!showPreview()) {
+      <form [formGroup]="articleForm" (ngSubmit)="save()">
+
+        <div class="border-bottom">
+
+          <ul class="nav nav-tabs border-0 px-4">
+            <li class="nav-item">
+              <button type="button"
+                      class="nav-link"
+                      [class.active]="activeTab() === 'content'"
+                      (click)="setActiveTab('content')">
+                <span class="material-symbols-outlined me-2">edit_note</span>
+                {{ 'help-articles.offcanvas.tabs.content' | translate }}
+              </button>
+            </li>
+            <li class="nav-item">
+              <button type="button"
+                      class="nav-link"
+                      [class.active]="activeTab() === 'seo'"
+                      (click)="setActiveTab('seo')">
+                <span class="material-symbols-outlined me-2">search</span>
+                {{ 'help-articles.offcanvas.tabs.seo' | translate }}
+              </button>
+            </li>
+          </ul>
+
+        </div>
+
+        <div class="p-4">
+
+          @if (activeTab() === 'content') {
+            <div>
+              <div class="mb-3">
+                <label class="form-label small fw-semibold required">
+                  {{ 'help-articles.offcanvas.title_label' | translate }}
+                </label>
+                <input type="text"
+                       class="form-control"
+                       formControlName="title"
+                       [placeholder]="'help-articles.offcanvas.title_placeholder' | translate"
+                       maxlength="255">
+                @if (articleForm.get('title')?.invalid && articleForm.get('title')?.touched) {
+                  <small class="text-danger">
+                    {{ 'help-articles.offcanvas.title_required' | translate }}
+                  </small>
+                }
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label small fw-semibold">
+                  {{ 'help-articles.offcanvas.excerpt' | translate }}
+                </label>
+                <textarea
+                  class="form-control"
+                  formControlName="excerpt"
+                  rows="2"
+                  [placeholder]="'help-articles.offcanvas.excerpt_placeholder' | translate"
+                  maxlength="300"></textarea>
+                <small class="text-muted">
+                  {{ 'help-articles.offcanvas.excerpt_hint' | translate }}
+                </small>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label small fw-semibold required">
+                  {{ 'help-articles.offcanvas.content' | translate }}
+                </label>
+                <lib-rich-text-editor
+                  formControlName="content"
+                  [placeholder]="'help-articles.offcanvas.content_placeholder' | translate"
+                  [readonly]="!canEdit()"
+                  (imageSelectRequested)="onRichTextImageInsert($event)">
+                </lib-rich-text-editor>
+                @if (articleForm.get('content')?.invalid && articleForm.get('content')?.touched) {
+                  <small class="text-danger">
+                    {{ 'help-articles.offcanvas.content_required' | translate }}
+                  </small>
+                }
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label small fw-semibold required">
+                    {{ 'help-articles.offcanvas.category' | translate }}
+                  </label>
+                  <lib-choice
+                    formControlName="category"
+                    [options]="categoryOptions()"
+                    [config]="categoryConfig"
+                    [placeholder]="'help-articles.offcanvas.select_category' | translate">
+                  </lib-choice>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                  <label class="form-label small fw-semibold required">
+                    {{ 'help-articles.offcanvas.difficulty' | translate }}
+                  </label>
+                  <lib-choice
+                    formControlName="difficulty_level"
+                    [options]="difficultyOptions()"
+                    [config]="difficultyConfig">
+                  </lib-choice>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-4 mb-3">
+                  <label class="form-label small fw-semibold">
+                    {{ 'help-articles.offcanvas.reading_time' | translate }}
+                  </label>
+                  <input type="number"
+                         class="form-control"
+                         formControlName="estimated_reading_time"
+                         min="0"
+                         max="60"
+                         readonly>
+                  <small class="text-muted">
+                    {{ 'help-articles.offcanvas.reading_time_hint' | translate }}
+                  </small>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                  <label class="form-label small fw-semibold">
+                    {{ 'help-articles.offcanvas.order' | translate }}
+                  </label>
+                  <input type="number"
+                         class="form-control"
+                         formControlName="order"
+                         min="0">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                  <label class="form-label small fw-semibold">
+                    {{ 'help-articles.offcanvas.status' | translate }}
+                  </label>
+                  <lib-choice
+                    formControlName="content_status"
+                    [options]="statusOptions()"
+                    [config]="statusConfig">
+                  </lib-choice>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <div class="form-check">
+                  <input class="form-check-input"
+                         type="checkbox"
+                         formControlName="is_featured"
+                         id="isFeatured">
+                  <label class="form-check-label" for="isFeatured">
+                    {{ 'help-articles.offcanvas.is_featured' | translate }}
+                  </label>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label small fw-semibold">
+                  {{ 'help-articles.offcanvas.attachments' | translate }}
+                </label>
+                <div class="d-flex flex-wrap gap-2 mb-2">
+                  @for (file of attachments(); track file.id) {
+                    <div class="position-relative border rounded p-2 bg-body-tertiary d-flex align-items-center" style="min-width: 200px;">
+                      @if (file.mime && file.mime.startsWith('image/')) {
+                        <img [src]="environment.api.baseUrl + file.url"
+                             [alt]="file.name"
+                             class="me-2"
+                             style="width: 60px; height: 60px; object-fit: cover;">
+                      } @else {
+                        <div class="d-flex align-items-center justify-content-center me-2 bg-secondary bg-opacity-10 rounded"
+                             style="width: 60px; height: 60px;">
+                          <span class="material-symbols-outlined text-secondary">
+                            {{ getFileIcon(file.mime) }}
+                          </span>
+                        </div>
+                      }
+                      <div class="flex-grow-1 text-truncate">
+                        <small class="d-block fw-semibold text-truncate">{{ file.name }}</small>
+                        <small class="text-muted">{{ formatFileSize(file.size) }}</small>
+                      </div>
+                      @if (canEdit()) {
+                        <button type="button"
+                                class="btn btn-sm btn-danger ms-2"
+                                (click)="removeAttachment(file.id)">
+                          <span class="material-symbols-outlined" style="font-size: 16px;">close</span>
+                        </button>
+                      }
+                    </div>
+                  }
+                </div>
+                @if (canEdit()) {
+                  <button type="button"
+                          class="btn btn-outline-primary btn-sm"
+                          (click)="openMediaPickerForAttachments()">
+                    <span class="material-symbols-outlined me-1">attach_file</span>
+                    {{ 'help-articles.offcanvas.add_attachment' | translate }}
+                  </button>
+                }
+              </div>
+            </div>
+          }
+
+          @if (activeTab() === 'seo') {
+            <div>
+              <div class="mb-3">
+                <label class="form-label small fw-semibold">
+                  {{ 'help-articles.offcanvas.seo_title' | translate }}
+                </label>
+                <input type="text"
+                       class="form-control"
+                       formControlName="seo_title"
+                       [placeholder]="'help-articles.offcanvas.seo_title_placeholder' | translate"
+                       maxlength="250">
+                <small class="text-muted">
+                  {{ 'help-articles.offcanvas.seo_title_hint' | translate }}
+                </small>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label small fw-semibold">
+                  {{ 'help-articles.offcanvas.seo_description' | translate }}
+                </label>
+                <textarea
+                  class="form-control"
+                  formControlName="seo_description"
+                  rows="3"
+                  [placeholder]="'help-articles.offcanvas.seo_description_placeholder' | translate"
+                  maxlength="250"></textarea>
+                <small class="text-muted">
+                  {{ 'help-articles.offcanvas.seo_description_hint' | translate }}
+                </small>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label small fw-semibold">
+                  {{ 'help-articles.offcanvas.search_keywords' | translate }}
+                </label>
+                <input type="text"
+                       class="form-control"
+                       formControlName="search_keywords"
+                       [placeholder]="'help-articles.offcanvas.search_keywords_placeholder' | translate">
+                <small class="text-muted">
+                  {{ 'help-articles.offcanvas.search_keywords_hint' | translate }}
+                </small>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label small fw-semibold">
+                  {{ 'help-articles.offcanvas.canonical_url' | translate }}
+                </label>
+                <input type="url"
+                       class="form-control"
+                       formControlName="canonical_url"
+                       placeholder="https://...">
+              </div>
+
+              @if (mode() === 'edit' || mode() === 'view') {
+                <div class="mb-3">
+                  <label class="form-label small fw-semibold d-flex align-items-center">
+                    <span class="material-symbols-outlined me-1 text-info">comment</span>
+                    {{ 'help-articles.offcanvas.review_notes' | translate }}
+                  </label>
+                  <textarea
+                    class="form-control"
+                    formControlName="review_notes"
+                    rows="3"
+                    [placeholder]="'help-articles.offcanvas.review_notes_placeholder' | translate"
+                    maxlength="500"
+                    [readonly]="!canReviewArticle()"></textarea>
+                  <small class="text-muted d-block mt-1">
+                    @if (canReviewArticle()) {
+                      {{ 'help-articles.offcanvas.review_notes_hint_admin' | translate }}
+                    } @else {
+                      {{ 'help-articles.offcanvas.review_notes_hint_readonly' | translate }}
+                    }
+                  </small>
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+      </form>
+
+    } @else {
+      <div class="p-5">
+        <article class="help-preview">
+          <h1 class="mb-3">{{ articleForm.get('title')?.value }}</h1>
+
+          @if (articleForm.get('excerpt')?.value) {
+            <p class="lead text-muted">{{ articleForm.get('excerpt')?.value }}</p>
+          }
+
+          <hr class="my-4">
+
+          <div class="markdown-content">
+            <markdown [data]="articleForm.get('content')?.value || ''"></markdown>
+          </div>
+        </article>
+      </div>
+    }
+
+  }
+
+  <div offcanvas-footer class="d-flex gap-2">
+    <button type="button"
+            class="btn btn-outline-secondary flex-fill"
+            (click)="close()"
+            [disabled]="saving() || loading()">
+      {{ isViewMode() ? ('common.close' | translate) : ('common.cancel' | translate) }}
+    </button>
+
+    @if (!isViewMode()) {
+      <button type="button"
+              class="btn btn-outline-primary"
+              (click)="togglePreview()"
+              [disabled]="saving() || loading()">
+        <span class="material-symbols-outlined me-1">{{ showPreview() ? 'edit' : 'visibility' }}</span>
+        {{ showPreview() ? ('common.edit' | translate) : ('common.preview' | translate) }}
+      </button>
+
+      <button type="button"
+              class="btn btn-primary flex-fill"
+              (click)="save()"
+              [disabled]="articleForm.invalid || saving() || loading()">
+        @if (saving()) {
+          <span class="spinner-border spinner-border-sm me-2"></span>
+        }
+        {{ 'common.save' | translate }}
+      </button>
+    }
+  </div>
+
+</lib-offcanvas>
+
+<app-media-picker-modal
+  [show]="showMediaPicker()"
+  [acceptedTypes]="['all']"
+  (close)="onMediaPickerClosed()"
+  (fileSelected)="onMediaPickerFileSelected($event)">
+</app-media-picker-modal>
