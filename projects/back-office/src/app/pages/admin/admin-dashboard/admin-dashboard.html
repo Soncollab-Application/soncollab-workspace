@@ -1,18 +1,27 @@
 <div class="container py-4">
   <div class="card">
     <div class="card-body">
+      <h3 class="mb-4">Test Rich Text Editor avec support multi-médias</h3>
+
       <lib-rich-text-editor
         [(ngModel)]="content"
         [enableMediaPicker]="true"
-        (imageSelectRequested)="onImageSelectRequested($event)">
+        [acceptedMediaTypes]="['image', 'video', 'audio', 'document']"
+        (imageSelectRequested)="onImageSelectRequested($event)"
+        (mediaSelectRequested)="onMediaSelectRequested($event)">
       </lib-rich-text-editor>
+
+      <div class="mt-4">
+        <h5>Contenu HTML :</h5>
+        <pre class="p-3 rounded"><code>{{ content }}</code></pre>
+      </div>
     </div>
   </div>
 </div>
 
 <app-media-picker-modal
   [show]="showMediaPicker()"
-  [acceptedTypes]="['all']"
+  [acceptedTypes]="mediaPickerTypes()"
   (fileSelected)="onFileSelected($event)"
   (close)="onMediaPickerClose()">
 </app-media-picker-modal>

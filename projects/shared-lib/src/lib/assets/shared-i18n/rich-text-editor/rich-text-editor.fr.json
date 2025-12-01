@@ -9,6 +9,7 @@
     "actions": "Actions",
     "characters": "Caractères",
     "commands": {
+      "media": "Insérer un média",
       "bold": "Gras",
       "italic": "Italique",
       "underline": "Souligné",

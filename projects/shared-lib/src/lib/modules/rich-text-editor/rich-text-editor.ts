@@ -23,7 +23,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { EditorCommandService } from './editor-command.service';
 import { HtmlToMarkdownService } from './html-to-markdown.service';
 import { DomSanitizer } from '@angular/platform-browser';
-import { ImageResult } from './rich-text-editor.model';
+import { ImageResult, MediaResult, MediaType } from './rich-text-editor.model';
 
 @Component({
   selector: 'lib-rich-text-editor',
@@ -54,10 +54,12 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
   @Input() placeholder = '';
   @Input() minHeight = '300px';
   @Input() enableMediaPicker = false;
+  @Input() acceptedMediaTypes: MediaType[] = ['image'];
   @Input() readonly = false;
 
   @Output() contentChange = new EventEmitter<string>();
   @Output() imageSelectRequested = new EventEmitter<(result: ImageResult | null) => void>();
+  @Output() mediaSelectRequested = new EventEmitter<(result: MediaResult | null) => void>();
 
   html = signal('');
   markdown = signal('');
@@ -74,6 +76,16 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
 
   safeHtml = computed(() => this.sanitizer.bypassSecurityTrustHtml(this.html()));
 
+  showImageButton = computed(() =>
+    this.enableMediaPicker && this.acceptedMediaTypes.includes('image')
+  );
+
+  showMediaButton = computed(() =>
+      this.enableMediaPicker && this.acceptedMediaTypes.some(type =>
+        type !== 'image' || this.acceptedMediaTypes.length > 1
+      )
+  );
+
   blockCommands = [
     { command: 'p', translationKey: 'richTextEditorShared.commands.paragraph' },
     { command: 'h1', translationKey: 'richTextEditorShared.commands.heading1' },
@@ -84,6 +96,9 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
 
   onChange: (value: string) => void = () => {};
   onTouched: () => void = () => {};
+
+  private pendingContent: string | null = null;
+  private previewUpdateTimeout: any = null;
 
   constructor() {
     effect(() => {
@@ -105,28 +120,59 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
   }
 
   ngAfterViewInit(): void {
-    if (this.editorContent && this.html()) {
+    if (this.pendingContent !== null && this.editorContent) {
+      this.editorContent.nativeElement.innerHTML = this.pendingContent;
+      this.pendingContent = null;
+    } else if (this.html() && this.editorContent) {
       this.editorContent.nativeElement.innerHTML = this.html();
+    }
+
+    if (this.editorContent) {
+      this.editorContent.nativeElement.addEventListener('keydown', (e: KeyboardEvent) => {
+        if (e.key === 'Backspace' || e.key === 'Delete') {
+          const selection = window.getSelection();
+          if (!selection || selection.rangeCount === 0) return;
+
+          const range = selection.getRangeAt(0);
+          let node: Node | null = range.startContainer;
+
+          while (node && node !== this.editorContent!.nativeElement) {
+            if (node.nodeType === Node.ELEMENT_NODE) {
+              const element = node as HTMLElement;
+              if (element.getAttribute('data-media-element') === 'true') {
+                e.preventDefault();
+                const parent = element.parentElement;
+                if (parent) {
+                  parent.remove();
+                  this.onContentChanged();
+                }
+                return;
+              }
+            }
+            node = node.parentNode;
+          }
+        }
+      });
     }
   }
 
   ngOnDestroy(): void {
+    if (this.previewUpdateTimeout) {
+      clearTimeout(this.previewUpdateTimeout);
+    }
     this.destroy$.next();
     this.destroy$.complete();
-
-    if (this.isFullScreen()) {
-      document.body.style.overflow = '';
-      const wrapper = this.editorContent?.nativeElement.closest('.rich-text-editor-wrapper');
-      if (wrapper) {
-        wrapper.classList.remove('fullscreen');
-      }
-    }
   }
 
   writeValue(value: string): void {
-    this.html.set(value || '');
-    if (this.editorContent) {
-      this.editorContent.nativeElement.innerHTML = value || '';
+    if (value !== undefined && value !== null) {
+      this.html.set(value);
+
+      if (this.editorContent) {
+        this.editorContent.nativeElement.innerHTML = value;
+      } else {
+        this.pendingContent = value;
+      }
     }
   }
 
@@ -139,44 +185,45 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.readonly = isDisabled;
+    if (this.editorContent) {
+      this.editorContent.nativeElement.contentEditable = (!isDisabled).toString();
+    }
   }
 
   onContentChanged(): void {
     if (this.editorContent) {
       const content = this.editorContent.nativeElement.innerHTML;
-      this.html.set(content);
-      this.markdown.set(this.htmlToMarkdownService.convert(content));
+
       this.onChange(content);
       this.contentChange.emit(content);
+
+      if (this.previewUpdateTimeout) {
+        clearTimeout(this.previewUpdateTimeout);
+      }
+
+      this.previewUpdateTimeout = setTimeout(() => {
+        this.html.set(content);
+      }, 500);
     }
   }
 
   onKeyDown(event: KeyboardEvent): void {
+    if (event.key === 'Tab') {
+      event.preventDefault();
+      document.execCommand('insertHTML', false, '&nbsp;&nbsp;&nbsp;&nbsp;');
+    }
+
     if (event.key === 'Enter') {
       const selection = window.getSelection();
       if (!selection || selection.rangeCount === 0) return;
 
-      let node = selection.getRangeAt(0).startContainer;
-
-      while (node && node !== this.editorContent?.nativeElement) {
-        if (node.nodeName === 'BLOCKQUOTE') {
+      let node: Node | null = selection.anchorNode;
+      while (node) {
+        if (node.nodeName === 'PRE') {
           event.preventDefault();
+          document.execCommand('insertHTML', false, '\n');
 
           const range = selection.getRangeAt(0);
-
-          // Insérer 2 <br> pour un vrai saut de ligne
-          const br1 = document.createElement('br');
-          const br2 = document.createElement('br');
-
-          range.deleteContents();
-          range.insertNode(br1);
-          range.setStartAfter(br1);
-          range.insertNode(br2);
-
-          // Positionner le curseur après les 2 <br>
-          range.setStartAfter(br2);
-          range.collapse(true);
           selection.removeAllRanges();
           selection.addRange(range);
 
@@ -280,6 +327,366 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
     });
   }
 
+  insertMediaFromMediaPicker(): void {
+    const savedRange = this.editorCommandService.getSelectedRange();
+
+    this.mediaSelectRequested.emit((result: MediaResult | null) => {
+      if (result) {
+        if (this.editorContent) {
+          this.editorContent.nativeElement.focus();
+
+          if (savedRange) {
+            const selection = window.getSelection();
+            if (selection) {
+              selection.removeAllRanges();
+              selection.addRange(savedRange);
+            }
+          } else {
+            const selection = window.getSelection();
+            if (selection) {
+              const range = document.createRange();
+              const editorEl = this.editorContent.nativeElement;
+
+              if (editorEl.lastChild) {
+                range.setStartAfter(editorEl.lastChild);
+              } else {
+                range.setStart(editorEl, 0);
+              }
+              range.collapse(true);
+
+              selection.removeAllRanges();
+              selection.addRange(range);
+            }
+          }
+        }
+
+        setTimeout(() => {
+          this.insertMediaElement(result);
+          this.onContentChanged();
+
+          if (this.editorContent) {
+            this.editorContent.nativeElement.focus();
+          }
+        }, 50);
+      }
+    });
+  }
+
+  private insertMediaElement(media: MediaResult): void {
+    const editorEl = this.editorContent?.nativeElement;
+    if (!editorEl) return;
+
+    switch (media.type) {
+      case 'image':
+        const imgWrapper = document.createElement('p');
+        imgWrapper.style.textAlign = 'left';
+
+        const img = document.createElement('img');
+        img.src = media.url;
+        img.alt = media.alt || media.name;
+        img.style.cssText = 'width: 200px; max-width: 200px; height: auto; display: inline-block; margin: 0.5rem 0; border-radius: 0.25rem; vertical-align: middle;';
+        imgWrapper.appendChild(img);
+
+        this.insertElementInEditor(imgWrapper, editorEl);
+        break;
+
+      case 'video':
+        const videoWrapper = document.createElement('p');
+
+        const videoContainer = document.createElement('span');
+        videoContainer.contentEditable = 'false';
+        videoContainer.className = 'd-inline-flex flex-column gap-2 p-2 border rounded bg-body';
+        videoContainer.style.cssText = 'cursor: default; max-width: 300px; user-select: none;';
+        videoContainer.setAttribute('data-media-element', 'true');
+
+        const videoPreview = document.createElement('video');
+        videoPreview.style.cssText = 'width: 100%; height: auto; border-radius: 0.25rem; pointer-events: none;';
+
+        const videoSource = document.createElement('source');
+        videoSource.src = media.url;
+        videoSource.type = media.mime;
+        videoPreview.appendChild(videoSource);
+
+        const videoInfoContainer = document.createElement('div');
+        videoInfoContainer.className = 'd-flex align-items-center gap-2';
+
+        const videoIcon = document.createElement('span');
+        videoIcon.className = 'material-symbols-outlined text-primary';
+        videoIcon.style.fontSize = '20px';
+        videoIcon.textContent = 'videocam';
+
+        const videoTextContainer = document.createElement('span');
+        videoTextContainer.className = 'd-flex flex-column flex-grow-1 text-truncate';
+
+        const videoName = document.createElement('strong');
+        videoName.className = 'text-truncate';
+        videoName.style.fontSize = '13px';
+        videoName.textContent = media.name;
+        videoTextContainer.appendChild(videoName);
+
+        if (media.size) {
+          const videoSize = document.createElement('small');
+          videoSize.className = 'text-muted';
+          videoSize.style.fontSize = '11px';
+          videoSize.textContent = this.formatFileSize(media.size);
+          videoTextContainer.appendChild(videoSize);
+        }
+
+        const videoPlayBtn = document.createElement('button');
+        videoPlayBtn.type = 'button';
+        videoPlayBtn.className = 'btn btn-sm btn-outline-primary';
+        videoPlayBtn.style.cssText = 'width: 28px; height: 28px; padding: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;';
+        videoPlayBtn.setAttribute('aria-label', 'Play');
+
+        const videoPlayIcon = document.createElement('i');
+        videoPlayIcon.className = 'material-symbols-outlined';
+        videoPlayIcon.style.cssText = 'font-size: 18px; line-height: 1;';
+        videoPlayIcon.textContent = 'play_arrow';
+        videoPlayBtn.appendChild(videoPlayIcon);
+
+        let videoIsPlaying = false;
+        videoPlayBtn.onclick = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+
+          if (videoIsPlaying) {
+            videoPreview.pause();
+            videoPlayIcon.textContent = 'play_arrow';
+            videoIsPlaying = false;
+          } else {
+            videoPreview.play();
+            videoPlayIcon.textContent = 'pause';
+            videoIsPlaying = true;
+          }
+        };
+
+        videoPreview.onended = () => {
+          videoPlayIcon.textContent = 'play_arrow';
+          videoIsPlaying = false;
+        };
+
+        videoInfoContainer.appendChild(videoIcon);
+        videoInfoContainer.appendChild(videoTextContainer);
+        videoInfoContainer.appendChild(videoPlayBtn);
+
+        videoContainer.appendChild(videoPreview);
+        videoContainer.appendChild(videoInfoContainer);
+        videoWrapper.appendChild(videoContainer);
+
+        this.insertElementInEditor(videoWrapper, editorEl);
+        break;
+
+      case 'audio':
+        const audioWrapper = document.createElement('p');
+
+        const audioContainer = document.createElement('span');
+        audioContainer.contentEditable = 'false';
+        audioContainer.className = 'd-inline-flex align-items-center gap-2 px-3 py-2 border rounded bg-body';
+        audioContainer.style.cssText = 'cursor: default; min-width: 300px; user-select: none;';
+        audioContainer.setAttribute('data-media-element', 'true');
+
+        const audioIcon = document.createElement('span');
+        audioIcon.className = 'material-symbols-outlined text-primary';
+        audioIcon.style.fontSize = '20px';
+        audioIcon.textContent = 'audio_file';
+
+        const audioTextContainer = document.createElement('span');
+        audioTextContainer.className = 'd-flex flex-column flex-grow-1 text-truncate';
+
+        const audioName = document.createElement('strong');
+        audioName.className = 'text-truncate';
+        audioName.style.fontSize = '13px';
+        audioName.textContent = media.name;
+        audioTextContainer.appendChild(audioName);
+
+        if (media.size) {
+          const audioSize = document.createElement('small');
+          audioSize.className = 'text-muted';
+          audioSize.style.fontSize = '11px';
+          audioSize.textContent = this.formatFileSize(media.size);
+          audioTextContainer.appendChild(audioSize);
+        }
+
+        const audioPlayBtn = document.createElement('button');
+        audioPlayBtn.type = 'button';
+        audioPlayBtn.className = 'btn btn-sm btn-outline-primary';
+        audioPlayBtn.style.cssText = 'width: 28px; height: 28px; padding: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;';
+        audioPlayBtn.setAttribute('aria-label', 'Play');
+
+        const audioPlayIcon = document.createElement('i');
+        audioPlayIcon.className = 'material-symbols-outlined';
+        audioPlayIcon.style.cssText = 'font-size: 18px; line-height: 1;';
+        audioPlayIcon.textContent = 'play_arrow';
+        audioPlayBtn.appendChild(audioPlayIcon);
+
+        const audio = document.createElement('audio');
+        audio.style.display = 'none';
+        const audioSource = document.createElement('source');
+        audioSource.src = media.url;
+        audioSource.type = media.mime;
+        audio.appendChild(audioSource);
+
+        let audioIsPlaying = false;
+        audioPlayBtn.onclick = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+
+          if (audioIsPlaying) {
+            audio.pause();
+            audioPlayIcon.textContent = 'play_arrow';
+            audioIsPlaying = false;
+          } else {
+            audio.play();
+            audioPlayIcon.textContent = 'pause';
+            audioIsPlaying = true;
+          }
+        };
+
+        audio.onended = () => {
+          audioPlayIcon.textContent = 'play_arrow';
+          audioIsPlaying = false;
+        };
+
+        audioContainer.appendChild(audioIcon);
+        audioContainer.appendChild(audioTextContainer);
+        audioContainer.appendChild(audioPlayBtn);
+        audioContainer.appendChild(audio);
+
+        audioWrapper.appendChild(audioContainer);
+        this.insertElementInEditor(audioWrapper, editorEl);
+        break;
+
+      case 'document':
+      case 'archive':
+      case 'other':
+        const icon = this.getFileIcon(media.mime);
+        const size = media.size ? this.formatFileSize(media.size) : '';
+
+        const fileWrapper = document.createElement('p');
+
+        const fileContainer = document.createElement('span');
+        fileContainer.contentEditable = 'false';
+        fileContainer.className = 'd-inline-flex align-items-center gap-2 px-3 py-2 border rounded bg-body';
+        fileContainer.style.cssText = 'cursor: pointer;';
+        fileContainer.setAttribute('data-media-element', 'true');
+
+        const link = document.createElement('a');
+        link.href = media.url;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.className = 'd-flex align-items-center gap-2 text-decoration-none text-body';
+
+        const iconSpan = document.createElement('span');
+        iconSpan.className = 'material-symbols-outlined text-primary';
+        iconSpan.style.fontSize = '24px';
+        iconSpan.textContent = icon;
+
+        const textContainer = document.createElement('span');
+        textContainer.className = 'd-flex flex-column';
+
+        const fileName = document.createElement('strong');
+        fileName.style.fontSize = '14px';
+        fileName.textContent = media.name;
+        textContainer.appendChild(fileName);
+
+        if (size) {
+          const sizeSmall = document.createElement('small');
+          sizeSmall.className = 'text-muted';
+          sizeSmall.style.fontSize = '12px';
+          sizeSmall.textContent = size;
+          textContainer.appendChild(sizeSmall);
+        }
+
+        link.appendChild(iconSpan);
+        link.appendChild(textContainer);
+        fileContainer.appendChild(link);
+        fileWrapper.appendChild(fileContainer);
+
+        this.insertElementInEditor(fileWrapper, editorEl);
+        break;
+    }
+  }
+
+  private insertElementInEditor(element: HTMLElement, editorEl: HTMLElement): void {
+    const selection = window.getSelection();
+
+    if (selection && selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+
+      let node = range.commonAncestorContainer;
+      let isInEditor = false;
+
+      while (node) {
+        if (node === editorEl) {
+          isInEditor = true;
+          break;
+        }
+        node = node.parentNode as Node;
+      }
+
+      if (!isInEditor) {
+        range.selectNodeContents(editorEl);
+        range.collapse(false);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+
+      range.deleteContents();
+      range.insertNode(element);
+
+      const emptyP = document.createElement('p');
+      emptyP.innerHTML = '<br>';
+
+      if (element.nextSibling) {
+        element.parentNode?.insertBefore(emptyP, element.nextSibling);
+      } else {
+        element.parentNode?.appendChild(emptyP);
+      }
+
+      range.setStart(emptyP, 0);
+      range.collapse(true);
+      selection.removeAllRanges();
+      selection.addRange(range);
+    } else {
+      editorEl.appendChild(element);
+
+      const emptyP = document.createElement('p');
+      emptyP.innerHTML = '<br>';
+      editorEl.appendChild(emptyP);
+
+      const range = document.createRange();
+      range.setStart(emptyP, 0);
+      range.collapse(true);
+
+      if (selection) {
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+    }
+
+    editorEl.focus();
+  }
+
+  private getFileIcon(mime: string): string {
+    if (mime.startsWith('image/')) return 'image';
+    if (mime.startsWith('video/')) return 'videocam';
+    if (mime.startsWith('audio/')) return 'audio_file';
+    if (mime.includes('pdf')) return 'picture_as_pdf';
+    if (mime.includes('word') || mime.includes('document')) return 'description';
+    if (mime.includes('sheet') || mime.includes('excel')) return 'table_chart';
+    if (mime.includes('presentation') || mime.includes('powerpoint')) return 'slideshow';
+    if (mime.includes('zip') || mime.includes('rar') || mime.includes('7z')) return 'folder_zip';
+    return 'insert_drive_file';
+  }
+
+  private formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${(bytes / Math.pow(k, i)).toFixed(1)} ${sizes[i]}`;
+  }
+
   toggleFullScreen(): void {
     this.isFullScreen.update(v => !v);
     const wrapper = this.editorContent?.nativeElement.closest('.rich-text-editor-wrapper');
@@ -288,8 +695,7 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
       document.body.style.overflow = 'hidden';
       wrapper?.classList.add('fullscreen');
 
-      // En fullscreen, forcer le mode preview à true pour afficher les deux côtés
-      if (!this.isPreview() && this.editorContent) {
+      if (this.editorContent) {
         const currentHtml = this.editorContent.nativeElement.innerHTML;
         this.html.set(currentHtml);
       }
@@ -297,6 +703,7 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
     } else {
       document.body.style.overflow = '';
       wrapper?.classList.remove('fullscreen');
+      this.isPreview.set(false);
     }
   }
 

@@ -345,6 +345,7 @@
 <app-media-picker-modal
   [show]="showMediaPicker()"
   [acceptedTypes]="['image']"
+  [multiple]="false"
   (fileSelected)="onMediaPickerFileSelected($event)"
   (close)="onMediaPickerClose()">
 </app-media-picker-modal>

@@ -87,7 +87,7 @@
             [disabled]="readonly">
             <i class="bi bi-link-45deg"></i>
           </button>
-          @if (enableMediaPicker) {
+          @if (showImageButton()) {
             <button
               type="button"
               class="btn btn-sm btn-outline-secondary"
@@ -95,6 +95,16 @@
               [attr.title]="'richTextEditorShared.commands.image' | translate"
               [disabled]="readonly">
               <i class="bi bi-image"></i>
+            </button>
+          }
+          @if (showMediaButton()) {
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-secondary"
+              (click)="insertMediaFromMediaPicker()"
+              [attr.title]="'richTextEditorShared.commands.media' | translate"
+              [disabled]="readonly">
+              <i class="bi bi-file-earmark"></i>
             </button>
           }
         </div>
@@ -165,12 +175,11 @@
       [attr.aria-label]="'richTextEditorShared.toolbar' | translate"
     ></div>
 
-    <div
-      class="card-body border-secondary-subtle rounded-bottom p-3 editor-preview"
-      [hidden]="!isPreview() && !isFullScreen()"
-      [style.min-height]="minHeight"
-      [innerHtml]="safeHtml()">
-    </div>
+    @if (isPreview()) {
+      <div class="preview-content p-4" style="overflow-y: auto; height: 100%;">
+        <div [innerHTML]="safeHtml()" class="rendered-content"></div>
+      </div>
+    }
 
     <div class="card-footer d-flex justify-content-end gap-2">
       @if (!readonly && !isFullScreen()) {

@@ -44,14 +44,16 @@ export class MediaPickerModal implements OnDestroy {
 
   show = input.required<boolean>();
   acceptedTypes = input<string[]>(['image', 'video', 'audio', 'document', 'archive']);
+  multiple = input<boolean>(false);
   close = output<void>();
   fileSelected = output<MediaFile>();
+  filesSelected = output<MediaFile[]>();
 
   state = new MediaLibraryState();
   breadcrumbs = signal<BreadcrumbItem[]>([]);
   selectedFile = signal<MediaFile | null>(null);
+  selectedFiles = signal<MediaFile[]>([]);
   activeModal = signal<ActiveModal>(null);
-
 
   showUploadModal = signal(false);
   showCreateFolderModal = signal(false);
@@ -70,6 +72,62 @@ export class MediaPickerModal implements OnDestroy {
     return user?.documentId || null;
   });
 
+  modalTitle = computed(() => {
+    const types = this.acceptedTypes();
+
+    if (types.length === 1) {
+      switch (types[0]) {
+        case 'image':
+          return 'mediaLibrary.picker.titleImage';
+        case 'video':
+          return 'mediaLibrary.picker.titleVideo';
+        case 'audio':
+          return 'mediaLibrary.picker.titleAudio';
+        case 'document':
+          return 'mediaLibrary.picker.titleDocument';
+        case 'archive':
+          return 'mediaLibrary.picker.titleArchive';
+        case 'all':
+          return 'mediaLibrary.picker.title';
+        default:
+          return 'mediaLibrary.picker.title';
+      }
+    }
+
+    return 'mediaLibrary.picker.title';
+  });
+
+  modalIcon = computed(() => {
+    const types = this.acceptedTypes();
+
+    if (types.length === 1) {
+      switch (types[0]) {
+        case 'image':
+          return 'image';
+        case 'video':
+          return 'videocam';
+        case 'audio':
+          return 'audio_file';
+        case 'document':
+          return 'description';
+        case 'archive':
+          return 'folder_zip';
+        case 'all':
+          return 'perm_media';
+        default:
+          return 'perm_media';
+      }
+    }
+
+    return 'perm_media';
+  });
+
+  hasSelection = computed(() => {
+    return this.multiple()
+      ? this.selectedFiles().length > 0
+      : this.selectedFile() !== null;
+  });
+
   private modalInstance: any = null;
   private isInitialized = false;
 
@@ -80,6 +138,7 @@ export class MediaPickerModal implements OnDestroy {
         if (!this.isInitialized) {
           this.state.currentFolder.set(null);
           this.selectedFile.set(null);
+          this.selectedFiles.set([]);
           this.activeModal.set('picker');
           this.setupSearch();
           this.loadData();
@@ -278,7 +337,6 @@ export class MediaPickerModal implements OnDestroy {
   onBreadcrumbClick(item: BreadcrumbItem): void {
     if (item.id === null) {
       this.state.currentFolder.set(null);
-      this.selectedFile.set(null);
       this.currentPage.set(1);
       this.searchQuery.set('');
       this.loadData();
@@ -299,7 +357,6 @@ export class MediaPickerModal implements OnDestroy {
       .subscribe({
         next: (response) => {
           this.state.currentFolder.set(response.data);
-          this.selectedFile.set(null);
           this.currentPage.set(1);
           this.searchQuery.set('');
           this.loadData();
@@ -314,19 +371,45 @@ export class MediaPickerModal implements OnDestroy {
   }
 
   onFileClick(file: MediaFile): void {
-    const current = this.selectedFile();
-    if (current?.id === file.id) {
-      this.selectedFile.set(null);
+    if (this.multiple()) {
+      const currentSelection = this.selectedFiles();
+      const index = currentSelection.findIndex(f => f.id === file.id);
+
+      if (index >= 0) {
+        this.selectedFiles.set(currentSelection.filter((_, i) => i !== index));
+      } else {
+        this.selectedFiles.set([...currentSelection, file]);
+      }
     } else {
-      this.selectedFile.set(file);
+      const current = this.selectedFile();
+      if (current?.id === file.id) {
+        this.selectedFile.set(null);
+      } else {
+        this.selectedFile.set(file);
+      }
     }
   }
 
+  isFileSelected(file: MediaFile): boolean {
+    if (this.multiple()) {
+      return this.selectedFiles().some(f => f.id === file.id);
+    }
+    return this.selectedFile()?.id === file.id;
+  }
+
   confirmSelection(): void {
-    const selected = this.selectedFile();
-    if (selected) {
-      this.fileSelected.emit(selected);
-      this.onClose();
+    if (this.multiple()) {
+      const selected = this.selectedFiles();
+      if (selected.length > 0) {
+        this.filesSelected.emit(selected);
+        this.onClose();
+      }
+    } else {
+      const selected = this.selectedFile();
+      if (selected) {
+        this.fileSelected.emit(selected);
+        this.onClose();
+      }
     }
   }
 

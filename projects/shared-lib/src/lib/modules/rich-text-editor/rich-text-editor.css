@@ -65,6 +65,14 @@
   display: block !important;
 }
 
+.rich-text-editor-wrapper.fullscreen .preview-content {
+  grid-column: 2;
+  grid-row: 2;
+  max-height: unset;
+  height: 100%;
+  display: block !important;
+}
+
 .rich-text-editor-wrapper.fullscreen .card-footer {
   grid-column: 1 / -1;
   grid-row: 3;
@@ -72,70 +80,241 @@
   margin-top: auto;
 }
 
+/* Preview content */
+.preview-content {
+  will-change: transform;
+  contain: layout style paint;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 1rem;
+}
+
+.rendered-content {
+  min-height: 100px;
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+.rendered-content > * {
+  max-width: 100%;
+}
+
+/* STYLES SPÉCIFIQUES POUR LES ÉLÉMENTS MÉDIA - PRIORITÉ MAXIMALE */
+.editor-content span[data-media-element="true"],
+.rendered-content span[data-media-element="true"] {
+  display: inline-flex !important;
+  flex-direction: column !important;
+  gap: 0.5rem !important;
+  padding: 0.5rem !important;
+  border: 1px solid var(--bs-border-color, #dee2e6) !important;
+  border-radius: 0.25rem !important;
+  background-color: var(--bs-body-bg, #fff) !important;
+  max-width: 300px !important;
+  box-sizing: border-box !important;
+  cursor: default !important;
+  user-select: none !important;
+}
+
+/* La vidéo à l'intérieur du container */
+.editor-content span[data-media-element="true"] > video,
+.rendered-content span[data-media-element="true"] > video {
+  width: 100% !important;
+  height: auto !important;
+  border-radius: 0.25rem !important;
+  display: block !important;
+  pointer-events: none !important;
+}
+
+/* Le div d'informations en bas (icône + texte + bouton) */
+.editor-content span[data-media-element="true"] > div,
+.rendered-content span[data-media-element="true"] > div {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  width: 100% !important;
+}
+
+/* L'icône vidéo/audio */
+.editor-content span[data-media-element="true"] > div > span.material-symbols-outlined,
+.rendered-content span[data-media-element="true"] > div > span.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined' !important;
+  font-weight: normal !important;
+  font-style: normal !important;
+  font-size: 20px !important;
+  line-height: 1 !important;
+  color: var(--bs-primary, #0d6efd) !important;
+  flex-shrink: 0 !important;
+  display: inline-block !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+
+/* Le container de texte (nom + taille) */
+.editor-content span[data-media-element="true"] > div > span.d-flex,
+.rendered-content span[data-media-element="true"] > div > span.d-flex {
+  display: flex !important;
+  flex-direction: column !important;
+  flex-grow: 1 !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Le nom du fichier */
+.editor-content span[data-media-element="true"] strong,
+.rendered-content span[data-media-element="true"] strong {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  display: block !important;
+}
+
+/* La taille du fichier */
+.editor-content span[data-media-element="true"] small,
+.rendered-content span[data-media-element="true"] small {
+  font-size: 11px !important;
+  color: var(--bs-secondary-color, #6c757d) !important;
+  display: block !important;
+}
+
+/* Le bouton play */
+.editor-content span[data-media-element="true"] button,
+.rendered-content span[data-media-element="true"] button {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  border: 1px solid var(--bs-primary, #0d6efd) !important;
+  background-color: transparent !important;
+  color: var(--bs-primary, #0d6efd) !important;
+  flex-shrink: 0 !important;
+  cursor: pointer !important;
+}
+
+/* L'icône dans le bouton play */
+.editor-content span[data-media-element="true"] button i,
+.rendered-content span[data-media-element="true"] button i {
+  font-family: 'Material Symbols Outlined' !important;
+  font-size: 18px !important;
+  line-height: 1 !important;
+  display: inline-block !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+
+/* Audio élément caché */
+.editor-content span[data-media-element="true"] audio,
+.rendered-content span[data-media-element="true"] audio {
+  display: none !important;
+}
+
+/* Pour les fichiers/documents (sans vidéo) */
+.editor-content span[data-media-element="true"]:not(:has(video)):not(:has(audio)),
+.rendered-content span[data-media-element="true"]:not(:has(video)):not(:has(audio)) {
+  flex-direction: row !important;
+  padding: 0.75rem 1rem !important;
+}
+
+/* Lien dans les fichiers */
+.editor-content span[data-media-element="true"] a,
+.rendered-content span[data-media-element="true"] a {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  text-decoration: none !important;
+  color: var(--bs-body-color, #212529) !important;
+}
+
+/* Icône dans les fichiers */
+.editor-content span[data-media-element="true"] a > span.material-symbols-outlined,
+.rendered-content span[data-media-element="true"] a > span.material-symbols-outlined {
+  font-size: 24px !important;
+}
+
 /* Styles communs éditeur et preview */
 .editor-content,
-.editor-preview {
+.editor-preview,
+.rendered-content {
   line-height: 1.6;
   color: var(--fn-body-color);
 }
 
 /* Styles du contenu édité */
 .editor-content h1,
-.editor-preview h1 {
+.editor-preview h1,
+.rendered-content h1 {
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 1rem;
+  margin-top: 1.5rem;
 }
 
 .editor-content h2,
-.editor-preview h2 {
+.editor-preview h2,
+.rendered-content h2 {
   font-size: 1.75rem;
   font-weight: 600;
   margin-bottom: 0.875rem;
+  margin-top: 1.5rem;
 }
 
 .editor-content h3,
-.editor-preview h3 {
+.editor-preview h3,
+.rendered-content h3 {
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 0.75rem;
+  margin-top: 1.5rem;
 }
 
 .editor-content p,
-.editor-preview p {
+.editor-preview p,
+.rendered-content p {
   margin-bottom: 1rem;
+  text-align: inherit;
 }
 
 .editor-content ul,
 .editor-preview ul,
+.rendered-content ul,
 .editor-content ol,
-.editor-preview ol {
+.editor-preview ol,
+.rendered-content ol {
   margin-bottom: 1rem;
   padding-left: 2rem;
 }
 
 .editor-content li,
-.editor-preview li {
+.editor-preview li,
+.rendered-content li {
   margin-bottom: 0.5rem;
 }
 
 .editor-content blockquote,
-.editor-preview blockquote {
-  border-left: 4px solid var(--fn-primary);
+.editor-preview blockquote,
+.rendered-content blockquote {
+  border-left: 4px solid var(--bs-primary);
   padding-left: 1rem;
   margin: 1rem 0;
   font-style: italic;
-  color: var(--fn-secondary);
+  color: var(--bs-secondary);
 }
 
 .editor-content a,
-.editor-preview a {
+.editor-preview a,
+.rendered-content a {
   color: var(--fn-link-color);
   text-decoration: underline;
 }
 
 .editor-content code,
-.editor-preview code {
+.editor-preview code,
+.rendered-content code {
   background-color: var(--fn-secondary-bg);
   padding: 0.2rem 0.4rem;
   border-radius: 0.25rem;
@@ -144,7 +323,8 @@
 }
 
 .editor-content pre,
-.editor-preview pre {
+.editor-preview pre,
+.rendered-content pre {
   background-color: var(--fn-secondary-bg);
   padding: 1rem;
   border-radius: 0.25rem;
@@ -153,7 +333,8 @@
 }
 
 .editor-content table,
-.editor-preview table {
+.editor-preview table,
+.rendered-content table {
   width: 100%;
   margin-bottom: 1rem;
   border-collapse: collapse;
@@ -161,52 +342,63 @@
 
 .editor-content th,
 .editor-preview th,
+.rendered-content th,
 .editor-content td,
-.editor-preview td {
+.editor-preview td,
+.rendered-content td {
   border: 1px solid var(--fn-border-color);
   padding: 0.5rem;
 }
 
 .editor-content th,
-.editor-preview th {
+.editor-preview th,
+.rendered-content th {
   background-color: var(--fn-secondary-bg);
   font-weight: 600;
 }
 
+/* Alignement */
 .editor-content [style*="text-align: left"],
-.editor-preview [style*="text-align: left"] {
+.editor-preview [style*="text-align: left"],
+.rendered-content [style*="text-align: left"] {
   text-align: left !important;
 }
 
 .editor-content [style*="text-align: center"],
-.editor-preview [style*="text-align: center"] {
+.editor-preview [style*="text-align: center"],
+.rendered-content [style*="text-align: center"] {
   text-align: center !important;
 }
 
 .editor-content [style*="text-align: right"],
-.editor-preview [style*="text-align: right"] {
+.editor-preview [style*="text-align: right"],
+.rendered-content [style*="text-align: right"] {
   text-align: right !important;
 }
 
 .editor-content [style*="text-align: justify"],
-.editor-preview [style*="text-align: justify"] {
+.editor-preview [style*="text-align: justify"],
+.rendered-content [style*="text-align: justify"] {
   text-align: justify !important;
 }
 
 .editor-content div[style*="text-align"],
-.editor-preview div[style*="text-align"] {
+.editor-preview div[style*="text-align"],
+.rendered-content div[style*="text-align"] {
   width: 100%;
 }
 
-/* Images dans l'éditeur */
-.editor-content img {
+/* Images - MÊME STYLE PARTOUT */
+.editor-content img,
+.editor-preview img,
+.rendered-content img {
   width: 200px !important;
-  max-width: 100% !important;
+  max-width: 200px !important;
   height: auto !important;
-  display: inline-block;
-  margin: 0.5rem 0;
-  border-radius: 0.25rem;
-  transition: opacity 0.2s;
+  display: inline-block !important;
+  margin: 0.5rem 0 !important;
+  border-radius: 0.25rem !important;
+  vertical-align: middle !important;
 }
 
 .editor-content img:hover {
@@ -214,21 +406,35 @@
   cursor: pointer;
 }
 
-/* Images dans le preview - MÊME STYLE */
-.editor-preview img {
-  width: 200px !important;
-  max-width: 100% !important;
-  height: auto !important;
-  display: inline-block;
-  margin: 0.5rem 0;
-  border-radius: 0.25rem;
+/* Empêcher l'interaction dans le preview */
+.rendered-content button {
+  pointer-events: none !important;
+}
+
+.rendered-content video {
+  pointer-events: none !important;
+}
+
+.rendered-content audio {
+  pointer-events: none !important;
+}
+
+.rendered-content a {
+  pointer-events: none !important;
 }
 
 /* Responsive - les deux */
 @media (max-width: 768px) {
   .editor-content img,
-  .editor-preview img {
+  .editor-preview img,
+  .rendered-content img {
     width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .editor-content span[data-media-element="true"],
+  .rendered-content span[data-media-element="true"] {
+    max-width: 100% !important;
   }
 }
 
@@ -242,24 +448,28 @@
 
 /* Scrollbar personnalisée */
 .editor-content::-webkit-scrollbar,
-.editor-preview::-webkit-scrollbar {
+.editor-preview::-webkit-scrollbar,
+.preview-content::-webkit-scrollbar {
   width: 8px;
 }
 
 .editor-content::-webkit-scrollbar-track,
-.editor-preview::-webkit-scrollbar-track {
+.editor-preview::-webkit-scrollbar-track,
+.preview-content::-webkit-scrollbar-track {
   background: var(--fn-secondary-bg);
   border-radius: 4px;
 }
 
 .editor-content::-webkit-scrollbar-thumb,
-.editor-preview::-webkit-scrollbar-thumb {
+.editor-preview::-webkit-scrollbar-thumb,
+.preview-content::-webkit-scrollbar-thumb {
   background: var(--fn-border-color);
   border-radius: 4px;
 }
 
 .editor-content::-webkit-scrollbar-thumb:hover,
-.editor-preview::-webkit-scrollbar-thumb:hover {
+.editor-preview::-webkit-scrollbar-thumb:hover,
+.preview-content::-webkit-scrollbar-thumb:hover {
   background: var(--fn-secondary);
 }
 

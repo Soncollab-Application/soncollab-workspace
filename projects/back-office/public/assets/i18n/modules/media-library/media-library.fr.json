@@ -14,7 +14,8 @@
 
     "sections": {
       "folders": "Dossiers",
-      "assets": "Fichiers"
+      "files": "Fichiers",
+      "assets": "Médias"
     },
 
     "actions": {
@@ -136,7 +137,13 @@
       "title": "Sélectionner une image",
       "select": "Sélectionner",
       "noImages": "Aucune image disponible",
-      "imageSelected": "Image sélectionnée"
+      "imageSelected": "Image sélectionnée",
+      "selectMultiple": "Sélectionner",
+      "titleImage": "Sélectionner une image",
+      "titleVideo": "Sélectionner une vidéo",
+      "titleAudio": "Sélectionner un audio",
+      "titleDocument": "Sélectionner un document",
+      "titleArchive": "Sélectionner une archive"
     },
 
     "confirm": {

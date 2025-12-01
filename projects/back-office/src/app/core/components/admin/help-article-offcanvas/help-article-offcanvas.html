@@ -380,6 +380,7 @@
 <app-media-picker-modal
   [show]="showMediaPicker()"
   [acceptedTypes]="['all']"
+  [multiple]="false"
   (close)="onMediaPickerClosed()"
   (fileSelected)="onMediaPickerFileSelected($event)">
 </app-media-picker-modal>

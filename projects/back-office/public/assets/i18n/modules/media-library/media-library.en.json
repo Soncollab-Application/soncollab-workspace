@@ -14,6 +14,7 @@
 
     "sections": {
       "folders": "Folders",
+      "files": "Files",
       "assets": "Assets"
     },
 
@@ -136,7 +137,13 @@
       "title": "Select Image",
       "select": "Select",
       "noImages": "No images available",
-      "imageSelected": "Image selected"
+      "imageSelected": "Image selected",
+      "selectMultiple": "Select",
+      "titleImage": "Select Image",
+      "titleVideo": "Select Video",
+      "titleAudio": "Select Audio",
+      "titleDocument": "Select Document",
+      "titleArchive": "Select Archive"
     },
     "confirm": {
       "bulkDelete": {
