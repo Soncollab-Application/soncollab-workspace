@@ -13,7 +13,7 @@ import {
   ViewChild,
   ElementRef,
   effect,
-  computed
+  computed, SecurityContext
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
@@ -22,13 +22,14 @@ import { NgxEditorModule } from 'ngx-editor';
 import { Subject, takeUntil } from 'rxjs';
 import { EditorCommandService } from './editor-command.service';
 import { HtmlToMarkdownService } from './html-to-markdown.service';
-import { DomSanitizer } from '@angular/platform-browser';
+import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 import { ImageResult, MediaResult, MediaType } from './rich-text-editor.model';
+import {BypassHtmlPipe} from '../../pipes';
 
 @Component({
   selector: 'lib-rich-text-editor',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslatePipe, NgxEditorModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslatePipe, NgxEditorModule, BypassHtmlPipe],
   templateUrl: './rich-text-editor.html',
   styleUrl: './rich-text-editor.css',
   encapsulation: ViewEncapsulation.None,
@@ -74,7 +75,9 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
   isUnorderedList = signal(false);
   currentBlockTag = signal('richTextEditorShared.commands.paragraph');
 
-  safeHtml = computed(() => this.sanitizer.bypassSecurityTrustHtml(this.html()));
+  safeHtml(): SafeHtml {
+    return this.sanitizer.sanitize(SecurityContext.HTML, this.html()) || '';
+  }
 
   showImageButton = computed(() =>
     this.enableMediaPicker && this.acceptedMediaTypes.includes('image')
@@ -396,19 +399,20 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
         const videoContainer = document.createElement('span');
         videoContainer.contentEditable = 'false';
         videoContainer.className = 'd-inline-flex flex-column gap-2 p-2 border rounded bg-body';
-        videoContainer.style.cssText = 'cursor: default; max-width: 300px; user-select: none;';
+        videoContainer.style.cssText = 'cursor: default; max-width: 400px; user-select: none;';
         videoContainer.setAttribute('data-media-element', 'true');
 
         const videoPreview = document.createElement('video');
-        videoPreview.style.cssText = 'width: 100%; height: auto; border-radius: 0.25rem; pointer-events: none;';
+        videoPreview.style.cssText = 'width: 100%; height: auto; border-radius: 0.25rem; pointer-events: none; max-width: 100%;';
 
         const videoSource = document.createElement('source');
         videoSource.src = media.url;
         videoSource.type = media.mime;
         videoPreview.appendChild(videoSource);
 
-        const videoInfoContainer = document.createElement('div');
+        const videoInfoContainer = document.createElement('span');
         videoInfoContainer.className = 'd-flex align-items-center gap-2';
+        videoInfoContainer.style.display = 'flex';
 
         const videoIcon = document.createElement('span');
         videoIcon.className = 'material-symbols-outlined text-primary';
@@ -417,6 +421,7 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
 
         const videoTextContainer = document.createElement('span');
         videoTextContainer.className = 'd-flex flex-column flex-grow-1 text-truncate';
+        videoTextContainer.style.display = 'flex';
 
         const videoName = document.createElement('strong');
         videoName.className = 'text-truncate';
@@ -434,13 +439,11 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
 
         const videoPlayBtn = document.createElement('button');
         videoPlayBtn.type = 'button';
-        videoPlayBtn.className = 'btn btn-sm btn-outline-primary';
-        videoPlayBtn.style.cssText = 'width: 28px; height: 28px; padding: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;';
+        videoPlayBtn.className = 'btn btn-icon btn-sm btn-outline-primary fs-base rounded-circle';
         videoPlayBtn.setAttribute('aria-label', 'Play');
 
         const videoPlayIcon = document.createElement('i');
         videoPlayIcon.className = 'material-symbols-outlined';
-        videoPlayIcon.style.cssText = 'font-size: 18px; line-height: 1;';
         videoPlayIcon.textContent = 'play_arrow';
         videoPlayBtn.appendChild(videoPlayIcon);
 
@@ -482,7 +485,7 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
         const audioContainer = document.createElement('span');
         audioContainer.contentEditable = 'false';
         audioContainer.className = 'd-inline-flex align-items-center gap-2 px-3 py-2 border rounded bg-body';
-        audioContainer.style.cssText = 'cursor: default; min-width: 300px; user-select: none;';
+        audioContainer.style.cssText = 'cursor: default; max-width: 400px; user-select: none;';
         audioContainer.setAttribute('data-media-element', 'true');
 
         const audioIcon = document.createElement('span');
@@ -509,13 +512,11 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
 
         const audioPlayBtn = document.createElement('button');
         audioPlayBtn.type = 'button';
-        audioPlayBtn.className = 'btn btn-sm btn-outline-primary';
-        audioPlayBtn.style.cssText = 'width: 28px; height: 28px; padding: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;';
+        audioPlayBtn.className = 'btn btn-icon btn-sm btn-outline-primary fs-base rounded-circle';
         audioPlayBtn.setAttribute('aria-label', 'Play');
 
         const audioPlayIcon = document.createElement('i');
         audioPlayIcon.className = 'material-symbols-outlined';
-        audioPlayIcon.style.cssText = 'font-size: 18px; line-height: 1;';
         audioPlayIcon.textContent = 'play_arrow';
         audioPlayBtn.appendChild(audioPlayIcon);
 
