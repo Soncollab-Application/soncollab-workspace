@@ -24,5 +24,6 @@
   [acceptedTypes]="mediaPickerTypes()"
   [multiple]="true"
   (fileSelected)="onFileSelected($event)"
+  (filesSelected)="onFilesSelected($event)"
   (close)="onMediaPickerClose()">
 </app-media-picker-modal>

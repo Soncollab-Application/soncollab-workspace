@@ -110,12 +110,16 @@
                 <label class="form-label small fw-semibold required">
                   {{ 'help-articles.offcanvas.content' | translate }}
                 </label>
-                <lib-rich-text-editor
-                  formControlName="content"
-                  [placeholder]="'help-articles.offcanvas.content_placeholder' | translate"
-                  [readonly]="!canEdit()"
-                  (imageSelectRequested)="onRichTextImageInsert($event)">
-                </lib-rich-text-editor>
+
+                @if (editorKey() >= 0) {
+                  <lib-rich-text-editor
+                    formControlName="content"
+                    [placeholder]="'help-articles.offcanvas.content_placeholder' | translate"
+                    [readonly]="!canEdit()"
+                    (imageSelectRequested)="onRichTextImageInsert($event)">
+                  </lib-rich-text-editor>
+                }
+
                 @if (articleForm.get('content')?.invalid && articleForm.get('content')?.touched) {
                   <small class="text-danger">
                     {{ 'help-articles.offcanvas.content_required' | translate }}

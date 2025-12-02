@@ -168,14 +168,14 @@ export class RichTextEditor implements OnInit, OnDestroy, AfterViewInit, Control
   }
 
   writeValue(value: string): void {
-    if (value !== undefined && value !== null) {
-      this.html.set(value);
+    const newValue = value !== undefined && value !== null ? value : '';
 
-      if (this.editorContent) {
-        this.editorContent.nativeElement.innerHTML = value;
-      } else {
-        this.pendingContent = value;
-      }
+    this.html.set(newValue);
+
+    if (this.editorContent) {
+      this.editorContent.nativeElement.innerHTML = newValue;
+    } else {
+      this.pendingContent = newValue;
     }
   }
 

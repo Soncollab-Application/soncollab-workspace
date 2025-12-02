@@ -60,11 +60,13 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
 
   activeTab = signal<'content' | 'seo'>('content');
   showPreview = signal(false);
+  editorKey = signal(0);
 
   isViewMode = computed(() => this.mode() === 'view');
   isEditMode = computed(() => this.mode() === 'edit');
   isCreateMode = computed(() => this.mode() === 'create');
   canEdit = computed(() => this.mode() !== 'view');
+
 
   articleForm!: FormGroup;
   categories = signal<any[]>([]);
@@ -197,15 +199,17 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
     this.loadCategories();
 
     if ((data.mode === 'edit' || data.mode === 'view') && data.articleId) {
+      this.editorKey.update(v => v + 1);
       this.loadArticle(data.articleId);
     } else {
-      // Réactiver le formulaire en mode create
       this.articleForm.enable();
       this.articleForm.reset({
         is_featured: false,
         content_status: 'draft',
         reading_time: 0
       });
+
+      this.editorKey.update(v => v + 1);
     }
   }
 

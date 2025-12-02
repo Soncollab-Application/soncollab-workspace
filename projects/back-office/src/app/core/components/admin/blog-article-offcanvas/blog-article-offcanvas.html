@@ -154,11 +154,13 @@
                   {{ 'blog-articles.offcanvas.content' | translate }}
                   <span class="text-danger">*</span>
                 </label>
-                <lib-rich-text-editor
-                  formControlName="content"
-                  [enableMediaPicker]="!isViewMode()"
-                  (imageSelectRequested)="onImageSelectRequestedForRichText($event)">
-                </lib-rich-text-editor>
+                @if (editorKey() >= 0) {
+                  <lib-rich-text-editor
+                    formControlName="content"
+                    [enableMediaPicker]="!isViewMode()"
+                    (imageSelectRequested)="onImageSelectRequestedForRichText($event)">
+                  </lib-rich-text-editor>
+                }
               </div>
 
               <div class="mb-3">

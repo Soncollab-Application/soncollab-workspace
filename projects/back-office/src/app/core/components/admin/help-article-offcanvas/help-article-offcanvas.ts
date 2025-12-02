@@ -65,6 +65,7 @@ export class HelpArticleOffcanvas implements OnInit, OnDestroy {
   isEditMode = computed(() => this.mode() === 'edit');
   isCreateMode = computed(() => this.mode() === 'create');
   canEdit = computed(() => this.mode() !== 'view');
+  editorKey = signal(0);
 
   articleForm!: FormGroup;
   categories = signal<any[]>([]);
@@ -210,6 +211,7 @@ export class HelpArticleOffcanvas implements OnInit, OnDestroy {
     this.loadCategories();
 
     if ((data.mode === 'edit' || data.mode === 'view') && data.articleId) {
+      this.editorKey.update(v => v + 1);
       this.loadArticle(data.articleId);
     } else {
       this.articleForm.enable();
@@ -220,6 +222,8 @@ export class HelpArticleOffcanvas implements OnInit, OnDestroy {
         estimated_reading_time: 0,
         order: 0
       });
+
+      this.editorKey.update(v => v + 1);
     }
   }
 

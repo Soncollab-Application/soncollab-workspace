@@ -293,8 +293,11 @@ export class Choice implements AfterViewInit, OnDestroy, ControlValueAccessor {
     const val = this._value();
     if (val !== undefined && val !== null && val !== '') {
       setTimeout(() => {
-        instance.setChoiceByValue(Array.isArray(val) ? val : [val]);
-      }, 50);
+        const currentInstance = this.choiceDirective?.getInstance();
+        if (currentInstance && currentInstance._isInitialised) {
+          currentInstance.setChoiceByValue(Array.isArray(val) ? val : [val]);
+        }
+      }, 100);
     }
   }
 

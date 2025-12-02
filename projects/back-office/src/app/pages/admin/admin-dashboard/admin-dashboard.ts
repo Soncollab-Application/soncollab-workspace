@@ -70,6 +70,44 @@ export class AdminDashboard {
     this.showMediaPicker.set(false);
   }
 
+  onFilesSelected(files: MediaFile[]): void {
+    files.forEach(file => {
+      const url = file.url.startsWith('http') ? file.url : environment.api.baseUrl + file.url;
+
+      if (this.imageCallback) {
+        this.imageCallback({
+          url: url,
+          alt: file.alternativeText || file.name,
+          width: file.width ?? undefined,
+          height: file.height ?? undefined
+        });
+      } else if (this.mediaCallback) {
+        let type: MediaResult['type'] = 'other';
+        if (file.mime.startsWith('image/')) type = 'image';
+        else if (file.mime.startsWith('video/')) type = 'video';
+        else if (file.mime.startsWith('audio/')) type = 'audio';
+        else if (file.mime.includes('pdf') || file.mime.includes('document')) type = 'document';
+        else if (file.mime.includes('zip') || file.mime.includes('rar')) type = 'archive';
+
+        this.mediaCallback({
+          url: url,
+          name: file.name,
+          type: type,
+          mime: file.mime,
+          size: file.size,
+          alt: file.alternativeText || file.name,
+          width: file.width ?? undefined,
+          height: file.height ?? undefined
+        });
+      }
+    });
+
+    this.imageCallback = undefined;
+    this.mediaCallback = undefined;
+    this.showMediaPicker.set(false);
+  }
+
+
   onMediaPickerClose(): void {
     this.showMediaPicker.set(false);
 
