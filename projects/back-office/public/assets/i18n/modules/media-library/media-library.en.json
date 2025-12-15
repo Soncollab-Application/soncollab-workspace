@@ -196,6 +196,11 @@
       "cannotRenameUserFolder": "User folders cannot be renamed",
       "userFolderCannotBeRenamed": "This is a user folder and cannot be renamed",
       "noPermission": "You don't have permission to perform this action"
+    },
+
+    "messages": {
+      "noResults": "No results found",
+      "folderLoadError": "Error loading folder"
     }
   }
 }

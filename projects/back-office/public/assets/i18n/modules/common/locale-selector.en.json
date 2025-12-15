@@ -1,0 +1,7 @@
+{
+  "locale_selector": {
+    "title": "Select a Language",
+    "subtitle": "Choose the language in which you want to create this translation",
+    "no_locales": "No languages available"
+  }
+}

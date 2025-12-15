@@ -41,6 +41,7 @@ import {
   TranslationOption,
   TranslationsModalService
 } from '../../../../../core/services/admin/translations-modal.service';
+import {LocaleSelectorModalService} from '../../../../../core/services/admin/locale-selector-modal.service';
 
 const AVAILABLE_LOCALES = [
   { code: 'fr', label: 'Français', flag: '🇫🇷' },
@@ -78,6 +79,7 @@ export class HelpArticles implements OnInit, OnDestroy {
   private offcanvasService = inject(HelpArticleOffcanvasService);
   protected listManager = inject(ListStateManager<HelpArticle, HelpArticleFilters>);
   private translationsModalService = inject(TranslationsModalService);
+  private localeSelectorService = inject(LocaleSelectorModalService);
 
   private destroy$ = new Subject<void>();
   private componentId = 'help-articles';
@@ -675,9 +677,13 @@ export class HelpArticles implements OnInit, OnDestroy {
       ...(article.localizations?.map(l => l.locale) || [])
     ];
 
-    const availableLocales = this.availableLocales.filter(
-      loc => !existingLocales.includes(loc.code)
-    );
+    const availableLocales = this.availableLocales
+      .filter(loc => !existingLocales.includes(loc.code))
+      .map(loc => ({
+        code: loc.code,
+        label: loc.label,
+        flag: loc.flag
+      }));
 
     if (availableLocales.length === 0) {
       this.toastService.showWarning(
@@ -691,7 +697,9 @@ export class HelpArticles implements OnInit, OnDestroy {
       return;
     }
 
-    this.openCreateTranslationOffcanvas(article.documentId!, availableLocales[0].code);
+    this.localeSelectorService.open(availableLocales, (selectedLocale) => {
+      this.openCreateTranslationOffcanvas(article.documentId!, selectedLocale);
+    });
   }
 
   private openCreateTranslationOffcanvas(sourceDocumentId: string, targetLocale: string): void {

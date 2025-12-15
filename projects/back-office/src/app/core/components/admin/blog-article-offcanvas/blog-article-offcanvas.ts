@@ -450,6 +450,7 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
 
     this.saving.set(true);
     const formValue = this.articleForm.value;
+    const state = this.offcanvasService.getState();
 
     const htmlContent = formValue.content;
     const markdownContent = this.htmlToMarkdown(htmlContent);
@@ -469,12 +470,14 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
       locale: this.locale()
     };
 
-    // Inclure review_notes uniquement si l'utilisateur est admin
+    if (state.data?.sourceDocumentId) {
+      payload.documentId = state.data.sourceDocumentId;
+    }
+
     if (this.canReviewArticle()) {
       payload.review_notes = formValue.review_notes;
     }
 
-    // En mode CREATE, ajouter les IDs des images au payload
     if (this.mode() === 'create') {
       if (this.featuredImage()) {
         payload.featured_image = this.featuredImage()!.id;

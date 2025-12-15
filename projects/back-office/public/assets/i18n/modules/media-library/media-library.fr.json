@@ -198,6 +198,11 @@
       "cannotRenameUserFolder": "Les dossiers utilisateur ne peuvent pas être renommés",
       "userFolderCannotBeRenamed": "Ceci est un dossier utilisateur et ne peut pas être renommé",
       "noPermission": "Vous n'avez pas la permission d'effectuer cette action"
+    },
+
+    "messages": {
+      "noResults": "Aucun résultat trouvé",
+      "folderLoadError": "Erreur lors du chargement du dossier"
     }
   }
 }

@@ -42,6 +42,8 @@ import {
   TranslationOption,
   TranslationsModalService
 } from '../../../../../core/services/admin/translations-modal.service';
+import {LocaleSelectorModalService} from '../../../../../core/services/admin/locale-selector-modal.service';
+import {LocaleSelectorModal} from '../../../../../core/components/admin/locale-selector-modal/locale-selector-modal';
 
 @Component({
   selector: 'app-blog-articles',
@@ -57,6 +59,7 @@ import {
     Choice,
     BlogArticleOffcanvas,
     TranslationsModal,
+    LocaleSelectorModal,
   ],
   templateUrl: './blog-articles.html',
   styleUrl: './blog-articles.css',
@@ -74,6 +77,7 @@ export class BlogArticles implements OnInit, OnDestroy {
   private offcanvasService = inject(BlogArticleOffcanvasService);
   protected listManager = inject(ListStateManager<BlogArticle, BlogArticleFilters>);
   private translationsModalService = inject(TranslationsModalService);
+  private localeSelectorService = inject(LocaleSelectorModalService);
 
   private destroy$ = new Subject<void>();
   private componentId = 'blog-articles';
@@ -648,9 +652,13 @@ export class BlogArticles implements OnInit, OnDestroy {
       ...(article.localizations?.map(l => l.locale) || [])
     ];
 
-    const availableLocales = this.availableLocales.filter(
-      loc => !existingLocales.includes(loc.code)
-    );
+    const availableLocales = this.availableLocales
+      .filter(loc => !existingLocales.includes(loc.code))
+      .map(loc => ({
+        code: loc.code,
+        label: loc.label,
+        flag: loc.flag
+      }));
 
     if (availableLocales.length === 0) {
       this.toastService.showWarning(
@@ -659,13 +667,14 @@ export class BlogArticles implements OnInit, OnDestroy {
       return;
     }
 
-    // Si une seule locale disponible, l'utiliser directement
     if (availableLocales.length === 1) {
       this.openCreateTranslationOffcanvas(article.documentId!, availableLocales[0].code);
       return;
     }
 
-    this.openCreateTranslationOffcanvas(article.documentId!, availableLocales[0].code);
+    this.localeSelectorService.open(availableLocales, (selectedLocale) => {
+      this.openCreateTranslationOffcanvas(article.documentId!, selectedLocale);
+    });
   }
 
   private openCreateTranslationOffcanvas(sourceDocumentId: string, targetLocale: string): void {

@@ -366,34 +366,47 @@ export class HelpArticleOffcanvas implements OnInit, OnDestroy {
     this.showMediaPicker.set(true);
   }
 
-  async save(): Promise<void> {
-    if (this.articleForm.invalid || this.saving()) return;
+  save(): void {
+    if (this.articleForm.invalid) {
+      this.articleForm.markAllAsTouched();
+      this.toast.showWarning(this.translate.instant('help-articles.messages.fill_required'));
+      return;
+    }
 
     this.saving.set(true);
+    const formValue = this.articleForm.value;
+    const state = this.offcanvasService.getState();
 
-    const formValue = this.articleForm.getRawValue();
-    const markdownContent = this.htmlToMarkdown(formValue.content);
+    const htmlContent = formValue.content;
+    const markdownContent = this.htmlToMarkdown(htmlContent);
 
     const payload: any = {
       title: formValue.title,
       excerpt: formValue.excerpt,
       content: markdownContent,
-      category: formValue.category ? { documentId: formValue.category } : null,
+      category: formValue.category,
       difficulty_level: formValue.difficulty_level,
       is_featured: formValue.is_featured,
       estimated_reading_time: formValue.estimated_reading_time,
+      content_status: formValue.content_status,
       order: formValue.order,
       seo_title: formValue.seo_title,
       seo_description: formValue.seo_description,
-      search_keywords: formValue.search_keywords,
-      canonical_url: formValue.canonical_url,
-      content_status: formValue.content_status,
-      review_notes: formValue.review_notes,
+      seo_keywords: formValue.seo_keywords,
       locale: this.locale()
     };
 
-    // Toujours envoyer le tableau des attachments (même vide)
-    payload.attachments = this.attachments().map(a => a.id);
+    if (state.data?.sourceDocumentId) {
+      payload.documentId = state.data.sourceDocumentId;
+    }
+
+    if (this.canReviewArticle()) {
+      payload.review_notes = formValue.review_notes;
+    }
+
+    if (this.mode() === 'create' && this.attachments().length > 0) {
+      payload.attachments = this.attachments().map(file => file.id);
+    }
 
     const request = this.mode() === 'create'
       ? this.contentService.createHelpArticle(payload)

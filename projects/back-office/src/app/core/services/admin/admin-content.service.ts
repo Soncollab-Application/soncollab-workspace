@@ -55,7 +55,7 @@ export class AdminContentService {
     filters?: BlogArticleFilters,
     sortField?: string,
     sortOrder: 'asc' | 'desc' = 'desc',
-    locale?: string // Ajout du paramètre locale
+    locale?: string
   ): Observable<BlogArticleListResponse> {
     let params = new HttpParams()
       .set('pagination[page]', page.toString())
@@ -66,9 +66,9 @@ export class AdminContentService {
       .set('populate[2]', 'tags')
       .set('populate[3]', 'featured_image')
       .set('populate[4]', 'reviewed_by')
-      .set('populate[5]', 'localizations'); // Populate les autres versions
+      .set('populate[5]', 'localizations')
+      .set('status', 'draft');
 
-    // IMPORTANT : Toujours filtrer par locale
     if (locale) {
       params = params.set('locale', locale);
     }
@@ -151,7 +151,8 @@ export class AdminContentService {
       .set('populate[3]', 'featured_image')
       .set('populate[4]', 'reviewed_by')
       .set('populate[5]', 'og_image')
-      .set('populate[6]', 'localizations');
+      .set('populate[6]', 'localizations')
+      .set('status', 'draft');
 
     if (locale) {
       params = params.set('locale', locale);
@@ -251,22 +252,28 @@ export class AdminContentService {
     page = 1,
     pageSize = 25,
     filters?: HelpArticleFilters,
-    sortField = 'createdAt',
+    sortField?: string,
     sortOrder: 'asc' | 'desc' = 'desc',
     locale?: string
   ): Observable<HelpArticleListResponse> {
     let params = new HttpParams()
       .set('pagination[page]', page.toString())
       .set('pagination[pageSize]', pageSize.toString())
-      .set('sort[0]', `${sortField}:${sortOrder}`)
+      .set('sort[0]', `${sortField || 'createdAt'}:${sortOrder}`)
       .set('populate[0]', 'author')
       .set('populate[1]', 'category')
-      .set('populate[2]', 'reviewed_by')
-      .set('populate[3]', 'attachments')
-      .set('populate[4]', 'localizations');
+      .set('populate[2]', 'attachments')
+      .set('populate[3]', 'reviewed_by')
+      .set('populate[4]', 'localizations')
+      .set('status', 'draft');
 
     if (locale) {
       params = params.set('locale', locale);
+    }
+
+    if (filters?.search) {
+      params = params.set('filters[$or][0][title][$containsi]', filters.search);
+      params = params.set('filters[$or][1][excerpt][$containsi]', filters.search);
     }
 
     if (filters?.content_status) {
@@ -285,15 +292,7 @@ export class AdminContentService {
       params = params.set('filters[is_featured][$eq]', filters.is_featured.toString());
     }
 
-    if (filters?.search) {
-      params = params.set('filters[$or][0][title][$containsi]', filters.search);
-      params = params.set('filters[$or][1][excerpt][$containsi]', filters.search);
-    }
-
-    return this.http.get<HelpArticleListResponse>(
-      this.CONTENT_ENDPOINTS.help_articles,
-      { params }
-    );
+    return this.http.get<HelpArticleListResponse>(this.CONTENT_ENDPOINTS.help_articles, { params });
   }
 
   getHelpCategories(
@@ -334,7 +333,8 @@ export class AdminContentService {
       .set('populate[2]', 'reviewed_by')
       .set('populate[3]', 'attachments')
       .set('populate[4]', 'related_articles')
-      .set('populate[5]', 'localizations');
+      .set('populate[5]', 'localizations')
+      .set('status', 'draft');
 
     if (locale) {
       params = params.set('locale', locale);
