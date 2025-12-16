@@ -34,6 +34,7 @@ export interface BlogArticle {
   excerpt: string;
   content?: string;
   publishedAt: string;
+  createdAt: string;
   isFeatured: boolean;
   reading_time?: number;
   category?: BlogCategory;

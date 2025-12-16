@@ -72,21 +72,23 @@ export class BlogService {
   public async trackArticleView(slug: string, type: 'blog'): Promise<void> {
     try {
       const token = await this.recaptchActionService.getBlogViewToken();
+      const locale = this.languageService.getCurrentLanguage();
+
       const body = {
         recaptcha_token: token,
         data: {
           article_slug: slug,
-          article_type: type
+          article_type: type,
+          article_locale: locale
         }
       }
 
       this.httpClient.post(`${this.apiUrl}/article-views`, body).subscribe({
         error: (error) => console.warn('Failed to track view:', error)
       })
-    }catch (e) {
+    } catch (e) {
       console.warn('reCAPTCHA failed for tracking view:', e);
     }
-
   }
 
   public getArticleBySlug(slug: string): Observable<BlogArticle | null> {
