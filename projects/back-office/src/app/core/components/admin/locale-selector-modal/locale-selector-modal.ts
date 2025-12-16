@@ -15,7 +15,11 @@ import {TranslatePipe} from '@ngx-translate/core';
 export class LocaleSelectorModal {
   private modalService = inject(LocaleSelectorModalService);
 
-  isOpen = computed(() => this.modalService.getState().isOpen);
+  isOpen = computed(() => {
+    const state = this.modalService.getState();
+    return state.isOpen && state.availableLocales && state.availableLocales.length >= 0;
+  });
+
   availableLocales = computed(() => this.modalService.getState().availableLocales);
 
   constructor() {

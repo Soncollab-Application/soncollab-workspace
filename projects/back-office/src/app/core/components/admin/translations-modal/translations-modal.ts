@@ -14,7 +14,11 @@ import { TranslationsModalService, TranslationOption } from '../../../services/a
 export class TranslationsModal {
   private modalService = inject(TranslationsModalService);
 
-  isOpen = computed(() => this.modalService.getState().isOpen);
+  isOpen = computed(() => {
+    const state = this.modalService.getState();
+    return state.isOpen && state.translations && state.translations.length > 0;
+  });
+
   translations = computed(() => this.modalService.getState().translations);
 
   constructor() {

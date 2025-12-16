@@ -719,24 +719,36 @@ export class HelpArticles implements OnInit, OnDestroy {
   }
 
   viewTranslations(article: HelpArticle): void {
-    if (!article.localizations || article.localizations.length === 0) {
+    const allTranslations: TranslationOption[] = [];
+
+    const currentLocaleConfig = this.availableLocales.find(l => l.code === article.locale);
+    allTranslations.push({
+      locale: article.locale!,
+      flag: currentLocaleConfig?.flag || '',
+      label: currentLocaleConfig?.label || article.locale!.toUpperCase(),
+      documentId: article.documentId!
+    });
+
+    if (article.localizations && article.localizations.length > 0) {
+      article.localizations.forEach(loc => {
+        const localeConfig = this.availableLocales.find(l => l.code === loc.locale);
+        allTranslations.push({
+          locale: loc.locale,
+          flag: localeConfig?.flag || '',
+          label: localeConfig?.label || loc.locale.toUpperCase(),
+          documentId: loc.documentId
+        });
+      });
+    }
+
+    if (allTranslations.length === 0) {
       this.toastService.showWarning(
         this.translate.instant('help-articles.translations_modal.no_translations')
       );
       return;
     }
 
-    const translations: TranslationOption[] = article.localizations.map(loc => {
-      const localeConfig = this.availableLocales.find(l => l.code === loc.locale);
-      return {
-        locale: loc.locale,
-        flag: localeConfig?.flag || '',
-        label: localeConfig?.label || loc.locale.toUpperCase(),
-        documentId: loc.documentId
-      };
-    });
-
-    this.translationsModalService.open(translations, (translation) => {
+    this.translationsModalService.open(allTranslations, (translation) => {
       this.onTranslationSelected(translation);
     });
   }
