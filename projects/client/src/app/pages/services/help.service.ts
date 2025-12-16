@@ -36,11 +36,18 @@ export class HelpService {
 
   public getAllArticles(page: number = 1, pageSize: number = 12): Observable<HelpResponse | null> {
     const locale = this.languageService.getCurrentLanguage();
-    let parameters = new HttpParams()
+
+    const params = new HttpParams()
       .set('locale', locale)
-      .set('page', page.toString())
-      .set('pageSize', pageSize.toString());
-    return this.httpClient.get<HelpResponse>(`${this.apiUrl}/help-articles`, { params: parameters }).pipe(
+      .set('pagination[page]', page.toString())
+      .set('pagination[pageSize]', pageSize.toString())
+      .set('populate[0]', 'category')
+      .set('populate[1]', 'author')
+      .set('populate[2]', 'localizations')
+      .set('filters[content_status][$eq]', 'approved')
+      .set('sort[0]', 'publishedAt:desc');
+
+    return this.httpClient.get<HelpResponse>(`${this.apiUrl}/help-articles`, { params }).pipe(
       map(response => {
         if (response.data) {
           this.helpArticlesSubject.next(response.data);
@@ -77,17 +84,23 @@ export class HelpService {
   public getArticleBySlug(slug: string): Observable<HelpArticle | null> {
     const locale = this.languageService.getCurrentLanguage();
     const params = {
-      locale
+      locale,
+      populate: JSON.stringify({
+        category: { fields: ['name', 'slug', 'color', 'icon'] },
+        author: { fields: ['first_name', 'last_name'] },
+        localizations: { fields: ['locale', 'title', 'slug'] }
+      })
     };
 
     return this.httpClient.get<SingleHelpResponse>(`${this.apiUrl}/help-articles/slug/${slug}`, { params }).pipe(
       map(response => response.data || null),
       catchError(error => {
-        console.error(`Erreur lors de la récupération de l'article d'aide ${slug} (${locale}):`, error);
         return of(null);
       })
     );
   }
+
+
   public getArticlesByCategory(categorySlug: string, page: number = 1, pageSize: number = 12): Observable<HelpResponse | null> {
     const locale = this.languageService.getCurrentLanguage();
     return this.httpClient.get<ApiHelpCategoryResponse>(`${this.apiUrl}/help-categories/slug/${categorySlug}`, { params: { locale } }).pipe(
@@ -168,13 +181,20 @@ export class HelpService {
       })
     );
   }
-  public getRecentArticles(limit: number = 10): Observable<ApiHelpRecentContentResponse | null> {
+  public getRecentArticles(limit: number = 10): Observable<HelpResponse | null> {
     const locale = this.languageService.getCurrentLanguage();
-    let parameters = new HttpParams()
-      .set('limit', limit.toString())
-      .set('type', 'help')
-      .set('locale', locale);
-    return this.httpClient.get<ApiHelpRecentContentResponse>(`${this.apiUrl}/content/recent`, { params: parameters }).pipe(
+
+    const params = new HttpParams()
+      .set('locale', locale)
+      .set('pagination[page]', '1')
+      .set('pagination[pageSize]', limit.toString())
+      .set('populate[0]', 'category')
+      .set('populate[1]', 'author')
+      .set('populate[2]', 'localizations')
+      .set('filters[content_status][$eq]', 'approved')
+      .set('sort[0]', 'publishedAt:desc');
+
+    return this.httpClient.get<HelpResponse>(`${this.apiUrl}/help-articles`, { params }).pipe(
       map(response => response || null),
       catchError(error => {
         console.error(`Erreur lors de la récupération des articles d'aide récents (${locale}):`, error);
@@ -182,6 +202,7 @@ export class HelpService {
       })
     );
   }
+
   public async rateArticle(documentId: string, rating: number, feedback?: string): Promise<void> {
     if (!documentId) return;
 

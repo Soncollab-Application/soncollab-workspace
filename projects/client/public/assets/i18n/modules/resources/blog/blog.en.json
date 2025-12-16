@@ -2,6 +2,9 @@
   "blog": {
     "title": "Blog",
     "subtitle": "Discover our latest articles and news",
+    "alsoAvailableIn": "This article is also available in:",
+    "readInEnglish": "Read in English",
+    "readInFrench": "Read in French",
     "categories": "Categories",
     "tags": "Tags",
     "searchPlaceholder": "Search articles...",

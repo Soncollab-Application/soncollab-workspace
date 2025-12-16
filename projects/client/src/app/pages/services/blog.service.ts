@@ -1,6 +1,6 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import { Observable, map, catchError, of, BehaviorSubject } from 'rxjs';
+import {Observable, map, catchError, of, BehaviorSubject, tap} from 'rxjs';
 import { environment } from '../../../environments/environment';
 import {
   BlogArticle,
@@ -42,18 +42,28 @@ export class BlogService {
 
   public getAllArticles(page: number = 1, pageSize: number = 12): Observable<BlogResponse | null> {
     const locale = this.languageService.getCurrentLanguage();
-    let parameters = new HttpParams()
+
+    const params = new HttpParams()
       .set('locale', locale)
-      .set('page', page.toString())
-      .set('pageSize', pageSize.toString());
-    return this.httpClient.get<BlogResponse>(`${this.apiUrl}/blog-articles`, { params: parameters }).pipe(
-      map(response => {
-        if (response.data) {
+      .set('pagination[page]', page.toString())
+      .set('pagination[pageSize]', pageSize.toString())
+      .set('populate[0]', 'category')
+      .set('populate[1]', 'tags')
+      .set('populate[2]', 'featured_image')
+      .set('populate[3]', 'author')
+      .set('populate[4]', 'localizations')
+      .set('filters[content_status][$eq]', 'approved')
+      .set('sort[0]', 'publishedAt:desc');
+
+    return this.httpClient.get<BlogResponse>(`${this.apiUrl}/blog-articles`, { params }).pipe(
+      map(response => response || null),
+      tap(response => {
+        if (response?.data) {
           this.blogArticlesSubject.next(response.data);
         }
-        return response;
       }),
       catchError(error => {
+        console.error('Error loading blog articles:', error);
         return of(null);
       })
     );
@@ -82,7 +92,15 @@ export class BlogService {
   public getArticleBySlug(slug: string): Observable<BlogArticle | null> {
     const locale = this.languageService.getCurrentLanguage();
     const params = {
-      locale
+      locale,
+      populate: JSON.stringify({
+        category: { fields: ['name', 'slug'] },
+        tags: { fields: ['name', 'slug'] },
+        featured_image: { fields: ['url', 'alternativeText', 'width', 'height'] },
+        og_image: { fields: ['url'] },
+        author: { fields: ['first_name', 'last_name'] },
+        localizations: { fields: ['locale', 'title', 'slug'] }
+      })
     };
 
     return this.httpClient.get<SingleBlogResponse>(`${this.apiUrl}/blog-articles/slug/${slug}`, { params }).pipe(
@@ -92,6 +110,7 @@ export class BlogService {
       })
     );
   }
+
 
   public getArticlesByCategory(categorySlug: string, page: number = 1, pageSize: number = 12): Observable<BlogResponse | null> {
     const locale = this.languageService.getCurrentLanguage();
@@ -205,25 +224,24 @@ export class BlogService {
     );
   }
 
-  public getRecentArticles(limit: number = 10): Observable<{ data: BlogArticle[] } | null> {
+  public getRecentArticles(limit: number = 6): Observable<BlogResponse | null> {
     const locale = this.languageService.getCurrentLanguage();
-    const parameters = new HttpParams().set('type', 'blog').set('locale', locale).set('limit', limit.toString());
-    return this.httpClient.get<ApiRecentContentResponse>(`${this.apiUrl}/content/recent`, { params: parameters }).pipe(
-      map(response => {
-        if (!response?.data) {
-          return null;
-        }
-        const recentBlogItems = response.data.filter(
-          (item): item is RecentBlog => item.type === 'blog'
-        );
-        const articles: BlogArticle[] = recentBlogItems.map(recentArticle => ({
-          ...recentArticle,
-          content: recentArticle.excerpt,
-          isFeatured: false,
-        }));
-        return { data: articles };
-      }),
+
+    const params = new HttpParams()
+      .set('locale', locale)
+      .set('pagination[page]', '1')
+      .set('pagination[pageSize]', limit.toString())
+      .set('populate[0]', 'category')
+      .set('populate[1]', 'tags')
+      .set('populate[2]', 'featured_image')
+      .set('populate[3]', 'localizations')
+      .set('filters[content_status][$eq]', 'approved')
+      .set('sort[0]', 'publishedAt:desc');
+
+    return this.httpClient.get<BlogResponse>(`${this.apiUrl}/blog-articles`, { params }).pipe(
+      map(response => response || null),
       catchError(error => {
+        console.error('Error loading recent articles:', error);
         return of(null);
       })
     );

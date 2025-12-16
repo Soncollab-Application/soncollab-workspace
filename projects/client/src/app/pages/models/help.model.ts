@@ -44,7 +44,18 @@ export interface HelpArticle {
   seo_description?: string;
   canonical_url?: string;
   search_keywords?: string;
+  locale?: string;
+  localizations?: HelpArticleLocalization[];
 }
+
+
+export interface HelpArticleLocalization {
+  id: number;
+  locale: string;
+  title: string;
+  slug: string;
+}
+
 
 // --- STRUCTURES DE RÉPONSES GÉNÉRIQUES ---
 

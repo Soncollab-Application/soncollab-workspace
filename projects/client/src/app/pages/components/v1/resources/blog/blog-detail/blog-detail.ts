@@ -1,15 +1,15 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, computed, signal, inject } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
-import {MarkdownComponent} from 'ngx-markdown';
-import {BlogService} from '../../../../../services/blog.service';
-import {SeoService} from '../../../../../../core/services/seo.service';
-import {environment} from '../../../../../../../environments/environment';
-import {BlogArticle} from '../../../../../models/blog.model';
-import {NewsletterModalService} from '../../../../../../core/services/newsletter-modal.service';
-import {LanguageOrchestratorService, ToastService} from 'shared-lib';
+import { MarkdownComponent } from 'ngx-markdown';
+import { BlogService } from '../../../../../services/blog.service';
+import { SeoService } from '../../../../../../core/services/seo.service';
+import { environment } from '../../../../../../../environments/environment';
+import { BlogArticle, BlogArticleLocalization } from '../../../../../models/blog.model';
+import { NewsletterModalService } from '../../../../../../core/services/newsletter-modal.service';
+import { LanguageOrchestratorService, LanguageService, ToastService } from 'shared-lib';
 
 @Component({
   selector: 'app-blog-detail',
@@ -26,7 +26,7 @@ import {LanguageOrchestratorService, ToastService} from 'shared-lib';
 export class BlogDetail implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private componentId = 'blog-detail';
-
+  private languageService = inject(LanguageService);
 
   public article: BlogArticle | null = null;
   public relatedArticles: BlogArticle[] = [];
@@ -34,6 +34,9 @@ export class BlogDetail implements OnInit, OnDestroy {
   public notFound = false;
   private slug = '';
   private hasInitialLoad = false;
+
+  availableTranslations = signal<BlogArticleLocalization[]>([]);
+  currentLocale = computed(() => this.languageService.getCurrentLanguage());
 
   constructor(
     private blogService: BlogService,
@@ -105,7 +108,6 @@ export class BlogDetail implements OnInit, OnDestroy {
     this.notFound = false;
     this.article = null;
 
-    // Protection sessionStorage pour éviter doubles tracking
     const viewedKey = `blog_viewed_${this.slug}`;
     const alreadyViewed = sessionStorage.getItem(viewedKey);
     const shouldTrackView = !alreadyViewed;
@@ -126,6 +128,7 @@ export class BlogDetail implements OnInit, OnDestroy {
               reading_time: article.reading_time || this.blogService.calculateReadTime(article.content || article.excerpt || '')
             };
 
+            this.setupAvailableTranslations();
             this.seoService.updateBlogArticleSEO(article);
             this.loadRelatedArticles();
 
@@ -147,6 +150,37 @@ export class BlogDetail implements OnInit, OnDestroy {
         }
       });
   }
+
+  private setupAvailableTranslations(): void {
+    if (!this.article) return;
+
+    const translations: BlogArticleLocalization[] = [];
+
+    translations.push({
+      id: this.article.id,
+      locale: this.article.locale || this.currentLocale(),
+      title: this.article.title,
+      slug: this.article.slug
+    });
+
+    if (this.article.localizations) {
+      translations.push(...this.article.localizations);
+    }
+
+    this.availableTranslations.set(translations);
+  }
+
+  switchLanguage(locale: string): void {
+    const translation = this.availableTranslations().find(t => t.locale === locale);
+    if (translation) {
+      this.router.navigate(['/blog', translation.slug]);
+    }
+  }
+
+  getLocaleLabel(locale: string): string {
+    return locale === 'fr' ? '🇫🇷 Français' : '🇬🇧 English';
+  }
+
   private loadRelatedArticles(): void {
     if (!this.article?.category) {
       this.blogService.getRecentArticles(4).pipe(takeUntil(this.destroy$)).subscribe(response => {
@@ -210,4 +244,3 @@ export class BlogDetail implements OnInit, OnDestroy {
 
   protected readonly environment = environment;
 }
-

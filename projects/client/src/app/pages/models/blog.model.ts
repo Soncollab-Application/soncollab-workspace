@@ -44,6 +44,15 @@ export interface BlogArticle {
   seo_description?: string;
   seo_keywords?: string;
   canonical_url?: string;
+  locale?: string;
+  localizations?: BlogArticleLocalization[];
+}
+
+export interface BlogArticleLocalization {
+  id: number;
+  locale: string;
+  title: string;
+  slug: string;
 }
 
 // --- STRUCTURES DE RÉPONSES GÉNÉRIQUES ---

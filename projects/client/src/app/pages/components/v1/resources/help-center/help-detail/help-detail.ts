@@ -1,5 +1,5 @@
-import {Component, inject, OnDestroy, OnInit} from '@angular/core';
-import { Subject, takeUntil} from 'rxjs';
+import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Subject, takeUntil } from 'rxjs';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
@@ -7,12 +7,12 @@ import { FormsModule } from '@angular/forms';
 import { MarkdownComponent } from 'ngx-markdown';
 import { HelpService } from '../../../../../services/help.service';
 import { SeoService } from '../../../../../../core/services/seo.service';
-import { HelpArticle } from '../../../../../models/help.model';
-import {NewsletterModalService} from '../../../../../../core/services/newsletter-modal.service';
-import {ContactModalService} from '../../../../../../core/services/contact-modal.service';
+import { HelpArticle, HelpArticleLocalization } from '../../../../../models/help.model';
+import { NewsletterModalService } from '../../../../../../core/services/newsletter-modal.service';
+import { ContactModalService } from '../../../../../../core/services/contact-modal.service';
 import {
   LanguageOrchestratorService,
-  LanguageService,ToastService
+  LanguageService, ToastService
 } from 'shared-lib';
 
 @Component({
@@ -32,6 +32,7 @@ export class HelpDetail implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
   private componentId = 'help-detail';
+  private languageService = inject(LanguageService);
 
   public article: HelpArticle | null = null;
   public relatedArticles: HelpArticle[] = [];
@@ -41,8 +42,9 @@ export class HelpDetail implements OnInit, OnDestroy {
   private slug = '';
   private hasInitialLoad = false;
 
+  availableTranslations = signal<HelpArticleLocalization[]>([]);
+  currentLocale = computed(() => this.languageService.getCurrentLanguage());
 
-  // Propriétés pour le modal de rating
   public showRatingModalFlag = false;
   public selectedRating = 0;
   public feedbackText = '';
@@ -53,7 +55,6 @@ export class HelpDetail implements OnInit, OnDestroy {
   constructor(
     private helpService: HelpService,
     private languageOrchestrator: LanguageOrchestratorService,
-    private languageService: LanguageService,
     private route: ActivatedRoute,
     private router: Router,
     private toast: ToastService,
@@ -65,13 +66,11 @@ export class HelpDetail implements OnInit, OnDestroy {
   public ngOnInit(): void {
     window.scrollTo(0, 0);
 
-    // S'enregistrer pour les changements de langue
     this.languageOrchestrator.registerComponent(
       this.componentId,
       () => this.onLanguageChange()
     );
 
-    // Écouter les changements de route
     this.setupRouteListener();
   }
 
@@ -93,7 +92,6 @@ export class HelpDetail implements OnInit, OnDestroy {
           this.loadArticle();
         } else if (newSlug) {
           this.slug = newSlug;
-          // Ne charger que si c'est la première fois
           if (!this.hasInitialLoad) {
             this.loadArticle();
           }
@@ -113,16 +111,13 @@ export class HelpDetail implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (result) => {
-          if (!result.cancelled) {
-            // Abonnement réussi
-          }
+          if (!result.cancelled) {}
         },
         error: (error) => {
           console.error('Newsletter modal error:', error);
         }
       });
   }
-
 
   private async loadArticle(): Promise<void> {
     this.isLoading = true;
@@ -144,6 +139,7 @@ export class HelpDetail implements OnInit, OnDestroy {
           this.hasInitialLoad = true;
           if (article) {
             this.article = article;
+            this.setupAvailableTranslations();
             this.seoService.updateHelpArticleSEO(article);
             this.helpfulnessRated = this.isArticleRated(article.slug);
             this.loadRelatedArticles();
@@ -165,6 +161,36 @@ export class HelpDetail implements OnInit, OnDestroy {
           }
         }
       });
+  }
+
+  private setupAvailableTranslations(): void {
+    if (!this.article) return;
+
+    const translations: HelpArticleLocalization[] = [];
+
+    translations.push({
+      id: this.article.id,
+      locale: this.article.locale || this.currentLocale(),
+      title: this.article.title,
+      slug: this.article.slug
+    });
+
+    if (this.article.localizations) {
+      translations.push(...this.article.localizations);
+    }
+
+    this.availableTranslations.set(translations);
+  }
+
+  switchLanguage(locale: string): void {
+    const translation = this.availableTranslations().find(t => t.locale === locale);
+    if (translation) {
+      this.router.navigate(['/help', translation.slug]);
+    }
+  }
+
+  getLocaleLabel(locale: string): string {
+    return locale === 'fr' ? '🇫🇷 Français' : '🇬🇧 English';
   }
 
   private loadRelatedArticles(): void {
@@ -199,18 +225,13 @@ export class HelpDetail implements OnInit, OnDestroy {
     return this.translateService.instant(`help.${level}`);
   }
 
-  // Méthodes de rating - Version simple avec boutons Oui/Non
   public rateHelpful(isHelpful: boolean): void {
     if (this.helpfulnessRated || !this.article?.documentId) return;
 
-    // Convertir true/false en note 1-5 (true = 5, false = 1)
     const rating = isHelpful ? 5 : 1;
-
-    // Toujours proposer le modal de rating détaillé
     this.showRatingModal(rating);
   }
 
-  // Méthodes pour le modal de rating détaillé
   public showRatingModal(initialRating?: number): void {
     this.selectedRating = initialRating || 0;
     this.feedbackText = '';
@@ -309,9 +330,6 @@ export class HelpDetail implements OnInit, OnDestroy {
     return [1, 2, 3, 4, 5];
   }
 
-  /**
-   * Sauvegarde localement qu'un article a été noté pour éviter les notations multiples
-   */
   private saveRatedArticleToStorage(articleSlug: string): void {
     try {
       const ratedArticlesKey = 'help_rated_articles';
@@ -331,9 +349,6 @@ export class HelpDetail implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Vérifie si un article a déjà été noté par l'utilisateur
-   */
   private isArticleRated(articleSlug: string): boolean {
     try {
       const ratedArticlesKey = 'help_rated_articles';
@@ -351,7 +366,6 @@ export class HelpDetail implements OnInit, OnDestroy {
     }
   }
 
-  // Autres méthodes utilitaires
   public async copyLink(): Promise<void> {
     try {
       await navigator.clipboard.writeText(window.location.href);
