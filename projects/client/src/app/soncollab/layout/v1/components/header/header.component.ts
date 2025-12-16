@@ -77,10 +77,36 @@ export class HeaderComponent implements OnDestroy {
 
   setLanguage(code: string): void {
     if (code && code !== this.currentLanguage()) {
-      this.languageService.changeLanguage(code);
+      // Si on est sur une page détail d'article, rediriger vers la liste
+      if (this.isOnArticleDetailPage()) {
+        const basePath = this.getArticleBasePath();
+        this.languageService.changeLanguage(code);
+        this.router.navigate([basePath]);
+      } else {
+        // Sinon, changer normalement
+        this.languageService.changeLanguage(code);
+      }
+
       window.scroll(0, 0);
       this.closeLanguageDropdown();
     }
+  }
+
+  private isOnArticleDetailPage(): boolean {
+    const url = this.router.url;
+    // Vérifier si on est sur une page détail (pas juste /blog ou /help)
+    return (url.includes('/blog/') && url.split('/blog/')[1].length > 0) ||
+      (url.includes('/help/') && url.split('/help/')[1].length > 0);
+  }
+
+  private getArticleBasePath(): string {
+    const url = this.router.url;
+    if (url.includes('/blog/')) {
+      return '/blog';
+    } else if (url.includes('/help/')) {
+      return '/help';
+    }
+    return '/';
   }
 
   isLanguageActive(code: string): boolean {

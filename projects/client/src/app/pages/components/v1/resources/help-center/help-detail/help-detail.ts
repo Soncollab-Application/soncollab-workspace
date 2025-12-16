@@ -41,6 +41,7 @@ export class HelpDetail implements OnInit, OnDestroy {
   public helpfulnessRated = false;
   private slug = '';
   private hasInitialLoad = false;
+  private isLanguageSwitch = false;
 
   availableTranslations = signal<HelpArticleLocalization[]>([]);
   currentLocale = computed(() => this.languageService.getCurrentLanguage());
@@ -100,6 +101,11 @@ export class HelpDetail implements OnInit, OnDestroy {
   }
 
   private onLanguageChange(): void {
+    if (this.isLanguageSwitch) {
+      this.isLanguageSwitch = false;
+      return;
+    }
+
     if (this.slug && this.hasInitialLoad) {
       this.loadArticle();
     }
@@ -184,9 +190,16 @@ export class HelpDetail implements OnInit, OnDestroy {
 
   switchLanguage(locale: string): void {
     const translation = this.availableTranslations().find(t => t.locale === locale);
-    if (translation) {
-      this.router.navigate(['/help', translation.slug]);
-    }
+    if (!translation) return;
+
+    this.isLanguageSwitch = true;
+    this.languageService.changeLanguage(locale);
+
+    setTimeout(() => {
+      this.router.navigate(['/help', translation.slug]).then(() => {
+        this.isLanguageSwitch = false;
+      });
+    }, 100);
   }
 
   getLocaleLabel(locale: string): string {
