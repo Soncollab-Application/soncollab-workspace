@@ -92,6 +92,9 @@ export class HelpArticles implements OnInit, OnDestroy {
 
   selectedLocale = signal<string>('fr');
 
+  viewsStats = signal<{ [slug: string]: number }>({});
+
+
   languageOptions = computed<ChoiceOption[]>(() =>
     this.availableLocales.map(locale => ({
       value: locale.code,
@@ -356,7 +359,6 @@ export class HelpArticles implements OnInit, OnDestroy {
       { value: 'createdAt', label: this.translate.instant('help-articles.sort.createdAt') },
       { value: 'updatedAt', label: this.translate.instant('help-articles.sort.updatedAt') },
       { value: 'title', label: this.translate.instant('help-articles.sort.title') },
-      { value: 'view_count', label: this.translate.instant('help-articles.sort.views') },
       { value: 'order', label: this.translate.instant('help-articles.sort.order') },
     ]);
 
@@ -445,10 +447,13 @@ export class HelpArticles implements OnInit, OnDestroy {
       },
       {
         key: 'view_count',
-        label: this.translate.instant('help-articles.columns.views'),
-        sortable: true,
+        label: this.translate.instant('blog-articles.columns.views'),
+        sortable: false,
         type: 'text',
-        render: (article) => article.view_count?.toString() || '0',
+        render: (article) => {
+          const views = this.viewsStats()[article.slug];
+          return views !== undefined ? views.toString() : '...';
+        },
       },
       {
         key: 'createdAt',
@@ -628,6 +633,8 @@ export class HelpArticles implements OnInit, OnDestroy {
             response.meta.pagination.total,
             response.meta.pagination.pageCount
           );
+
+          this.loadViewsForArticles(response.data);
         },
         error: (err) => {
           console.error('Error loading articles:', err);
@@ -635,6 +642,25 @@ export class HelpArticles implements OnInit, OnDestroy {
           this.toastService.showError(
             this.translate.instant('help-articles.error.loading')
           );
+        },
+      });
+  }
+
+
+  private loadViewsForArticles(articles: HelpArticle[]): void {
+    if (!articles || articles.length === 0) {
+      return;
+    }
+
+    this.contentService
+      .getMultipleArticlesViewsCounts('help', articles, this.currentLocale())
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (stats) => {
+          this.viewsStats.set(stats);
+        },
+        error: (err) => {
+          console.error('Error loading views stats:', err);
         },
       });
   }

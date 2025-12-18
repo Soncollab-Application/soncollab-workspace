@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {catchError, forkJoin, map, Observable, of} from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import {
   BlogArticle,
@@ -38,6 +38,9 @@ export class AdminContentService {
 
     blog_tags: `${this.API_URL}/blog-tags`,
     blog_tag_by_id: (documentId: string) => `${this.API_URL}/blog-tags/${documentId}`,
+
+    article_views_count: (type: string, slug: string) =>
+      `${this.API_URL}/article-views/count/${type}/${slug}`,
 
     validate_content: (contentType: string, documentId: string) =>
       `${this.API_URL}/content/validate/${contentType}/${documentId}`,
@@ -246,6 +249,44 @@ export class AdminContentService {
 
   getAvailableLocales() {
     return AVAILABLE_LOCALES;
+  }
+
+  getArticleViewsCount(type: 'blog' | 'help', slug: string, locale?: string): Observable<{ count: number }> {
+    let params = new HttpParams();
+    if (locale) {
+      params = params.set('locale', locale);
+    }
+
+    return this.http.get<{ count: number }>(
+      this.CONTENT_ENDPOINTS.article_views_count(type, slug),
+      { params }
+    );
+  }
+
+  getMultipleArticlesViewsCounts(
+    type: 'blog' | 'help',
+    articles: { slug: string }[],
+    locale?: string
+  ): Observable<{ [slug: string]: number }> {
+    if (!articles || articles.length === 0) {
+      return of({});
+    }
+
+    const requests = articles.map(article =>
+      this.getArticleViewsCount(type, article.slug, locale).pipe(
+        map(response => ({ slug: article.slug, count: response.count })),
+        catchError(() => of({ slug: article.slug, count: 0 }))
+      )
+    );
+
+    return forkJoin(requests).pipe(
+      map(results => {
+        return results.reduce((acc, result) => {
+          acc[result.slug] = result.count;
+          return acc;
+        }, {} as { [slug: string]: number });
+      })
+    );
   }
 
   getHelpArticles(
