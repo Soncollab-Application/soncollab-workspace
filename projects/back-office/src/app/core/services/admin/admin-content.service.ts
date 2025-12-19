@@ -13,6 +13,7 @@ import { ContentStatsResponse } from '../../models/content/content-stats.model';
 import {BlogCategoryFilters, BlogCategoryListResponse} from '../../models/content/blog-category.model';
 import {HelpArticle, HelpArticleFilters, HelpArticleListResponse} from '../../models/content/help-article.model';
 import {HelpCategoryFilters, HelpCategoryListResponse} from '../../models/content/help-category.model';
+import {BlogTag, BlogTagFilters, BlogTagListResponse} from '../../models/content/blog-tag.model';
 
 @Injectable({ providedIn: 'root' })
 export class AdminContentService {
@@ -420,6 +421,94 @@ export class AdminContentService {
     return this.http.post<{ data: HelpArticle }>(
       this.CONTENT_ENDPOINTS.help_article_review,
       { documentId, action, review_notes: reviewNotes }
+    );
+  }
+
+  // ========== BLOG CATEGORIES ==========
+  createBlogCategory(data: Partial<any>): Observable<{ data: any }> {
+    return this.http.post<{ data: any }>(
+      this.CONTENT_ENDPOINTS.blog_categories,
+      { data }
+    );
+  }
+
+  updateBlogCategory(documentId: string, data: Partial<any>): Observable<{ data: any }> {
+    return this.http.put<{ data: any }>(
+      this.CONTENT_ENDPOINTS.blog_category_by_id(documentId),
+      { data }
+    );
+  }
+
+  deleteBlogCategory(documentId: string): Observable<void> {
+    return this.http.delete<void>(
+      this.CONTENT_ENDPOINTS.blog_category_by_id(documentId)
+    );
+  }
+
+// ========== HELP CATEGORIES ==========
+  createHelpCategory(data: Partial<any>): Observable<{ data: any }> {
+    return this.http.post<{ data: any }>(
+      this.CONTENT_ENDPOINTS.help_categories,
+      { data }
+    );
+  }
+
+  updateHelpCategory(documentId: string, data: Partial<any>): Observable<{ data: any }> {
+    return this.http.put<{ data: any }>(
+      this.CONTENT_ENDPOINTS.help_category_by_id(documentId),
+      { data }
+    );
+  }
+
+  deleteHelpCategory(documentId: string): Observable<void> {
+    return this.http.delete<void>(
+      this.CONTENT_ENDPOINTS.help_category_by_id(documentId)
+    );
+  }
+
+// ========== BLOG TAGS ==========
+  getBlogTags(
+    page = 1,
+    pageSize = 100,
+    filters?: BlogTagFilters
+  ): Observable<BlogTagListResponse> {
+    let params = new HttpParams()
+      .set('pagination[page]', page.toString())
+      .set('pagination[pageSize]', pageSize.toString())
+      .set('sort[0]', 'name:asc')
+      .set('populate[0]', 'articles');
+
+    if (filters?.locale) {
+      params = params.set('locale', filters.locale);
+    }
+
+    if (filters?.search) {
+      params = params.set('filters[name][$containsi]', filters.search);
+    }
+
+    return this.http.get<BlogTagListResponse>(
+      this.CONTENT_ENDPOINTS.blog_tags,
+      { params }
+    );
+  }
+
+  createBlogTag(data: Partial<BlogTag>): Observable<{ data: BlogTag }> {
+    return this.http.post<{ data: BlogTag }>(
+      this.CONTENT_ENDPOINTS.blog_tags,
+      { data }
+    );
+  }
+
+  updateBlogTag(documentId: string, data: Partial<BlogTag>): Observable<{ data: BlogTag }> {
+    return this.http.put<{ data: BlogTag }>(
+      this.CONTENT_ENDPOINTS.blog_tag_by_id(documentId),
+      { data }
+    );
+  }
+
+  deleteBlogTag(documentId: string): Observable<void> {
+    return this.http.delete<void>(
+      this.CONTENT_ENDPOINTS.blog_tag_by_id(documentId)
     );
   }
 }

@@ -113,15 +113,38 @@ export const adminRoutes: Routes = [
       // Contenu
       {
         path: 'content/blog',
-        loadComponent: () => import('../../../pages/admin/content/blog/blog-articles/blog-articles').then(c => c.BlogArticles)
+        loadComponent: () =>
+          import('../../../pages/admin/content/blog/blog-articles/blog-articles').then(c => c.BlogArticles),
+        canActivate: [apiPermissionGuard(
+          'blog-article',
+          'blog-article',
+          'find'
+        )]
       },
       {
         path: 'content/help',
-        loadComponent: () => import('../../../pages/admin/content/help/help-articles/help-articles').then(c => c.HelpArticles)
+        loadComponent: () =>
+          import('../../../pages/admin/content/help/help-articles/help-articles').then(c => c.HelpArticles),
+        canActivate: [apiPermissionGuard(
+          'help-article',
+          'help-article',
+          'find'
+        )]
       },
       {
-        path: 'content/categories',
-        loadComponent: () => import('../../../pages/admin/content/categories/categories-tags/categories-tags').then(c => c.CategoriesTags)
+        path: 'content/blog-categories',
+        loadComponent: () =>
+          import('../../../pages/admin/content/categories/blog-categories/blog-categories').then(c => c.BlogCategories)
+      },
+      {
+        path: 'content/blog-tags',
+        loadComponent: () =>
+          import('../../../pages/admin/content/categories/blog-tags/blog-tags').then(c => c.BlogTags)
+      },
+      {
+        path: 'content/help-categories',
+        loadComponent: () =>
+          import('../../../pages/admin/content/categories/help-categories/help-categories').then(c => c.HelpCategories)
       },
       {
         path: 'content/workflow',

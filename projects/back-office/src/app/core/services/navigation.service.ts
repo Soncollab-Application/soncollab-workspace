@@ -55,11 +55,13 @@ export class NavigationService {
             children: [
               { key: 'blog-articles', icon: 'article', route: '/admin/content/blog' },
               { key: 'help-articles', icon: 'help', route: '/admin/content/help' },
-              { key: 'categories-tags', icon: 'label', route: '/admin/content/categories' }
-            ]
+              { key: 'blog-categories', icon: 'label', route: '/admin/content/blog-categories' },
+              { key: 'help-categories', icon: 'label', route: '/admin/content/help-categories' },
+              { key: 'blog-tags', icon: 'label', route: '/admin/content/blog-tags' },
+            ],
           },
           { key: 'media-library', icon: 'perm_media', route: '/media' }
-        ]
+        ],
       },
       {
         type: 'section',
