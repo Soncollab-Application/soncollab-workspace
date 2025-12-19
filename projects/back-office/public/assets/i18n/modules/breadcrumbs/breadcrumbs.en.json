@@ -47,6 +47,21 @@
       "dashboard": "Dashboard",
       "content": "Content",
       "help_articles": "Help Articles"
+    },
+    "blog-categories": {
+      "dashboard": "Dashboard",
+      "content": "Content",
+      "blog_categories": "Blog Categories"
+    },
+    "help-categories": {
+      "dashboard": "Dashboard",
+      "content": "Content",
+      "help_categories": "Help Categories"
+    },
+    "blog-tags": {
+      "dashboard": "Dashboard",
+      "content": "Content",
+      "blog_tags": "Blog Tags"
     }
   }
 }

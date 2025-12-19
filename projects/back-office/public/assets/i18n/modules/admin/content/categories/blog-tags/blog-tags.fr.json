@@ -1,0 +1,39 @@
+{
+  "blog-tags": {
+    "page_title": "Tags Blog",
+    "new_tag": "Nouveau tag",
+    "kpi": {
+      "language": "Langue active",
+      "total": "Total"
+    },
+    "sort": {
+      "name": "Nom",
+      "createdAt": "Date de création"
+    },
+    "columns": {
+      "name": "Nom",
+      "slug": "Slug",
+      "articles": "Articles",
+      "createdAt": "Créé le"
+    },
+    "actions": {
+      "edit": "Modifier",
+      "delete": "Supprimer"
+    },
+    "delete": {
+      "title": "Supprimer le tag",
+      "message": "Êtes-vous sûr de vouloir supprimer \"{{name}}\" ?",
+      "confirm": "Supprimer",
+      "cancel": "Annuler",
+      "success": "Tag supprimé avec succès",
+      "error": "Erreur lors de la suppression"
+    },
+    "empty": {
+      "title": "Aucun tag",
+      "message": "Créez votre premier tag"
+    },
+    "error": {
+      "loading": "Erreur lors du chargement"
+    }
+  }
+}

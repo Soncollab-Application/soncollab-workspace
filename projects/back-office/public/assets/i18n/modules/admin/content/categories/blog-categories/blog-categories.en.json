@@ -1,0 +1,52 @@
+{
+  "blog-categories": {
+    "page_title": "Blog Categories",
+    "new_category": "New category",
+    "kpi": {
+      "language": "Active language",
+      "total": "Total",
+      "featured": "Featured"
+    },
+    "filters": {
+      "featured": "Featured",
+      "featured_yes": "Yes",
+      "featured_no": "No"
+    },
+    "sort": {
+      "order": "Order",
+      "name": "Name",
+      "createdAt": "Created date"
+    },
+    "columns": {
+      "name": "Name",
+      "slug": "Slug",
+      "order": "Order",
+      "featured": "Featured",
+      "articles": "Articles",
+      "createdAt": "Created"
+    },
+    "badges": {
+      "featured": "⭐ Featured",
+      "not_featured": "Not featured"
+    },
+    "actions": {
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "delete": {
+      "title": "Delete category",
+      "message": "Are you sure you want to delete \"{{name}}\"?",
+      "confirm": "Delete",
+      "cancel": "Cancel",
+      "success": "Category deleted successfully",
+      "error": "Error deleting category"
+    },
+    "empty": {
+      "title": "No categories",
+      "message": "Create your first category"
+    },
+    "error": {
+      "loading": "Error loading data"
+    }
+  }
+}

@@ -21,6 +21,9 @@
         "content": {
           "blog": "Articles Blog",
           "help": "Articles Aide",
+          "blog-categories": "Catégories Blog",
+          "help-categories": "Catégories Aide",
+          "blog-tags": "Tags Blog",
           "categories": "Catégories & Tags",
           "workflow": "Workflow validation",
           "analytics": "Analytics contenu"

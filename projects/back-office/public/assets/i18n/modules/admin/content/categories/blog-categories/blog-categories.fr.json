@@ -1,0 +1,52 @@
+{
+  "blog-categories": {
+    "page_title": "Catégories Blog",
+    "new_category": "Nouvelle catégorie",
+    "kpi": {
+      "language": "Langue active",
+      "total": "Total",
+      "featured": "En vedette"
+    },
+    "filters": {
+      "featured": "Mis en avant",
+      "featured_yes": "Oui",
+      "featured_no": "Non"
+    },
+    "sort": {
+      "order": "Ordre",
+      "name": "Nom",
+      "createdAt": "Date de création"
+    },
+    "columns": {
+      "name": "Nom",
+      "slug": "Slug",
+      "order": "Ordre",
+      "featured": "En vedette",
+      "articles": "Articles",
+      "createdAt": "Créé le"
+    },
+    "badges": {
+      "featured": "⭐ En vedette",
+      "not_featured": "Non en vedette"
+    },
+    "actions": {
+      "edit": "Modifier",
+      "delete": "Supprimer"
+    },
+    "delete": {
+      "title": "Supprimer la catégorie",
+      "message": "Êtes-vous sûr de vouloir supprimer \"{{name}}\" ?",
+      "confirm": "Supprimer",
+      "cancel": "Annuler",
+      "success": "Catégorie supprimée avec succès",
+      "error": "Erreur lors de la suppression"
+    },
+    "empty": {
+      "title": "Aucune catégorie",
+      "message": "Créez votre première catégorie"
+    },
+    "error": {
+      "loading": "Erreur lors du chargement"
+    }
+  }
+}

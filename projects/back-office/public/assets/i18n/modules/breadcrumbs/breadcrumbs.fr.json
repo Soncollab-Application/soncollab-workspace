@@ -47,6 +47,21 @@
       "dashboard": "Tableau de bord",
       "content": "Contenu",
       "help_articles": "Articles d'aide"
+    },
+    "blog-categories": {
+      "dashboard": "Tableau de bord",
+      "content": "Contenu",
+      "blog_categories": "Catégories Blog"
+    },
+    "help-categories": {
+      "dashboard": "Tableau de bord",
+      "content": "Contenu",
+      "help_categories": "Catégories Aide"
+    },
+    "blog-tags": {
+      "dashboard": "Tableau de bord",
+      "content": "Contenu",
+      "blog_tags": "Tags Blog"
     }
   }
 }
