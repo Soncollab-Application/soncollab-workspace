@@ -127,7 +127,8 @@ export class AdminContentService {
       .set('pagination[page]', page.toString())
       .set('pagination[pageSize]', pageSize.toString())
       .set('sort[0]', `${sortField}:${sortOrder}`)
-      .set('populate[0]', 'articles');
+      .set('populate[0]', 'articles')
+      .set('populate[1]', 'localizations');
 
     if (filters?.locale) {
       params = params.set('locale', filters.locale);
@@ -348,7 +349,8 @@ export class AdminContentService {
       .set('pagination[page]', page.toString())
       .set('pagination[pageSize]', pageSize.toString())
       .set('sort[0]', `${sortField}:${sortOrder}`)
-      .set('populate[0]', 'articles');
+      .set('populate[0]', 'articles')
+      .set('populate[1]', 'localizations');
 
     if (filters?.locale) {
       params = params.set('locale', filters.locale);
@@ -476,7 +478,8 @@ export class AdminContentService {
       .set('pagination[page]', page.toString())
       .set('pagination[pageSize]', pageSize.toString())
       .set('sort[0]', 'name:asc')
-      .set('populate[0]', 'articles');
+      .set('populate[0]', 'articles')
+      .set('populate[1]', 'localizations');
 
     if (filters?.locale) {
       params = params.set('locale', filters.locale);

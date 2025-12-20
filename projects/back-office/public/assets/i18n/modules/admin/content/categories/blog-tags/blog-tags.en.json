@@ -18,7 +18,8 @@
     },
     "actions": {
       "edit": "Edit",
-      "delete": "Delete"
+      "delete": "Delete",
+      "view_translations": "View translations"
     },
     "delete": {
       "title": "Delete tag",
@@ -33,7 +34,9 @@
       "message": "Create your first tag"
     },
     "error": {
-      "loading": "Error loading data"
-    }
+      "loading": "Error loading data",
+      "not_found": "Tag not found"
+    },
+    "no_translations": "No translations available"
   }
 }

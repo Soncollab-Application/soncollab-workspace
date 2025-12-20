@@ -1,0 +1,29 @@
+{
+  "blog-tag-offcanvas": {
+    "title": {
+      "create": "Nouveau tag blog",
+      "edit": "Modifier le tag"
+    },
+    "fields": {
+      "name": "Nom",
+      "name_placeholder": "Nom du tag",
+      "slug": "Slug",
+      "slug_placeholder": "slug-du-tag",
+      "slug_hint": "URL-friendly. Généré automatiquement depuis le nom en création.",
+      "color": "Couleur"
+    },
+    "buttons": {
+      "cancel": "Annuler",
+      "create": "Créer",
+      "save": "Enregistrer"
+    },
+    "errors": {
+      "name_required": "Le nom est obligatoire",
+      "save": "Erreur lors de l'enregistrement"
+    },
+    "success": {
+      "created": "Tag créé avec succès",
+      "updated": "Tag modifié avec succès"
+    }
+  }
+}

@@ -29,6 +29,15 @@ import { PageTitleService } from '../../../../../core/services/page-title.servic
 import { Breadcrumb } from '../../../../../core/components/breadcrumb/breadcrumb';
 import { AVAILABLE_LOCALES } from '../../../../../core/models/content/blog-article.model';
 import { HelpCategory, HelpCategoryFilters } from '../../../../../core/models/content/help-category.model';
+import {HelpCategoryOffcanvasService} from '../../../../../core/services/admin/help-category-offcanvas.service';
+import {
+  HelpCategoryOffcanvas
+} from '../../../../../core/components/admin/help-category-offcanvas/help-category-offcanvas';
+import {
+  TranslationOption,
+  TranslationsModalService
+} from '../../../../../core/services/admin/translations-modal.service';
+import {TranslationsModal} from '../../../../../core/components/admin/translations-modal/translations-modal';
 
 @Component({
   selector: 'app-help-categories',
@@ -42,6 +51,8 @@ import { HelpCategory, HelpCategoryFilters } from '../../../../../core/models/co
     KpiCardComponent,
     DataList,
     Choice,
+    HelpCategoryOffcanvas,
+    TranslationsModal,
   ],
   templateUrl: './help-categories.html',
   styleUrl: './help-categories.css',
@@ -57,6 +68,9 @@ export class HelpCategories implements OnInit, OnDestroy {
   private confirmDialog = inject(ConfirmDialogService);
   private toastService = inject(ToastService);
   protected listManager = inject(ListStateManager<HelpCategory, HelpCategoryFilters>);
+  private offcanvasService = inject(HelpCategoryOffcanvasService);
+  private translationsModalService = inject(TranslationsModalService);
+
 
   private destroy$ = new Subject<void>();
   private componentId = 'help-categories';
@@ -242,6 +256,13 @@ export class HelpCategories implements OnInit, OnDestroy {
 
     this.actions.set([
       {
+        label: this.translate.instant('help-categories.actions.view_translations'),
+        icon: 'translate',
+        class: 'btn-outline-info',
+        handler: (category) => this.viewTranslations(category),
+        condition: (category) => (category.localizations?.length || 0) > 0,
+      },
+      {
         label: this.translate.instant('help-categories.actions.edit'),
         icon: 'edit',
         class: 'btn-outline-primary',
@@ -260,6 +281,68 @@ export class HelpCategories implements OnInit, OnDestroy {
     this.emptyTitle.set(this.translate.instant('help-categories.empty.title'));
     this.emptyMessage.set(this.translate.instant('help-categories.empty.message'));
   }
+
+
+  viewTranslations(category: HelpCategory): void {
+    const allTranslations: TranslationOption[] = [];
+
+    const currentLocaleConfig = this.availableLocales.find(l => l.code === category.locale);
+    allTranslations.push({
+      locale: category.locale || 'fr',
+      flag: currentLocaleConfig?.flag || '',
+      label: currentLocaleConfig?.label || category.locale?.toUpperCase() || 'FR',
+      documentId: category.documentId
+    });
+
+    if (category.localizations && category.localizations.length > 0) {
+      category.localizations.forEach((loc: HelpCategory) => {
+        const localeConfig = this.availableLocales.find(l => l.code === loc.locale);
+        allTranslations.push({
+          locale: loc.locale || 'fr',
+          flag: localeConfig?.flag || '',
+          label: localeConfig?.label || loc.locale?.toUpperCase() || 'FR',
+          documentId: loc.documentId
+        });
+      });
+    }
+
+    if (allTranslations.length === 0) {
+      this.toastService.showWarning(
+        this.translate.instant('help-categories.no_translations')
+      );
+      return;
+    }
+
+    this.translationsModalService.open(allTranslations, (translation) => {
+      this.onTranslationSelected(translation);
+    });
+  }
+
+
+  private onTranslationSelected(translation: TranslationOption): void {
+    this.contentService
+      .getHelpCategories(1, 100, { locale: translation.locale })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          const category = response.data.find(c => c.documentId === translation.documentId);
+          if (category) {
+            this.offcanvasService.open(category);
+          } else {
+            this.toastService.showError(
+              this.translate.instant('help-categories.error.not_found')
+            );
+          }
+        },
+        error: (err) => {
+          console.error('Error loading category:', err);
+          this.toastService.showError(
+            this.translate.instant('help-categories.error.loading')
+          );
+        },
+      });
+  }
+
 
   private onLanguageChange(): void {
     setTimeout(() => {
@@ -344,13 +427,11 @@ export class HelpCategories implements OnInit, OnDestroy {
   }
 
   createCategory(): void {
-    console.log('Create new category');
-    this.toastService.showInfo('Feature coming soon');
+    this.offcanvasService.open();
   }
 
   editCategory(category: HelpCategory): void {
-    console.log('Edit category:', category);
-    this.toastService.showInfo('Feature coming soon');
+    this.offcanvasService.open(category);
   }
 
   deleteCategory(category: HelpCategory): void {

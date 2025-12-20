@@ -29,6 +29,15 @@ import { PageTitleService } from '../../../../../core/services/page-title.servic
 import { Breadcrumb } from '../../../../../core/components/breadcrumb/breadcrumb';
 import { AVAILABLE_LOCALES } from '../../../../../core/models/content/blog-article.model';
 import { BlogCategory, BlogCategoryFilters } from '../../../../../core/models/content/blog-category.model';
+import {BlogCategoryOffcanvasService} from '../../../../../core/services/admin/blog-category-offcanvas.service';
+import {
+  BlogCategoryOffcanvas
+} from '../../../../../core/components/admin/blog-category-offcanvas/blog-category-offcanvas';
+import {
+  TranslationOption,
+  TranslationsModalService
+} from '../../../../../core/services/admin/translations-modal.service';
+import {TranslationsModal} from '../../../../../core/components/admin/translations-modal/translations-modal';
 
 @Component({
   selector: 'app-blog-categories',
@@ -42,6 +51,8 @@ import { BlogCategory, BlogCategoryFilters } from '../../../../../core/models/co
     KpiCardComponent,
     DataList,
     Choice,
+    BlogCategoryOffcanvas,
+    TranslationsModal,
   ],
   templateUrl: './blog-categories.html',
   styleUrl: './blog-categories.css',
@@ -57,6 +68,10 @@ export class BlogCategories implements OnInit, OnDestroy {
   private confirmDialog = inject(ConfirmDialogService);
   private toastService = inject(ToastService);
   protected listManager = inject(ListStateManager<BlogCategory, BlogCategoryFilters>);
+  private offcanvasService = inject(BlogCategoryOffcanvasService);
+  private translationsModalService = inject(TranslationsModalService);
+
+
 
   private destroy$ = new Subject<void>();
   private componentId = 'blog-categories';
@@ -274,6 +289,13 @@ export class BlogCategories implements OnInit, OnDestroy {
 
     this.actions.set([
       {
+        label: this.translate.instant('blog-categories.actions.view_translations'),
+        icon: 'translate',
+        class: 'btn-outline-info',
+        handler: (category) => this.viewTranslations(category),
+        condition: (category) => (category.localizations?.length || 0) > 0,
+      },
+      {
         label: this.translate.instant('blog-categories.actions.edit'),
         icon: 'edit',
         class: 'btn-outline-primary',
@@ -292,6 +314,68 @@ export class BlogCategories implements OnInit, OnDestroy {
     this.emptyTitle.set(this.translate.instant('blog-categories.empty.title'));
     this.emptyMessage.set(this.translate.instant('blog-categories.empty.message'));
   }
+
+  viewTranslations(category: BlogCategory): void {
+    const allTranslations: TranslationOption[] = [];
+
+    const currentLocaleConfig = this.availableLocales.find(l => l.code === category.locale);
+    allTranslations.push({
+      locale: category.locale || 'fr',
+      flag: currentLocaleConfig?.flag || '',
+      label: currentLocaleConfig?.label || category.locale?.toUpperCase() || 'FR',
+      documentId: category.documentId
+    });
+
+    if (category.localizations && category.localizations.length > 0) {
+      category.localizations.forEach((loc: BlogCategory) => {
+        const localeConfig = this.availableLocales.find(l => l.code === loc.locale);
+        allTranslations.push({
+          locale: loc.locale || 'fr',
+          flag: localeConfig?.flag || '',
+          label: localeConfig?.label || loc.locale?.toUpperCase() || 'FR',
+          documentId: loc.documentId
+        });
+      });
+    }
+
+    if (allTranslations.length === 0) {
+      this.toastService.showWarning(
+        this.translate.instant('blog-categories.no_translations')
+      );
+      return;
+    }
+
+    this.translationsModalService.open(allTranslations, (translation) => {
+      this.onTranslationSelected(translation);
+    });
+  }
+
+  private onTranslationSelected(translation: TranslationOption): void {
+    // Charger la catégorie dans la bonne locale
+    this.contentService
+      .getBlogCategories(1, 100, { locale: translation.locale })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          const category = response.data.find(c => c.documentId === translation.documentId);
+          if (category) {
+            // Ouvrir l'offcanvas en mode édition
+            this.offcanvasService.open(category);
+          } else {
+            this.toastService.showError(
+              this.translate.instant('blog-categories.error.not_found')
+            );
+          }
+        },
+        error: (err) => {
+          console.error('Error loading category:', err);
+          this.toastService.showError(
+            this.translate.instant('blog-categories.error.loading')
+          );
+        },
+      });
+  }
+
 
   private onLanguageChange(): void {
     setTimeout(() => {
@@ -380,14 +464,13 @@ export class BlogCategories implements OnInit, OnDestroy {
   }
 
   createCategory(): void {
-    console.log('Create new category');
-    this.toastService.showInfo('Feature coming soon');
+    this.offcanvasService.open();
   }
 
   editCategory(category: BlogCategory): void {
-    console.log('Edit category:', category);
-    this.toastService.showInfo('Feature coming soon');
+    this.offcanvasService.open(category);
   }
+
 
   deleteCategory(category: BlogCategory): void {
     this.confirmDialog

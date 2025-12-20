@@ -15,6 +15,7 @@ export interface HelpCategory {
   publishedAt: string;
   articles?: any[];
   articlesCount?: number;
+  localizations?: HelpCategory[];
 }
 
 export interface HelpCategoryListResponse {

@@ -20,7 +20,8 @@
     },
     "actions": {
       "edit": "Modifier",
-      "delete": "Supprimer"
+      "delete": "Supprimer",
+      "view_translations": "Voir traductions"
     },
     "delete": {
       "title": "Supprimer la catégorie",
@@ -35,7 +36,9 @@
       "message": "Créez votre première catégorie"
     },
     "error": {
-      "loading": "Erreur lors du chargement"
-    }
+      "loading": "Erreur lors du chargement",
+      "not_found": "Catégorie non trouvée"
+    },
+    "no_translations": "Aucune traduction disponible"
   }
 }

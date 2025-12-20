@@ -29,6 +29,14 @@ import { PageTitleService } from '../../../../../core/services/page-title.servic
 import { Breadcrumb } from '../../../../../core/components/breadcrumb/breadcrumb';
 import { AVAILABLE_LOCALES } from '../../../../../core/models/content/blog-article.model';
 import { BlogTag, BlogTagFilters } from '../../../../../core/models/content/blog-tag.model';
+import {BlogTagOffcanvasService} from '../../../../../core/services/admin/blog-tag-offcanvas.service';
+import {BlogTagOffcanvas} from '../../../../../core/components/admin/blog-tag-offcanvas/blog-tag-offcanvas';
+import {
+  TranslationOption,
+  TranslationsModalService
+} from '../../../../../core/services/admin/translations-modal.service';
+import {TranslationsModal} from '../../../../../core/components/admin/translations-modal/translations-modal';
+import {BlogCategory} from '../../../../../core/models/content/blog-category.model';
 
 @Component({
   selector: 'app-blog-tags',
@@ -42,6 +50,8 @@ import { BlogTag, BlogTagFilters } from '../../../../../core/models/content/blog
     KpiCardComponent,
     DataList,
     Choice,
+    BlogTagOffcanvas,
+    TranslationsModal,
   ],
   templateUrl: './blog-tags.html',
   styleUrl: './blog-tags.css',
@@ -57,6 +67,8 @@ export class BlogTags implements OnInit, OnDestroy {
   private confirmDialog = inject(ConfirmDialogService);
   private toastService = inject(ToastService);
   protected listManager = inject(ListStateManager<BlogTag, BlogTagFilters>);
+  private offcanvasService = inject(BlogTagOffcanvasService);
+  private translationsModalService = inject(TranslationsModalService);
 
   private destroy$ = new Subject<void>();
   private componentId = 'blog-tags';
@@ -237,6 +249,13 @@ export class BlogTags implements OnInit, OnDestroy {
 
     this.actions.set([
       {
+        label: this.translate.instant('blog-tags.actions.view_translations'),
+        icon: 'translate',
+        class: 'btn-outline-info',
+        handler: (tag) => this.viewTranslations(tag),
+        condition: (tag) => (tag.localizations?.length || 0) > 0,
+      },
+      {
         label: this.translate.instant('blog-tags.actions.edit'),
         icon: 'edit',
         class: 'btn-outline-primary',
@@ -255,6 +274,69 @@ export class BlogTags implements OnInit, OnDestroy {
     this.emptyTitle.set(this.translate.instant('blog-tags.empty.title'));
     this.emptyMessage.set(this.translate.instant('blog-tags.empty.message'));
   }
+
+
+  viewTranslations(tag: BlogTag): void {
+    const allTranslations: TranslationOption[] = [];
+
+    const currentLocaleConfig = this.availableLocales.find(l => l.code === tag.locale);
+    allTranslations.push({
+      locale: tag.locale || 'fr',
+      flag: currentLocaleConfig?.flag || '',
+      label: currentLocaleConfig?.label || tag.locale?.toUpperCase() || 'FR',
+      documentId: tag.documentId
+    });
+
+    if (tag.localizations && tag.localizations.length > 0) {
+      tag.localizations.forEach((loc: BlogTag) => {
+        const localeConfig = this.availableLocales.find(l => l.code === loc.locale);
+        allTranslations.push({
+          locale: loc.locale || 'fr',
+          flag: localeConfig?.flag || '',
+          label: localeConfig?.label || loc.locale?.toUpperCase() || 'FR',
+          documentId: loc.documentId
+        });
+      });
+    }
+
+    if (allTranslations.length === 0) {
+      this.toastService.showWarning(
+        this.translate.instant('blog-tags.no_translations')
+      );
+      return;
+    }
+
+    this.translationsModalService.open(allTranslations, (translation) => {
+      this.onTranslationSelected(translation);
+    });
+  }
+
+
+  private onTranslationSelected(translation: TranslationOption): void {
+    this.contentService
+      .getBlogTags(1, 100, { locale: translation.locale })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          const tag = response.data.find(t => t.documentId === translation.documentId);
+          if (tag) {
+            this.offcanvasService.open(tag);
+          } else {
+            this.toastService.showError(
+              this.translate.instant('blog-tags.error.not_found')
+            );
+          }
+        },
+        error: (err) => {
+          console.error('Error loading tag:', err);
+          this.toastService.showError(
+            this.translate.instant('blog-tags.error.loading')
+          );
+        },
+      });
+  }
+
+
 
   private onLanguageChange(): void {
     setTimeout(() => {
@@ -339,13 +421,11 @@ export class BlogTags implements OnInit, OnDestroy {
   }
 
   createTag(): void {
-    console.log('Create new tag');
-    this.toastService.showInfo('Feature coming soon');
+    this.offcanvasService.open();
   }
 
   editTag(tag: BlogTag): void {
-    console.log('Edit tag:', tag);
-    this.toastService.showInfo('Feature coming soon');
+    this.offcanvasService.open(tag);
   }
 
   deleteTag(tag: BlogTag): void {
