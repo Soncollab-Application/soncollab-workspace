@@ -1,6 +1,6 @@
 import {Component, computed, inject, OnDestroy, OnInit, signal} from '@angular/core';
 import {MediaLibraryState} from './media-library.state';
-import {distinctUntilChanged, Subject, takeUntil} from 'rxjs';
+import {distinctUntilChanged, forkJoin, Subject, takeUntil} from 'rxjs';
 import {MediaFilterBar, MediaFilterField} from './components/media-filter-bar/media-filter-bar';
 import {BreadcrumbItem, getBreadcrumbData, getEllipsisItems} from './utils/breadcrumb.utils';
 import {FolderTreeNode, MediaFile, MediaFolder, SortOption} from '../../../core/models/media/media-file.model';
@@ -243,8 +243,11 @@ export class MediaLibrary implements OnInit, OnDestroy {
       });
   }
 
+
   private loadData(): void {
     this.state.isLoading.set(true);
+
+    // Réinitialiser immédiatement pour éviter l'affichage de "dossier vide"
     this.state.files.set([]);
     this.state.folders.set([]);
     this.state.clearSelection();
@@ -255,23 +258,44 @@ export class MediaLibrary implements OnInit, OnDestroy {
     const pageSize = this.state.pageSize();
     const sort = this.state.currentSort();
     const search = this.state.searchQuery();
-    const folderPath = search ? undefined : (currentFolder?.path || undefined);
+    const folderPath = search ?
+      undefined : (currentFolder?.path || undefined);
     const currentParams = this.route.snapshot.queryParams;
     const hasAnyFilter = this.appliedFilters().length > 0;
 
-    this.mediaService.getFiles(folderId, folderPath, page, pageSize, sort, search, currentParams)
+    // Utiliser forkJoin pour charger files et folders en parallèle
+    const requests: any = {
+      files: this.mediaService.getFiles(folderId, folderPath, page, pageSize, sort, search, currentParams)
+    };
+
+    // Ajouter les folders seulement si pas de filtres
+    if (!hasAnyFilter) {
+      requests.folders = this.mediaService.getFolders(folderId, sort, search, currentParams);
+    }
+
+    forkJoin(requests)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (response) => {
-          this.state.files.set(response.data.map(f => ({ ...f, type: 'asset' as const, isSelectable: true })));
-          this.state.totalItems.set(response.meta.pagination.total);
+        next: (results: any) => {
+          // Mettre à jour les files
+          this.state.files.set(results.files.data.map((f: any) => ({ ...f, type: 'asset' as const, isSelectable: true })));
+          this.state.totalItems.set(results.files.meta.pagination.total);
 
-          const maxPage = Math.ceil(response.meta.pagination.total / pageSize);
-          if (page > 1 && page > maxPage && response.meta.pagination.total > 0) {
+          // Vérifier si la page demandée existe
+          const maxPage = Math.ceil(results.files.meta.pagination.total / pageSize);
+          if (page > 1 && page > maxPage && results.files.meta.pagination.total > 0) {
             this.updateQueryParams({ page: 1 });
             return;
           }
 
+          // Mettre à jour les folders si disponibles
+          if (results.folders) {
+            this.state.folders.set(results.folders.data.map((f: any) => ({ ...f, type: 'folder' as const, isSelectable: true })));
+          } else {
+            this.state.folders.set([]);
+          }
+
+          // Fin du loading
           this.state.isLoading.set(false);
         },
         error: () => {
@@ -280,20 +304,6 @@ export class MediaLibrary implements OnInit, OnDestroy {
         }
       });
 
-    if (!hasAnyFilter) {
-      this.mediaService.getFolders(folderId, sort, search, currentParams)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: (response) => {
-            this.state.folders.set(response.data.map(f => ({ ...f, type: 'folder' as const, isSelectable: true })));
-          },
-          error: () => {
-            this.toastService.showError(this.translate.instant('mediaLibrary.errors.loadFolders'));
-          }
-        });
-    } else {
-      this.state.folders.set([]);
-    }
   }
 
 
