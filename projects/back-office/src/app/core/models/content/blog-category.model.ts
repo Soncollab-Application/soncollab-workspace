@@ -1,3 +1,5 @@
+import {BlogArticle} from './blog-article.model';
+
 export interface BlogCategory {
   id: number;
   documentId: string;
@@ -12,8 +14,9 @@ export interface BlogCategory {
   createdAt: string;
   updatedAt: string;
   publishedAt: string;
-  articles?: any[];
+  articles?: BlogArticle[];
   articlesCount?: number;
+  localizations?: BlogCategory[];
 }
 
 export interface BlogCategoryListResponse {

@@ -1,0 +1,100 @@
+<div
+  class="offcanvas offcanvas-end"
+  [class.show]="offcanvasService.isOpen()"
+  [style.visibility]="offcanvasService.isOpen() ? 'visible' : 'hidden'"
+  tabindex="-1">
+  <div class="offcanvas-header border-bottom">
+    <h5 class="offcanvas-title d-flex align-items-center gap-2">
+    <span>
+      {{
+        offcanvasService.mode() === 'create'
+          ? ('blog-tag-offcanvas.title.create' | translate)
+          : ('blog-tag-offcanvas.title.edit' | translate)
+      }}
+    </span>
+      @if (offcanvasService.mode() === 'edit' && offcanvasService.tag()) {
+        <span class="badge bg-secondary">{{ offcanvasService.tag()?.locale?.toUpperCase() || 'FR' }}</span>
+      }
+    </h5>
+    <button
+      type="button"
+      class="btn-close"
+      (click)="onCancel()"
+      [disabled]="isSubmitting()"></button>
+  </div>
+
+  <div class="offcanvas-body">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label class="form-label">
+          {{ 'blog-tag-offcanvas.fields.name' | translate }}
+          <span class="text-danger">*</span>
+        </label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="name"
+          [placeholder]="'blog-tag-offcanvas.fields.name_placeholder' | translate"
+          [class.is-invalid]="form.get('name')?.invalid && form.get('name')?.touched" />
+        @if (form.get('name')?.invalid && form.get('name')?.touched) {
+          <div class="invalid-feedback">
+            {{ 'blog-tag-offcanvas.errors.name_required' | translate }}
+          </div>
+        }
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">
+          {{ 'blog-tag-offcanvas.fields.slug' | translate }}
+          <span class="text-danger">*</span>
+        </label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="slug"
+          [placeholder]="'blog-tag-offcanvas.fields.slug_placeholder' | translate"
+          [class.is-invalid]="form.get('slug')?.invalid && form.get('slug')?.touched" />
+        <small class="form-text text-muted">
+          {{ 'blog-tag-offcanvas.fields.slug_hint' | translate }}
+        </small>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">
+          {{ 'blog-tag-offcanvas.fields.color' | translate }}
+        </label>
+        <input type="color" class="form-control form-control-color" formControlName="color" />
+      </div>
+    </form>
+  </div>
+
+  <div class="offcanvas-footer border-top p-3">
+    <div class="d-flex gap-2">
+      <button
+        type="button"
+        class="btn btn-outline-secondary flex-fill"
+        (click)="onCancel()"
+        [disabled]="isSubmitting()">
+        {{ 'blog-tag-offcanvas.buttons.cancel' | translate }}
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary flex-fill"
+        (click)="onSubmit()"
+        [disabled]="form.invalid || isSubmitting()">
+        @if (isSubmitting()) {
+          <span class="spinner-border spinner-border-sm me-2"></span>
+        }
+        {{
+          offcanvasService.mode() === 'create'
+            ? ('blog-tag-offcanvas.buttons.create' | translate)
+            : ('blog-tag-offcanvas.buttons.save' | translate)
+        }}
+      </button>
+    </div>
+  </div>
+</div>
+
+@if (offcanvasService.isOpen()) {
+  <div class="offcanvas-backdrop fade show"></div>
+}

@@ -1,0 +1,36 @@
+{
+  "blog-category-offcanvas": {
+    "title": {
+      "create": "Nouvelle catégorie blog",
+      "edit": "Modifier la catégorie"
+    },
+    "fields": {
+      "name": "Nom",
+      "name_placeholder": "Nom de la catégorie",
+      "slug": "Slug",
+      "slug_placeholder": "slug-de-la-categorie",
+      "slug_hint": "URL-friendly. Généré automatiquement depuis le nom en création.",
+      "description": "Description",
+      "description_placeholder": "Description de la catégorie (optionnel)",
+      "color": "Couleur",
+      "icon": "Icône",
+      "icon_placeholder": "Ex: article, label, star...",
+      "icon_hint": "Nom de l'icône Material Symbols",
+      "order": "Ordre d'affichage",
+      "is_featured": "Mettre en vedette cette catégorie"
+    },
+    "buttons": {
+      "cancel": "Annuler",
+      "create": "Créer",
+      "save": "Enregistrer"
+    },
+    "errors": {
+      "name_required": "Le nom est obligatoire",
+      "save": "Erreur lors de l'enregistrement"
+    },
+    "success": {
+      "created": "Catégorie créée avec succès",
+      "updated": "Catégorie modifiée avec succès"
+    }
+  }
+}

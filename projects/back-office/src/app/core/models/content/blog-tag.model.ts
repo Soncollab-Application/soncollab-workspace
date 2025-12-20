@@ -10,7 +10,7 @@ export interface BlogTag {
   publishedAt: string;
   articles?: any[];
   articlesCount?: number;
-  localizations?: { id: number; locale: string }[];
+  localizations?: BlogTag[];
 }
 
 export interface BlogTagListResponse {

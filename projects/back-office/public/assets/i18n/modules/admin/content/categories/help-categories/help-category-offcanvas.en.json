@@ -1,0 +1,35 @@
+{
+  "help-category-offcanvas": {
+    "title": {
+      "create": "New help category",
+      "edit": "Edit category"
+    },
+    "fields": {
+      "name": "Name",
+      "name_placeholder": "Category name",
+      "slug": "Slug",
+      "slug_placeholder": "category-slug",
+      "slug_hint": "URL-friendly. Auto-generated from name on creation.",
+      "description": "Description",
+      "description_placeholder": "Category description (optional)",
+      "color": "Color",
+      "icon": "Icon",
+      "icon_placeholder": "Ex: help, info, support...",
+      "icon_hint": "Material Symbols icon name",
+      "order": "Display order"
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "create": "Create",
+      "save": "Save"
+    },
+    "errors": {
+      "name_required": "Name is required",
+      "save": "Error saving category"
+    },
+    "success": {
+      "created": "Category created successfully",
+      "updated": "Category updated successfully"
+    }
+  }
+}
