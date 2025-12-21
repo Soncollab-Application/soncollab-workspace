@@ -25,7 +25,7 @@ spec:
     spec:
       serviceAccountName: soncollab-frontend-sa
       imagePullSecrets:
-        - name: harbor-registry-secret
+        - name: ghcr-registry-secret
       containers:
         - name: soncollab-frontend
           image: ${IMAGE_TAG}
