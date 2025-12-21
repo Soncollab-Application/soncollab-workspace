@@ -17,6 +17,7 @@ RUN npm install -g @angular/cli
 COPY ../../ .
 
 # Build the Angular application - Fix: specify the project name
+RUN npm run merge-i18n:back-office
 RUN ng build shared-lib
 RUN ng build back-office --configuration staging
 
