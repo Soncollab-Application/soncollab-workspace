@@ -4,4 +4,4 @@ metadata:
   name: soncollab-back-office-sa
   namespace: soncollab-staging
 imagePullSecrets:
-  - name: harbor-registry-secret
+  - name: ghcr-registry-secret
