@@ -15,3 +15,30 @@ body {
   --fn-body-font-size: 0.95rem !important;
 }
 
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  opacity: 1;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.card, .btn, .modal, .dropdown-menu, .offcanvas {
+  transition: all 0.2s ease-in-out;
+}
+
+router-outlet ~ * {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

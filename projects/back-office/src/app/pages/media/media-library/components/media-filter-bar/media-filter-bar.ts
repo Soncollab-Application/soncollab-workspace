@@ -1,4 +1,4 @@
-import {Component, computed, input, output} from '@angular/core';
+import {Component, computed, effect, input, output, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {TranslateModule, TranslateService} from '@ngx-translate/core';
 import {Choice, ChoiceOption, ChoiceConfig, Datepicker} from 'shared-lib';
@@ -52,8 +52,21 @@ export class MediaFilterBar {
   operatorChange = output<string>();
   valueChange = output<string>();
 
+  // Signal pour forcer la mise à jour des options
+  private languageChange = signal(0);
+
+  constructor() {
+    // Écouter les changements de langue
+    effect(() => {
+      this.translate.onLangChange.subscribe(() => {
+        this.languageChange.update(v => v + 1);
+      });
+    });
+  }
+
   // Sort options avec selected basé sur currentSort
   sortOptions = computed<ChoiceOption[]>(() => {
+    this.languageChange(); // Force recalcul quand langue change
     const current = this.currentSort();
     return [
       { value: 'createdAt:DESC', label: this.translate.instant('mediaLibrary.sort.newest'), selected: current === 'createdAt:DESC' },
@@ -67,6 +80,7 @@ export class MediaFilterBar {
 
   // Field options avec selected basé sur selectedField
   fieldOptions = computed<ChoiceOption[]>(() => {
+    this.languageChange();
     const current = this.selectedField();
     return [
       { value: 'createdAt', label: this.translate.instant('mediaLibrary.filters.createdAt'), selected: current === 'createdAt' },
@@ -77,6 +91,7 @@ export class MediaFilterBar {
 
   // Operator options for dates avec selected
   dateOperatorOptions = computed<ChoiceOption[]>(() => {
+    this.languageChange();
     const current = this.selectedOperator();
     return [
       { value: '$eq', label: this.translate.instant('mediaLibrary.filters.is'), selected: current === '$eq' },
@@ -90,6 +105,7 @@ export class MediaFilterBar {
 
   // Operator options for mime avec selected
   mimeOperatorOptions = computed<ChoiceOption[]>(() => {
+    this.languageChange();
     const current = this.selectedOperator();
     return [
       { value: '$contains', label: this.translate.instant('mediaLibrary.filters.is'), selected: current === '$contains' },
@@ -99,6 +115,7 @@ export class MediaFilterBar {
 
   // Mime type options avec selected
   mimeTypeOptions = computed<ChoiceOption[]>(() => {
+    this.languageChange();
     const current = this.selectedValue();
     return [
       { value: 'audio', label: this.translate.instant('mediaLibrary.filters.audio'), selected: current === 'audio' },

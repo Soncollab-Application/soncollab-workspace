@@ -1,4 +1,12 @@
 <div libModalAccessibility>
-  <router-outlet></router-outlet>
+  @if (translationsLoaded()) {
+    <router-outlet></router-outlet>
+  } @else {
+    <div class="app-loader">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  }
   <lib-toast></lib-toast>
 </div>

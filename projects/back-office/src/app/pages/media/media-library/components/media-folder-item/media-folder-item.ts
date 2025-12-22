@@ -1,6 +1,6 @@
-import {Component, computed, input, output} from '@angular/core';
+import {Component, computed, inject, input, output} from '@angular/core';
 import {MediaFolder} from '../../../../../core/models/media/media-file.model';
-import {TranslatePipe} from '@ngx-translate/core';
+import {TranslatePipe, TranslateService} from '@ngx-translate/core';
 import {DropdownSingleDirective} from 'shared-lib';
 
 @Component({
@@ -11,6 +11,8 @@ import {DropdownSingleDirective} from 'shared-lib';
   styleUrl: './media-folder-item.css',
 })
 export class MediaFolderItem {
+  private translate = inject(TranslateService);
+
   folder = input.required<MediaFolder>();
   isSelected = input.required<boolean>();
   currentUserDocumentId = input<string | null>(null);
@@ -58,16 +60,22 @@ export class MediaFolderItem {
     const assetsCount = folder.files?.count || 0;
     const parts: string[] = [];
 
-    if (foldersCount > 0) {
-      parts.push(`${foldersCount} folder${foldersCount > 1 ? 's' : ''}`);
+    // Folders
+    if (foldersCount === 0) {
+      parts.push(this.translate.instant('mediaLibrary.stats.noFolder'));
+    } else if (foldersCount === 1) {
+      parts.push(this.translate.instant('mediaLibrary.stats.oneFolder'));
     } else {
-      parts.push('0 folder');
+      parts.push(this.translate.instant('mediaLibrary.stats.multipleFolders', { count: foldersCount }));
     }
 
-    if (assetsCount > 0) {
-      parts.push(`${assetsCount} asset${assetsCount > 1 ? 's' : ''}`);
+    // Assets
+    if (assetsCount === 0) {
+      parts.push(this.translate.instant('mediaLibrary.stats.noAsset'));
+    } else if (assetsCount === 1) {
+      parts.push(this.translate.instant('mediaLibrary.stats.oneAsset'));
     } else {
-      parts.push('0 asset');
+      parts.push(this.translate.instant('mediaLibrary.stats.multipleAssets', { count: assetsCount }));
     }
 
     return parts.join(', ');

@@ -18,6 +18,15 @@
       "assets": "Médias"
     },
 
+    "stats": {
+      "noFolder": "0 dossier",
+      "oneFolder": "1 dossier",
+      "multipleFolders": "{{count}} dossiers",
+      "noAsset": "0 fichier",
+      "oneAsset": "1 fichier",
+      "multipleAssets": "{{count}} fichiers"
+    },
+
     "actions": {
       "upload": "Téléverser",
       "createFolder": "Créer un dossier",
