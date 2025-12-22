@@ -1,0 +1,45 @@
+{
+  "plans-list": {
+    "title": "Plans de facturation",
+    "create_plan": "Créer un plan",
+    "no_plans": "Aucun plan",
+    "no_plans_message": "Commencez par créer votre premier plan de facturation",
+    "kpi": {
+      "total": "Total plans",
+      "active": "Plans actifs",
+      "inactive": "Plans inactifs",
+      "revenue_potential": "Revenu potentiel"
+    },
+    "filters": {
+      "status": "Statut",
+      "support_level": "Niveau de support"
+    },
+    "sort": {
+      "newest": "Plus récents",
+      "name": "Nom (A-Z)",
+      "price_asc": "Prix (croissant)",
+      "price_desc": "Prix (décroissant)"
+    },
+    "columns": {
+      "name": "Nom du plan",
+      "product_type": "Type de produit",
+      "price_monthly": "Prix mensuel",
+      "price_yearly": "Prix annuel",
+      "support": "Support",
+      "status": "Statut"
+    },
+    "status": {
+      "active": "Actif",
+      "inactive": "Inactif"
+    },
+    "support_levels": {
+      "basic": "Basique",
+      "priority": "Prioritaire",
+      "premium": "Premium"
+    },
+    "toast": {
+      "delete_success": "Plan \"{{name}}\" supprimé avec succès",
+      "delete_error": "Erreur lors de la suppression du plan \"{{name}}\""
+    }
+  }
+}

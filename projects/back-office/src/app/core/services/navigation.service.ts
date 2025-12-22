@@ -75,11 +75,14 @@ export class NavigationService {
             key: 'system',
             icon: 'settings',
             children: [
-              { key: 'configuration', icon: 'public', route: '/admin/system/config' },
-              { key: 'billing', icon: 'credit_card', route: '/admin/system/billing' },
-              { key: 'maintenance', icon: 'build', route: '/admin/system/maintenance' }
+              { key: 'plans', icon: 'list', route: '/admin/system/billing/plans' },
+              { key: 'addons', icon: 'extension', route: '/admin/system/billing/addons' },
+              { key: 'subscriptions', icon: 'subscriptions', route: '/admin/system/billing/subscriptions' },
+              { key: 'payment-links', icon: 'link', route: '/admin/system/billing/payment-links' }
             ]
-          }
+          },
+          { key: 'config', icon: 'tune', route: '/admin/system/config' },
+          { key: 'maintenance', icon: 'build', route: '/admin/system/maintenance' }
         ]
       }
     ],

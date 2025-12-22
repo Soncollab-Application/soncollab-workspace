@@ -1,0 +1,45 @@
+{
+  "plans-list": {
+    "title": "Billing Plans",
+    "create_plan": "Create Plan",
+    "no_plans": "No plans",
+    "no_plans_message": "Start by creating your first billing plan",
+    "kpi": {
+      "total": "Total plans",
+      "active": "Active plans",
+      "inactive": "Inactive plans",
+      "revenue_potential": "Revenue potential"
+    },
+    "filters": {
+      "status": "Status",
+      "support_level": "Support level"
+    },
+    "sort": {
+      "newest": "Newest",
+      "name": "Name (A-Z)",
+      "price_asc": "Price (ascending)",
+      "price_desc": "Price (descending)"
+    },
+    "columns": {
+      "name": "Plan name",
+      "product_type": "Product type",
+      "price_monthly": "Monthly price",
+      "price_yearly": "Yearly price",
+      "support": "Support",
+      "status": "Status"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "support_levels": {
+      "basic": "Basic",
+      "priority": "Priority",
+      "premium": "Premium"
+    },
+    "toast": {
+      "delete_success": "Plan \"{{name}}\" deleted successfully",
+      "delete_error": "Error deleting plan \"{{name}}\""
+    }
+  }
+}
