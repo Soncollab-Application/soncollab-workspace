@@ -62,6 +62,12 @@
       "dashboard": "Dashboard",
       "content": "Content",
       "blog_tags": "Blog Tags"
+    },
+    "plans-list": {
+      "dashboard": "Dashboard",
+      "system": "System",
+      "billing": "Billing",
+      "plans": "Plans"
     }
   }
 }

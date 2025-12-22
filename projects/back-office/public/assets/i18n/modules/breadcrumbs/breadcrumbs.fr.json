@@ -62,6 +62,12 @@
       "dashboard": "Tableau de bord",
       "content": "Contenu",
       "blog_tags": "Tags Blog"
+    },
+    "plans-list": {
+      "dashboard": "Tableau de bord",
+      "system": "Système",
+      "billing": "Facturation",
+      "plans": "Plans"
     }
   }
 }

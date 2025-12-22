@@ -29,6 +29,10 @@
           "analytics": "Content Analytics"
         },
         "system": {
+          "plans": "Billing Plans",
+          "addons": "Add-ons",
+          "subscriptions": "Subscriptions",
+          "payment-links": "Payment Links",
           "config": "System Configuration",
           "billing": "Billing Management",
           "maintenance": "System Maintenance"
