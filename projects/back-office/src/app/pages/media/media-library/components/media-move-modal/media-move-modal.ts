@@ -7,10 +7,8 @@ import {FolderTreeNode, MediaFile, MediaFolder} from '../../../../../core/models
 
 @Component({
   selector: 'app-media-move-modal',
-  imports: [
-    TranslatePipe,
-    Choice
-  ],
+  standalone: true,
+  imports: [TranslatePipe, Choice],
   templateUrl: './media-move-modal.html',
   styleUrl: './media-move-modal.css',
 })
@@ -20,19 +18,33 @@ export class MediaMoveModal {
   private toastService = inject(ToastService);
   private translate = inject(TranslateService);
 
+  // Required Inputs
   show = input.required<boolean>();
   folderStructure = input.required<FolderTreeNode[]>();
   itemsToMove = input.required<Array<MediaFile | MediaFolder>>();
   selectedDestination = input.required<string | null>();
 
+  // Optional Inputs - Control Visibility
+  showHeader = input<boolean>(true);
+  showCloseButton = input<boolean>(true);
+  showMovingInfo = input<boolean>(true);
+  showDestinationSelect = input<boolean>(true);
+  showItemsList = input<boolean>(true);
+  showFooter = input<boolean>(true);
+  showCancelButton = input<boolean>(true);
+  showMoveButton = input<boolean>(true);
+  showNoDestinationsAlert = input<boolean>(true);
+
+  // Outputs
   close = output<void>();
   moveComplete = output<void>();
   destinationChange = output<string | null>();
 
+  // Local state
   isMoving = signal(false);
-
   choiceRef = viewChild<Choice>(Choice);
 
+  // Computed
   hasDestinations = computed(() => {
     const structure = this.folderStructure();
     return structure.length > 0;
@@ -45,7 +57,6 @@ export class MediaMoveModal {
 
     const buildOptions = (nodes: FolderTreeNode[], level = 0): void => {
       for (const node of nodes) {
-        // Indentation visuelle avec des espaces insécables
         const indent = level > 0 ? '\u00A0\u00A0'.repeat(level) + '└─ ' : '';
 
         options.push({
@@ -65,12 +76,10 @@ export class MediaMoveModal {
   });
 
   constructor() {
-    // Sync la valeur sélectionnée avec le Choice component
     effect(() => {
       const destination = this.selectedDestination();
       const choice = this.choiceRef();
       if (choice && this.show() && this.hasDestinations()) {
-        // Petit délai pour que le Choice soit initialisé
         setTimeout(() => {
           choice.writeValue(destination ?? '');
         }, 100);

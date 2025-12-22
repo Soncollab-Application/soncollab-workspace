@@ -2,95 +2,109 @@
   <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
     <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">
-            {{ isFile() ? ('mediaLibrary.edit.fileTitle' | translate) : ('mediaLibrary.edit.folderTitle' | translate) }}
-          </h5>
-          <button type="button" class="btn-close" (click)="close.emit()"></button>
-        </div>
+
+        @if (showHeader()) {
+          <div class="modal-header">
+            <h5 class="modal-title">
+              {{ isFile() ? ('mediaLibrary.edit.fileTitle' | translate) : ('mediaLibrary.edit.folderTitle' | translate) }}
+            </h5>
+            @if (showCloseButton()) {
+              <button type="button" class="btn-close" (click)="close.emit()"></button>
+            }
+          </div>
+        }
+
         <div class="modal-body">
 
           @if (isFile()) {
             <div class="row">
-              <!-- Colonne Preview -->
-              <div class="col-md-5 mb-3">
-                <div class="preview-container border">
-                  @if (isImage()) {
-                    <img [src]="fullUrl()" [alt]="file()!.name" class="preview-image">
-                  } @else if (isVideo()) {
-                    <video [src]="fullUrl()" controls class="preview-video"></video>
-                  } @else if (isAudio()) {
-                    <div class="preview-audio-container">
-                      <span class="material-symbols-outlined preview-audio-icon">audio_file</span>
-                      <audio [src]="fullUrl()" controls class="w-100"></audio>
-                    </div>
-                  } @else if (isPDF()) {
-                    <div class="preview-pdf-container">
-                      <span class="material-symbols-outlined preview-pdf-icon">picture_as_pdf</span>
-                      <p class="mt-2 text-muted small">{{ file()!.name }}</p>
-                    </div>
-                  } @else {
-                    <div class="preview-file-container">
-                      <span class="material-symbols-outlined preview-file-icon">
-                        {{ getFileIcon() }}
-                      </span>
-                      <p class="mt-2 text-muted small">{{ file()!.name }}</p>
-                    </div>
-                  }
 
-                  <!-- Infos fichier -->
-                  <div class="file-info mt-3">
-                    <div class="d-flex justify-content-between mb-2">
-                      <span class="text-muted small">{{ 'mediaLibrary.table.type' | translate }}:</span>
-                      <span class="badge bg-secondary">{{ file()!.ext.toUpperCase() }}</span>
-                    </div>
-                    <div class="d-flex justify-content-between mb-2">
-                      <span class="text-muted small">{{ 'mediaLibrary.table.size' | translate }}:</span>
-                      <span class="small">{{ formatFileSize(file()!.size) }}</span>
-                    </div>
-                    @if (isImage() && file()!.width && file()!.height) {
-                      <div class="d-flex justify-content-between">
-                        <span class="text-muted small">{{ 'mediaLibrary.edit.dimensions' | translate }}:</span>
-                        <span class="small">{{ file()!.width }} x {{ file()!.height }}</span>
+              @if (showPreview()) {
+                <div class="col-md-5 mb-3">
+                  <div class="preview-container border">
+                    @if (isImage()) {
+                      <img [src]="fullUrl()" [alt]="file()!.name" class="preview-image">
+                    } @else if (isVideo()) {
+                      <video [src]="fullUrl()" controls class="preview-video"></video>
+                    } @else if (isAudio()) {
+                      <div class="preview-audio-container">
+                        <span class="material-symbols-outlined preview-audio-icon">audio_file</span>
+                        <audio [src]="fullUrl()" controls class="w-100"></audio>
+                      </div>
+                    } @else if (isPDF()) {
+                      <div class="preview-pdf-container">
+                        <span class="material-symbols-outlined preview-pdf-icon">picture_as_pdf</span>
+                        <p class="mt-2 text-muted small">{{ file()!.name }}</p>
+                      </div>
+                    } @else {
+                      <div class="preview-file-container">
+                        <span class="material-symbols-outlined preview-file-icon">
+                          {{ getFileIcon() }}
+                        </span>
+                        <p class="mt-2 text-muted small">{{ file()!.name }}</p>
+                      </div>
+                    }
+
+                    @if (showFileInfo()) {
+                      <div class="file-info mt-3">
+                        <div class="d-flex justify-content-between mb-2">
+                          <span class="text-muted small">{{ 'mediaLibrary.table.type' | translate }}:</span>
+                          <span class="badge bg-secondary">{{ file()!.ext.toUpperCase() }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                          <span class="text-muted small">{{ 'mediaLibrary.table.size' | translate }}:</span>
+                          <span class="small">{{ formatFileSize(file()!.size) }}</span>
+                        </div>
+                        @if (isImage() && file()!.width && file()!.height) {
+                          <div class="d-flex justify-content-between">
+                            <span class="text-muted small">{{ 'mediaLibrary.edit.dimensions' | translate }}:</span>
+                            <span class="small">{{ file()!.width }} x {{ file()!.height }}</span>
+                          </div>
+                        }
                       </div>
                     }
                   </div>
                 </div>
-              </div>
+              }
 
-              <!-- Colonne Formulaire -->
-              <div class="col-md-7">
-                <div class="mb-3">
-                  <label class="form-label">{{ 'mediaLibrary.edit.fileName' | translate }}</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    [(ngModel)]="editName">
-                </div>
+              <div [class.col-md-7]="showPreview()" [class.col-12]="!showPreview()">
+                @if (showNameField()) {
+                  <div class="mb-3">
+                    <label class="form-label">{{ 'mediaLibrary.edit.fileName' | translate }}</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      [(ngModel)]="editName">
+                  </div>
+                }
 
-                <div class="mb-3">
-                  <label class="form-label">{{ 'mediaLibrary.edit.alternativeText' | translate }}</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    [(ngModel)]="editAlternativeText"
-                    [placeholder]="'mediaLibrary.edit.alternativeTextPlaceholder' | translate">
-                </div>
+                @if (showAlternativeTextField()) {
+                  <div class="mb-3">
+                    <label class="form-label">{{ 'mediaLibrary.edit.alternativeText' | translate }}</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      [(ngModel)]="editAlternativeText"
+                      [placeholder]="'mediaLibrary.edit.alternativeTextPlaceholder' | translate">
+                  </div>
+                }
 
-                <div class="mb-3">
-                  <label class="form-label">{{ 'mediaLibrary.edit.caption' | translate }}</label>
-                  <textarea
-                    class="form-control"
-                    rows="3"
-                    [(ngModel)]="editCaption"
-                    [placeholder]="'mediaLibrary.edit.captionPlaceholder' | translate"></textarea>
-                </div>
+                @if (showCaptionField()) {
+                  <div class="mb-3">
+                    <label class="form-label">{{ 'mediaLibrary.edit.caption' | translate }}</label>
+                    <textarea
+                      class="form-control"
+                      rows="3"
+                      [(ngModel)]="editCaption"
+                      [placeholder]="'mediaLibrary.edit.captionPlaceholder' | translate"></textarea>
+                  </div>
+                }
               </div>
             </div>
           }
 
           @if (isFolder()) {
-            @if (isUserFolder()) {
+            @if (isUserFolder() && showUserFolderAlert()) {
               <div class="alert alert-info d-flex align-items-center">
                 <span class="material-symbols-outlined me-2">info</span>
                 <div>
@@ -101,38 +115,46 @@
                 </div>
               </div>
             } @else {
-              <div class="mb-3">
-                <label class="form-label">{{ 'mediaLibrary.edit.folderName' | translate }}</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  [(ngModel)]="editName">
-              </div>
+              @if (showNameField()) {
+                <div class="mb-3">
+                  <label class="form-label">{{ 'mediaLibrary.edit.folderName' | translate }}</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    [(ngModel)]="editName">
+                </div>
+              }
             }
           }
         </div>
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-secondary"
-            (click)="close.emit()"
-            [disabled]="isSaving()">
-            {{ 'common.cancel' | translate }}
-          </button>
 
-          @if (!isUserFolder()) {
-            <button
-              type="button"
-              class="btn btn-primary"
-              [disabled]="!editName().trim() || isSaving()"
-              (click)="save()">
-              @if (isSaving()) {
-                <span class="spinner-border spinner-border-sm me-2"></span>
-              }
-              {{ 'common.save' | translate }}
-            </button>
-          }
-        </div>
+        @if (showFooter()) {
+          <div class="modal-footer">
+            @if (showCancelButton()) {
+              <button
+                type="button"
+                class="btn btn-secondary"
+                (click)="close.emit()"
+                [disabled]="isSaving()">
+                {{ 'common.cancel' | translate }}
+              </button>
+            }
+
+            @if (showSaveButton() && !isUserFolder()) {
+              <button
+                type="button"
+                class="btn btn-primary"
+                [disabled]="!editName().trim() || isSaving()"
+                (click)="save()">
+                @if (isSaving()) {
+                  <span class="spinner-border spinner-border-sm me-2"></span>
+                }
+                {{ 'common.save' | translate }}
+              </button>
+            }
+          </div>
+        }
+
       </div>
     </div>
   </div>

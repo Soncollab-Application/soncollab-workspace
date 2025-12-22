@@ -90,6 +90,7 @@
             </div>
           </div>
         } @else {
+
           @if (state.folders().length > 0) {
             <h6 class="text-muted mb-3 d-flex align-items-center">
               <span class="material-symbols-outlined me-1" style="font-size: 18px;">folder</span>
@@ -101,6 +102,14 @@
                   <app-media-folder-item
                     [folder]="folder"
                     [isSelected]="false"
+                    [currentUserDocumentId]="currentUserDocumentId()"
+                    [showCheckbox]="false"
+                    [showMenu]="true"
+                    [showEditAction]="true"
+                    [showMoveAction]="false"
+                    [showDeleteAction]="false"
+                    [showStats]="false"
+                    [clickable]="true"
                     (folderClick)="onFolderClick(folder)"
                     (editClick)="onEditFolder(folder)">
                   </app-media-folder-item>
@@ -108,6 +117,7 @@
               }
             </div>
           }
+
 
           @if (state.files().length > 0) {
             <h6 class="text-muted mb-3 d-flex align-items-center">
@@ -120,6 +130,15 @@
                   <app-media-asset-item
                     [asset]="file"
                     [isSelected]="isFileSelected(file)"
+                    [currentUserDocumentId]="currentUserDocumentId()"
+                    [showCheckbox]="false"
+                    [showEditButton]="true"
+                    [showMenu]="false"
+                    [showMoveAction]="false"
+                    [showDownloadAction]="false"
+                    [showCopyLinkAction]="false"
+                    [showDeleteAction]="false"
+                    [clickable]="true"
                     (assetClick)="onFileClick(file)"
                     (editClick)="onEditFile(file)">
                   </app-media-asset-item>

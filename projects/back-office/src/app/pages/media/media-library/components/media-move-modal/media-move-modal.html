@@ -2,73 +2,91 @@
   <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">{{ 'mediaLibrary.move.title' | translate }}</h5>
-          <button type="button" class="btn-close" (click)="close.emit()"></button>
-        </div>
+
+        @if (showHeader()) {
+          <div class="modal-header">
+            <h5 class="modal-title">{{ 'mediaLibrary.move.title' | translate }}</h5>
+            @if (showCloseButton()) {
+              <button type="button" class="btn-close" (click)="close.emit()"></button>
+            }
+          </div>
+        }
+
         <div class="modal-body">
 
-          @if (!hasDestinations()) {
-            <!-- Alert quand aucune destination disponible -->
+          @if (!hasDestinations() && showNoDestinationsAlert()) {
             <div class="alert alert-warning d-flex align-items-center" role="alert">
               <span class="material-symbols-outlined me-2">info</span>
               <div>{{ 'mediaLibrary.warnings.noDestinationsAvailable' | translate }}</div>
             </div>
           } @else {
-            <!-- Contenu normal du modal -->
-            <div class="mb-3">
-              <p class="text-muted">
-                {{ 'mediaLibrary.move.moving' | translate }}:
-                <strong>{{ itemsToMove().length }}</strong>
-                {{ 'mediaLibrary.move.items' | translate }}
-              </p>
-            </div>
 
-            <div class="mb-3">
-              <label class="form-label">{{ 'mediaLibrary.move.destination' | translate }}</label>
-              <lib-choice
-                [options]="destinationOptions()"
-                [placeholder]="'mediaLibrary.move.selectDestination' | translate"
-                (valueChange)="onDestinationChange($event)"
-              />
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label">{{ 'mediaLibrary.move.itemsList' | translate }}</label>
-              <div class="list-group">
-                @for (item of itemsToMove(); track item.documentId) {
-                  <div class="list-group-item d-flex align-items-center">
-                    <span class="material-symbols-outlined me-2 text-muted">
-                      {{ item.type === 'folder' ? 'folder' : 'insert_drive_file' }}
-                    </span>
-                    <span class="text-truncate">{{ item.name }}</span>
-                  </div>
-                }
+            @if (showMovingInfo()) {
+              <div class="mb-3">
+                <p class="text-muted">
+                  {{ 'mediaLibrary.move.moving' | translate }}:
+                  <strong>{{ itemsToMove().length }}</strong>
+                  {{ 'mediaLibrary.move.items' | translate }}
+                </p>
               </div>
-            </div>
+            }
+
+            @if (showDestinationSelect()) {
+              <div class="mb-3">
+                <label class="form-label">{{ 'mediaLibrary.move.destination' | translate }}</label>
+                <lib-choice
+                  [options]="destinationOptions()"
+                  [placeholder]="'mediaLibrary.move.selectDestination' | translate"
+                  (valueChange)="onDestinationChange($event)"
+                />
+              </div>
+            }
+
+            @if (showItemsList()) {
+              <div class="mb-3">
+                <label class="form-label">{{ 'mediaLibrary.move.itemsList' | translate }}</label>
+                <div class="list-group">
+                  @for (item of itemsToMove(); track item.documentId) {
+                    <div class="list-group-item d-flex align-items-center">
+                      <span class="material-symbols-outlined me-2 text-muted">
+                        {{ item.type === 'folder' ? 'folder' : 'insert_drive_file' }}
+                      </span>
+                      <span class="text-truncate">{{ item.name }}</span>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
           }
         </div>
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-secondary"
-            (click)="close.emit()"
-            [disabled]="isMoving()">
-            {{ 'common.cancel' | translate }}
-          </button>
-          @if (hasDestinations()) {
-            <button
-              type="button"
-              class="btn btn-primary"
-              [disabled]="isMoving()"
-              (click)="move()">
-              @if (isMoving()) {
-                <span class="spinner-border spinner-border-sm me-2"></span>
-              }
-              {{ 'mediaLibrary.move.move' | translate }}
-            </button>
-          }
-        </div>
+
+        @if (showFooter()) {
+          <div class="modal-footer">
+            @if (showCancelButton()) {
+              <button
+                type="button"
+                class="btn btn-secondary"
+                (click)="close.emit()"
+                [disabled]="isMoving()">
+                {{ 'common.cancel' | translate }}
+              </button>
+            }
+
+            @if (hasDestinations() && showMoveButton()) {
+              <button
+                type="button"
+                class="btn btn-primary"
+                [disabled]="isMoving()"
+                (click)="move()">
+                @if (isMoving()) {
+                  <span class="spinner-border spinner-border-sm me-2"></span>
+                }
+                {{ 'mediaLibrary.move.move' | translate }}
+              </button>
+            }
+          </div>
+        }
+
       </div>
     </div>
   </div>

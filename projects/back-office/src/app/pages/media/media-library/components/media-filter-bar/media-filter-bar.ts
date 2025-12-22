@@ -1,9 +1,8 @@
-import {Component, computed, input, output, signal} from '@angular/core';
+import {Component, computed, input, output} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {TranslateModule, TranslateService} from '@ngx-translate/core';
 import {Choice, ChoiceOption, ChoiceConfig, Datepicker} from 'shared-lib';
 import {inject} from '@angular/core';
-import {SortOption, ViewMode} from '../../../../../core/models/media/media-file.model';
 
 export interface MediaFilterField {
   field: string;
@@ -21,23 +20,30 @@ export interface MediaFilterField {
 export class MediaFilterBar {
   private translate = inject(TranslateService);
 
-  // Inputs
-  currentSort = input.required<SortOption>();
+  // Required Inputs
+  currentSort = input.required<string>();
   searchQuery = input.required<string>();
-  viewMode = input.required<ViewMode>();
+  viewMode = input.required<'grid' | 'list'>();
   allSelected = input.required<boolean>();
   hasSelection = input.required<boolean>();
   appliedFilters = input.required<MediaFilterField[]>();
   selectedField = input.required<string | null>();
   selectedOperator = input.required<string | null>();
   selectedValue = input.required<string | null>();
-  showSelectAll = input<boolean>(true);
+
+  // Optional Inputs - Control Visibility
+  showCheckbox = input<boolean>(true);
+  showSort = input<boolean>(true);
+  showFilterButton = input<boolean>(true);
+  showAppliedFilters = input<boolean>(true);
+  showViewButtons = input<boolean>(true);
+  showSearch = input<boolean>(true);
 
   // Outputs
-  sortChange = output<SortOption>();
+  sortChange = output<string>();
   searchChange = output<string>();
   clearSearchClick = output<void>();
-  viewModeChange = output<ViewMode>();
+  viewModeChange = output<'grid' | 'list'>();
   selectAllChange = output<void>();
   addFilterClick = output<void>();
   removeFilterClick = output<number>();
@@ -45,9 +51,6 @@ export class MediaFilterBar {
   fieldChange = output<string>();
   operatorChange = output<string>();
   valueChange = output<string>();
-
-  // Local state
-  searchInput = signal<string>('');
 
   // Sort options avec selected basé sur currentSort
   sortOptions = computed<ChoiceOption[]>(() => {
@@ -125,10 +128,6 @@ export class MediaFilterBar {
   canAddFilter = computed(() => {
     return this.selectedField() && this.selectedOperator() && this.selectedValue();
   });
-
-  onSearchInput(value: string): void {
-    this.searchInput.set(value);
-  }
 
   onDateChange(value: string): void {
     this.valueChange.emit(value);

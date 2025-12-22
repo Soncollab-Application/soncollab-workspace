@@ -1,19 +1,27 @@
-import {ChangeDetectionStrategy, Component, computed, input, output} from '@angular/core';
+import {Component, computed, input, output} from '@angular/core';
 import {MediaFolder} from '../../../../../core/models/media/media-file.model';
 import {TranslatePipe} from '@ngx-translate/core';
+import {DropdownSingleDirective} from 'shared-lib';
 
 @Component({
   selector: 'app-media-folder-item',
   standalone: true,
-  imports: [TranslatePipe],
+  imports: [TranslatePipe, DropdownSingleDirective],
   templateUrl: './media-folder-item.html',
   styleUrl: './media-folder-item.css',
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MediaFolderItem {
   folder = input.required<MediaFolder>();
   isSelected = input.required<boolean>();
   currentUserDocumentId = input<string | null>(null);
+
+  showCheckbox = input<boolean>(true);
+  showMenu = input<boolean>(true);
+  showEditAction = input<boolean>(true);
+  showMoveAction = input<boolean>(true);
+  showDeleteAction = input<boolean>(true);
+  showStats = input<boolean>(true);
+  clickable = input<boolean>(true);
 
   folderClick = output<void>();
   toggleSelection = output<void>();
@@ -25,20 +33,24 @@ export class MediaFolderItem {
     const folder = this.folder();
     const userId = this.currentUserDocumentId();
 
-    // Si le dossier appartient à l'utilisateur connecté
     if (userId && folder.ownerDocumentId === userId) {
       return true;
     }
 
-    // Si hierarchy existe, on est dans users (et pas le propriétaire)
     if (folder.hierarchy && folder.hierarchy.length > 0) {
       return false;
     }
 
-    if (folder.name === 'users') return false;
+    if (folder.name === 'users') {
+      return false;
+    }
 
     return true;
   });
+
+  hasMenuActions = computed(() =>
+    this.showEditAction() || this.showMoveAction() || this.showDeleteAction()
+  );
 
   getFolderStats(): string {
     const folder = this.folder();
@@ -59,5 +71,11 @@ export class MediaFolderItem {
     }
 
     return parts.join(', ');
+  }
+
+  handleFolderClick(): void {
+    if (this.clickable()) {
+      this.folderClick.emit();
+    }
   }
 }
