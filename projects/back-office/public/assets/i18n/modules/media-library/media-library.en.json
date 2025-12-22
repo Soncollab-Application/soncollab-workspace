@@ -18,6 +18,15 @@
       "assets": "Assets"
     },
 
+    "stats": {
+      "noFolder": "0 folder",
+      "oneFolder": "1 folder",
+      "multipleFolders": "{{count}} folders",
+      "noAsset": "0 asset",
+      "oneAsset": "1 asset",
+      "multipleAssets": "{{count}} assets"
+    },
+
     "actions": {
       "upload": "Upload",
       "createFolder": "Create Folder",

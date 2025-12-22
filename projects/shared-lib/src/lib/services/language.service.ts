@@ -5,16 +5,17 @@ import {AVAILABLE_LANGUAGES, Language} from '../models';
 @Injectable({ providedIn: 'root' })
 export class LanguageService {
   readonly currentLanguage = signal<string>('fr');
+  readonly isInitialized = signal<boolean>(false); // AJOUTER CECI
   readonly availableLanguages: Language[] = AVAILABLE_LANGUAGES;
-  private isInitialized = false;
+  private isInitializing = false;
 
   constructor(private translate: TranslateService) {
     this.initializeLanguage();
   }
 
   private initializeLanguage(): void {
-    if (this.isInitialized) return;
-    this.isInitialized = true;
+    if (this.isInitializing) return;
+    this.isInitializing = true;
 
     let savedLang = localStorage.getItem('lang');
 
@@ -31,6 +32,7 @@ export class LanguageService {
       this.currentLanguage.set(savedLang!);
       localStorage.setItem('lang', savedLang!);
       document.documentElement.lang = savedLang!;
+      this.isInitialized.set(true);
       this.preloadOtherLanguages(savedLang!);
     });
   }
