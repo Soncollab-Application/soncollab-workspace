@@ -157,6 +157,11 @@ export const adminRoutes: Routes = [
 
       // Système
       {
+        path: 'system/billing/plans',
+        loadComponent: () => import('../../../pages/admin/system/plans/plans-list/plans-list').then(c => c.PlansList),
+        canActivate: [apiPermissionGuard('billing-plan', 'billing-plan', 'find')]
+      },
+      {
         path: 'system/config',
         loadComponent: () => import('../../../pages/admin/system/config/system-config/system-config').then(c => c.SystemConfig)
       },

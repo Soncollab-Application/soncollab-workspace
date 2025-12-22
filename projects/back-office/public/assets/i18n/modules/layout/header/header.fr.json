@@ -29,6 +29,10 @@
           "analytics": "Analytics contenu"
         },
         "system": {
+          "plans": "Plans de facturation",
+          "addons": "Modules complémentaires",
+          "subscriptions": "Abonnements",
+          "payment-links": "Liens de paiement",
           "config": "Configuration système",
           "billing": "Gestion facturation",
           "maintenance": "Maintenance système"
