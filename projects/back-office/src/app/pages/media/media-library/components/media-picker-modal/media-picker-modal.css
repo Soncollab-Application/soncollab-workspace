@@ -1,4 +1,3 @@
-/* projects/back-office/src/app/pages/media/media-library/components/media-picker-modal/media-picker-modal.css */
 #mediaPickerModal {
   z-index: 1055;
 }
@@ -14,20 +13,6 @@
 
 #mediaPickerModal .modal-xl {
   max-width: 1200px;
-}
-
-#mediaPickerModal app-media-asset-item ::ng-deep .dropdown,
-#mediaPickerModal app-media-folder-item ::ng-deep .dropdown,
-#mediaPickerModal app-media-asset-item ::ng-deep .btn-group,
-#mediaPickerModal app-media-folder-item ::ng-deep .btn-group,
-#mediaPickerModal app-media-asset-item ::ng-deep .form-check,
-#mediaPickerModal app-media-folder-item ::ng-deep .form-check {
-  display: none !important;
-}
-
-#mediaPickerModal app-media-asset-item ::ng-deep .edit-btn,
-#mediaPickerModal app-media-folder-item ::ng-deep .edit-btn {
-  display: inline-flex !important;
 }
 
 #mediaPickerModal .asset-card.selected {

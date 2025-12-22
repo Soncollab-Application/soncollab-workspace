@@ -8,25 +8,20 @@ import {
 } from '../../../core/models/media/media-file.model';
 
 export class MediaLibraryState {
-  // Data
   files = signal<MediaFile[]>([]);
   folders = signal<MediaFolder[]>([]);
   currentFolder = signal<MediaFolder | null>(null);
 
-  // Pagination
   currentPage = signal<number>(1);
   pageSize = signal<number>(DEFAULT_PAGE_SIZE);
   totalItems = signal<number>(0);
   pageCount = computed(() => Math.ceil(this.totalItems() / this.pageSize()));
 
-  // Sort & Search
   currentSort = signal<SortOption>('createdAt:DESC');
   searchQuery = signal<string>('');
 
-  // View
   viewMode = signal<ViewMode>('grid');
 
-  // Selection
   selectedItems = signal<Array<MediaFile | MediaFolder>>([]);
 
   selectedFiles = computed(() =>
@@ -39,7 +34,6 @@ export class MediaLibraryState {
 
   hasSelection = computed(() => this.selectedItems().length > 0);
 
-  // Compte les folders et assets séparément
   selectedFoldersCount = computed(() => this.selectedFolders().length);
   selectedFilesCount = computed(() => this.selectedFiles().length);
 
@@ -50,23 +44,19 @@ export class MediaLibraryState {
     return total > 0 && this.selectedItems().length === total;
   });
 
-  // Loading
   isLoading = signal<boolean>(false);
 
-  // Computed
   shouldShowFolders = computed(() => this.currentPage() === 1);
   currentFolderPath = computed(() => this.currentFolder()?.path || '/');
 
   canUpload(currentUserDocumentId?: string | null): boolean {
     const folder = this.currentFolder();
-    if (!folder) return true; // Racine OK
+    if (!folder) return true;
 
-    // Si le dossier appartient à l'utilisateur connecté, il PEUT uploader
     if (currentUserDocumentId && folder.ownerDocumentId === currentUserDocumentId) {
       return true;
     }
 
-    // Vérifier si on a hierarchy (= dans users mais pas le propriétaire)
     if (folder.hierarchy && folder.hierarchy.length > 0) {
       return false;
     }
@@ -78,12 +68,10 @@ export class MediaLibraryState {
     const folder = this.currentFolder();
     if (!folder) return true;
 
-    // Si le dossier appartient à l'utilisateur connecté, il PEUT créer
     if (currentUserDocumentId && folder.ownerDocumentId === currentUserDocumentId) {
       return true;
     }
 
-    // Vérifier si on a hierarchy (= dans users mais pas le propriétaire)
     if (folder.hierarchy && folder.hierarchy.length > 0) {
       return false;
     }
@@ -95,12 +83,10 @@ export class MediaLibraryState {
     const folder = this.currentFolder();
     if (!folder) return false;
 
-    // Vérifier par hierarchy
     if (folder.hierarchy && folder.hierarchy.length > 0) {
       return folder.hierarchy.some(ancestor => ancestor.name === 'users');
     }
 
-    // Vérifier par nom
     return folder.name === 'users';
   });
 
@@ -108,12 +94,10 @@ export class MediaLibraryState {
     if (item.type === 'folder') {
       const folder = item as MediaFolder;
 
-      // Si le dossier appartient à l'utilisateur connecté, il PEUT le sélectionner
       if (currentUserDocumentId && folder.ownerDocumentId === currentUserDocumentId) {
         return true;
       }
 
-      // Vérifier si on a hierarchy (= dans users mais pas le propriétaire)
       if (folder.hierarchy && folder.hierarchy.length > 0) {
         return false;
       }
@@ -126,12 +110,10 @@ export class MediaLibraryState {
     if (item.type === 'asset') {
       const file = item as MediaFile;
 
-      // Si le fichier appartient à l'utilisateur connecté, il PEUT le sélectionner
       if (currentUserDocumentId && file.ownerDocumentId === currentUserDocumentId) {
         return true;
       }
 
-      // Vérifier hierarchy du folder parent
       if (file.folder?.hierarchy && file.folder.hierarchy.length > 0) {
         return false;
       }
@@ -144,7 +126,6 @@ export class MediaLibraryState {
     return true;
   }
 
-  // Actions
   toggleSelection(item: MediaFile | MediaFolder) {
     if (!this.canSelectItem(item)) return;
     const selected = this.selectedItems();

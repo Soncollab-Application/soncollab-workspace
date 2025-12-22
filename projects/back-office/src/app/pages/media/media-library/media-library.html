@@ -1,74 +1,46 @@
-<div class="media-library-container mt-4" [class.loading]="state.isLoading()">
+<div class="container-fluid">
 
-
-  <!-- ==================== BREADCRUMB ==================== -->
-  <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center gap-3 mb-4">
-
-    <!-- Breadcrumb -->
-    <nav aria-label="breadcrumb" class="flex-grow-1 w-100 w-lg-auto">
-      <ol class="breadcrumb mb-0">
-        @for (crumb of breadcrumbs(); track crumb.id) {
-          <li class="breadcrumb-item" [class.active]="$last">
-            @if (crumb.isEllipsis) {
-              <div class="dropdown d-inline">
-                <a
-                class="text-decoration-none"
-                href="javascript:void(0)"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-                style="cursor: pointer;">
-                {{ crumb.label }}
-                </a>
-                <ul class="dropdown-menu">
-                  @for (item of ellipsisItems(); track item.id) {
-                    <li>
-                      <a
-                      class="dropdown-item"
-                      href="javascript:void(0)"
-                      (click)="onBreadcrumbClick(item)">
-                      {{ item.label }}
-                      </a>
-                    </li>
-                  }
-                </ul>
-              </div>
-            } @else if (!$last) {
-              <a
-              class="text-decoration-none"
-                href="javascript:void(0)"
-                (click)="onBreadcrumbClick(crumb)"
-                style="cursor: pointer;">
-              {{ crumb.label }}
-              </a>
+  <!-- ==================== HEADER ==================== -->
+  <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-3">
+    <div>
+      <h1 class="h3 mb-2">{{ 'mediaLibrary.title' | translate }}</h1>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
+          @for (item of breadcrumbs(); track item.id) {
+            @if ($last) {
+              <li class="breadcrumb-item active">{{ item.label }}</li>
             } @else {
-              <span>{{ crumb.label }}</span>
+              <li class="breadcrumb-item">
+                <a href="javascript:void(0)" (click)="onBreadcrumbClick(item); $event.preventDefault()">
+                  {{ item.label }}
+                </a>
+              </li>
             }
-          </li>
-        }
-      </ol>
-    </nav>
+          }
+        </ol>
+      </nav>
+    </div>
 
-    <!-- Actions principales -->
-    <div class="d-flex gap-2 flex-wrap flex-sm-nowrap w-100 w-lg-auto">
+    <div class="d-flex gap-2">
       @if (canUpload()) {
         <button
-          class="btn btn-primary flex-grow-1 flex-sm-grow-0"
+          type="button"
+          class="btn btn-primary"
           (click)="onOpenUpload()">
-          <span class="material-symbols-outlined">upload</span>
-          <span class="d-none d-sm-inline ms-1">{{ 'mediaLibrary.actions.upload' | translate }}</span>
+          <span class="material-symbols-outlined me-1">upload</span>
+          {{ 'mediaLibrary.actions.upload' | translate }}
         </button>
       }
-
       @if (canCreateFolder()) {
         <button
-          class="btn btn-outline-primary flex-grow-1 flex-sm-grow-0"
+          type="button"
+          class="btn btn-outline-primary"
           (click)="onOpenCreateFolder()">
-          <span class="material-symbols-outlined">create_new_folder</span>
-          <span class="d-none d-sm-inline ms-1">{{ 'mediaLibrary.actions.createFolder' | translate }}</span>
+          <span class="material-symbols-outlined me-1">create_new_folder</span>
+          {{ 'mediaLibrary.actions.createFolder' | translate }}
         </button>
       }
     </div>
-
   </div>
 
   <!-- ==================== FILTER BAR ==================== -->
@@ -79,7 +51,7 @@
     [allSelected]="state.allSelected()"
     [hasSelection]="hasSelection()"
     [appliedFilters]="appliedFilters()"
-    [showSelectAll]="showSelectAll()"
+    [showCheckbox]="showSelectAll()"
     [selectedField]="selectedFilterField()"
     [selectedOperator]="selectedFilterOperator()"
     [selectedValue]="selectedFilterValue()"
@@ -91,24 +63,24 @@
     (addFilterClick)="onAddFilter()"
     (removeFilterClick)="onRemoveFilter($event)"
     (clearFiltersClick)="onClearFilters()"
-    (fieldChange)="onFilterFieldChange($event)"
-    (operatorChange)="onFilterOperatorChange($event)"
-    (valueChange)="onFilterValueChange($event)"
+    (fieldChange)="onFilterFieldChange($any($event))"
+    (operatorChange)="onFilterOperatorChange($any($event))"
+    (valueChange)="onFilterValueChange($any($event))"
   />
 
   <!-- ==================== BULK ACTIONS ==================== -->
   @if (state.hasSelection()) {
     <div class="alert alert-info d-flex justify-content-between align-items-center mb-3 mt-4">
-    <span>
-      @if (state.selectedFoldersCount() > 0 && state.selectedFilesCount() > 0) {
-        {{ state.selectedFoldersCount() }} {{ state.selectedFoldersCount() > 1 ? 'folders' : 'folder' }},
-        {{ state.selectedFilesCount() }} {{ state.selectedFilesCount() > 1 ? 'assets' : 'asset' }}
-      } @else if (state.selectedFoldersCount() > 0) {
-        {{ state.selectedFoldersCount() }} {{ state.selectedFoldersCount() > 1 ? 'folders' : 'folder' }}
-      } @else {
-        {{ state.selectedFilesCount() }} {{ state.selectedFilesCount() > 1 ? 'assets' : 'asset' }}
-      }
-    </span>
+      <span>
+        @if (state.selectedFolders().length > 0 && state.selectedFiles().length > 0) {
+          {{ state.selectedFolders().length }} {{ state.selectedFolders().length > 1 ? 'folders' : 'folder' }},
+          {{ state.selectedFiles().length }} {{ state.selectedFiles().length > 1 ? 'assets' : 'asset' }}
+        } @else if (state.selectedFolders().length > 0) {
+          {{ state.selectedFolders().length }} {{ state.selectedFolders().length > 1 ? 'folders' : 'folder' }}
+        } @else {
+          {{ state.selectedFiles().length }} {{ state.selectedFiles().length > 1 ? 'assets' : 'asset' }}
+        }
+      </span>
       <div class="d-flex gap-2">
         @if (canMoveItems()) {
           <button
@@ -167,8 +139,14 @@
               <div class="col">
                 <app-media-folder-item
                   [folder]="folder"
-                  [currentUserDocumentId]="currentUserDocumentId()"
                   [isSelected]="isSelected(folder)"
+                  [showCheckbox]="true"
+                  [showMenu]="true"
+                  [showEditAction]="true"
+                  [showMoveAction]="true"
+                  [showDeleteAction]="true"
+                  [showStats]="true"
+                  [clickable]="true"
                   (folderClick)="onFolderClick(folder)"
                   (toggleSelection)="onToggleSelection(folder)"
                   (editClick)="onEditFolder(folder)"
@@ -199,8 +177,15 @@
               <div class="col">
                 <app-media-asset-item
                   [asset]="file"
-                  [currentUserDocumentId]="currentUserDocumentId()"
                   [isSelected]="isSelected(file)"
+                  [showCheckbox]="true"
+                  [showEditButton]="true"
+                  [showMenu]="true"
+                  [showMoveAction]="true"
+                  [showDownloadAction]="true"
+                  [showCopyLinkAction]="true"
+                  [showDeleteAction]="true"
+                  [clickable]="true"
                   (assetClick)="onEditFile(file)"
                   (toggleSelection)="onToggleSelection(file)"
                   (editClick)="onEditFile(file)"
@@ -217,6 +202,7 @@
     }
 
     <!-- ==================== LIST VIEW ==================== -->
+      <!-- ==================== LIST VIEW ==================== -->
     @if (state.viewMode() === 'list') {
       <div class="mt-4">
         <div class="table-responsive card">
@@ -427,75 +413,46 @@
     }
 
     <!-- ==================== EMPTY STATE ==================== -->
-    @if (state.folders().length === 0 && state.files().length === 0) {
-      <div class="text-center py-5">
-        <span class="material-symbols-outlined display-1 text-muted mb-3">folder_open</span>
-        <h5>{{ 'mediaLibrary.empty.title' | translate }}</h5>
-        <p class="text-muted">{{ 'mediaLibrary.empty.message' | translate }}</p>
+    @if (state.files().length === 0 && state.folders().length === 0) {
+      <div class="text-center py-5 text-muted">
+        <span class="material-symbols-outlined" style="font-size: 64px;">folder_open</span>
+        <h5 class="mt-3">{{ 'mediaLibrary.empty.title' | translate }}</h5>
+        <p>{{ 'mediaLibrary.empty.message' | translate }}</p>
       </div>
     }
-
-  }
-
-  <!-- ==================== PAGINATION ==================== -->
-  @if (state.totalItems() > 0 && state.pageCount() > 1) {
-    <nav aria-label="Page navigation" class="mt-4">
-      <ul class="pagination justify-content-center">
-        <li class="page-item" [class.disabled]="state.currentPage() === 1">
-          <a class="page-link" href="javascript:void(0)" (click)="onPageChange(state.currentPage() - 1)">
-            {{ 'mediaLibrary.pagination.previous' | translate }}
-          </a>
-        </li>
-
-        @for (page of [].constructor(state.pageCount()); track $index) {
-          <li class="page-item" [class.active]="state.currentPage() === $index + 1">
-            <a class="page-link" href="javascript:void(0)" (click)="onPageChange($index + 1)">
-              {{ $index + 1 }}
-            </a>
-          </li>
-        }
-
-        <li class="page-item" [class.disabled]="state.currentPage() === state.pageCount()">
-          <a class="page-link" href="javascript:void(0)" (click)="onPageChange(state.currentPage() + 1)">
-            {{ 'mediaLibrary.pagination.next' | translate }}
-          </a>
-        </li>
-      </ul>
-    </nav>
   }
 
 </div>
 
 <!-- ==================== MODALS ==================== -->
-
 <app-media-upload-modal
   [show]="showUploadModal()"
   [currentFolder]="state.currentFolder()"
   (close)="onCloseUpload()"
-  (uploadComplete)="onUploadComplete()"
-/>
+  (uploadComplete)="onUploadComplete()">
+</app-media-upload-modal>
 
 <app-media-create-folder-modal
   [show]="showCreateFolderModal()"
   [currentFolder]="state.currentFolder()"
   (close)="onCloseCreateFolder()"
-  (folderCreated)="onFolderCreated()"
-/>
+  (folderCreated)="onFolderCreated()">
+</app-media-create-folder-modal>
 
 <app-media-edit-modal
-  [show]="showEditFileModal() || showEditFolderModal()"
+  [show]="showEditModal()"
   [file]="fileToEdit()"
   [folder]="folderToEdit()"
   (close)="onCloseEdit()"
-  (editComplete)="onEditComplete()"
-/>
+  (editComplete)="onEditComplete()">
+</app-media-edit-modal>
 
 <app-media-move-modal
   [show]="showMoveModal()"
   [folderStructure]="folderStructure()"
-  [itemsToMove]="filesToMove()"
-  [selectedDestination]="selectedDestinationFolder()"
-  (close)="onCloseMove()"
+  [itemsToMove]="itemsToMove()"
+  [selectedDestination]="selectedDestination()"
+  (close)="onCloseMoveModal()"
   (moveComplete)="onMoveComplete()"
-  (destinationChange)="onDestinationChange($event)"
-/>
+  (destinationChange)="onDestinationChange($event)">
+</app-media-move-modal>

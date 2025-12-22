@@ -1,5 +1,5 @@
-import {ChangeDetectionStrategy, Component, computed, input, output} from '@angular/core';
-import {MediaFile, MediaFolder} from '../../../../../core/models/media/media-file.model';
+import {Component, computed, input, output} from '@angular/core';
+import {MediaFile} from '../../../../../core/models/media/media-file.model';
 import {environment} from '../../../../../../environments/environment';
 import {TranslatePipe} from '@ngx-translate/core';
 
@@ -9,12 +9,20 @@ import {TranslatePipe} from '@ngx-translate/core';
   imports: [TranslatePipe],
   templateUrl: './media-asset-item.html',
   styleUrl: './media-asset-item.css',
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MediaAssetItem {
   asset = input.required<MediaFile>();
   isSelected = input.required<boolean>();
   currentUserDocumentId = input<string | null>(null);
+
+  showCheckbox = input<boolean>(true);
+  showEditButton = input<boolean>(true);
+  showMenu = input<boolean>(true);
+  showMoveAction = input<boolean>(true);
+  showDownloadAction = input<boolean>(true);
+  showCopyLinkAction = input<boolean>(true);
+  showDeleteAction = input<boolean>(true);
+  clickable = input<boolean>(true);
 
   assetClick = output<void>();
   toggleSelection = output<void>();
@@ -24,22 +32,21 @@ export class MediaAssetItem {
   downloadClick = output<void>();
   copyLinkClick = output<void>();
 
-
   canSelect = computed(() => {
     const asset = this.asset();
     const userId = this.currentUserDocumentId();
 
-    // Si le fichier appartient à l'utilisateur connecté
     if (userId && asset.ownerDocumentId === userId) {
       return true;
     }
 
-    // Vérifier hierarchy du folder parent
     if (asset.folder?.hierarchy && asset.folder.hierarchy.length > 0) {
       return false;
     }
 
-    if (asset.folder?.name === 'users') return false;
+    if (asset.folder?.name === 'users') {
+      return false;
+    }
 
     return true;
   });
@@ -58,6 +65,11 @@ export class MediaAssetItem {
     const url = this.asset().url;
     return url.startsWith('http') ? url : environment.api.baseUrl + url;
   });
+
+  hasMenuActions = computed(() =>
+    this.showMoveAction() || this.showDownloadAction() ||
+    this.showCopyLinkAction() || this.showDeleteAction()
+  );
 
   getFileIcon(): string {
     const mime = this.asset().mime;
@@ -83,14 +95,9 @@ export class MediaAssetItem {
     return 'FILE';
   }
 
-  formatFileSize(): string {
-    const bytes = this.asset().size;
-    if (bytes === 0) return '0 B';
-
-    const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-
-    return `${(bytes / Math.pow(k, i)).toFixed(1)} ${sizes[i]}`;
+  handleCardClick(): void {
+    if (this.clickable()) {
+      this.assetClick.emit();
+    }
   }
 }

@@ -1,11 +1,11 @@
 import {Component, computed, inject, OnDestroy, OnInit, signal} from '@angular/core';
 import {MediaLibraryState} from './media-library.state';
-import {distinctUntilChanged, forkJoin, Subject, takeUntil} from 'rxjs';
+import {debounceTime, distinctUntilChanged, Subject, takeUntil} from 'rxjs';
 import {MediaFilterBar, MediaFilterField} from './components/media-filter-bar/media-filter-bar';
 import {BreadcrumbItem, getBreadcrumbData, getEllipsisItems} from './utils/breadcrumb.utils';
 import {FolderTreeNode, MediaFile, MediaFolder, SortOption} from '../../../core/models/media/media-file.model';
 import {MediaService} from '../../../core/services/media/media.service';
-import {ConfirmDialogService, DropdownSingleDirective, ToastService, PermissionService} from 'shared-lib';
+import {ConfirmDialogService, DropdownSingleDirective, ToastService} from 'shared-lib';
 import {TranslateModule, TranslateService} from '@ngx-translate/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {environment} from '../../../../environments/environment';
@@ -17,7 +17,6 @@ import {MediaAssetItem} from './components/media-asset-item/media-asset-item';
 import {MediaFolderItem} from './components/media-folder-item/media-folder-item';
 import {CommonModule} from '@angular/common';
 import {AuthService} from '../../../core/services/auth.service';
-
 
 @Component({
   selector: 'app-media-library',
@@ -45,101 +44,36 @@ export class MediaLibrary implements OnInit, OnDestroy {
   private toastService = inject(ToastService);
   private confirmDialog = inject(ConfirmDialogService);
   private translate = inject(TranslateService);
-  private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private authService = inject(AuthService);
-  private permissionService = inject(PermissionService);
 
   state = new MediaLibraryState();
 
+  breadcrumbs = signal<BreadcrumbItem[]>([]);
   showUploadModal = signal(false);
   showCreateFolderModal = signal(false);
-  showEditFileModal = signal(false);
-  showEditFolderModal = signal(false);
+  showEditModal = signal(false);
   showMoveModal = signal(false);
 
   fileToEdit = signal<MediaFile | null>(null);
   folderToEdit = signal<MediaFolder | null>(null);
 
   folderStructure = signal<FolderTreeNode[]>([]);
-  selectedDestinationFolder = signal<string | null>(null);
-  filesToMove = signal<Array<MediaFile | MediaFolder>>([]);
+  itemsToMove = signal<Array<MediaFile | MediaFolder>>([]);
+  selectedDestination = signal<string | null>(null);
 
   selectedFilterField = signal<string | null>(null);
   selectedFilterOperator = signal<string | null>(null);
   selectedFilterValue = signal<string | null>(null);
   appliedFilters = signal<MediaFilterField[]>([]);
 
-  // Permissions API
-  hasPermissionFind = computed(() =>
-    this.permissionService.hasPermission('media-library', 'media-library', 'find')
-  );
-
-  hasPermissionUpload = computed(() =>
-    this.permissionService.hasPermission('media-library', 'media-library', 'upload')
-  );
-
-  hasPermissionUpdate = computed(() =>
-    this.permissionService.hasPermission('media-library', 'media-library', 'update')
-  );
-
-  hasPermissionDelete = computed(() =>
-    this.permissionService.hasPermission('media-library', 'media-library', 'delete')
-  );
-
-  hasPermissionCreateFolder = computed(() =>
-    this.permissionService.hasPermission('media-library', 'media-library', 'createFolder')
-  );
-
-  hasPermissionDeleteFolder = computed(() =>
-    this.permissionService.hasPermission('media-library', 'media-library', 'deleteFolder')
-  );
-
-  hasPermissionBulkDelete = computed(() =>
-    this.permissionService.hasPermission('media-library', 'media-library', 'bulkDelete')
-  );
-
-  hasPermissionBulkMove = computed(() =>
-    this.permissionService.hasPermission('media-library', 'media-library', 'bulkMove')
-  );
-
-  hasPermissionUpdateFolder = computed(() =>
-    this.permissionService.hasPermission('media-library', 'media-library', 'updateFolder')
-  );
-
-  // Computed - Logique métier
   currentUserDocumentId = computed(() => {
     const user = this.authService.currentUser;
     return user?.documentId || null;
   });
 
-  breadcrumbs = computed(() =>
-    getBreadcrumbData(this.state.currentFolder(), this.currentUserDocumentId())
-  );
-
-  ellipsisItems = computed(() =>
-    getEllipsisItems(this.state.currentFolder(), this.currentUserDocumentId())
-  );
-
-  hasSelection = computed(() =>
-    this.state.selectedItems().length > 0 &&
-    this.state.selectedItems().length < (this.state.folders().length + this.state.files().length)
-  );
-
-  canUpload = computed(() =>
-    this.hasPermissionUpload() && this.state.canUpload(this.currentUserDocumentId())
-  );
-
-  canCreateFolder = computed(() =>
-    this.hasPermissionCreateFolder() && this.state.canCreateFolder(this.currentUserDocumentId())
-  );
-
-  canEditFile = computed(() => this.hasPermissionUpdate());
-  canEditFolder = computed(() => this.hasPermissionUpdateFolder());
-  canDeleteFile = computed(() => this.hasPermissionDelete());
-  canDeleteFolder = computed(() => this.hasPermissionDeleteFolder());
-  canMoveItems = computed(() => this.hasPermissionBulkMove());
-  canBulkDeleteItems = computed(() => this.hasPermissionBulkDelete());
+  hasSelection = computed(() => this.state.hasSelection());
 
   showSelectAll = computed(() => {
     const folder = this.state.currentFolder();
@@ -158,15 +92,46 @@ export class MediaLibrary implements OnInit, OnDestroy {
     return true;
   });
 
+  canUpload = computed(() => this.state.canUpload(this.currentUserDocumentId()));
+  canCreateFolder = computed(() => this.state.canCreateFolder(this.currentUserDocumentId()));
+
+  canEditFile = computed(() => true);
+  canEditFolder = computed(() => true);
+  canDeleteFile = computed(() => true);
+  canDeleteFolder = computed(() => true);
+
+  canMoveItems = computed(() => {
+    const items = this.state.selectedItems();
+    return items.length > 0;
+  });
+
+  canBulkDeleteItems = computed(() => {
+    const items = this.state.selectedItems();
+    return items.length > 0;
+  });
+
+  constructor() {
+    this.searchSubject$.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      takeUntil(this.destroy$)
+    ).subscribe(query => {
+      this.state.searchQuery.set(query);
+      this.state.resetToPage1();
+      this.loadData();
+    });
+  }
 
   ngOnInit(): void {
     this.route.queryParams
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(params => this.handleRouteChange(params));
-
-    this.searchSubject$
-      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
-      .subscribe(query => this.executeSearch(query));
+      .pipe(
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(params => {
+        const folderId = params['folder'] || null;
+        this.navigateToFolder(folderId);
+      });
   }
 
   ngOnDestroy(): void {
@@ -174,80 +139,63 @@ export class MediaLibrary implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  private handleRouteChange(params: any): void {
-    const folderId = params['folder'] || null;
-    this.state.currentPage.set(parseInt(params['page']) || 1);
-    this.state.pageSize.set(parseInt(params['pageSize']) || 10);
-    this.state.currentSort.set(params['sort'] || 'createdAt:DESC');
-    this.state.searchQuery.set(params['_q'] || '');
+  canSelectItem(item: MediaFile | MediaFolder): boolean {
+    return this.state.canSelectItem(item, this.currentUserDocumentId());
+  }
 
-    this.restoreFiltersFromQuery(params);
+  onTableSort(field: 'name' | 'createdAt'): void {
+    const currentSort = this.state.currentSort();
+    const [currentField, currentDirection] = currentSort.split(':');
 
+    let newSort: SortOption;
+    if (currentField === field) {
+      newSort = currentDirection === 'ASC' ? `${field}:DESC` as SortOption : `${field}:ASC` as SortOption;
+    } else {
+      newSort = `${field}:ASC` as SortOption;
+    }
+
+    this.state.currentSort.set(newSort);
+    this.loadData();
+  }
+
+  getSortIcon(field: 'name' | 'createdAt'): string {
+    const currentSort = this.state.currentSort();
+    const [currentField, currentDirection] = currentSort.split(':');
+
+    if (currentField !== field) {
+      return 'unfold_more';
+    }
+
+    return currentDirection === 'ASC' ? 'expand_less' : 'expand_more';
+  }
+
+  private navigateToFolder(folderId: string | null): void {
     if (folderId) {
-      this.loadFolderById(folderId);
+      this.mediaService.getFolder(folderId)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (response) => {
+            this.state.currentFolder.set(response.data);
+            this.updateBreadcrumbs();
+            this.loadData();
+          },
+          error: () => {
+            this.router.navigate([], {
+              relativeTo: this.route,
+              queryParams: {}
+            });
+          }
+        });
     } else {
       this.state.currentFolder.set(null);
+      this.updateBreadcrumbs();
       this.loadData();
     }
   }
 
-  private restoreFiltersFromQuery(params: any): void {
-    const filters: MediaFilterField[] = [];
-
-    Object.keys(params).forEach(key => {
-      const match = key.match(/filters\[\$and\]\[(\d+)\]\[(\w+)\]\[(\$\w+)\]/);
-      if (match) {
-        const index = parseInt(match[1]);
-        const field = match[2];
-        const operator = match[3];
-        const value = params[key];
-
-        while (filters.length <= index) {
-          filters.push(null as any);
-        }
-
-        filters[index] = { field, operator, value };
-      }
-    });
-
-    const validFilters = filters.filter(f => f !== null && f !== undefined);
-    this.appliedFilters.set(validFilters);
-  }
-
-  private updateQueryParams(params: Record<string, any>): void {
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: params,
-      queryParamsHandling: 'merge'
-    });
-  }
-
-
-  private loadFolderById(documentId: string): void {
-    this.mediaService.getFolder(documentId)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (response) => {
-          this.state.currentFolder.set(response.data);
-          this.loadData();
-        },
-        error: () => {
-          this.state.currentFolder.set(null);
-          this.router.navigate([], {
-            relativeTo: this.route,
-            queryParams: { folder: null },
-            queryParamsHandling: 'merge'
-          });
-          this.loadData();
-        }
-      });
-  }
-
-
   private loadData(): void {
     this.state.isLoading.set(true);
 
-    // Réinitialiser immédiatement pour éviter l'affichage de "dossier vide"
     this.state.files.set([]);
     this.state.folders.set([]);
     this.state.clearSelection();
@@ -258,44 +206,23 @@ export class MediaLibrary implements OnInit, OnDestroy {
     const pageSize = this.state.pageSize();
     const sort = this.state.currentSort();
     const search = this.state.searchQuery();
-    const folderPath = search ?
-      undefined : (currentFolder?.path || undefined);
+    const folderPath = search ? undefined : (currentFolder?.path || undefined);
     const currentParams = this.route.snapshot.queryParams;
     const hasAnyFilter = this.appliedFilters().length > 0;
 
-    // Utiliser forkJoin pour charger files et folders en parallèle
-    const requests: any = {
-      files: this.mediaService.getFiles(folderId, folderPath, page, pageSize, sort, search, currentParams)
-    };
-
-    // Ajouter les folders seulement si pas de filtres
-    if (!hasAnyFilter) {
-      requests.folders = this.mediaService.getFolders(folderId, sort, search, currentParams);
-    }
-
-    forkJoin(requests)
+    this.mediaService.getFiles(folderId, folderPath, page, pageSize, sort, search, currentParams)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (results: any) => {
-          // Mettre à jour les files
-          this.state.files.set(results.files.data.map((f: any) => ({ ...f, type: 'asset' as const, isSelectable: true })));
-          this.state.totalItems.set(results.files.meta.pagination.total);
+        next: (response) => {
+          this.state.files.set(response.data.map(f => ({ ...f, type: 'asset' as const, isSelectable: true })));
+          this.state.totalItems.set(response.meta.pagination.total);
 
-          // Vérifier si la page demandée existe
-          const maxPage = Math.ceil(results.files.meta.pagination.total / pageSize);
-          if (page > 1 && page > maxPage && results.files.meta.pagination.total > 0) {
+          const maxPage = Math.ceil(response.meta.pagination.total / pageSize);
+          if (page > 1 && page > maxPage && response.meta.pagination.total > 0) {
             this.updateQueryParams({ page: 1 });
             return;
           }
 
-          // Mettre à jour les folders si disponibles
-          if (results.folders) {
-            this.state.folders.set(results.folders.data.map((f: any) => ({ ...f, type: 'folder' as const, isSelectable: true })));
-          } else {
-            this.state.folders.set([]);
-          }
-
-          // Fin du loading
           this.state.isLoading.set(false);
         },
         error: () => {
@@ -304,11 +231,103 @@ export class MediaLibrary implements OnInit, OnDestroy {
         }
       });
 
+    if (!hasAnyFilter) {
+      this.mediaService.getFolders(folderId, sort, search, currentParams)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (response) => {
+            this.state.folders.set(response.data.map(f => ({ ...f, type: 'folder' as const, isSelectable: true })));
+          },
+          error: () => {
+            this.toastService.showError(this.translate.instant('mediaLibrary.errors.loadFolders'));
+          }
+        });
+    } else {
+      this.state.folders.set([]);
+    }
+
+    this.updateBreadcrumbs();
   }
 
+  private updateBreadcrumbs(): void {
+    this.breadcrumbs.set(getBreadcrumbData(this.state.currentFolder(), this.currentUserDocumentId()));
+  }
+
+  private updateQueryParams(params: Record<string, any>): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: params,
+      queryParamsHandling: 'merge'
+    });
+  }
+
+  private loadFolderStructure(): void {
+    this.mediaService.getFolderStructure()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          const structure = response.data;
+          const items = this.itemsToMove();
+          const itemIds = items.map(item => item.documentId);
+          const currentFolderId = this.state.currentFolder()?.documentId || null;
+
+          const filterStructure = (nodes: FolderTreeNode[]): FolderTreeNode[] => {
+            return nodes
+              .filter(node => !itemIds.includes(node.value || ''))
+              .map(node => ({
+                ...node,
+                children: node.children ? filterStructure(node.children) : []
+              }));
+          };
+
+          let filteredStructure = filterStructure(structure);
+
+          if (currentFolderId) {
+            filteredStructure = [
+              {
+                value: null,
+                label: this.translate.instant('mediaLibrary.move.root'),
+                children: filteredStructure
+              }
+            ];
+            this.selectedDestination.set(null);
+          } else if (filteredStructure.length > 0) {
+            this.selectedDestination.set(filteredStructure[0].value);
+          }
+
+          this.folderStructure.set(filteredStructure);
+        },
+        error: () => {
+          this.toastService.showError(this.translate.instant('mediaLibrary.errors.loadStructure'));
+        }
+      });
+  }
+
+  onBreadcrumbClick(item: BreadcrumbItem): void {
+    this.state.searchQuery.set('');
+    this.appliedFilters.set([]);
+
+    const currentParams = this.route.snapshot.queryParams;
+    const cleanParams: any = {
+      folder: item.id === null ? undefined : item.folder?.documentId,
+      page: 1,
+      _q: undefined
+    };
+
+    Object.keys(currentParams).forEach(key => {
+      if (key.startsWith('filters[$and]')) {
+        cleanParams[key] = undefined;
+      }
+    });
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: cleanParams,
+      queryParamsHandling: 'merge'
+    });
+  }
 
   onFolderClick(folder: MediaFolder): void {
-    this.state.isLoading.set(true);
     this.state.searchQuery.set('');
     this.appliedFilters.set([]);
 
@@ -328,57 +347,18 @@ export class MediaLibrary implements OnInit, OnDestroy {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: cleanParams,
-      queryParamsHandling: 'merge',
-      replaceUrl: true
+      queryParamsHandling: 'merge'
     });
   }
 
-  onBreadcrumbClick(item: BreadcrumbItem): void {
-    this.state.isLoading.set(true);
-    this.state.searchQuery.set('');
-    this.appliedFilters.set([]);
-
-    const currentParams = this.route.snapshot.queryParams;
-    const cleanParams: any = {
-      folder: item.id === null ? undefined : item.folder?.documentId,
-      page: 1,
-      _q: undefined
-    };
-
-    Object.keys(currentParams).forEach(key => {
-      if (key.startsWith('filters[$and]')) {
-        cleanParams[key] = undefined;
-      }
-    });
-
-    this.updateQueryParams(cleanParams);
+  isSelected(item: MediaFile | MediaFolder): boolean {
+    return this.state.selectedItems().some(
+      selected => selected.documentId === item.documentId && selected.type === item.type
+    );
   }
 
-  onSortChange(sort: string): void {
-    const currentSort = this.state.currentSort();
-    this.state.currentSort.set(sort as SortOption);
-    if (currentSort !== sort) {
-      this.updateQueryParams({ sort, page: 1 });
-    } else {
-      this.updateQueryParams({ sort });
-    }
-  }
-
-  onSearchChange(searchTerm: string): void {
-    this.searchSubject$.next(searchTerm);
-  }
-
-  onClearSearch(): void {
-    this.state.searchQuery.set('');
-    this.searchSubject$.next('');
-  }
-
-  private executeSearch(query: string): void {
-    this.updateQueryParams({ _q: query || undefined, page: 1 });
-  }
-
-  onViewModeChange(mode: 'grid' | 'list'): void {
-    this.state.viewMode.set(mode);
+  onToggleSelection(item: MediaFile | MediaFolder): void {
+    this.state.toggleSelection(item);
   }
 
   onSelectAllChange(): void {
@@ -389,6 +369,32 @@ export class MediaLibrary implements OnInit, OnDestroy {
     }
   }
 
+  onSortChange(sort: string): void {
+    this.state.currentSort.set(sort as SortOption);
+    this.state.resetToPage1();
+    this.loadData();
+  }
+
+  onSearchChange(query: string): void {
+    this.searchSubject$.next(query);
+  }
+
+  onClearSearch(): void {
+    this.state.searchQuery.set('');
+    this.state.resetToPage1();
+    this.loadData();
+  }
+
+  onViewModeChange(mode: 'grid' | 'list'): void {
+    this.state.viewMode.set(mode);
+  }
+
+  onPageChange(page: number): void {
+    if (page < 1 || page > this.state.pageCount()) return;
+    this.state.currentPage.set(page);
+    this.updateQueryParams({ page });
+    this.loadData();
+  }
 
   onFilterFieldChange(field: string): void {
     this.selectedFilterField.set(field);
@@ -398,7 +404,6 @@ export class MediaLibrary implements OnInit, OnDestroy {
 
   onFilterOperatorChange(operator: string): void {
     this.selectedFilterOperator.set(operator);
-    this.selectedFilterValue.set(null);
   }
 
   onFilterValueChange(value: string): void {
@@ -412,82 +417,32 @@ export class MediaLibrary implements OnInit, OnDestroy {
 
     if (!field || !operator || !value) return;
 
-    const isDuplicate = this.appliedFilters().some(filter =>
-      filter.field === field &&
-      filter.operator === operator &&
-      filter.value === value
-    );
-
-    if (isDuplicate) {
-      this.toastService.showWarning(
-        this.translate.instant('mediaLibrary.filters.alreadyApplied')
-      );
-      return;
-    }
-
-    this.appliedFilters.update(filters => [
-      ...filters,
-      { field, operator, value }
-    ]);
+    const newFilter: MediaFilterField = { field, operator, value };
+    this.appliedFilters.set([...this.appliedFilters(), newFilter]);
 
     this.selectedFilterField.set(null);
     this.selectedFilterOperator.set(null);
     this.selectedFilterValue.set(null);
 
-    this.applyFiltersToQuery();
+    this.state.resetToPage1();
+    this.loadData();
   }
 
   onRemoveFilter(index: number): void {
-    this.appliedFilters.update(filters =>
-      filters.filter((_, i) => i !== index)
-    );
-    this.applyFiltersToQuery();
+    const filters = [...this.appliedFilters()];
+    filters.splice(index, 1);
+    this.appliedFilters.set(filters);
+    this.state.resetToPage1();
+    this.loadData();
   }
 
   onClearFilters(): void {
     this.appliedFilters.set([]);
-    this.applyFiltersToQuery();
+    this.state.resetToPage1();
+    this.loadData();
   }
-
-  private applyFiltersToQuery(): void {
-    const filters = this.appliedFilters();
-
-    const currentParams = this.route.snapshot.queryParams;
-    const cleanParams: any = { page: 1 };
-
-    Object.keys(currentParams).forEach(key => {
-      if (key.startsWith('filters[$and]')) {
-        cleanParams[key] = undefined;
-      }
-    });
-
-    if (filters.length > 0) {
-      filters.forEach((filter, index) => {
-        const key = `filters[$and][${index}][${filter.field}][${filter.operator}]`;
-        cleanParams[key] = filter.value;
-      });
-    }
-
-    this.updateQueryParams(cleanParams);
-  }
-
-
-  isSelected(item: MediaFile | MediaFolder): boolean {
-    return this.state.selectedItems().some(
-      selected => selected.documentId === item.documentId && selected.type === item.type
-    );
-  }
-
-  onToggleSelection(item: MediaFile | MediaFolder): void {
-    this.state.toggleSelection(item);
-  }
-
 
   onOpenUpload(): void {
-    if (!this.canUpload()) {
-      this.toastService.showWarning(this.translate.instant('mediaLibrary.warnings.noPermission'));
-      return;
-    }
     this.showUploadModal.set(true);
   }
 
@@ -496,19 +451,10 @@ export class MediaLibrary implements OnInit, OnDestroy {
   }
 
   onUploadComplete(): void {
-    this.refreshCurrentPage();
-  }
-
-  private refreshCurrentPage(): void {
-    const currentParams = this.route.snapshot.queryParams;
-    this.handleRouteChange(currentParams);
+    this.loadData();
   }
 
   onOpenCreateFolder(): void {
-    if (!this.canCreateFolder()) {
-      this.toastService.showWarning(this.translate.instant('mediaLibrary.warnings.noPermission'));
-      return;
-    }
     this.showCreateFolderModal.set(true);
   }
 
@@ -517,146 +463,61 @@ export class MediaLibrary implements OnInit, OnDestroy {
   }
 
   onFolderCreated(): void {
-    this.refreshCurrentPage();
+    this.loadData();
   }
 
   onEditFile(file: MediaFile): void {
-    if (!this.canEditFile()) {
-      this.toastService.showWarning(this.translate.instant('mediaLibrary.warnings.noPermission'));
-      return;
-    }
     this.fileToEdit.set(file);
-    this.showEditFileModal.set(true);
+    this.folderToEdit.set(null);
+    this.showEditModal.set(true);
   }
 
   onEditFolder(folder: MediaFolder): void {
-    if (!this.canEditFolder()) {
-      this.toastService.showWarning(this.translate.instant('mediaLibrary.warnings.noPermission'));
-      return;
-    }
     this.folderToEdit.set(folder);
-    this.showEditFolderModal.set(true);
+    this.fileToEdit.set(null);
+    this.showEditModal.set(true);
   }
 
   onCloseEdit(): void {
-    this.showEditFileModal.set(false);
-    this.showEditFolderModal.set(false);
+    this.showEditModal.set(false);
     this.fileToEdit.set(null);
     this.folderToEdit.set(null);
   }
 
   onEditComplete(): void {
-    this.refreshCurrentPage();
+    this.loadData();
   }
 
   onMoveItem(item: MediaFile | MediaFolder): void {
-    if (!this.canMoveItems()) {
-      this.toastService.showWarning(this.translate.instant('mediaLibrary.warnings.noPermission'));
-      return;
-    }
-    this.filesToMove.set([item]);
-    this.loadFolderStructureAndOpenModal();
+    this.itemsToMove.set([item]);
+    this.selectedDestination.set(null);
+    this.loadFolderStructure();
+    this.showMoveModal.set(true);
   }
 
   onMoveBulk(): void {
-    if (!this.canMoveItems()) {
-      this.toastService.showWarning(this.translate.instant('mediaLibrary.warnings.noPermission'));
-      return;
-    }
-    this.filesToMove.set(this.state.selectedItems());
-    this.loadFolderStructureAndOpenModal();
+    this.itemsToMove.set(this.state.selectedItems());
+    this.selectedDestination.set(null);
+    this.loadFolderStructure();
+    this.showMoveModal.set(true);
   }
 
-  private loadFolderStructureAndOpenModal(): void {
-    const itemsToMove = this.filesToMove();
-    const folderIdsToMove = itemsToMove
-      .filter(i => i.type === 'folder')
-      .map(i => i.documentId);
-
-    const onlyFiles = folderIdsToMove.length === 0;
-
-    this.mediaService.getFolderStructure()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (response) => {
-          const currentFolder = this.state.currentFolder();
-
-          const currentFolderId = onlyFiles ? undefined : currentFolder?.documentId;
-
-          const filteredStructure = this.filterInvalidDestinations(
-            response.data,
-            folderIdsToMove,
-            currentFolderId
-          );
-
-          const structure: FolderTreeNode[] = [];
-
-          if (currentFolder !== null) {
-            structure.push({
-              value: null,
-              label: this.translate.instant('mediaLibrary.move.root'),
-              children: filteredStructure
-            });
-
-            if (onlyFiles && currentFolder) {
-              this.selectedDestinationFolder.set(currentFolder.documentId);
-            } else {
-              this.selectedDestinationFolder.set(null);
-            }
-          } else {
-            structure.push(...filteredStructure);
-            if (filteredStructure.length > 0) {
-              this.selectedDestinationFolder.set(filteredStructure[0].value);
-            }
-          }
-
-          this.folderStructure.set(structure);
-          this.showMoveModal.set(true);
-        },
-        error: () => {
-          this.toastService.showError(this.translate.instant('mediaLibrary.errors.loadStructure'));
-        }
-      });
-  }
-
-  private filterInvalidDestinations(
-    nodes: FolderTreeNode[],
-    folderIdsToMove: string[],
-    currentFolderId?: string
-  ): FolderTreeNode[] {
-    return nodes
-      .filter(node =>
-        node.value !== currentFolderId &&
-        !folderIdsToMove.includes(node.value!)
-      )
-      .map(node => ({
-        ...node,
-        children: node.children
-          ? this.filterInvalidDestinations(node.children, folderIdsToMove, currentFolderId)
-          : undefined
-      }));
-  }
-
-  onCloseMove(): void {
+  onCloseMoveModal(): void {
     this.showMoveModal.set(false);
-    this.filesToMove.set([]);
+    this.itemsToMove.set([]);
+    this.selectedDestination.set(null);
   }
 
   onMoveComplete(): void {
     this.state.clearSelection();
-    this.refreshCurrentPage();
+    this.loadData();
   }
 
   onDestinationChange(destination: string | null): void {
-    this.selectedDestinationFolder.set(destination);
+    this.selectedDestination.set(destination);
   }
 
   async onDeleteFile(file: MediaFile): Promise<void> {
-    if (!this.canDeleteFile()) {
-      this.toastService.showWarning(this.translate.instant('mediaLibrary.warnings.noPermission'));
-      return;
-    }
-
     const confirmed = await this.confirmDialog.confirmDelete(file.name);
     if (!confirmed) return;
 
@@ -667,7 +528,7 @@ export class MediaLibrary implements OnInit, OnDestroy {
           this.toastService.showSuccess(
             this.translate.instant('mediaLibrary.success.fileDeleted', { name: file.name })
           );
-          this.refreshCurrentPage();
+          this.loadData();
         },
         error: (error) => {
           this.toastService.showError(
@@ -678,11 +539,6 @@ export class MediaLibrary implements OnInit, OnDestroy {
   }
 
   async onDeleteFolder(folder: MediaFolder): Promise<void> {
-    if (!this.canDeleteFolder()) {
-      this.toastService.showWarning(this.translate.instant('mediaLibrary.warnings.noPermission'));
-      return;
-    }
-
     const confirmed = await this.confirmDialog.confirmDelete(folder.name);
     if (!confirmed) return;
 
@@ -693,7 +549,7 @@ export class MediaLibrary implements OnInit, OnDestroy {
           this.toastService.showSuccess(
             this.translate.instant('mediaLibrary.success.folderDeleted', { name: folder.name })
           );
-          this.refreshCurrentPage();
+          this.loadData();
         },
         error: (error) => {
           this.toastService.showError(
@@ -704,11 +560,6 @@ export class MediaLibrary implements OnInit, OnDestroy {
   }
 
   async onBulkDelete(): Promise<void> {
-    if (!this.canBulkDeleteItems()) {
-      this.toastService.showWarning(this.translate.instant('mediaLibrary.warnings.noPermission'));
-      return;
-    }
-
     const confirmed = await this.confirmDialog.open({
       title: this.translate.instant('mediaLibrary.confirm.bulkDelete.title'),
       message: this.translate.instant('mediaLibrary.confirm.bulkDelete.message', {
@@ -735,7 +586,7 @@ export class MediaLibrary implements OnInit, OnDestroy {
             this.translate.instant('mediaLibrary.success.bulkDeleted', { count: successCount })
           );
           this.state.clearSelection();
-          this.refreshCurrentPage();
+          this.loadData();
         },
         error: (error) => {
           this.toastService.showError(
@@ -753,21 +604,10 @@ export class MediaLibrary implements OnInit, OnDestroy {
   onCopyLink(file: MediaFile): void {
     const url = file.url.startsWith('http') ? file.url : environment.api.baseUrl + file.url;
     navigator.clipboard.writeText(url).then(() => {
-      this.toastService.showSuccess(this.translate.instant('mediaLibrary.success.linkCopied'));
+      this.toastService.showSuccess(
+        this.translate.instant('mediaLibrary.success.linkCopied')
+      );
     });
-  }
-
-
-  onPageChange(page: number): void {
-    this.updateQueryParams({ page });
-  }
-
-  formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return `${Math.round(bytes / Math.pow(k, i) * 100) / 100} ${sizes[i]}`;
   }
 
   getFileIcon(mime: string): string {
@@ -778,68 +618,42 @@ export class MediaLibrary implements OnInit, OnDestroy {
     if (mime.includes('word') || mime.includes('document')) return 'description';
     if (mime.includes('sheet') || mime.includes('excel')) return 'table_chart';
     if (mime.includes('presentation') || mime.includes('powerpoint')) return 'slideshow';
-    if (mime.includes('zip') || mime.includes('rar') || mime.includes('7z')) return 'folder_zip';
     return 'insert_drive_file';
   }
 
   getFileIconClass(file: MediaFile): string {
-    const mime = file.mime;
-    if (mime.startsWith('image/')) return 'text-success';
-    if (mime.startsWith('video/')) return 'text-danger';
-    if (mime.startsWith('audio/')) return 'text-info';
-    if (mime.includes('pdf')) return 'text-danger';
-    if (mime.includes('word') || mime.includes('document')) return 'text-primary';
-    if (mime.includes('sheet') || mime.includes('excel')) return 'text-success';
-    if (mime.includes('presentation') || mime.includes('powerpoint')) return 'text-warning';
+    if (file.mime.startsWith('image/')) return 'text-success';
+    if (file.mime.startsWith('video/')) return 'text-danger';
+    if (file.mime.startsWith('audio/')) return 'text-info';
+    if (file.mime.includes('pdf')) return 'text-warning';
     return 'text-secondary';
   }
 
   getTypeBadge(file: MediaFile): string {
-    return file.ext.toUpperCase();
+    const mime = file.mime;
+    if (mime.startsWith('image/')) return 'IMG';
+    if (mime.startsWith('video/')) return 'VIDEO';
+    if (mime.startsWith('audio/')) return 'AUDIO';
+    if (mime.includes('pdf')) return 'PDF';
+    if (mime.includes('word') || mime.includes('document')) return 'DOC';
+    if (mime.includes('sheet') || mime.includes('excel')) return 'XLS';
+    if (mime.includes('presentation') || mime.includes('powerpoint')) return 'PPT';
+    return 'FILE';
   }
 
   getTypeBadgeClass(file: MediaFile): string {
-    const mime = file.mime;
-    if (mime.startsWith('image/')) return 'text-success bg-success-subtle';
-    if (mime.startsWith('video/')) return 'text-danger bg-danger-subtle';
-    if (mime.startsWith('audio/')) return 'text-info bg-info-subtle';
-    if (mime.includes('pdf')) return 'text-danger bg-danger-subtle';
-    if (mime.includes('word') || mime.includes('document')) return 'text-primary bg-primary-subtle';
-    if (mime.includes('sheet') || mime.includes('excel')) return 'text-success bg-success-subtle';
-    if (mime.includes('presentation') || mime.includes('powerpoint')) return 'text-warning bg-warning-subtle';
-    return 'text-warning bg-warning-subtle';
+    if (file.mime.startsWith('image/')) return 'bg-success';
+    if (file.mime.startsWith('video/')) return 'bg-danger';
+    if (file.mime.startsWith('audio/')) return 'bg-info';
+    if (file.mime.includes('pdf')) return 'bg-warning';
+    return 'bg-secondary';
   }
 
-  canSelectItem(item: MediaFile | MediaFolder): boolean {
-    return this.state.canSelectItem(item, this.currentUserDocumentId());
+  formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
   }
-
-
-  onTableSort(field: 'name' | 'createdAt'): void {
-    const currentSort = this.state.currentSort();
-    const [currentField, currentDirection] = currentSort.split(':') as [string, 'ASC' | 'DESC'];
-
-    let newSort: SortOption;
-
-    if (currentField === field) {
-      newSort = `${field}:${currentDirection === 'ASC' ? 'DESC' : 'ASC'}` as SortOption;
-    } else {
-      newSort = `${field}:DESC` as SortOption;
-    }
-
-    this.state.currentSort.set(newSort);
-    this.updateQueryParams({ sort: newSort, page: 1 });
-  }
-
-  getSortIcon(field: 'name' | 'createdAt'): string {
-    const currentSort = this.state.currentSort();
-    const [currentField, currentDirection] = currentSort.split(':');
-
-    if (currentField !== field) {
-      return 'unfold_more';
-    }
-
-    return currentDirection === 'ASC' ? 'arrow_upward' : 'arrow_downward';
-  }
-
 }

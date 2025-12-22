@@ -5,7 +5,7 @@
     <div class="d-flex align-items-center mb-2 flex-wrap gap-2">
 
       <!-- Checkbox select all -->
-      @if (showSelectAll()) {
+      @if (showCheckbox()) {
         <div class="border rounded checkbox-wrapper p-1">
           <input
             class="form-check-input"
@@ -17,34 +17,38 @@
       }
 
       <!-- Sort avec lib-choice -->
-      <div class="flex-grow-1 flex-lg-grow-0 sort-select">
-        <lib-choice
-          type="select-one"
-          [options]="sortOptions()"
-          [config]="sortChoiceConfig()"
-          cssClass="form-select"
-          (valueChange)="sortChange.emit($event)"
-        />
-      </div>
+      @if (showSort()) {
+        <div class="flex-grow-1 flex-lg-grow-0 sort-select">
+          <lib-choice
+            type="select-one"
+            [options]="sortOptions()"
+            [config]="sortChoiceConfig()"
+            cssClass="form-select"
+            (valueChange)="sortChange.emit($event)"
+          />
+        </div>
+      }
 
       <!-- Button Filters avancés -->
-      <button
-        class="btn btn-outline-secondary d-flex align-items-center gap-2"
-        type="button"
-        data-bs-toggle="offcanvas"
-        data-bs-target="#filterOffcanvas"
-        aria-controls="filterOffcanvas">
-        <span class="material-symbols-outlined" style="font-size:18px;">tune</span>
-        <span class="d-none d-sm-inline">{{ 'mediaLibrary.filters.title' | translate }}</span>
-        @if (appliedFilters().length > 0) {
-          <span class="badge bg-primary rounded-pill">{{ appliedFilters().length }}</span>
-        }
-      </button>
+      @if (showFilterButton()) {
+        <button
+          class="btn btn-outline-secondary d-flex align-items-center gap-2"
+          type="button"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#filterOffcanvas"
+          aria-controls="filterOffcanvas">
+          <span class="material-symbols-outlined" style="font-size:18px;">tune</span>
+          <span class="d-none d-sm-inline">{{ 'mediaLibrary.filters.title' | translate }}</span>
+          @if (appliedFilters().length > 0) {
+            <span class="badge bg-primary rounded-pill">{{ appliedFilters().length }}</span>
+          }
+        </button>
+      }
 
     </div>
 
     <!-- Applied Filters Tags -->
-    @if (appliedFilters().length > 0) {
+    @if (showAppliedFilters() && appliedFilters().length > 0) {
       <div class="d-flex gap-2 flex-wrap align-items-center mt-2">
         <small class="text-muted d-none d-sm-inline">{{ 'mediaLibrary.filters.activeFilters' | translate }}:</small>
 
@@ -72,74 +76,75 @@
     <div class="d-flex align-items-center justify-content-lg-end mb-2 gap-2">
 
       <!-- View buttons - Tablette et Desktop -->
-      <div class="d-none d-sm-flex gap-2">
-        <button
-          type="button"
-          class="btn btn-icon border"
-          [class.active]="viewMode() === 'list'"
-          (click)="viewModeChange.emit('list')">
-          <span class="material-symbols-outlined">list</span>
-        </button>
+      @if (showViewButtons()) {
+        <div class="d-none d-sm-flex gap-2">
+          <button
+            type="button"
+            class="btn btn-icon border"
+            [class.active]="viewMode() === 'list'"
+            (click)="viewModeChange.emit('list')">
+            <span class="material-symbols-outlined">list</span>
+          </button>
+          <button
+            type="button"
+            class="btn btn-icon border"
+            [class.active]="viewMode() === 'grid'"
+            (click)="viewModeChange.emit('grid')">
+            <span class="material-symbols-outlined">grid_view</span>
+          </button>
+        </div>
 
-        <button
-          type="button"
-          class="btn btn-icon border"
-          [class.active]="viewMode() === 'grid'"
-          (click)="viewModeChange.emit('grid')">
-          <span class="material-symbols-outlined">grid_view</span>
-        </button>
-      </div>
+        <!-- View dropdown mobile -->
+        <div class="dropdown d-sm-none">
+          <button
+            class="btn btn-outline-secondary btn-icon"
+            type="button"
+            data-bs-toggle="dropdown">
+            <span class="material-symbols-outlined">
+              {{ viewMode() === 'grid' ? 'grid_view' : 'list' }}
+            </span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li>
+              <a class="dropdown-item" href="javascript:void(0)" (click)="viewModeChange.emit('grid')">
+                <span class="material-symbols-outlined me-2">grid_view</span>
+                {{ 'mediaLibrary.viewMode.grid' | translate }}
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="javascript:void(0)" (click)="viewModeChange.emit('list')">
+                <span class="material-symbols-outlined me-2">list</span>
+                {{ 'mediaLibrary.viewMode.list' | translate }}
+              </a>
+            </li>
+          </ul>
+        </div>
+      }
+
+
 
       <!-- Search -->
-      <div class="position-relative flex-grow-1">
-        <input
-          type="search"
-          class="form-control"
-          [placeholder]="'mediaLibrary.search.placeholder' | translate"
-          [value]="searchQuery()"
-          (keyup.enter)="searchChange.emit($any($event.target).value)"
-          (input)="onSearchInput($any($event.target).value)">
-
-        @if (searchQuery()) {
-          <span
-            class="material-symbols-outlined position-absolute top-50 end-0 translate-middle-y me-2"
-            style="cursor: pointer;"
-            (click)="clearSearchClick.emit()">
-            close
+      @if (showSearch()) {
+        <div class="input-group flex-grow-1">
+          <span class="input-group-text">
+            <span class="material-symbols-outlined" style="font-size: 20px;">search</span>
           </span>
-        } @else {
-          <span class="material-symbols-outlined position-absolute top-50 end-0 translate-middle-y me-2">
-            search
-          </span>
-        }
-      </div>
-
-      <!-- View buttons - Mobile (dropdown) -->
-      <div class="dropdown d-sm-none">
-        <button
-          class="btn btn-icon border"
-          type="button"
-          data-bs-toggle="dropdown"
-          aria-expanded="false">
-          <span class="material-symbols-outlined">
-            {{ viewMode() === 'grid' ? 'grid_view' : 'list' }}
-          </span>
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end">
-          <li>
-            <a class="dropdown-item" href="javascript:void(0)" (click)="viewModeChange.emit('grid')">
-              <span class="material-symbols-outlined me-2">grid_view</span>
-              {{ 'mediaLibrary.viewMode.grid' | translate }}
-            </a>
-          </li>
-          <li>
-            <a class="dropdown-item" href="javascript:void(0)" (click)="viewModeChange.emit('list')">
-              <span class="material-symbols-outlined me-2">list</span>
-              {{ 'mediaLibrary.viewMode.list' | translate }}
-            </a>
-          </li>
-        </ul>
-      </div>
+          <input
+            type="text"
+            class="form-control"
+            [placeholder]="'mediaLibrary.search.placeholder' | translate"
+            [value]="searchQuery()"
+            (keyup.enter)="searchChange.emit($any($event.target).value)">
+          @if (searchQuery()) {
+            <button
+              class="btn btn-outline-secondary"
+              type="button"
+              (click)="clearSearchClick.emit()">
+              <span class="material-symbols-outlined" style="font-size: 20px;">close</span>
+            </button>
+          }
+        </div>
+      }
 
     </div>
   </div>
