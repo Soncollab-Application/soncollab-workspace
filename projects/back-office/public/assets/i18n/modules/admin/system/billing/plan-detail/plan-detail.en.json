@@ -1,0 +1,32 @@
+{
+  "plan-detail": {
+    "page_title": "Plan Details",
+    "view_translations": "View translations",
+    "details": "Details",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "language": "Language",
+    "status": "Status",
+    "created": "Created",
+    "updated": "Updated",
+    "product_type": "Product type",
+    "currency": "Currency",
+    "asset_limit": "Asset limit",
+    "royalty_cap": "Royalty cap",
+    "unlimited": "Unlimited",
+    "included_features": "Included features",
+    "available_addons": "Available add-ons",
+    "statistics": "Statistics",
+    "active_subscriptions": "Active subscriptions",
+    "total_revenue": "Total revenue",
+    "mrr": "MRR",
+    "arr": "ARR",
+    "toast": {
+      "delete_success": "Plan \"{{name}}\" deleted successfully",
+      "delete_error": "Error deleting plan \"{{name}}\""
+    },
+    "error": {
+      "loading": "Error loading plan"
+    }
+  }
+}

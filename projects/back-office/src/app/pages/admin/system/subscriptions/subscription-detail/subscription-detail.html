@@ -1,0 +1,248 @@
+<app-breadcrumb [showAvatar]="true" [icon]="'subscriptions'" [hasMobileActions]="true">
+  <div breadcrumb-title>
+    {{ 'subscription-detail.page_title' | translate }}
+  </div>
+
+  <div breadcrumb-actions>
+    <div class="d-flex gap-2">
+      <button class="btn btn-outline-secondary" (click)="goBack()">
+        <span class="material-symbols-outlined me-2">arrow_back</span>
+        {{ 'common.back' | translate }}
+      </button>
+
+      @if (canUpdate()) {
+        <button class="btn btn-primary" (click)="editSubscription()">
+          <span class="material-symbols-outlined me-2">edit</span>
+          {{ 'common.edit' | translate }}
+        </button>
+      }
+
+      @if (canDelete()) {
+        <button class="btn btn-outline-danger" (click)="deleteSubscription()">
+          <span class="material-symbols-outlined me-2">delete</span>
+          {{ 'common.delete' | translate }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <div breadcrumb-actions-mobile>
+    <div class="d-flex flex-column gap-2 w-100">
+      @if (canUpdate()) {
+        <button class="btn btn-primary w-100" (click)="editSubscription()">
+          <span class="material-symbols-outlined me-2">edit</span>
+          {{ 'common.edit' | translate }}
+        </button>
+      }
+
+      @if (canDelete()) {
+        <button class="btn btn-outline-danger w-100" (click)="deleteSubscription()">
+          <span class="material-symbols-outlined me-2">delete</span>
+          {{ 'common.delete' | translate }}
+        </button>
+      }
+    </div>
+  </div>
+</app-breadcrumb>
+
+@if (loading()) {
+  <div class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
+    </div>
+  </div>
+} @else if (subscription()) {
+  <div class="row py-3 my-3 mb-5">
+    <!-- SIDEBAR -->
+    <div class="col-xl-4">
+      <div class="card mb-4">
+        <div class="card-body text-center">
+          <div class="mb-3">
+            <div class="avatar avatar-xl bg-primary bg-opacity-10 text-primary mx-auto mb-3">
+              <span class="material-symbols-outlined fs-1">
+                {{ subscription()!.subscriber_type === 'team' ? 'groups' : 'person' }}
+              </span>
+            </div>
+            <h4 class="mb-2">{{ subscriberName() }}</h4>
+            @if (subscriberEmail()) {
+              <p class="text-muted mb-2">{{ subscriberEmail() }}</p>
+            }
+            <lib-badge
+              [text]="translateStatus(subscription()!.subscription_status)"
+              [type]="getStatusBadgeType(subscription()!.subscription_status)"
+            />
+          </div>
+
+          @if (isExpiringSoon()) {
+            <div class="alert alert-warning py-2 mb-3">
+              <small>
+                <span class="material-symbols-outlined me-1" style="font-size: 1rem; vertical-align: middle;">warning</span>
+                {{ 'subscription-detail.expires_in' | translate }} {{ daysUntilExpiry() }} {{ 'subscription-detail.days' | translate }}
+              </small>
+            </div>
+          }
+
+          @if (isExpired()) {
+            <div class="alert alert-danger py-2 mb-3">
+              <small>
+                <span class="material-symbols-outlined me-1" style="font-size: 1rem; vertical-align: middle;">error</span>
+                {{ 'subscription-detail.expired' | translate }}
+              </small>
+            </div>
+          }
+
+          <div class="text-start mt-4 pt-3 border-top">
+            <div class="mb-3">
+              <small class="text-muted d-block mb-1">
+                <span class="material-symbols-outlined me-1" style="font-size: 1rem;">credit_card</span>
+                {{ 'subscription-detail.plan' | translate }}
+              </small>
+              @if (subscription()!.plan) {
+                <p class="mb-0 fw-medium">
+                  <a
+                    href="javascript:void(0)"
+                    class="text-decoration-none"
+                    (click)="viewPlan()">
+                    {{ subscription()!.plan!.plan_name }}
+                  </a>
+                </p>
+              } @else {
+                <p class="mb-0 fw-medium text-muted">-</p>
+              }
+            </div>
+
+            <div class="mb-3">
+              <small class="text-muted d-block mb-1">
+                <span class="material-symbols-outlined me-1" style="font-size: 1rem;">repeat</span>
+                {{ 'subscription-detail.billing_cycle' | translate }}
+              </small>
+              <p class="mb-0 fw-medium">{{ translateBillingCycle(subscription()!.billing_cycle) }}</p>
+            </div>
+
+            <div class="mb-3">
+              <small class="text-muted d-block mb-1">
+                <span class="material-symbols-outlined me-1" style="font-size: 1rem;">calendar_today</span>
+                {{ 'subscription-detail.start_date' | translate }}
+              </small>
+              <p class="mb-0 fw-medium">{{ subscription()!.start_date | date:'dd/MM/yyyy' }}</p>
+            </div>
+
+            <div class="mb-3">
+              <small class="text-muted d-block mb-1">
+                <span class="material-symbols-outlined me-1" style="font-size: 1rem;">event</span>
+                {{ 'subscription-detail.end_date' | translate }}
+              </small>
+              <p class="mb-0 fw-medium">{{ subscription()!.end_date | date:'dd/MM/yyyy' }}</p>
+            </div>
+
+            @if (subscription()!.trial_end_date) {
+              <div class="mb-3">
+                <small class="text-muted d-block mb-1">
+                  <span class="material-symbols-outlined me-1" style="font-size: 1rem;">schedule</span>
+                  {{ 'subscription-detail.trial_end_date' | translate }}
+                </small>
+                <p class="mb-0 fw-medium">{{ subscription()!.trial_end_date | date:'dd/MM/yyyy' }}</p>
+              </div>
+            }
+
+            <div class="mb-3">
+              <small class="text-muted d-block mb-1">
+                <span class="material-symbols-outlined me-1" style="font-size: 1rem;">schedule</span>
+                {{ 'subscription-detail.created' | translate }}
+              </small>
+              <p class="mb-0 fw-medium">{{ subscription()!.createdAt | relativeDate }}</p>
+            </div>
+
+            <div class="mb-3">
+              <small class="text-muted d-block mb-1">
+                <span class="material-symbols-outlined me-1" style="font-size: 1rem;">update</span>
+                {{ 'subscription-detail.updated' | translate }}
+              </small>
+              <p class="mb-0 fw-medium">{{ subscription()!.updatedAt | relativeDate }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="col-xl-8">
+      <!-- Addons Card -->
+      @if (subscription()!.addons && subscription()!.addons!.length > 0) {
+        <div class="card mb-4">
+          <div class="card-header border-bottom d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+              <span class="material-symbols-outlined me-2 text-info">extension</span>
+              {{ 'subscription-detail.addons' | translate }}
+            </h5>
+            <span class="badge bg-primary-subtle text-primary">
+              {{ subscription()!.addons!.length }}
+            </span>
+          </div>
+          <div class="card-body">
+            <div class="row g-2">
+              @for (addon of subscription()!.addons; track addon.documentId) {
+                <div class="col-md-6">
+                  <div class="p-2 rounded border">
+                    <span class="material-symbols-outlined me-2 text-info">extension</span>
+                    <small class="fw-medium">{{ addon.addon_name }}</small>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Quotas Card -->
+      @if (subscription()!.quotas && subscription()!.quotas!.length > 0) {
+        <div class="card">
+          <div class="card-header border-bottom">
+            <h5 class="mb-0">
+              <span class="material-symbols-outlined me-2 text-warning">analytics</span>
+              {{ 'subscription-detail.quotas' | translate }}
+            </h5>
+          </div>
+          <div class="card-body">
+            @for (quota of subscription()!.quotas; track quota.documentId) {
+              <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <div>
+                    <span class="fw-medium">{{ quota.quota_type }}</span>
+                    @if (quota.is_over_quota) {
+                      <span class="badge bg-danger-subtle text-danger ms-2">
+                        {{ 'subscription-detail.over_quota' | translate }}
+                      </span>
+                    }
+                  </div>
+                  <small class="text-muted">
+                    {{ quota.current_usage | number }} / {{ quota.max_value | number }}
+                  </small>
+                </div>
+                <div class="progress" style="height: 8px;">
+                  <div
+                    class="progress-bar"
+                    [class]="getQuotaClass(quota)"
+                    role="progressbar"
+                    [style.width.%]="getQuotaPercentage(quota)"
+                    [attr.aria-valuenow]="quota.current_usage"
+                    [attr.aria-valuemin]="0"
+                    [attr.aria-valuemax]="quota.max_value">
+                  </div>
+                </div>
+                <div class="d-flex justify-content-between mt-1">
+                  <small class="text-muted">
+                    {{ 'subscription-detail.usage' | translate }}: {{ getQuotaPercentage(quota) }}%
+                  </small>
+                  <small class="text-muted">
+                    {{ 'subscription-detail.next_reset' | translate }}: {{ quota.next_reset_date | date:'dd/MM/yyyy' }}
+                  </small>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+}

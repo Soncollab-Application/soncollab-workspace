@@ -157,9 +157,44 @@ export const adminRoutes: Routes = [
 
       // Système
       {
+        path: 'system/billing/dashboard',
+        loadComponent: () => import('../../../pages/admin/system/billing-dashboard/billing-dashboard').then(c => c.BillingDashboard),
+        canActivate: [apiPermissionGuard('subscription', 'subscription', 'find')]
+      },
+      {
         path: 'system/billing/plans',
         loadComponent: () => import('../../../pages/admin/system/plans/plans-list/plans-list').then(c => c.PlansList),
         canActivate: [apiPermissionGuard('billing-plan', 'billing-plan', 'find')]
+      },
+      {
+        path: 'system/billing/plans/:documentId',
+        loadComponent: () => import('../../../pages/admin/system/plans/plan-detail/plan-detail').then(c => c.PlanDetail),
+        canActivate: [apiPermissionGuard('billing-plan', 'billing-plan', 'findOne')]
+      },
+      {
+        path: 'system/billing/addons',
+        loadComponent: () => import('../../../pages/admin/system/addons/addons-list/addons-list').then(c => c.AddonsList),
+        canActivate: [apiPermissionGuard('plan-addon', 'plan-addon', 'find')]
+      },
+      {
+        path: 'system/billing/addons/:documentId',
+        loadComponent: () => import('../../../pages/admin/system/addons/addon-detail/addon-detail').then(c => c.AddonDetail),
+        canActivate: [apiPermissionGuard('plan-addon', 'plan-addon', 'findOne')]
+      },
+      {
+        path: 'system/billing/subscriptions',
+        loadComponent: () => import('../../../pages/admin/system/subscriptions/subscriptions-list/subscriptions-list').then(c => c.SubscriptionsList),
+        canActivate: [apiPermissionGuard('subscription', 'subscription', 'find')]
+      },
+      {
+        path: 'system/billing/subscriptions/:documentId',
+        loadComponent: () => import('../../../pages/admin/system/subscriptions/subscription-detail/subscription-detail').then(c => c.SubscriptionDetailPage),
+        canActivate: [apiPermissionGuard('subscription', 'subscription', 'findOne')]
+      },
+      {
+        path: 'system/billing/payment-links',
+        loadComponent: () => import('../../../pages/admin/system/payment-links/payment-links-list/payment-links-list').then(c => c.PaymentLinksList),
+        canActivate: [apiPermissionGuard('subscription-payment-link', 'subscription-payment-link', 'find')]
       },
       {
         path: 'system/config',

@@ -27,9 +27,8 @@ import { BillingService } from '../../../../../core/services/admin/billing.servi
 import { Breadcrumb } from '../../../../../core/components/breadcrumb/breadcrumb';
 import { PageTitleService } from '../../../../../core/services/page-title.service';
 import {
-  BillingPlanFilters,
-  BillingPlanListItem,
-  SupportLevel,
+  PlanAddonFilters,
+  PlanAddonListItem,
   AVAILABLE_LOCALES
 } from '../../../../../core/models/admin/billing';
 import { TranslationsModal } from '../../../../../core/components/admin/translations-modal/translations-modal';
@@ -39,7 +38,7 @@ import {
 } from '../../../../../core/services/admin/translations-modal.service';
 
 @Component({
-  selector: 'app-plans-list',
+  selector: 'app-addons-list',
   standalone: true,
   imports: [
     CommonModule,
@@ -52,11 +51,11 @@ import {
     Choice,
     TranslationsModal
   ],
-  templateUrl: './plans-list.html',
-  styleUrl: './plans-list.css',
+  templateUrl: './addons-list.html',
+  styleUrl: './addons-list.css',
   providers: [ListStateManager]
 })
-export class PlansList implements OnInit, OnDestroy {
+export class AddonsList implements OnInit, OnDestroy {
   private billingService = inject(BillingService);
   protected router = inject(Router);
   private permissionsService = inject(PermissionService);
@@ -64,29 +63,29 @@ export class PlansList implements OnInit, OnDestroy {
   private translate = inject(TranslateService);
   private confirmDialog = inject(ConfirmDialogService);
   private toastService = inject(ToastService);
-  protected listManager = inject(ListStateManager<BillingPlanListItem, BillingPlanFilters>);
+  protected listManager = inject(ListStateManager<PlanAddonListItem, PlanAddonFilters>);
   private translationsModalService = inject(TranslationsModalService);
 
   private destroy$ = new Subject<void>();
-  private componentId = 'plans-list';
+  private componentId = 'addons-list';
 
   readonly availableLocales = AVAILABLE_LOCALES;
   currentLocale = signal<string>('fr');
-  private readonly LOCALE_STORAGE_KEY = 'admin-billing-plans-locale';
+  private readonly LOCALE_STORAGE_KEY = 'admin-billing-addons-locale';
   selectedLocale = signal<string>('fr');
 
-  canFind = computed(() => this.permissionsService.hasPermission('billing-plan', 'billing-plan', 'find'));
-  canCreate = computed(() => this.permissionsService.hasPermission('billing-plan', 'billing-plan', 'create'));
-  canUpdate = computed(() => this.permissionsService.hasPermission('billing-plan', 'billing-plan', 'update'));
-  canDelete = computed(() => this.permissionsService.hasPermission('billing-plan', 'billing-plan', 'delete'));
+  canFind = computed(() => this.permissionsService.hasPermission('plan-addon', 'plan-addon', 'find'));
+  canCreate = computed(() => this.permissionsService.hasPermission('plan-addon', 'plan-addon', 'create'));
+  canUpdate = computed(() => this.permissionsService.hasPermission('plan-addon', 'plan-addon', 'update'));
+  canDelete = computed(() => this.permissionsService.hasPermission('plan-addon', 'plan-addon', 'delete'));
 
   emptyTitle = signal('');
   emptyMessage = signal('');
 
   filters = signal<FilterConfig[]>([]);
   sortOptions = signal<SortOption[]>([]);
-  columns = signal<ListColumn<BillingPlanListItem>[]>([]);
-  actions = signal<ListAction<BillingPlanListItem>[]>([]);
+  columns = signal<ListColumn<PlanAddonListItem>[]>([]);
+  actions = signal<ListAction<PlanAddonListItem>[]>([]);
 
   stats = signal<any>(null);
   loadingStats = signal(false);
@@ -120,32 +119,32 @@ export class PlansList implements OnInit, OnDestroy {
 
     return [
       {
-        label: this.translate.instant('plans-list.kpi.language'),
+        label: this.translate.instant('addons-list.kpi.language'),
         value: this.currentLocaleLabel(),
         icon: 'language',
         iconClass: 'text-info',
         bgClass: 'bg-info bg-opacity-10'
       },
       {
-        label: this.translate.instant('plans-list.kpi.total'),
+        label: this.translate.instant('addons-list.kpi.total'),
         value: statsData.total || 0,
-        icon: 'credit_card',
+        icon: 'extension',
         iconClass: 'text-primary',
         bgClass: 'bg-primary bg-opacity-10'
       },
       {
-        label: this.translate.instant('plans-list.kpi.active'),
+        label: this.translate.instant('addons-list.kpi.active'),
         value: statsData.active || 0,
         icon: 'check_circle',
         iconClass: 'text-success',
         bgClass: 'bg-success bg-opacity-10'
       },
       {
-        label: this.translate.instant('plans-list.kpi.inactive'),
-        value: statsData.inactive || 0,
-        icon: 'cancel',
-        iconClass: 'text-danger',
-        bgClass: 'bg-danger bg-opacity-10'
+        label: this.translate.instant('addons-list.kpi.visible'),
+        value: statsData.visible || 0,
+        icon: 'visibility',
+        iconClass: 'text-warning',
+        bgClass: 'bg-warning bg-opacity-10'
       }
     ];
   });
@@ -171,7 +170,7 @@ export class PlansList implements OnInit, OnDestroy {
       config,
       (search, filters) => this.buildFilters(search, filters),
       (page, pageSize, filters, sortField, sortDirection) =>
-        this.loadPlans(page, pageSize, filters, sortField, sortDirection),
+        this.loadAddons(page, pageSize, filters, sortField, sortDirection),
       this.canFind
     );
   }
@@ -204,95 +203,89 @@ export class PlansList implements OnInit, OnDestroy {
     }
   }
 
-
   private initializeConfig(): void {
     this.filters.set([
       {
         key: 'is_active',
         type: 'select',
-        label: this.translate.instant('plans-list.filters.status'),
+        label: this.translate.instant('addons-list.filters.status'),
         placeholder: this.translate.instant('common.all'),
         options: [
-          { value: 'true', label: this.translate.instant('plans-list.status.active') },
-          { value: 'false', label: this.translate.instant('plans-list.status.inactive') }
+          { value: 'true', label: this.translate.instant('addons-list.status.active') },
+          { value: 'false', label: this.translate.instant('addons-list.status.inactive') }
         ]
       },
       {
-        key: 'support_level',
+        key: 'visible_to_users',
         type: 'select',
-        label: this.translate.instant('plans-list.filters.support_level'),
+        label: this.translate.instant('addons-list.filters.visibility'),
         placeholder: this.translate.instant('common.all'),
-        options: this.getSupportLevelOptions()
+        options: [
+          { value: 'true', label: this.translate.instant('addons-list.visibility.visible') },
+          { value: 'false', label: this.translate.instant('addons-list.visibility.hidden') }
+        ]
       }
     ]);
 
     this.sortOptions.set([
-      { value: 'createdAt:desc', label: this.translate.instant('plans-list.sort.newest') },
-      { value: 'plan_name:asc', label: this.translate.instant('plans-list.sort.name') },
-      { value: 'price_monthly:asc', label: this.translate.instant('plans-list.sort.price_asc') },
-      { value: 'price_monthly:desc', label: this.translate.instant('plans-list.sort.price_desc') }
+      { value: 'createdAt:desc', label: this.translate.instant('addons-list.sort.newest') },
+      { value: 'addon_name:asc', label: this.translate.instant('addons-list.sort.name') },
+      { value: 'price_monthly:asc', label: this.translate.instant('addons-list.sort.price_asc') },
+      { value: 'price_monthly:desc', label: this.translate.instant('addons-list.sort.price_desc') }
     ]);
 
     this.columns.set([
       {
-        key: 'plan_name',
-        label: this.translate.instant('plans-list.columns.name'),
+        key: 'addon_name',
+        label: this.translate.instant('addons-list.columns.name'),
         sortable: true,
         type: 'text'
       },
       {
-        key: 'product_type',
-        label: this.translate.instant('plans-list.columns.product_type'),
-        type: 'text',
-        render: (row: BillingPlanListItem) => row.product_type?.name || '-'
-      },
-      {
         key: 'price_monthly',
-        label: this.translate.instant('plans-list.columns.price_monthly'),
+        label: this.translate.instant('addons-list.columns.price_monthly'),
         sortable: true,
         type: 'text',
-        render: (row: BillingPlanListItem) => {
-          const symbol = row.currency?.symbol || '$';
-          return `${symbol}${row.price_monthly}`;
-        }
+        render: (row: PlanAddonListItem) => `$${row.price_monthly}`
       },
       {
         key: 'price_yearly',
-        label: this.translate.instant('plans-list.columns.price_yearly'),
+        label: this.translate.instant('addons-list.columns.price_yearly'),
         sortable: true,
         type: 'text',
-        render: (row: BillingPlanListItem) => {
-          const symbol = row.currency?.symbol || '$';
-          return `${symbol}${row.price_yearly}`;
-        }
-      },
-      {
-        key: 'support_level',
-        label: this.translate.instant('plans-list.columns.support'),
-        type: 'custom-badge',
-        render: (row: BillingPlanListItem) => this.translateSupportLevel(row.support_level),
-        cellClass: (row: BillingPlanListItem) => this.getSupportLevelClass(row.support_level)
+        render: (row: PlanAddonListItem) => `$${row.price_yearly}`
       },
       {
         key: 'is_active',
-        label: this.translate.instant('plans-list.columns.status'),
+        label: this.translate.instant('addons-list.columns.status'),
         type: 'custom-badge',
-        render: (row: BillingPlanListItem) =>
+        render: (row: PlanAddonListItem) =>
           row.is_active
-            ? this.translate.instant('plans-list.status.active')
-            : this.translate.instant('plans-list.status.inactive'),
-        cellClass: (row: BillingPlanListItem) =>
-          row.is_active ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger',
+            ? this.translate.instant('addons-list.status.active')
+            : this.translate.instant('addons-list.status.inactive'),
+        cellClass: (row: PlanAddonListItem) =>
+          row.is_active ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'
+      },
+      {
+        key: 'visible_to_users',
+        label: this.translate.instant('addons-list.columns.visibility'),
+        type: 'custom-badge',
+        render: (row: PlanAddonListItem) =>
+          row.visible_to_users
+            ? this.translate.instant('addons-list.visibility.visible')
+            : this.translate.instant('addons-list.visibility.hidden'),
+        cellClass: (row: PlanAddonListItem) =>
+          row.visible_to_users ? 'bg-info-subtle text-info' : 'bg-secondary-subtle text-secondary',
         colspan: 2
       }
     ]);
 
-    const baseActions: ListAction<BillingPlanListItem>[] = [
+    const baseActions: ListAction<PlanAddonListItem>[] = [
       {
         label: this.translate.instant('common.view'),
         icon: 'visibility',
         class: 'btn-outline-secondary',
-        handler: (row: BillingPlanListItem) => this.viewPlan(row)
+        handler: (row: PlanAddonListItem) => this.viewAddon(row)
       }
     ];
 
@@ -301,15 +294,15 @@ export class PlansList implements OnInit, OnDestroy {
         label: this.translate.instant('common.edit'),
         icon: 'edit',
         class: 'btn-outline-primary',
-        handler: (row: BillingPlanListItem) => this.editPlan(row)
+        handler: (row: PlanAddonListItem) => this.editAddon(row)
       });
 
       baseActions.push({
-        label: this.translate.instant('plans-list.actions.view_translations'),
+        label: this.translate.instant('addons-list.actions.view_translations'),
         icon: 'language',
         class: 'btn-outline-info',
-        handler: (row: BillingPlanListItem) => this.viewTranslations(row),
-        condition: (row: BillingPlanListItem) =>
+        handler: (row: PlanAddonListItem) => this.viewTranslations(row),
+        condition: (row: PlanAddonListItem) =>
           !!row.localizations && row.localizations.length > 0
       });
     }
@@ -319,18 +312,18 @@ export class PlansList implements OnInit, OnDestroy {
         label: this.translate.instant('common.delete'),
         icon: 'delete',
         class: 'btn-outline-danger',
-        handler: (row: BillingPlanListItem) => this.deletePlan(row)
+        handler: (row: PlanAddonListItem) => this.deleteAddon(row)
       });
     }
 
     this.actions.set(baseActions);
 
-    this.emptyTitle.set(this.translate.instant('plans-list.empty.title'));
-    this.emptyMessage.set(this.translate.instant('plans-list.empty.message'));
+    this.emptyTitle.set(this.translate.instant('addons-list.empty.title'));
+    this.emptyMessage.set(this.translate.instant('addons-list.empty.message'));
   }
 
-  private buildFilters(search: string, filterValues: FilterValue): BillingPlanFilters {
-    const filters: BillingPlanFilters = {
+  private buildFilters(search: string, filterValues: FilterValue): PlanAddonFilters {
+    const filters: PlanAddonFilters = {
       locale: this.currentLocale()
     };
 
@@ -342,21 +335,21 @@ export class PlansList implements OnInit, OnDestroy {
       filters.is_active = filterValues['is_active'] === 'true';
     }
 
-    if (filterValues['support_level']) {
-      filters.support_level = filterValues['support_level'] as SupportLevel;
+    if (filterValues['visible_to_users']) {
+      filters.visible_to_users = filterValues['visible_to_users'] === 'true';
     }
 
     return filters;
   }
 
-  private loadPlans(
+  private loadAddons(
     page: number,
     pageSize: number,
-    filters: BillingPlanFilters,
+    filters: PlanAddonFilters,
     sortField: string,
     sortDirection: 'asc' | 'desc'
   ): void {
-    this.billingService.getBillingPlans(page, pageSize, filters, sortField, sortDirection)
+    this.billingService.getPlanAddons(page, pageSize, filters, sortField, sortDirection)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
@@ -367,31 +360,10 @@ export class PlansList implements OnInit, OnDestroy {
           );
         },
         error: (err) => {
-          console.error('Error loading plans:', err);
+          console.error('Error loading addons:', err);
           this.listManager.setError();
         }
       });
-  }
-
-  private getSupportLevelOptions(): { value: SupportLevel; label: string }[] {
-    const levels: SupportLevel[] = ['basic', 'priority', 'premium'];
-    return levels.map(level => ({
-      value: level,
-      label: this.translate.instant(`plans-list.support_levels.${level}`)
-    }));
-  }
-
-  private translateSupportLevel(level: SupportLevel): string {
-    return this.translate.instant(`plans-list.support_levels.${level}`);
-  }
-
-  private getSupportLevelClass(level: SupportLevel): string {
-    const classes = {
-      basic: 'bg-secondary-subtle text-secondary',
-      priority: 'bg-info-subtle text-info',
-      premium: 'bg-warning-subtle text-warning'
-    };
-    return classes[level] || 'bg-secondary-subtle text-secondary';
   }
 
   private onLanguageChange(): void {
@@ -406,14 +378,14 @@ export class PlansList implements OnInit, OnDestroy {
   private setBreadcrumbs(): void {
     this.pageTitleService.setCustomBreadcrumbs([
       {
-        label: this.translate.instant('breadcrumbs.plans-list.dashboard'),
+        label: this.translate.instant('breadcrumbs.addons-list.dashboard'),
         route: '/admin/dashboard'
       },
       {
-        label: this.translate.instant('breadcrumbs.plans-list.system')
+        label: this.translate.instant('breadcrumbs.addons-list.system')
       },
       {
-        label: this.translate.instant('breadcrumbs.plans-list.plans'),
+        label: this.translate.instant('breadcrumbs.addons-list.addons'),
         active: true
       }
     ]);
@@ -421,41 +393,38 @@ export class PlansList implements OnInit, OnDestroy {
 
   private updatePageTitle(): void {
     this.pageTitleService.setTitle(
-      this.translate.instant('header.pages.admin.system.plans')
+      this.translate.instant('header.pages.admin.system.addons')
     );
   }
 
-  onActionClick(event: { action: ListAction<BillingPlanListItem>; row: BillingPlanListItem }): void {
+  onActionClick(event: { action: ListAction<PlanAddonListItem>; row: PlanAddonListItem }): void {
     event.action.handler(event.row);
   }
 
-  onRowClick(plan: BillingPlanListItem): void {
-    this.viewPlan(plan);
+  onRowClick(addon: PlanAddonListItem): void {
+    this.viewAddon(addon);
   }
 
-  viewPlan(plan: BillingPlanListItem): void {
-    this.router.navigate(['/admin/system/billing/plans', plan.documentId]);
+  viewAddon(addon: PlanAddonListItem): void {
+    this.router.navigate(['/admin/system/billing/addons', addon.documentId]);
   }
 
-  editPlan(plan: BillingPlanListItem): void {
-    console.log('Edit plan:', plan);
+  editAddon(addon: PlanAddonListItem): void {
+    console.log('Edit addon:', addon);
   }
 
-  viewTranslations(plan: BillingPlanListItem): void {
-    const allTranslations: TranslationOption[] = [];
+  viewTranslations(addon: PlanAddonListItem): void {
+    const allTranslations: TranslationOption[] = [
+      {
+        locale: addon.locale,
+        flag: this.availableLocales.find(l => l.code === addon.locale)?.flag || '',
+        label: this.availableLocales.find(l => l.code === addon.locale)?.label || addon.locale.toUpperCase(),
+        documentId: addon.documentId
+      }
+    ];
 
-    // Ajouter la traduction courante
-    const currentLocaleConfig = this.availableLocales.find(l => l.code === plan.locale);
-    allTranslations.push({
-      locale: plan.locale,
-      flag: currentLocaleConfig?.flag || '',
-      label: currentLocaleConfig?.label || plan.locale.toUpperCase(),
-      documentId: plan.documentId
-    });
-
-    // Ajouter les localizations
-    if (plan.localizations && plan.localizations.length > 0) {
-      plan.localizations.forEach(loc => {
+    if (addon.localizations && addon.localizations.length > 0) {
+      addon.localizations.forEach(loc => {
         const localeConfig = this.availableLocales.find(l => l.code === loc.locale);
         allTranslations.push({
           locale: loc.locale,
@@ -466,35 +435,28 @@ export class PlansList implements OnInit, OnDestroy {
       });
     }
 
-    if (allTranslations.length === 0) {
-      this.toastService.showWarning(
-        this.translate.instant('plans-list.translations_modal.no_translations')
-      );
-      return;
-    }
-
     this.translationsModalService.open(allTranslations, (translation) => {
-      this.router.navigate(['/admin/system/billing/plans', translation.documentId]);
+      this.router.navigate(['/admin/system/billing/addons', translation.documentId]);
     });
   }
 
-  deletePlan(plan: BillingPlanListItem): void {
+  deleteAddon(addon: PlanAddonListItem): void {
     if (!this.canDelete()) return;
 
-    this.confirmDialog.confirmDelete(plan.plan_name).then((confirmed) => {
+    this.confirmDialog.confirmDelete(addon.addon_name).then((confirmed) => {
       if (confirmed) {
-        this.billingService.deleteBillingPlan(plan.documentId)
+        this.billingService.deletePlanAddon(addon.documentId)
           .pipe(takeUntil(this.destroy$))
           .subscribe({
             next: () => {
               this.toastService.showSuccess(
-                this.translate.instant('plans-list.toast.delete_success', { name: plan.plan_name })
+                this.translate.instant('addons-list.toast.delete_success', { name: addon.addon_name })
               );
               this.listManager.reload();
             },
             error: () => {
               this.toastService.showError(
-                this.translate.instant('plans-list.toast.delete_error', { name: plan.plan_name })
+                this.translate.instant('addons-list.toast.delete_error', { name: addon.addon_name })
               );
             }
           });

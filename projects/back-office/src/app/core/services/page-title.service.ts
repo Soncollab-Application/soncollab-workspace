@@ -48,6 +48,7 @@ export class PageTitleService {
     '/admin/content/help-categories': 'header.pages.admin.content.help-categories',
     '/admin/content/blog-categories': 'header.pages.admin.content.blog-categories',
     '/admin/content/blog-tags': 'header.pages.admin.content.blog-tags',
+    '/admin/system/billing/dashboard': 'header.pages.admin.system.billing-dashboard',
     '/admin/system/billing/plans': 'header.pages.admin.system.plans',
     '/admin/system/billing/addons': 'header.pages.admin.system.addons',
     '/admin/system/billing/subscriptions': 'header.pages.admin.system.subscriptions',

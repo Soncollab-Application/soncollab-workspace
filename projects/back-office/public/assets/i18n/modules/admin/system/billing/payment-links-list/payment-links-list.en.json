@@ -1,0 +1,47 @@
+{
+  "payment-links-list": {
+    "page_title": "Payment Links",
+    "create_link": "Create Link",
+    "kpi": {
+      "total": "Total",
+      "active": "Active",
+      "converted": "Converted",
+      "conversion_rate": "Conversion rate"
+    },
+    "filters": {
+      "status": "Status"
+    },
+    "sort": {
+      "newest": "Newest",
+      "expiring_soon": "Expiring soon",
+      "customer": "Customer (A-Z)",
+      "amount": "Amount (descending)"
+    },
+    "columns": {
+      "customer": "Customer",
+      "plan": "Plan",
+      "amount": "Amount",
+      "expires_at": "Expires at",
+      "status": "Status"
+    },
+    "status": {
+      "active": "Active",
+      "used": "Used",
+      "expired": "Expired",
+      "cancelled": "Cancelled"
+    },
+    "actions": {
+      "copy_link": "Copy link"
+    },
+    "toast": {
+      "link_copied": "Link copied to clipboard",
+      "link_copy_error": "Error copying link",
+      "delete_success": "Payment link for \"{{name}}\" deleted successfully",
+      "delete_error": "Error deleting payment link for \"{{name}}\""
+    },
+    "empty": {
+      "title": "No payment links",
+      "message": "No payment links found"
+    }
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "addons-list": {
+    "page_title": "Modules complémentaires",
+    "create_addon": "Créer un module",
+    "kpi": {
+      "language": "Langue active",
+      "total": "Total",
+      "active": "Actifs",
+      "visible": "Visibles"
+    },
+    "filters": {
+      "status": "Statut",
+      "visibility": "Visibilité"
+    },
+    "sort": {
+      "newest": "Plus récents",
+      "name": "Nom (A-Z)",
+      "price_asc": "Prix (croissant)",
+      "price_desc": "Prix (décroissant)"
+    },
+    "columns": {
+      "name": "Nom du module",
+      "price_monthly": "Prix mensuel",
+      "price_yearly": "Prix annuel",
+      "status": "Statut",
+      "visibility": "Visibilité"
+    },
+    "status": {
+      "active": "Actif",
+      "inactive": "Inactif"
+    },
+    "visibility": {
+      "visible": "Visible",
+      "hidden": "Masqué"
+    },
+    "actions": {
+      "view_translations": "Voir les traductions"
+    },
+    "toast": {
+      "delete_success": "Module \"{{name}}\" supprimé avec succès",
+      "delete_error": "Erreur lors de la suppression du module \"{{name}}\""
+    },
+    "empty": {
+      "title": "Aucun module",
+      "message": "Aucun module trouvé pour cette langue"
+    }
+  }
+}

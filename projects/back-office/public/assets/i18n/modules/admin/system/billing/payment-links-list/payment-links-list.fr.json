@@ -1,0 +1,47 @@
+{
+  "payment-links-list": {
+    "page_title": "Liens de paiement",
+    "create_link": "Créer un lien",
+    "kpi": {
+      "total": "Total",
+      "active": "Actifs",
+      "converted": "Convertis",
+      "conversion_rate": "Taux de conversion"
+    },
+    "filters": {
+      "status": "Statut"
+    },
+    "sort": {
+      "newest": "Plus récents",
+      "expiring_soon": "Expire bientôt",
+      "customer": "Client (A-Z)",
+      "amount": "Montant (décroissant)"
+    },
+    "columns": {
+      "customer": "Client",
+      "plan": "Plan",
+      "amount": "Montant",
+      "expires_at": "Expire le",
+      "status": "Statut"
+    },
+    "status": {
+      "active": "Actif",
+      "used": "Utilisé",
+      "expired": "Expiré",
+      "cancelled": "Annulé"
+    },
+    "actions": {
+      "copy_link": "Copier le lien"
+    },
+    "toast": {
+      "link_copied": "Lien copié dans le presse-papier",
+      "link_copy_error": "Erreur lors de la copie du lien",
+      "delete_success": "Lien de paiement pour \"{{name}}\" supprimé avec succès",
+      "delete_error": "Erreur lors de la suppression du lien de paiement pour \"{{name}}\""
+    },
+    "empty": {
+      "title": "Aucun lien de paiement",
+      "message": "Aucun lien de paiement trouvé"
+    }
+  }
+}

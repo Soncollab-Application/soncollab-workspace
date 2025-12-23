@@ -29,12 +29,13 @@
           "analytics": "Analytics contenu"
         },
         "system": {
+          "billing-dashboard": "Tableau de bord Facturation",
           "plans": "Plans de facturation",
           "addons": "Modules complémentaires",
           "subscriptions": "Abonnements",
           "payment-links": "Liens de paiement",
           "config": "Configuration système",
-          "billing": "Gestion facturation",
+          "billing": "Gestion de la facturation",
           "maintenance": "Maintenance système"
         }
       },

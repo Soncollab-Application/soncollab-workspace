@@ -68,6 +68,42 @@
       "system": "Système",
       "billing": "Facturation",
       "plans": "Plans"
+    },
+    "plan-detail": {
+      "dashboard": "Tableau de bord",
+      "system": "Système",
+      "billing": "Facturation",
+      "plans": "Plans"
+    },
+    "addons-list": {
+      "dashboard": "Tableau de bord",
+      "system": "Système",
+      "addons": "Modules complémentaires"
+    },
+    "addon-detail": {
+      "dashboard": "Tableau de bord",
+      "system": "Système",
+      "addons": "Modules complémentaires"
+    },
+    "subscriptions-list": {
+      "dashboard": "Tableau de bord",
+      "system": "Système",
+      "subscriptions": "Abonnements"
+    },
+    "subscription-detail": {
+      "dashboard": "Tableau de bord",
+      "system": "Système",
+      "subscriptions": "Abonnements"
+    },
+    "billing-dashboard": {
+      "dashboard": "Tableau de bord",
+      "system": "Système",
+      "billing": "Facturation"
+    },
+    "payment-links-list": {
+      "dashboard": "Tableau de bord",
+      "system": "Système",
+      "payment_links": "Liens de paiement"
     }
   }
 }

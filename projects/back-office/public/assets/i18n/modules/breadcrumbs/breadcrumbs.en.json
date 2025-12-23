@@ -68,6 +68,42 @@
       "system": "System",
       "billing": "Billing",
       "plans": "Plans"
+    },
+    "plan-detail": {
+      "dashboard": "Dashboard",
+      "system": "System",
+      "billing": "Billing",
+      "plans": "Plans"
+    },
+    "addons-list": {
+      "dashboard": "Dashboard",
+      "system": "System",
+      "addons": "Add-ons"
+    },
+    "addon-detail": {
+      "dashboard": "Dashboard",
+      "system": "System",
+      "addons": "Add-ons"
+    },
+    "subscriptions-list": {
+      "dashboard": "Dashboard",
+      "system": "System",
+      "subscriptions": "Subscriptions"
+    },
+    "subscription-detail": {
+      "dashboard": "Dashboard",
+      "system": "System",
+      "subscriptions": "Subscriptions"
+    },
+    "billing-dashboard": {
+      "dashboard": "Dashboard",
+      "system": "System",
+      "billing": "Billing"
+    },
+    "payment-links-list": {
+      "dashboard": "Dashboard",
+      "system": "System",
+      "payment_links": "Payment Links"
     }
   }
 }

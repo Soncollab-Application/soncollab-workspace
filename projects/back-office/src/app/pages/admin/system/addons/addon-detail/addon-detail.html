@@ -1,0 +1,190 @@
+<app-breadcrumb [showAvatar]="true" [icon]="'extension'" [hasMobileActions]="true">
+  <div breadcrumb-title>
+    <span class="me-2">{{ 'addon-detail.page_title' | translate }}</span>
+    @if (hasLocalizations()) {
+      <span
+        class="badge bg-info text-white cursor-pointer"
+        (click)="viewTranslations()"
+        role="button"
+        [title]="'addon-detail.view_translations' | translate">
+        {{ currentLocaleLabel() }}
+      </span>
+    } @else {
+      <span class="badge bg-primary">{{ currentLocaleLabel() }}</span>
+    }
+  </div>
+
+  <div breadcrumb-actions>
+    <div class="d-flex gap-2">
+      <button class="btn btn-outline-secondary" (click)="goBack()">
+        <span class="material-symbols-outlined me-2">arrow_back</span>
+        {{ 'common.back' | translate }}
+      </button>
+
+      @if (canUpdate()) {
+        <button class="btn btn-primary" (click)="editAddon()">
+          <span class="material-symbols-outlined me-2">edit</span>
+          {{ 'common.edit' | translate }}
+        </button>
+      }
+
+      @if (canDelete()) {
+        <button class="btn btn-outline-danger" (click)="deleteAddon()">
+          <span class="material-symbols-outlined me-2">delete</span>
+          {{ 'common.delete' | translate }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <div breadcrumb-actions-mobile>
+    <div class="d-flex flex-column gap-2 w-100">
+      @if (canUpdate()) {
+        <button class="btn btn-primary w-100" (click)="editAddon()">
+          <span class="material-symbols-outlined me-2">edit</span>
+          {{ 'common.edit' | translate }}
+        </button>
+      }
+
+      @if (canDelete()) {
+        <button class="btn btn-outline-danger w-100" (click)="deleteAddon()">
+          <span class="material-symbols-outlined me-2">delete</span>
+          {{ 'common.delete' | translate }}
+        </button>
+      }
+    </div>
+  </div>
+</app-breadcrumb>
+
+@if (loading()) {
+  <div class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
+    </div>
+  </div>
+} @else if (addon()) {
+  <div class="row py-3 my-3 mb-5">
+    <!-- SIDEBAR -->
+    <div class="col-xl-4">
+      <div class="card mb-4">
+        <div class="card-body text-center">
+          <div class="mb-3">
+            <div class="avatar avatar-xl bg-primary bg-opacity-10 text-primary mx-auto mb-3">
+              <span class="material-symbols-outlined fs-1">extension</span>
+            </div>
+            <h4 class="mb-2">{{ addon()!.addon_name }}</h4>
+            <div class="d-flex gap-2 justify-content-center">
+              <lib-badge
+                [text]="addon()!.is_active ? ('addons-list.status.active' | translate) : ('addons-list.status.inactive' | translate)"
+                [type]="addon()!.is_active ? 'success' : 'danger'"
+              />
+              <lib-badge
+                [text]="addon()!.visible_to_users ? ('addons-list.visibility.visible' | translate) : ('addons-list.visibility.hidden' | translate)"
+                [type]="addon()!.visible_to_users ? 'info' : 'secondary'"
+              />
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-around py-3 border-top border-bottom">
+            <div>
+              <small class="text-muted d-block">{{ 'addon-detail.monthly' | translate }}</small>
+              <h5 class="mb-0">${{ addon()!.price_monthly }}</h5>
+            </div>
+            <div class="vr"></div>
+            <div>
+              <small class="text-muted d-block">{{ 'addon-detail.yearly' | translate }}</small>
+              <h5 class="mb-0">${{ addon()!.price_yearly }}</h5>
+            </div>
+          </div>
+
+          <div class="text-start mt-3 pt-2">
+            <div class="mb-3">
+              <small class="text-muted d-block mb-1">
+                <span class="material-symbols-outlined me-1" style="font-size: 1rem;">flag</span>
+                {{ 'addon-detail.language' | translate }}
+              </small>
+              @if (hasLocalizations()) {
+                <div class="mb-0">
+                  <button
+                    class="btn btn-sm btn-outline-info w-100"
+                    (click)="viewTranslations()">
+                    <span class="material-symbols-outlined me-2" style="font-size: 1rem;">language</span>
+                    {{ currentLocaleLabel() }}
+                  </button>
+                </div>
+              } @else {
+                <p class="mb-0 fw-medium">{{ currentLocaleLabel() }}</p>
+              }
+            </div>
+
+            <div class="mb-3">
+              <small class="text-muted d-block mb-1">
+                <span class="material-symbols-outlined me-1" style="font-size: 1rem;">schedule</span>
+                {{ 'addon-detail.created' | translate }}
+              </small>
+              <p class="mb-0 fw-medium">{{ addon()!.createdAt | relativeDate }}</p>
+            </div>
+
+            <div class="mb-3">
+              <small class="text-muted d-block mb-1">
+                <span class="material-symbols-outlined me-1" style="font-size: 1rem;">update</span>
+                {{ 'addon-detail.updated' | translate }}
+              </small>
+              <p class="mb-0 fw-medium">{{ addon()!.updatedAt | relativeDate }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="col-xl-8">
+      <!-- Description Card -->
+      @if (addon()!.description) {
+        <div class="card mb-4">
+          <div class="card-header border-bottom">
+            <h5 class="mb-0">
+              <span class="material-symbols-outlined me-2 text-primary">description</span>
+              {{ 'addon-detail.description' | translate }}
+            </h5>
+          </div>
+          <div class="card-body">
+            <p class="mb-0">{{ addon()!.description }}</p>
+          </div>
+        </div>
+      }
+
+      <!-- Features Included -->
+      @if (addon()?.features_included?.length) {
+        <div class="card">
+          <div class="card-header border-bottom d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+              <span class="material-symbols-outlined me-2 text-success">verified</span>
+              {{ 'addon-detail.features_included' | translate }}
+            </h5>
+            <span class="badge bg-primary-subtle text-primary">
+        {{ addon()!.features_included!.length }}
+      </span>
+          </div>
+          <div class="card-body">
+            <div class="row g-2">
+              @for (feature of addon()!.features_included; track feature.documentId) {
+                <div class="col-md-6">
+                  <div class="p-2 rounded bg-success-subtle">
+                    <span class="material-symbols-outlined me-2 text-success">check_circle</span>
+                    <small class="fw-medium">{{ feature.name }}</small>
+                    @if (feature.description) {
+                      <small class="d-block text-muted ms-4 mt-1">{{ feature.description }}</small>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+}
+
+<app-translations-modal />

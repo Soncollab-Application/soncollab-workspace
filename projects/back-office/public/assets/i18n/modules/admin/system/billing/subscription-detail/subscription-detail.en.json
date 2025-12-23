@@ -1,0 +1,27 @@
+{
+  "subscription-detail": {
+    "page_title": "Subscription Details",
+    "plan": "Plan",
+    "billing_cycle": "Billing cycle",
+    "start_date": "Start date",
+    "end_date": "End date",
+    "trial_end_date": "Trial end",
+    "created": "Created",
+    "updated": "Updated",
+    "expires_in": "Expires in",
+    "days": "days",
+    "expired": "Expired",
+    "addons": "Add-ons",
+    "quotas": "Quotas & Limits",
+    "over_quota": "Over quota",
+    "usage": "Usage",
+    "next_reset": "Next reset",
+    "toast": {
+      "delete_success": "Subscription for \"{{name}}\" deleted successfully",
+      "delete_error": "Error deleting subscription for \"{{name}}\""
+    },
+    "error": {
+      "loading": "Error loading subscription"
+    }
+  }
+}

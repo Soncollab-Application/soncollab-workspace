@@ -1,0 +1,48 @@
+{
+  "addons-list": {
+    "page_title": "Add-ons",
+    "create_addon": "Create Add-on",
+    "kpi": {
+      "language": "Active language",
+      "total": "Total",
+      "active": "Active",
+      "visible": "Visible"
+    },
+    "filters": {
+      "status": "Status",
+      "visibility": "Visibility"
+    },
+    "sort": {
+      "newest": "Newest",
+      "name": "Name (A-Z)",
+      "price_asc": "Price (ascending)",
+      "price_desc": "Price (descending)"
+    },
+    "columns": {
+      "name": "Add-on name",
+      "price_monthly": "Monthly price",
+      "price_yearly": "Yearly price",
+      "status": "Status",
+      "visibility": "Visibility"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "visibility": {
+      "visible": "Visible",
+      "hidden": "Hidden"
+    },
+    "actions": {
+      "view_translations": "View translations"
+    },
+    "toast": {
+      "delete_success": "Add-on \"{{name}}\" deleted successfully",
+      "delete_error": "Error deleting add-on \"{{name}}\""
+    },
+    "empty": {
+      "title": "No add-ons",
+      "message": "No add-ons found for this language"
+    }
+  }
+}
