@@ -75,6 +75,7 @@ export class NavigationService {
             key: 'system',
             icon: 'settings',
             children: [
+              { key: 'billing-dashboard', icon: 'dashboard', route: '/admin/system/billing/dashboard' },
               { key: 'plans', icon: 'list', route: '/admin/system/billing/plans' },
               { key: 'addons', icon: 'extension', route: '/admin/system/billing/addons' },
               { key: 'subscriptions', icon: 'subscriptions', route: '/admin/system/billing/subscriptions' },

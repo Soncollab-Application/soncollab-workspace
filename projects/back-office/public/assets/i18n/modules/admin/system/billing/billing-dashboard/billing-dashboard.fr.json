@@ -1,0 +1,43 @@
+{
+  "billing-dashboard": {
+    "page_title": "Tableau de bord Facturation",
+    "view_all": "Tout voir",
+    "subscriptions": {
+      "title": "Abonnements",
+      "total": "Total",
+      "active": "Actifs",
+      "trial": "Essai gratuit",
+      "expiring_soon": "Expire bientôt"
+    },
+    "usage": {
+      "title": "Utilisation des quotas",
+      "total_subscriptions": "Total abonnements",
+      "total_quotas": "Total quotas",
+      "over_limit": "Dépassés",
+      "avg_usage": "Utilisation moyenne"
+    },
+    "invoices": {
+      "title": "Factures",
+      "total_revenue": "Revenu total",
+      "paid": "Payées",
+      "total": "Total",
+      "overdue": "En retard"
+    },
+    "payment_links": {
+      "title": "Liens de paiement",
+      "total": "Total",
+      "converted": "Convertis",
+      "conversion_rate": "Taux de conversion",
+      "avg_deal": "Panier moyen"
+    },
+    "quick_actions": {
+      "title": "Actions rapides",
+      "manage_plans": "Gérer les plans",
+      "manage_plans_desc": "Créer et modifier les plans de facturation",
+      "manage_addons": "Gérer les modules",
+      "manage_addons_desc": "Configurer les modules complémentaires",
+      "manage_subscriptions": "Gérer les abonnements",
+      "manage_subscriptions_desc": "Suivre et gérer les abonnements actifs"
+    }
+  }
+}

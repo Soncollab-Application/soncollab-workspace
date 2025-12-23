@@ -94,6 +94,11 @@
       "dashboard": "Tableau de bord",
       "system": "Système",
       "subscriptions": "Abonnements"
+    },
+    "billing-dashboard": {
+      "dashboard": "Tableau de bord",
+      "system": "Système",
+      "billing": "Facturation"
     }
   }
 }

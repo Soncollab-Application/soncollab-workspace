@@ -29,6 +29,7 @@
           "analytics": "Content Analytics"
         },
         "system": {
+          "billing-dashboard": "Billing Dashboard",
           "plans": "Billing Plans",
           "addons": "Add-ons",
           "subscriptions": "Subscriptions",

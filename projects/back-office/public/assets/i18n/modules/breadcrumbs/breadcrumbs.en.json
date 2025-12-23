@@ -94,6 +94,11 @@
       "dashboard": "Dashboard",
       "system": "System",
       "subscriptions": "Subscriptions"
+    },
+    "billing-dashboard": {
+      "dashboard": "Dashboard",
+      "system": "System",
+      "billing": "Billing"
     }
   }
 }
