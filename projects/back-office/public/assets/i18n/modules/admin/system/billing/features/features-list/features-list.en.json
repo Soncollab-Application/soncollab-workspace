@@ -1,0 +1,52 @@
+{
+  "features-list": {
+    "page_title": "Features",
+    "create_feature": "Create Feature",
+    "select_language": "Active language",
+    "search": "Search for a feature...",
+    "kpi": {
+      "language": "Active language",
+      "total": "Total",
+      "stable": "Stable",
+      "beta": "Beta"
+    },
+    "filters": {
+      "status": "Status",
+      "enabled_by_default": "Enabled by default"
+    },
+    "sort": {
+      "newest": "Newest",
+      "name": "Name (A-Z)"
+    },
+    "columns": {
+      "name": "Name",
+      "description": "Description",
+      "status": "Status",
+      "enabled_by_default": "Enabled by default",
+      "createdAt": "Created"
+    },
+    "status": {
+      "stable": "Stable",
+      "beta": "Beta",
+      "deprecated": "Deprecated"
+    },
+    "actions": {
+      "create_translation": "Create translation",
+      "view_translations": "View translations"
+    },
+    "toast": {
+      "delete_success": "Feature \"{{name}}\" deleted successfully",
+      "delete_error": "Error deleting \"{{name}}\""
+    },
+    "empty": {
+      "title": "No features",
+      "message": "No features found for this language"
+    },
+    "error": {
+      "loading": "Error loading feature"
+    },
+    "messages": {
+      "all_translations_exist": "All translations already exist"
+    }
+  }
+}

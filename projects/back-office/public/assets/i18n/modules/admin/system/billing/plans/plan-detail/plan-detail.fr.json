@@ -1,0 +1,32 @@
+{
+  "plan-detail": {
+    "page_title": "Détail du plan",
+    "view_translations": "Voir les traductions",
+    "details": "Détails",
+    "monthly": "Mensuel",
+    "yearly": "Annuel",
+    "language": "Langue",
+    "status": "Statut",
+    "created": "Créé",
+    "updated": "Mis à jour",
+    "product_type": "Type de produit",
+    "currency": "Devise",
+    "asset_limit": "Limite d'assets",
+    "royalty_cap": "Plafond royalties",
+    "unlimited": "Illimité",
+    "included_features": "Fonctionnalités incluses",
+    "available_addons": "Modules disponibles",
+    "statistics": "Statistiques",
+    "active_subscriptions": "Abonnements actifs",
+    "total_revenue": "Revenu total",
+    "mrr": "MRR",
+    "arr": "ARR",
+    "toast": {
+      "delete_success": "Plan \"{{name}}\" supprimé avec succès",
+      "delete_error": "Erreur lors de la suppression du plan \"{{name}}\""
+    },
+    "error": {
+      "loading": "Erreur lors du chargement du plan"
+    }
+  }
+}

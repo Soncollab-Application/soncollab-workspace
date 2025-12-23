@@ -6,8 +6,6 @@ import {
   BillingPlanFilters,
   BillingPlansResponse,
   BillingPlanResponse,
-  BillingPlanCreateRequest,
-  BillingPlanUpdateRequest,
   PlanAddonFilters,
   PlanAddonsResponse,
   PlanAddonResponse,
@@ -45,7 +43,14 @@ import {
   InvoiceResponse,
   InvoiceStats,
   RecentInvoicesResponse,
-  TransactionsResponse
+  TransactionsResponse,
+  CreateBillingPlanRequest,
+  UpdateBillingPlanRequest,
+  TransactionsStatsResponse,
+  FeatureFlagFilters,
+  FeatureFlagResponse,
+  FeatureFlagCreateRequest,
+  FeatureFlagStats, BillingPlanStats
 } from '../../models/admin/billing';
 
 @Injectable({ providedIn: 'root' })
@@ -58,6 +63,8 @@ export class BillingService {
     billing_plans: `${this.API_URL}/billing-plans`,
     billing_plan_by_id: (documentId: string) => `${this.API_URL}/billing-plans/${documentId}`,
     billing_plan_pricing: (locale: string) => `${this.API_URL}/billing-plans/pricing/${locale}`,
+    billing_plans_stats: `${this.API_URL}/billing-plans/stats`,
+
 
     // Plan Addons
     plan_addons: `${this.API_URL}/plan-addons`,
@@ -102,6 +109,7 @@ export class BillingService {
     // Transactions
     transactions: `${this.API_URL}/subscription-transactions`,
     transaction_by_id: (documentId: string) => `${this.API_URL}/subscription-transactions/${documentId}`,
+    transaction_stats: `${this.API_URL}/subscription-transactions/stats`,
 
     // Currencies
     currencies: `${this.API_URL}/billing-currencies`,
@@ -110,6 +118,7 @@ export class BillingService {
     // Feature Flags
     feature_flags: `${this.API_URL}/feature-flags`,
     feature_flag_by_id: (documentId: string) => `${this.API_URL}/feature-flags/${documentId}`,
+    feature_flags_stats: `${this.API_URL}/feature-flags/stats`,
 
     // Product Types
     product_types: `${this.API_URL}/product-types`
@@ -133,8 +142,15 @@ export class BillingService {
     params = params.set('populate[currency][fields][1]', 'symbol');
     params = params.set('populate[product_type][fields][0]', 'name');
     params = params.set('populate[included_features][fields][0]', 'name');
-    params = params.set('populate[included_features][fields][1]', 'description');
     params = params.set('populate[available_addons][fields][0]', 'addon_name');
+    params = params.set('populate[localizations][fields][0]', 'locale');
+    params = params.set('populate[localizations][fields][1]', 'documentId');
+    params = params.set('populate[localizations][fields][2]', 'plan_name');
+
+    // FILTRER PAR LOCALE
+    if (filters?.locale) {
+      params = params.set('locale', filters.locale);
+    }
 
     if (filters?.search) {
       params = params.set('filters[plan_name][$containsi]', filters.search);
@@ -159,13 +175,19 @@ export class BillingService {
     return this.http.get<BillingPlansResponse>(this.BILLING_ENDPOINTS.billing_plans, { params });
   }
 
-  getBillingPlan(documentId: string): Observable<BillingPlanResponse> {
+  getBillingPlan(documentId: string, locale?: string): Observable<BillingPlanResponse> {
     let params = new HttpParams();
 
     params = params.set('populate[0]', 'currency');
     params = params.set('populate[1]', 'product_type');
     params = params.set('populate[2]', 'included_features');
     params = params.set('populate[3]', 'available_addons');
+    params = params.set('populate[4]', 'subscriptions');
+    params = params.set('populate[5]', 'localizations');
+
+    if (locale) {
+      params = params.set('locale', locale);
+    }
 
     return this.http.get<BillingPlanResponse>(
       this.BILLING_ENDPOINTS.billing_plan_by_id(documentId),
@@ -173,14 +195,20 @@ export class BillingService {
     );
   }
 
-  createBillingPlan(data: BillingPlanCreateRequest): Observable<BillingPlanResponse> {
+  createBillingPlan(data: CreateBillingPlanRequest): Observable<BillingPlanResponse> {
     return this.http.post<BillingPlanResponse>(this.BILLING_ENDPOINTS.billing_plans, { data });
   }
 
-  updateBillingPlan(documentId: string, data: BillingPlanUpdateRequest): Observable<BillingPlanResponse> {
+  updateBillingPlan(documentId: string, data: UpdateBillingPlanRequest): Observable<BillingPlanResponse> {
+    let params = new HttpParams();
+    if (data.locale) {
+      params = params.set('locale', data.locale);
+    }
+
     return this.http.put<BillingPlanResponse>(
       this.BILLING_ENDPOINTS.billing_plan_by_id(documentId),
-      { data }
+      { data },
+      { params }
     );
   }
 
@@ -190,6 +218,14 @@ export class BillingService {
 
   getBillingPlanPricing(locale: string): Observable<any> {
     return this.http.get(this.BILLING_ENDPOINTS.billing_plan_pricing(locale));
+  }
+
+  getBillingPlanStats(locale: string): Observable<{ data: BillingPlanStats }> {
+    const params = new HttpParams().set('locale', locale);
+    return this.http.get<{ data: BillingPlanStats }>(
+      this.BILLING_ENDPOINTS.billing_plans_stats,
+      { params }
+    );
   }
 
   // ==================== PLAN ADDONS ====================
@@ -208,6 +244,13 @@ export class BillingService {
 
     params = params.set('populate[features_included][fields][0]', 'name');
     params = params.set('populate[features_included][fields][1]', 'description');
+    params = params.set('populate[localizations][fields][0]', 'locale');
+    params = params.set('populate[localizations][fields][1]', 'documentId');
+    params = params.set('populate[localizations][fields][2]', 'addon_name');
+
+    if (filters?.locale) {
+      params = params.set('locale', filters.locale);
+    }
 
     if (filters?.search) {
       params = params.set('filters[addon_name][$containsi]', filters.search);
@@ -224,12 +267,17 @@ export class BillingService {
     return this.http.get<PlanAddonsResponse>(this.BILLING_ENDPOINTS.plan_addons, { params });
   }
 
-  getPlanAddon(documentId: string): Observable<PlanAddonResponse> {
+  getPlanAddon(documentId: string, locale?: string): Observable<PlanAddonResponse> {
     let params = new HttpParams();
 
     params = params.set('populate[0]', 'features_included');
     params = params.set('populate[1]', 'billing_plans');
     params = params.set('populate[2]', 'subscriptions');
+    params = params.set('populate[3]', 'localizations');
+
+    if (locale) {
+      params = params.set('locale', locale);
+    }
 
     return this.http.get<PlanAddonResponse>(
       this.BILLING_ENDPOINTS.plan_addon_by_id(documentId),
@@ -405,7 +453,8 @@ export class BillingService {
     params = params.set('populate[created_by][fields][1]', 'first_name');
     params = params.set('populate[created_by][fields][2]', 'last_name');
     params = params.set('populate[sales_contact][fields][0]', 'email');
-    params = params.set('populate[sales_contact][fields][1]', 'full_name');
+    params = params.set('populate[sales_contact][fields][1]', 'first_name');
+    params = params.set('populate[sales_contact][fields][2]', 'last_name');
 
     if (filters?.search) {
       params = params.set('filters[$or][0][customer_email][$containsi]', filters.search);
@@ -586,6 +635,10 @@ export class BillingService {
     return this.http.get(this.BILLING_ENDPOINTS.transaction_by_id(documentId), { params });
   }
 
+  getTransactionStats(): Observable<TransactionsStatsResponse> {
+    return this.http.get<TransactionsStatsResponse>(this.BILLING_ENDPOINTS.transaction_stats);
+  }
+
   // ==================== CURRENCIES ====================
 
   getCurrencies(): Observable<CurrenciesResponse> {
@@ -605,20 +658,81 @@ export class BillingService {
 
   // ==================== FEATURE FLAGS ====================
 
-  getFeatureFlags(): Observable<FeatureFlagsResponse> {
-    const params = new HttpParams()
-      .set('pagination[pageSize]', '100')
-      .set('sort[0]', 'name:asc');
+  getFeatureFlags(
+    page = 1,
+    pageSize = 10,
+    filters?: FeatureFlagFilters,
+    sortField = 'createdAt',
+    sortOrder: 'asc' | 'desc' = 'desc'
+  ): Observable<FeatureFlagsResponse> {
+    let params = new HttpParams()
+      .set('pagination[page]', page.toString())
+      .set('pagination[pageSize]', pageSize.toString())
+      .set('sort[0]', `${sortField}:${sortOrder}`);
+
+    params = params.set('populate[localizations][fields][0]', 'locale');
+    params = params.set('populate[localizations][fields][1]', 'documentId');
+    params = params.set('populate[localizations][fields][2]', 'name');
+
+    if (filters?.locale) {
+      params = params.set('locale', filters.locale);
+    }
+
+    if (filters?.search) {
+      params = params.set('filters[name][$containsi]', filters.search);
+    }
+
+    if (filters?.feature_flag_status) {
+      params = params.set('filters[feature_flag_status][$eq]', filters.feature_flag_status);
+    }
+
+    if (filters?.is_enabled_by_default !== undefined) {
+      params = params.set('filters[is_enabled_by_default][$eq]', filters.is_enabled_by_default.toString());
+    }
 
     return this.http.get<FeatureFlagsResponse>(this.BILLING_ENDPOINTS.feature_flags, { params });
   }
 
-  updateFeatureFlag(documentId: string, data: FeatureFlagUpdateRequest): Observable<{ data: FeatureFlag }> {
-    return this.http.put<{ data: FeatureFlag }>(
+  getFeatureFlag(documentId: string, locale?: string): Observable<FeatureFlagResponse> {
+    let params = new HttpParams();
+
+    params = params.set('populate[localizations][fields][0]', 'locale');
+    params = params.set('populate[localizations][fields][1]', 'documentId');
+    params = params.set('populate[localizations][fields][2]', 'name');
+
+    if (locale) {
+      params = params.set('locale', locale);
+    }
+
+    return this.http.get<FeatureFlagResponse>(
+      this.BILLING_ENDPOINTS.feature_flag_by_id(documentId),
+      { params }
+    );
+  }
+
+  createFeatureFlag(data: FeatureFlagCreateRequest): Observable<FeatureFlagResponse> {
+    return this.http.post<FeatureFlagResponse>(this.BILLING_ENDPOINTS.feature_flags, { data });
+  }
+
+  updateFeatureFlag(documentId: string, data: FeatureFlagUpdateRequest): Observable<FeatureFlagResponse> {
+    return this.http.put<FeatureFlagResponse>(
       this.BILLING_ENDPOINTS.feature_flag_by_id(documentId),
       { data }
     );
   }
+
+  deleteFeatureFlag(documentId: string): Observable<void> {
+    return this.http.delete<void>(this.BILLING_ENDPOINTS.feature_flag_by_id(documentId));
+  }
+
+  getFeatureFlagStats(locale: string): Observable<{ data: FeatureFlagStats }> {
+    const params = new HttpParams().set('locale', locale);
+    return this.http.get<{ data: FeatureFlagStats }>(
+      this.BILLING_ENDPOINTS.feature_flags_stats,
+      { params }
+    );
+  }
+
 
   // ==================== PRODUCT TYPES ====================
 

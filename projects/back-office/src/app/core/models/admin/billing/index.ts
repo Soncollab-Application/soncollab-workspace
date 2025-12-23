@@ -1,3 +1,6 @@
+// Common
+export * from './common.model';
+
 // Currency
 export * from './currency.model';
 

@@ -1,0 +1,49 @@
+{
+  "invoices-list": {
+    "page_title": "Invoices",
+    "create_invoice": "Create Invoice",
+    "kpi": {
+      "total_revenue": "Total Revenue",
+      "total": "Total Invoices",
+      "avg_amount": "Average Amount"
+    },
+    "filters": {
+      "status": "Status",
+      "type": "Type"
+    },
+    "status": {
+      "draft": "Draft",
+      "sent": "Sent",
+      "paid": "Paid",
+      "overdue": "Overdue",
+      "cancelled": "Cancelled"
+    },
+    "type": {
+      "subscription": "Subscription",
+      "addon": "Add-on",
+      "upgrade": "Upgrade",
+      "refund": "Refund"
+    },
+    "sort": {
+      "newest": "Newest",
+      "date_desc": "Date (recent)",
+      "amount_high": "Amount (high)",
+      "number": "Number"
+    },
+    "columns": {
+      "invoice_number": "Number",
+      "customer": "Customer",
+      "type": "Type",
+      "amount": "Amount",
+      "date": "Date",
+      "status": "Status"
+    },
+    "empty": {
+      "title": "No invoices",
+      "message": "No invoices have been found."
+    },
+    "toast": {
+      "delete_not_allowed": "Deleting invoices is not allowed"
+    }
+  }
+}

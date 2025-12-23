@@ -68,6 +68,81 @@
       "system": "Système",
       "billing": "Facturation",
       "plans": "Plans"
+    },
+    "plan-detail": {
+      "dashboard": "Tableau de bord",
+      "system": "Système",
+      "billing": "Facturation",
+      "plans": "Plans"
+    },
+    "addons-list": {
+      "dashboard": "Tableau de bord",
+      "system": "Système",
+      "addons": "Modules complémentaires"
+    },
+    "addon-detail": {
+      "dashboard": "Tableau de bord",
+      "system": "Système",
+      "addons": "Modules complémentaires"
+    },
+    "subscriptions-list": {
+      "dashboard": "Tableau de bord",
+      "system": "Système",
+      "subscriptions": "Abonnements"
+    },
+    "subscription-detail": {
+      "dashboard": "Tableau de bord",
+      "system": "Système",
+      "subscriptions": "Abonnements"
+    },
+    "billing-dashboard": {
+      "dashboard": "Tableau de bord",
+      "system": "Système",
+      "billing": "Facturation"
+    },
+    "payment-links-list": {
+      "dashboard": "Tableau de bord",
+      "system": "Système",
+      "payment_links": "Liens de paiement"
+    },
+    "payment-link-detail": {
+      "dashboard": "Tableau de bord",
+      "system": "Système",
+      "payment_links": "Liens de paiement",
+      "detail": "Détails"
+    },
+    "invoices-list": {
+      "dashboard": "Tableau de bord",
+      "system": "Système",
+      "invoices": "Factures"
+    },
+    "invoice-detail": {
+      "dashboard": "Tableau de bord",
+      "system": "Système",
+      "invoices": "Factures",
+      "detail": "Détails"
+    },
+    "transactions-list": {
+      "dashboard": "Tableau de bord",
+      "system": "Système",
+      "transactions": "Transactions"
+    },
+    "transaction-detail": {
+      "dashboard": "Tableau de bord",
+      "system": "Système",
+      "transactions": "Transactions",
+      "detail": "Détails"
+    },
+    "features-list": {
+      "dashboard": "Tableau de bord",
+      "system": "Système",
+      "billing": "Facturation",
+      "features": "Fonctionnalités"
+    },
+    "feature-detail": {
+      "dashboard": "Tableau de bord",
+      "system": "Système",
+      "features": "Fonctionnalités"
     }
   }
 }

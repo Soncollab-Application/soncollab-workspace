@@ -1,14 +1,12 @@
 {
   "plans-list": {
-    "title": "Plans de facturation",
+    "page_title": "Plans de facturation",
     "create_plan": "Créer un plan",
-    "no_plans": "Aucun plan",
-    "no_plans_message": "Commencez par créer votre premier plan de facturation",
     "kpi": {
-      "total": "Total plans",
-      "active": "Plans actifs",
-      "inactive": "Plans inactifs",
-      "revenue_potential": "Revenu potentiel"
+      "language": "Langue active",
+      "total": "Total",
+      "active": "Actifs",
+      "inactive": "Inactifs"
     },
     "filters": {
       "status": "Statut",
@@ -37,9 +35,23 @@
       "priority": "Prioritaire",
       "premium": "Premium"
     },
+    "actions": {
+      "view_translations": "Voir les traductions",
+      "create_translation": "Créer traduction"
+    },
+    "messages": {
+      "all_translations_exist": "Toutes les traductions existent déjà"
+    },
     "toast": {
       "delete_success": "Plan \"{{name}}\" supprimé avec succès",
       "delete_error": "Erreur lors de la suppression du plan \"{{name}}\""
+    },
+    "empty": {
+      "title": "Aucun plan",
+      "message": "Aucun plan trouvé pour cette langue"
+    },
+    "translations_modal": {
+      "no_translations": "Aucune traduction disponible"
     }
   }
 }

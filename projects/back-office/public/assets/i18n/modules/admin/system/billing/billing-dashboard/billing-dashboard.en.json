@@ -1,0 +1,41 @@
+{
+  "billing-dashboard": {
+    "page_title": "Billing Dashboard",
+    "view_all": "View all",
+    "subscriptions": {
+      "title": "Subscriptions",
+      "total": "Total",
+      "active": "Active",
+      "trial": "Trial",
+      "expiring_soon": "Expiring soon"
+    },
+    "usage": {
+      "title": "Quota Usage",
+      "total_quotas": "Total quotas",
+      "over_limit": "Over limit",
+      "warning": "Warnings"
+    },
+    "invoices": {
+      "title": "Invoices",
+      "total_revenue": "Total revenue",
+      "total": "Total invoices",
+      "avg_amount": "Average amount"
+    },
+    "payment_links": {
+      "title": "Payment Links",
+      "total": "Total",
+      "converted": "Converted",
+      "conversion_rate": "Conversion rate",
+      "avg_deal": "Average deal"
+    },
+    "quick_actions": {
+      "title": "Quick Actions",
+      "manage_plans": "Manage Plans",
+      "manage_plans_desc": "Create and edit billing plans",
+      "manage_addons": "Manage Add-ons",
+      "manage_addons_desc": "Configure add-on modules",
+      "manage_subscriptions": "Manage Subscriptions",
+      "manage_subscriptions_desc": "Track and manage active subscriptions"
+    }
+  }
+}

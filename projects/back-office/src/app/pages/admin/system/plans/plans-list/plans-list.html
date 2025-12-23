@@ -1,20 +1,51 @@
 <app-breadcrumb [showAvatar]="true" [icon]="'credit_card'" [hasMobileActions]="true">
+  <div breadcrumb-title>
+    <span class="me-2">{{ 'plans-list.page_title' | translate }}</span>
+    <span class="badge bg-primary">{{ currentLocale().toUpperCase() }}</span>
+  </div>
+
   <div breadcrumb-actions>
-    @if (canCreate()) {
-      <button class="btn btn-primary w-100" (click)="router.navigate(['/admin/system/billing/plans/new'])">
-        <span class="material-symbols-outlined me-2">add</span>
-        {{ 'plans-list.create_plan' | translate }}
-      </button>
-    }
+    <div class="d-flex gap-2">
+      <div class="position-relative" style="min-width: 150px;">
+        <lib-choice
+          [type]="'select-one'"
+          [options]="languageOptions()"
+          [config]="languageConfig"
+          [cssClass]="'form-select'"
+          [(ngModel)]="selectedLocale"
+          (change)="onLanguageChoiceChange($any($event))"
+        />
+      </div>
+
+      @if (canCreate()) {
+        <button class="btn btn-primary" (click)="createPlan()">
+          <span class="material-symbols-outlined me-2">add</span>
+          {{ 'plans-list.create_plan' | translate }}
+        </button>
+      }
+    </div>
   </div>
 
   <div breadcrumb-actions-mobile>
-    @if (canCreate()) {
-      <button class="btn btn-primary w-100" (click)="router.navigate(['/admin/system/billing/plans/new'])">
-        <span class="material-symbols-outlined me-2">add</span>
-        {{ 'plans-list.create_plan' | translate }}
-      </button>
-    }
+    <div class="d-flex flex-column gap-2 w-100">
+      <div class="position-relative w-100">
+        <lib-choice
+          [type]="'select-one'"
+          [options]="languageOptions()"
+          [config]="languageConfig"
+          [cssClass]="'form-select'"
+          [(ngModel)]="selectedLocale"
+          (change)="onLanguageChoiceChange($any($event))"
+        />
+      </div>
+
+      @if (canCreate()) {
+        <button class="btn btn-primary" (click)="createPlan()">
+          <span class="material-symbols-outlined me-2">add</span>
+          {{ 'plans-list.create_plan' | translate }}
+        </button>
+      }
+    </div>
   </div>
 </app-breadcrumb>
 
@@ -53,9 +84,15 @@
     [clickable]="true"
     [emptyStateTitle]="emptyTitle()"
     [emptyStateMessage]="emptyMessage()"
+    [emptyStateIcon]="'credit_card'"
     (sortChange)="listManager.onSortChange($any($event))"
     (pageChange)="listManager.onPageChange($any($event))"
     (actionClick)="onActionClick($any($event))"
     (itemClick)="onRowClick($any($event))"
   />
 </div>
+
+<app-translations-modal />
+<app-plan-offcanvas />
+<app-locale-selector-modal />
+

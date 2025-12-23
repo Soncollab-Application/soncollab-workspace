@@ -76,7 +76,7 @@ export interface PaymentLinkFilters {
 
 
 export interface PaymentLinkDashboard {
-  summary: {
+  metrics: {
     total_links: number;
     active_links: number;
     converted_links: number;
@@ -85,11 +85,12 @@ export interface PaymentLinkDashboard {
     total_revenue: number;
     avg_deal_size: number;
   };
-  recent_links: PaymentLink[];
+  links: PaymentLink[];
   action_items: {
     expiring_links: any[];
     stalled_contacts: any[];
   };
+  period: string;
 }
 
 

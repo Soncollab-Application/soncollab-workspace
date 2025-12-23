@@ -1,14 +1,12 @@
 {
   "plans-list": {
-    "title": "Billing Plans",
+    "page_title": "Billing Plans",
     "create_plan": "Create Plan",
-    "no_plans": "No plans",
-    "no_plans_message": "Start by creating your first billing plan",
     "kpi": {
-      "total": "Total plans",
-      "active": "Active plans",
-      "inactive": "Inactive plans",
-      "revenue_potential": "Revenue potential"
+      "language": "Active language",
+      "total": "Total",
+      "active": "Active",
+      "inactive": "Inactive"
     },
     "filters": {
       "status": "Status",
@@ -37,9 +35,23 @@
       "priority": "Priority",
       "premium": "Premium"
     },
+    "actions": {
+      "view_translations": "View translations",
+      "create_translation": "Create translation"
+    },
+    "messages": {
+      "all_translations_exist": "All translations already exist"
+    },
     "toast": {
       "delete_success": "Plan \"{{name}}\" deleted successfully",
       "delete_error": "Error deleting plan \"{{name}}\""
+    },
+    "empty": {
+      "title": "No plans",
+      "message": "No plans found for this language"
+    },
+    "translations_modal": {
+      "no_translations": "No translations available"
     }
   }
 }

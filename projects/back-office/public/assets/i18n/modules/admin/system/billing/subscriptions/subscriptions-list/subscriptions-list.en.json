@@ -1,0 +1,53 @@
+{
+  "subscriptions-list": {
+    "page_title": "Subscriptions",
+    "create_subscription": "Create Subscription",
+    "search_placeholder": "Search by name or email...",
+    "kpi": {
+      "total": "Total",
+      "active": "Active",
+      "trial": "Trial",
+      "expiring_soon": "Expiring soon"
+    },
+    "filters": {
+      "status": "Status",
+      "billing_cycle": "Billing cycle",
+      "subscriber_type": "Subscriber type"
+    },
+    "sort": {
+      "newest": "Newest",
+      "start_date": "Start date",
+      "expiry_soon": "Expiring soon",
+      "subscriber": "Subscriber (A-Z)"
+    },
+    "columns": {
+      "subscriber": "Subscriber",
+      "plan": "Plan",
+      "billing_cycle": "Cycle",
+      "end_date": "End date",
+      "status": "Status"
+    },
+    "status": {
+      "active": "Active",
+      "trial": "Trial",
+      "cancelled": "Cancelled",
+      "paused": "Paused"
+    },
+    "billing_cycle": {
+      "monthly": "Monthly",
+      "yearly": "Yearly"
+    },
+    "subscriber_type": {
+      "user": "User",
+      "team": "Team"
+    },
+    "toast": {
+      "delete_success": "Subscription for \"{{name}}\" deleted successfully",
+      "delete_error": "Error deleting subscription for \"{{name}}\""
+    },
+    "empty": {
+      "title": "No subscriptions",
+      "message": "No subscriptions found"
+    }
+  }
+}

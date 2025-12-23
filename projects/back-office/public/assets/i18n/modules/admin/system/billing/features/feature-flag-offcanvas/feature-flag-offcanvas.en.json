@@ -1,0 +1,39 @@
+{
+  "feature-flag-offcanvas": {
+    "title": {
+      "create": "Create Feature",
+      "edit": "Edit Feature"
+    },
+    "fields": {
+      "name": "Name",
+      "name_placeholder": "E.g: API Access",
+      "description": "Description",
+      "description_placeholder": "Describe this feature...",
+      "description_hint": "Detailed description of the feature",
+      "status": "Status",
+      "status_hint": "Development status of the feature",
+      "is_enabled_by_default": "Enabled by default",
+      "is_enabled_by_default_hint": "This feature will be automatically enabled for new plans"
+    },
+    "status": {
+      "stable": "Stable",
+      "beta": "Beta",
+      "deprecated": "Deprecated"
+    },
+    "errors": {
+      "name_required": "Name is required"
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "create": "Create Feature",
+      "save": "Save"
+    },
+    "success": {
+      "created": "Feature created successfully",
+      "updated": "Feature updated successfully"
+    },
+    "error": {
+      "save": "Error saving feature"
+    }
+  }
+}

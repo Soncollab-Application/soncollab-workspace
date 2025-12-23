@@ -1,0 +1,51 @@
+{
+  "plan-offcanvas": {
+    "title": {
+      "create": "Create Plan",
+      "edit": "Edit Plan"
+    },
+    "fields": {
+      "plan_name": "Plan Name",
+      "plan_name_placeholder": "E.g: Starter Plan",
+      "currency": "Currency",
+      "currency_placeholder": "Select a currency",
+      "price_monthly": "Monthly Price",
+      "price_yearly": "Yearly Price",
+      "asset_limit": "Asset Limit",
+      "royalty_cap": "Royalty Cap",
+      "royalty_cap_placeholder": "Unlimited",
+      "royalty_cap_hint": "Maximum royalty amount per month (optional)",
+      "support_level": "Support Level",
+      "product_type": "Product Type",
+      "product_type_placeholder": "Optional",
+      "product_type_hint": "The product type this plan belongs to",
+      "included_features": "Included Features",
+      "included_features_placeholder": "Select features",
+      "included_features_hint": "Features that are included in this plan",
+      "available_addons": "Available Add-ons",
+      "available_addons_placeholder": "Select add-ons",
+      "available_addons_hint": "Add-ons that customers can add to this plan",
+      "is_active": "Active Plan",
+      "is_active_hint": "Active plans are visible to customers"
+    },
+    "errors": {
+      "plan_name_required": "Plan name is required",
+      "currency_required": "Currency is required",
+      "price_required": "Price is required and must be positive",
+      "asset_limit_required": "Asset limit is required"
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "create": "Create Plan",
+      "save": "Save"
+    },
+    "success": {
+      "created": "Plan created successfully",
+      "updated": "Plan updated successfully"
+    },
+    "error": {
+      "save": "Error saving plan",
+      "loading_data": "Error loading data"
+    }
+  }
+}

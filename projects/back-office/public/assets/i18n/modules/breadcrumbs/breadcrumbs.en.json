@@ -68,6 +68,81 @@
       "system": "System",
       "billing": "Billing",
       "plans": "Plans"
+    },
+    "plan-detail": {
+      "dashboard": "Dashboard",
+      "system": "System",
+      "billing": "Billing",
+      "plans": "Plans"
+    },
+    "addons-list": {
+      "dashboard": "Dashboard",
+      "system": "System",
+      "addons": "Add-ons"
+    },
+    "addon-detail": {
+      "dashboard": "Dashboard",
+      "system": "System",
+      "addons": "Add-ons"
+    },
+    "subscriptions-list": {
+      "dashboard": "Dashboard",
+      "system": "System",
+      "subscriptions": "Subscriptions"
+    },
+    "subscription-detail": {
+      "dashboard": "Dashboard",
+      "system": "System",
+      "subscriptions": "Subscriptions"
+    },
+    "billing-dashboard": {
+      "dashboard": "Dashboard",
+      "system": "System",
+      "billing": "Billing"
+    },
+    "payment-links-list": {
+      "dashboard": "Dashboard",
+      "system": "System",
+      "payment_links": "Payment Links"
+    },
+    "payment-link-detail": {
+      "dashboard": "Dashboard",
+      "system": "System",
+      "payment_links": "Payment Links",
+      "detail": "Details"
+    },
+    "invoices-list": {
+      "dashboard": "Dashboard",
+      "system": "System",
+      "invoices": "Invoices"
+    },
+    "invoice-detail": {
+      "dashboard": "Dashboard",
+      "system": "System",
+      "invoices": "Invoices",
+      "detail": "Details"
+    },
+    "transactions-list": {
+      "dashboard": "Dashboard",
+      "system": "System",
+      "transactions": "Transactions"
+    },
+    "transaction-detail": {
+      "dashboard": "Dashboard",
+      "system": "System",
+      "transactions": "Transactions",
+      "detail": "Details"
+    },
+    "features-list": {
+      "dashboard": "Dashboard",
+      "system": "System",
+      "billing": "Billing",
+      "features": "Features"
+    },
+    "feature-detail": {
+      "dashboard": "Dashboard",
+      "system": "System",
+      "features": "Features"
     }
   }
 }

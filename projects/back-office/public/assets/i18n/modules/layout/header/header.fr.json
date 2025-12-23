@@ -29,13 +29,21 @@
           "analytics": "Analytics contenu"
         },
         "system": {
+          "billing-dashboard": "Tableau de bord Facturation",
           "plans": "Plans de facturation",
           "addons": "Modules complémentaires",
           "subscriptions": "Abonnements",
           "payment-links": "Liens de paiement",
           "config": "Configuration système",
-          "billing": "Gestion facturation",
-          "maintenance": "Maintenance système"
+          "billing": "Gestion de la facturation",
+          "maintenance": "Maintenance système",
+          "payment-link-detail": "Détails du lien de paiement",
+          "invoices-list": "Factures",
+          "invoice-detail": "Détails de la facture",
+          "transactions-list": "Transactions",
+          "transaction-detail": "Détails de la transaction",
+          "features-list": "Fonctionnalités",
+          "feature-detail": "Détail de la fonctionnalité"
         }
       },
       "sales": {

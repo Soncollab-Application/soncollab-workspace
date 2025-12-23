@@ -1,0 +1,30 @@
+{
+  "transaction-detail": {
+    "page_title": "Détails de la transaction",
+    "transaction_details": "Détails de la transaction",
+    "reference": "Référence",
+    "type": "Type",
+    "amount": "Montant",
+    "provider": "Fournisseur de paiement",
+    "transaction_date": "Date de transaction",
+    "processed_date": "Date de traitement",
+    "provider_id": "ID Fournisseur",
+    "failure_reason": "Raison de l'échec",
+    "customer_details": "Informations client",
+    "customer_email": "Email",
+    "customer_name": "Nom",
+    "payment_method": "Méthode de paiement",
+    "related": "Enregistrements liés",
+    "invoice": "Facture",
+    "subscription": "Abonnement",
+    "sales_contact": "Contact commercial",
+    "view_invoice": "Voir la facture",
+    "view_subscription": "Voir l'abonnement",
+    "metadata": "Métadonnées",
+    "created_at": "Créée le",
+    "processed_by": "Traitée par",
+    "error": {
+      "load_failed": "Erreur lors du chargement de la transaction"
+    }
+  }
+}

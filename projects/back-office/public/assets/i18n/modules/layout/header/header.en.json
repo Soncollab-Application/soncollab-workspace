@@ -29,13 +29,21 @@
           "analytics": "Content Analytics"
         },
         "system": {
+          "billing-dashboard": "Billing Dashboard",
           "plans": "Billing Plans",
           "addons": "Add-ons",
           "subscriptions": "Subscriptions",
           "payment-links": "Payment Links",
           "config": "System Configuration",
           "billing": "Billing Management",
-          "maintenance": "System Maintenance"
+          "maintenance": "System Maintenance",
+          "payment-link-detail": "Payment Link Details",
+          "invoices-list": "Invoices",
+          "invoice-detail": "Invoice Details",
+          "transactions-list": "Transactions",
+          "transaction-detail": "Transaction Details",
+          "features-list": "Features",
+          "feature-detail": "Feature Details"
         }
       },
       "sales": {

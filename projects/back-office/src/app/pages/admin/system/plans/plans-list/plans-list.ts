@@ -1,12 +1,13 @@
-import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import {Component, computed, effect, inject, OnDestroy, OnInit, signal} from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import {
   FilterBarComponent,
   FilterConfig,
   FilterValue,
-  LanguageOrchestratorService,
   PermissionService,
   SortOption,
   ConfirmDialogService,
@@ -18,17 +19,45 @@ import {
   DataList,
   ListColumn,
   ListAction,
+  Choice,
+  ChoiceOption,
+  ChoiceConfig,
 } from 'shared-lib';
-import {BillingService} from '../../../../../core/services/admin/billing.service';
-import {Breadcrumb} from '../../../../../core/components/breadcrumb/breadcrumb';
-import {PageTitleService} from '../../../../../core/services/page-title.service';
-import {BillingPlanFilters, BillingPlanListItem, SupportLevel} from '../../../../../core/models/admin/billing';
-
+import { BillingService } from '../../../../../core/services/admin/billing.service';
+import { Breadcrumb } from '../../../../../core/components/breadcrumb/breadcrumb';
+import { PageTitleService } from '../../../../../core/services/page-title.service';
+import {
+  BillingPlanFilters,
+  BillingPlanListItem,
+  SupportLevel,
+  AVAILABLE_LOCALES
+} from '../../../../../core/models/admin/billing';
+import { TranslationsModal } from '../../../../../core/components/admin/translations-modal/translations-modal';
+import {
+  TranslationOption,
+  TranslationsModalService
+} from '../../../../../core/services/admin/translations-modal.service';
+import {PlanOffcanvasService} from '../../../../../core/services/admin/plan-offcanvas.service';
+import {PlanOffcanvas} from '../../../../../core/components/admin/plan-offcanvas/plan-offcanvas';
+import {LocaleSelectorModalService} from '../../../../../core/services/admin/locale-selector-modal.service';
+import {LocaleSelectorModal} from '../../../../../core/components/admin/locale-selector-modal/locale-selector-modal';
 
 @Component({
   selector: 'app-plans-list',
   standalone: true,
-  imports: [FilterBarComponent, Breadcrumb, TranslatePipe, KpiCardComponent, DataList],
+  imports: [
+    CommonModule,
+    FormsModule,
+    FilterBarComponent,
+    Breadcrumb,
+    TranslatePipe,
+    KpiCardComponent,
+    DataList,
+    Choice,
+    TranslationsModal,
+    PlanOffcanvas,
+    LocaleSelectorModal
+  ],
   templateUrl: './plans-list.html',
   styleUrl: './plans-list.css',
   providers: [ListStateManager]
@@ -42,9 +71,19 @@ export class PlansList implements OnInit, OnDestroy {
   private confirmDialog = inject(ConfirmDialogService);
   private toastService = inject(ToastService);
   protected listManager = inject(ListStateManager<BillingPlanListItem, BillingPlanFilters>);
+  private translationsModalService = inject(TranslationsModalService);
+  private planOffcanvasService = inject(PlanOffcanvasService);
+  private localeSelectorService = inject(LocaleSelectorModalService);
+
+
 
   private destroy$ = new Subject<void>();
   private componentId = 'plans-list';
+
+  readonly availableLocales = AVAILABLE_LOCALES;
+  currentLocale = signal<string>('fr');
+  private readonly LOCALE_STORAGE_KEY = 'admin-billing-plans-locale';
+  selectedLocale = signal<string>('fr');
 
   canFind = computed(() => this.permissionsService.hasPermission('billing-plan', 'billing-plan', 'find'));
   canCreate = computed(() => this.permissionsService.hasPermission('billing-plan', 'billing-plan', 'create'));
@@ -63,6 +102,26 @@ export class PlansList implements OnInit, OnDestroy {
   loadingStats = signal(false);
   private languageChange = signal(0);
 
+  languageOptions = computed<ChoiceOption[]>(() =>
+    this.availableLocales.map(locale => ({
+      value: locale.code,
+      label: `${locale.flag} ${locale.label}`,
+    }))
+  );
+
+  languageConfig: ChoiceConfig = {
+    searchEnabled: false,
+    allowHTML: false,
+    itemSelectText: '',
+    shouldSort: false,
+    removeItemButton: false,
+  };
+
+  currentLocaleLabel = computed(() => {
+    const locale = this.availableLocales.find(l => l.code === this.currentLocale());
+    return locale ? `${locale.flag} ${locale.label}` : this.currentLocale().toUpperCase();
+  });
+
   kpiCards = computed<KpiData[]>(() => {
     const statsData = this.stats();
     this.languageChange();
@@ -70,6 +129,13 @@ export class PlansList implements OnInit, OnDestroy {
     if (!statsData) return [];
 
     return [
+      {
+        label: this.translate.instant('plans-list.kpi.language'),
+        value: this.currentLocaleLabel(),
+        icon: 'language',
+        iconClass: 'text-info',
+        bgClass: 'bg-info bg-opacity-10'
+      },
       {
         label: this.translate.instant('plans-list.kpi.total'),
         value: statsData.total || 0,
@@ -90,18 +156,27 @@ export class PlansList implements OnInit, OnDestroy {
         icon: 'cancel',
         iconClass: 'text-danger',
         bgClass: 'bg-danger bg-opacity-10'
-      },
-      {
-        label: this.translate.instant('plans-list.kpi.revenue_potential'),
-        value: `${statsData.total_revenue_potential || 0}€`,
-        icon: 'euro',
-        iconClass: 'text-success',
-        bgClass: 'bg-success bg-opacity-10'
       }
     ];
   });
 
+  constructor() {
+    let wasOpen = false;
+
+    effect(() => {
+      const isOpen = this.planOffcanvasService.isOpen();
+
+      if (wasOpen && !isOpen) {
+        this.loadStats();
+        this.listManager.reload();
+      }
+
+      wasOpen = isOpen;
+    });
+  }
+
   ngOnInit(): void {
+    this.loadLocaleFromStorage();
     this.setBreadcrumbs();
     this.updatePageTitle();
     this.initializeConfig();
@@ -124,6 +199,8 @@ export class PlansList implements OnInit, OnDestroy {
         this.loadPlans(page, pageSize, filters, sortField, sortDirection),
       this.canFind
     );
+
+    this.loadStats();
   }
 
   ngOnDestroy(): void {
@@ -132,6 +209,29 @@ export class PlansList implements OnInit, OnDestroy {
     this.listManager.destroy();
     this.pageTitleService.resetBreadcrumbs();
   }
+
+  private loadLocaleFromStorage(): void {
+    const savedLocale = localStorage.getItem(this.LOCALE_STORAGE_KEY);
+    if (savedLocale && this.availableLocales.some(l => l.code === savedLocale)) {
+      this.currentLocale.set(savedLocale);
+      this.selectedLocale.set(savedLocale);
+    }
+  }
+
+  private saveLocaleToStorage(locale: string): void {
+    localStorage.setItem(this.LOCALE_STORAGE_KEY, locale);
+  }
+
+  onLanguageChoiceChange(newLocale: any): void {
+    if (newLocale && newLocale !== this.currentLocale()) {
+      this.currentLocale.set(newLocale);
+      this.selectedLocale.set(newLocale);
+      this.saveLocaleToStorage(newLocale);
+      this.loadStats();
+      this.listManager.reload();
+    }
+  }
+
 
   private initializeConfig(): void {
     this.filters.set([
@@ -172,21 +272,27 @@ export class PlansList implements OnInit, OnDestroy {
         key: 'product_type',
         label: this.translate.instant('plans-list.columns.product_type'),
         type: 'text',
-        render: (row: BillingPlanListItem) => row.product_type_name || '-'
+        render: (row: BillingPlanListItem) => row.product_type?.name || '-'
       },
       {
         key: 'price_monthly',
         label: this.translate.instant('plans-list.columns.price_monthly'),
         sortable: true,
         type: 'text',
-        render: (row: BillingPlanListItem) => `${row.price_monthly}${row.currency_symbol || '€'}`
+        render: (row: BillingPlanListItem) => {
+          const symbol = row.currency?.symbol || '$';
+          return `${symbol}${row.price_monthly}`;
+        }
       },
       {
         key: 'price_yearly',
         label: this.translate.instant('plans-list.columns.price_yearly'),
         sortable: true,
         type: 'text',
-        render: (row: BillingPlanListItem) => `${row.price_yearly}${row.currency_symbol || '€'}`
+        render: (row: BillingPlanListItem) => {
+          const symbol = row.currency?.symbol || '$';
+          return `${symbol}${row.price_yearly}`;
+        }
       },
       {
         key: 'support_level',
@@ -219,11 +325,37 @@ export class PlansList implements OnInit, OnDestroy {
     ];
 
     if (this.canUpdate()) {
+      baseActions.push(
+        {
+          label: this.translate.instant('common.edit'),
+          icon: 'edit',
+          class: 'btn-outline-primary',
+          handler: (row: BillingPlanListItem) => this.editPlan(row)
+        },
+
+        {
+          label: this.translate.instant('plans-list.actions.create_translation'),
+          icon: 'translate',
+          class: 'btn-outline-info',
+          handler: (plan) => this.createTranslation(plan),
+          condition: (plan) => {
+            const existingLocales = [
+              plan.locale,
+              ...(plan.localizations?.map(l => l.locale) || [])
+            ];
+            return existingLocales.length < this.availableLocales.length;
+          }
+        }
+
+      );
+
       baseActions.push({
-        label: this.translate.instant('common.edit'),
-        icon: 'edit',
-        class: 'btn-outline-primary',
-        handler: (row: BillingPlanListItem) => this.editPlan(row)
+        label: this.translate.instant('plans-list.actions.view_translations'),
+        icon: 'language',
+        class: 'btn-outline-info',
+        handler: (row: BillingPlanListItem) => this.viewTranslations(row),
+        condition: (row: BillingPlanListItem) =>
+          !!row.localizations && row.localizations.length > 0
       });
     }
 
@@ -238,12 +370,16 @@ export class PlansList implements OnInit, OnDestroy {
 
     this.actions.set(baseActions);
 
-    this.emptyTitle.set(this.translate.instant('plans-list.no_plans'));
-    this.emptyMessage.set(this.translate.instant('plans-list.no_plans_message'));
+    this.emptyTitle.set(this.translate.instant('plans-list.empty.title'));
+    this.emptyMessage.set(this.translate.instant('plans-list.empty.message'));
   }
 
+
+
   private buildFilters(search: string, filterValues: FilterValue): BillingPlanFilters {
-    const filters: BillingPlanFilters = {};
+    const filters: BillingPlanFilters = {
+      locale: this.currentLocale()
+    };
 
     if (search) {
       filters.search = search;
@@ -280,6 +416,22 @@ export class PlansList implements OnInit, OnDestroy {
         error: (err) => {
           console.error('Error loading plans:', err);
           this.listManager.setError();
+        }
+      });
+  }
+
+  private loadStats(): void {
+    this.loadingStats.set(true);
+    this.billingService.getBillingPlanStats(this.currentLocale())
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.stats.set(response.data);
+          this.loadingStats.set(false);
+        },
+        error: (err) => {
+          console.error('Error loading stats:', err);
+          this.loadingStats.set(false);
         }
       });
   }
@@ -324,9 +476,6 @@ export class PlansList implements OnInit, OnDestroy {
         label: this.translate.instant('breadcrumbs.plans-list.system')
       },
       {
-        label: this.translate.instant('breadcrumbs.plans-list.billing')
-      },
-      {
         label: this.translate.instant('breadcrumbs.plans-list.plans'),
         active: true
       }
@@ -351,8 +500,100 @@ export class PlansList implements OnInit, OnDestroy {
     this.router.navigate(['/admin/system/billing/plans', plan.documentId]);
   }
 
+  createPlan(): void {
+    if (!this.canCreate()) return;
+    this.planOffcanvasService.openCreate(this.currentLocale() as 'fr' | 'en');
+  }
+
   editPlan(plan: BillingPlanListItem): void {
-    console.log('Edit plan:', plan);
+    if (!this.canUpdate()) return;
+
+    this.billingService.getBillingPlan(plan.documentId, this.currentLocale())
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.planOffcanvasService.openEdit(response.data);
+        },
+        error: (err) => {
+          console.error('Error loading plan:', err);
+          this.toastService.showError(
+            this.translate.instant('plans-list.error.loading')
+          );
+        }
+      });
+  }
+
+  createTranslation(plan: BillingPlanListItem): void {
+    const existingLocales = [
+      plan.locale,
+      ...(plan.localizations?.map(l => l.locale) || [])
+    ];
+
+    const availableLocales = this.availableLocales
+      .filter(loc => !existingLocales.includes(loc.code))
+      .map(loc => ({
+        code: loc.code,
+        label: loc.label,
+        flag: loc.flag
+      }));
+
+    if (availableLocales.length === 0) {
+      this.toastService.showWarning(
+        this.translate.instant('plans-list.messages.all_translations_exist')
+      );
+      return;
+    }
+
+    if (availableLocales.length === 1) {
+      this.openCreateTranslationOffcanvas(plan.documentId, availableLocales[0].code);
+      return;
+    }
+
+    this.localeSelectorService.open(availableLocales, (selectedLocale) => {
+      this.openCreateTranslationOffcanvas(plan.documentId, selectedLocale);
+    });
+  }
+
+  private openCreateTranslationOffcanvas(sourceDocumentId: string, targetLocale: string): void {
+    this.planOffcanvasService.openCreate(targetLocale as 'fr' | 'en', sourceDocumentId);
+  }
+
+
+  viewTranslations(plan: BillingPlanListItem): void {
+    const allTranslations: TranslationOption[] = [];
+
+    // Ajouter la traduction courante
+    const currentLocaleConfig = this.availableLocales.find(l => l.code === plan.locale);
+    allTranslations.push({
+      locale: plan.locale,
+      flag: currentLocaleConfig?.flag || '',
+      label: currentLocaleConfig?.label || plan.locale.toUpperCase(),
+      documentId: plan.documentId
+    });
+
+    // Ajouter les localizations
+    if (plan.localizations && plan.localizations.length > 0) {
+      plan.localizations.forEach(loc => {
+        const localeConfig = this.availableLocales.find(l => l.code === loc.locale);
+        allTranslations.push({
+          locale: loc.locale,
+          flag: localeConfig?.flag || '',
+          label: localeConfig?.label || loc.locale.toUpperCase(),
+          documentId: loc.documentId
+        });
+      });
+    }
+
+    if (allTranslations.length === 0) {
+      this.toastService.showWarning(
+        this.translate.instant('plans-list.translations_modal.no_translations')
+      );
+      return;
+    }
+
+    this.translationsModalService.open(allTranslations, (translation) => {
+      this.router.navigate(['/admin/system/billing/plans', translation.documentId]);
+    });
   }
 
   deletePlan(plan: BillingPlanListItem): void {

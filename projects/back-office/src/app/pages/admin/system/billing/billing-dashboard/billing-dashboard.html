@@ -1,0 +1,171 @@
+<app-breadcrumb [showAvatar]="true" [icon]="'dashboard'">
+  <div breadcrumb-title>
+    {{ 'billing-dashboard.page_title' | translate }}
+  </div>
+</app-breadcrumb>
+
+@if (loading()) {
+  <div class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
+    </div>
+  </div>
+} @else {
+  <!-- SUBSCRIPTIONS SECTION -->
+  @if (canViewSubscriptions()) {
+    <div class="mb-5">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0">
+          <span class="material-symbols-outlined me-2 align-middle">subscriptions</span>
+          {{ 'billing-dashboard.subscriptions.title' | translate }}
+        </h4>
+        <button
+          class="btn btn-sm btn-outline-primary"
+          (click)="navigateTo('/admin/system/billing/subscriptions')">
+          {{ 'billing-dashboard.view_all' | translate }}
+          <span class="material-symbols-outlined ms-2 align-middle" style="font-size: 1rem;">arrow_forward</span>
+        </button>
+      </div>
+
+      <div class="row g-3 mb-4">
+        @for (kpi of subscriptionKpis(); track kpi.label) {
+          <div class="col-12 col-sm-6 col-lg-3">
+            <lib-kpi-card [data]="kpi" />
+          </div>
+        }
+      </div>
+
+      <!-- Usage Stats Card -->
+      @if (usageStats()) {
+        <div class="card mb-4">
+          <div class="card-header border-bottom">
+            <h5 class="mb-0">
+              <span class="material-symbols-outlined me-2 text-warning">analytics</span>
+              {{ 'billing-dashboard.usage.title' | translate }}
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-4">
+                <div class="text-center p-3">
+                  <h3 class="mb-1">{{ usageStats()!.total_quotas }}</h3>
+                  <small class="text-muted">{{ 'billing-dashboard.usage.total_quotas' | translate }}</small>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="text-center p-3">
+                  <h3 class="mb-1 text-danger">{{ usageStats()!.over_quota_count }}</h3>
+                  <small class="text-muted">{{ 'billing-dashboard.usage.over_limit' | translate }}</small>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="text-center p-3">
+                  <h3 class="mb-1 text-warning">{{ usageStats()!.warning_quotas }}</h3>
+                  <small class="text-muted">{{ 'billing-dashboard.usage.warning' | translate }}</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- INVOICES SECTION -->
+  @if (canViewInvoices()) {
+    <div class="mb-5">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0">
+          <span class="material-symbols-outlined me-2 align-middle">receipt</span>
+          {{ 'billing-dashboard.invoices.title' | translate }}
+        </h4>
+        <button
+          class="btn btn-sm btn-outline-primary"
+          (click)="navigateTo('/admin/system/billing/invoices')">
+          {{ 'billing-dashboard.view_all' | translate }}
+          <span class="material-symbols-outlined ms-2 align-middle" style="font-size: 1rem;">arrow_forward</span>
+        </button>
+      </div>
+
+      <div class="row g-3">
+        @for (kpi of invoiceKpis(); track kpi.label) {
+          <div class="col-12 col-sm-6 col-lg-3">
+            <lib-kpi-card [data]="kpi" />
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- PAYMENT LINKS SECTION -->
+  @if (canViewPaymentLinks()) {
+    <div class="mb-5">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0">
+          <span class="material-symbols-outlined me-2 align-middle">link</span>
+          {{ 'billing-dashboard.payment_links.title' | translate }}
+        </h4>
+        <button
+          class="btn btn-sm btn-outline-primary"
+          (click)="navigateTo('/admin/system/billing/payment-links')">
+          {{ 'billing-dashboard.view_all' | translate }}
+          <span class="material-symbols-outlined ms-2 align-middle" style="font-size: 1rem;">arrow_forward</span>
+        </button>
+      </div>
+
+      <div class="row g-3">
+        @for (kpi of paymentLinkKpis(); track kpi.label) {
+          <div class="col-12 col-sm-6 col-lg-3">
+            <lib-kpi-card [data]="kpi" />
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- QUICK ACTIONS -->
+  <div class="mb-5">
+    <h4 class="mb-3">
+      <span class="material-symbols-outlined me-2 align-middle">bolt</span>
+      {{ 'billing-dashboard.quick_actions.title' | translate }}
+    </h4>
+
+    <div class="row g-3">
+      <div class="col-md-4">
+        <div class="card h-100 border-primary border-opacity-25 hover-shadow cursor-pointer" (click)="navigateTo('/admin/system/billing/plans')">
+          <div class="card-body text-center">
+            <div class="avatar avatar-lg bg-primary bg-opacity-10 text-primary mx-auto mb-3">
+              <span class="material-symbols-outlined fs-1">credit_card</span>
+            </div>
+            <h5 class="mb-2">{{ 'billing-dashboard.quick_actions.manage_plans' | translate }}</h5>
+            <p class="text-muted small mb-0">{{ 'billing-dashboard.quick_actions.manage_plans_desc' | translate }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card h-100 border-success border-opacity-25 hover-shadow cursor-pointer" (click)="navigateTo('/admin/system/billing/addons')">
+          <div class="card-body text-center">
+            <div class="avatar avatar-lg bg-success bg-opacity-10 text-success mx-auto mb-3">
+              <span class="material-symbols-outlined fs-1">extension</span>
+            </div>
+            <h5 class="mb-2">{{ 'billing-dashboard.quick_actions.manage_addons' | translate }}</h5>
+            <p class="text-muted small mb-0">{{ 'billing-dashboard.quick_actions.manage_addons_desc' | translate }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card h-100 border-info border-opacity-25 hover-shadow cursor-pointer" (click)="navigateTo('/admin/system/billing/subscriptions')">
+          <div class="card-body text-center">
+            <div class="avatar avatar-lg bg-info bg-opacity-10 text-info mx-auto mb-3">
+              <span class="material-symbols-outlined fs-1">subscriptions</span>
+            </div>
+            <h5 class="mb-2">{{ 'billing-dashboard.quick_actions.manage_subscriptions' | translate }}</h5>
+            <p class="text-muted small mb-0">{{ 'billing-dashboard.quick_actions.manage_subscriptions_desc' | translate }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}

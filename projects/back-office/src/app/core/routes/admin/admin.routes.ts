@@ -157,17 +157,83 @@ export const adminRoutes: Routes = [
 
       // Système
       {
+        path: 'system/billing/dashboard',
+        loadComponent: () => import('../../../pages/admin/system/billing/billing-dashboard/billing-dashboard').then(c => c.BillingDashboard),
+        canActivate: [apiPermissionGuard('subscription', 'subscription', 'find')]
+      },
+      {
         path: 'system/billing/plans',
         loadComponent: () => import('../../../pages/admin/system/plans/plans-list/plans-list').then(c => c.PlansList),
         canActivate: [apiPermissionGuard('billing-plan', 'billing-plan', 'find')]
       },
       {
-        path: 'system/config',
-        loadComponent: () => import('../../../pages/admin/system/config/system-config/system-config').then(c => c.SystemConfig)
+        path: 'system/billing/plans/:documentId',
+        loadComponent: () => import('../../../pages/admin/system/plans/plan-detail/plan-detail').then(c => c.PlanDetail),
+        canActivate: [apiPermissionGuard('billing-plan', 'billing-plan', 'findOne')]
       },
       {
-        path: 'system/billing',
-        loadComponent: () => import('../../../pages/admin/system/billing/billing-management/billing-management').then(c => c.BillingManagement)
+        path: 'system/billing/addons',
+        loadComponent: () => import('../../../pages/admin/system/addons/addons-list/addons-list').then(c => c.AddonsList),
+        canActivate: [apiPermissionGuard('plan-addon', 'plan-addon', 'find')]
+      },
+      {
+        path: 'system/billing/addons/:documentId',
+        loadComponent: () => import('../../../pages/admin/system/addons/addon-detail/addon-detail').then(c => c.AddonDetail),
+        canActivate: [apiPermissionGuard('plan-addon', 'plan-addon', 'findOne')]
+      },
+      {
+        path: 'system/billing/subscriptions',
+        loadComponent: () => import('../../../pages/admin/system/subscriptions/subscriptions-list/subscriptions-list').then(c => c.SubscriptionsList),
+        canActivate: [apiPermissionGuard('subscription', 'subscription', 'find')]
+      },
+      {
+        path: 'system/billing/subscriptions/:documentId',
+        loadComponent: () => import('../../../pages/admin/system/subscriptions/subscription-detail/subscription-detail').then(c => c.SubscriptionDetailPage),
+        canActivate: [apiPermissionGuard('subscription', 'subscription', 'findOne')]
+      },
+      {
+        path: 'system/billing/payment-links',
+        loadComponent: () => import('../../../pages/admin/system/payment-links/payment-links-list/payment-links-list').then(c => c.PaymentLinksList),
+        canActivate: [apiPermissionGuard('subscription-payment-link', 'subscription-payment-link', 'find')]
+      },
+      {
+        path: 'system/billing/payment-links/:documentId',
+        loadComponent: () => import('../../../pages/admin/system/payment-links/payment-link-detail/payment-link-detail').then(c => c.PaymentLinkDetail),
+        canActivate: [apiPermissionGuard('subscription-payment-link', 'subscription-payment-link', 'findOne')]
+      },
+      {
+        path: 'system/billing/invoices',
+        loadComponent: () => import('../../../pages/admin/system/invoices/invoices-list/invoices-list').then(c => c.InvoicesList),
+        canActivate: [apiPermissionGuard('subscription-invoice', 'subscription-invoice', 'find')]
+      },
+      {
+        path: 'system/billing/invoices/:documentId',
+        loadComponent: () => import('../../../pages/admin/system/invoices/invoice-detail/invoice-detail').then(c => c.InvoiceDetail),
+        canActivate: [apiPermissionGuard('subscription-invoice', 'subscription-invoice', 'findOne')]
+      },
+      {
+        path: 'system/billing/transactions',
+        loadComponent: () => import('../../../pages/admin/system/transactions/transactions-list/transactions-list').then(c => c.TransactionsList),
+        canActivate: [apiPermissionGuard('subscription-transaction', 'subscription-transaction', 'find')]
+      },
+      {
+        path: 'system/billing/transactions/:documentId',
+        loadComponent: () => import('../../../pages/admin/system/transactions/transaction-detail/transaction-detail').then(c => c.TransactionDetail),
+        canActivate: [apiPermissionGuard('subscription-transaction', 'subscription-transaction', 'findOne')]
+      },
+      {
+        path: 'system/billing/features',
+        loadComponent: () => import('../../../pages/admin/system/features/features-list/features-list').then(c => c.FeaturesList),
+        canActivate: [apiPermissionGuard('feature-flag', 'feature-flag', 'find')]
+      },
+      {
+        path: 'system/billing/features/:documentId',
+        loadComponent: () => import('../../../pages/admin/system/features/feature-detail/feature-detail').then(c => c.FeatureDetail),
+        canActivate: [apiPermissionGuard('feature-flag', 'feature-flag', 'findOne')]
+      },
+      {
+        path: 'system/config',
+        loadComponent: () => import('../../../pages/admin/system/config/system-config/system-config').then(c => c.SystemConfig)
       },
       {
         path: 'system/maintenance',

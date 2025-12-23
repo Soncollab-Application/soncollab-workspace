@@ -1,0 +1,20 @@
+{
+  "addon-detail": {
+    "page_title": "Add-on Details",
+    "view_translations": "View translations",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "language": "Language",
+    "created": "Created",
+    "updated": "Updated",
+    "description": "Description",
+    "features_included": "Included features",
+    "toast": {
+      "delete_success": "Add-on \"{{name}}\" deleted successfully",
+      "delete_error": "Error deleting add-on \"{{name}}\""
+    },
+    "error": {
+      "loading": "Error loading add-on"
+    }
+  }
+}

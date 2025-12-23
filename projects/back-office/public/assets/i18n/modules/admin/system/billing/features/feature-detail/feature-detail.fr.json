@@ -1,0 +1,14 @@
+{
+  "feature-detail": {
+    "overview": "Aperçu",
+    "name": "Nom",
+    "description": "Description",
+    "status": "Statut",
+    "enabled_by_default": "Activée par défaut",
+    "metadata": "Métadonnées",
+    "created_at": "Créée le",
+    "updated_at": "Mise à jour le",
+    "language": "Langue",
+    "actions": "Actions"
+  }
+}

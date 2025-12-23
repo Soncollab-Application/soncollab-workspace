@@ -100,17 +100,20 @@ export interface SubscriptionLifecycleStats {
 
 
 export interface SubscriptionUsageStats {
-  total_subscriptions: number;
   total_quotas: number;
-  quotas_over_limit: number;
-  average_usage_percentage: number;
-  by_quota_type: Record<string, {
+  over_quota_count: number;
+  warning_quotas: number;
+  by_type: Record<string, {
     count: number;
-    average_usage: number;
-    over_limit: number;
+    over_quota: number;
   }>;
+  by_plan: Record<string, {
+    count: number;
+    over_quota: number;
+  }>;
+  total_usage: number;
+  total_capacity: number;
 }
-
 
 export interface SubscriptionQuotasResponse {
   data: SubscriptionQuota[];
