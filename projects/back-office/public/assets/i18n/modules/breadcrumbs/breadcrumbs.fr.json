@@ -99,6 +99,11 @@
       "dashboard": "Tableau de bord",
       "system": "Système",
       "billing": "Facturation"
+    },
+    "payment-links-list": {
+      "dashboard": "Tableau de bord",
+      "system": "Système",
+      "payment_links": "Liens de paiement"
     }
   }
 }

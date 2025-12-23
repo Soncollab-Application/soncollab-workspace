@@ -99,6 +99,11 @@
       "dashboard": "Dashboard",
       "system": "System",
       "billing": "Billing"
+    },
+    "payment-links-list": {
+      "dashboard": "Dashboard",
+      "system": "System",
+      "payment_links": "Payment Links"
     }
   }
 }

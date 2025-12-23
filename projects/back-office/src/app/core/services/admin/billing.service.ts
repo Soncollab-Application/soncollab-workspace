@@ -430,7 +430,8 @@ export class BillingService {
     params = params.set('populate[created_by][fields][1]', 'first_name');
     params = params.set('populate[created_by][fields][2]', 'last_name');
     params = params.set('populate[sales_contact][fields][0]', 'email');
-    params = params.set('populate[sales_contact][fields][1]', 'full_name');
+    params = params.set('populate[sales_contact][fields][1]', 'first_name');
+    params = params.set('populate[sales_contact][fields][2]', 'last_name');
 
     if (filters?.search) {
       params = params.set('filters[$or][0][customer_email][$containsi]', filters.search);
