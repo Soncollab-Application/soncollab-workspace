@@ -84,6 +84,16 @@
       "dashboard": "Dashboard",
       "system": "System",
       "addons": "Add-ons"
+    },
+    "subscriptions-list": {
+      "dashboard": "Dashboard",
+      "system": "System",
+      "subscriptions": "Subscriptions"
+    },
+    "subscription-detail": {
+      "dashboard": "Dashboard",
+      "system": "System",
+      "subscriptions": "Subscriptions"
     }
   }
 }

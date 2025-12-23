@@ -84,6 +84,16 @@
       "dashboard": "Tableau de bord",
       "system": "Système",
       "addons": "Modules complémentaires"
+    },
+    "subscriptions-list": {
+      "dashboard": "Tableau de bord",
+      "system": "Système",
+      "subscriptions": "Abonnements"
+    },
+    "subscription-detail": {
+      "dashboard": "Tableau de bord",
+      "system": "Système",
+      "subscriptions": "Abonnements"
     }
   }
 }

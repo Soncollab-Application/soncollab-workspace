@@ -1,0 +1,53 @@
+{
+  "subscriptions-list": {
+    "page_title": "Abonnements",
+    "create_subscription": "Créer un abonnement",
+    "search_placeholder": "Rechercher par nom ou email...",
+    "kpi": {
+      "total": "Total",
+      "active": "Actifs",
+      "trial": "Essai gratuit",
+      "expiring_soon": "Expire bientôt"
+    },
+    "filters": {
+      "status": "Statut",
+      "billing_cycle": "Cycle de facturation",
+      "subscriber_type": "Type d'abonné"
+    },
+    "sort": {
+      "newest": "Plus récents",
+      "start_date": "Date de début",
+      "expiry_soon": "Expire bientôt",
+      "subscriber": "Abonné (A-Z)"
+    },
+    "columns": {
+      "subscriber": "Abonné",
+      "plan": "Plan",
+      "billing_cycle": "Cycle",
+      "end_date": "Date de fin",
+      "status": "Statut"
+    },
+    "status": {
+      "active": "Actif",
+      "trial": "Essai",
+      "cancelled": "Annulé",
+      "paused": "En pause"
+    },
+    "billing_cycle": {
+      "monthly": "Mensuel",
+      "yearly": "Annuel"
+    },
+    "subscriber_type": {
+      "user": "Utilisateur",
+      "team": "Équipe"
+    },
+    "toast": {
+      "delete_success": "Abonnement de \"{{name}}\" supprimé avec succès",
+      "delete_error": "Erreur lors de la suppression de l'abonnement de \"{{name}}\""
+    },
+    "empty": {
+      "title": "Aucun abonnement",
+      "message": "Aucun abonnement trouvé"
+    }
+  }
+}

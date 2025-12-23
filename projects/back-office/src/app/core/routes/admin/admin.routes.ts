@@ -177,6 +177,16 @@ export const adminRoutes: Routes = [
         canActivate: [apiPermissionGuard('plan-addon', 'plan-addon', 'findOne')]
       },
       {
+        path: 'system/billing/subscriptions',
+        loadComponent: () => import('../../../pages/admin/system/subscriptions/subscriptions-list/subscriptions-list').then(c => c.SubscriptionsList),
+        canActivate: [apiPermissionGuard('subscription', 'subscription', 'find')]
+      },
+      {
+        path: 'system/billing/subscriptions/:documentId',
+        loadComponent: () => import('../../../pages/admin/system/subscriptions/subscription-detail/subscription-detail').then(c => c.SubscriptionDetailPage),
+        canActivate: [apiPermissionGuard('subscription', 'subscription', 'findOne')]
+      },
+      {
         path: 'system/config',
         loadComponent: () => import('../../../pages/admin/system/config/system-config/system-config').then(c => c.SystemConfig)
       },

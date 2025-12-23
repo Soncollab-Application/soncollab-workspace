@@ -1,0 +1,27 @@
+{
+  "subscription-detail": {
+    "page_title": "Détail de l'abonnement",
+    "plan": "Plan",
+    "billing_cycle": "Cycle de facturation",
+    "start_date": "Date de début",
+    "end_date": "Date de fin",
+    "trial_end_date": "Fin de l'essai",
+    "created": "Créé",
+    "updated": "Mis à jour",
+    "expires_in": "Expire dans",
+    "days": "jours",
+    "expired": "Expiré",
+    "addons": "Modules complémentaires",
+    "quotas": "Quotas et limites",
+    "over_quota": "Dépassé",
+    "usage": "Utilisation",
+    "next_reset": "Prochain reset",
+    "toast": {
+      "delete_success": "Abonnement de \"{{name}}\" supprimé avec succès",
+      "delete_error": "Erreur lors de la suppression de l'abonnement de \"{{name}}\""
+    },
+    "error": {
+      "loading": "Erreur lors du chargement de l'abonnement"
+    }
+  }
+}

@@ -1,0 +1,57 @@
+<app-breadcrumb [showAvatar]="true" [icon]="'subscriptions'">
+  <div breadcrumb-title>
+    {{ 'subscriptions-list.page_title' | translate }}
+  </div>
+
+  <div breadcrumb-actions>
+    @if (canCreate()) {
+      <button class="btn btn-primary" (click)="router.navigate(['/admin/system/billing/subscriptions/new'])">
+        <span class="material-symbols-outlined me-2">add</span>
+        {{ 'subscriptions-list.create_subscription' | translate }}
+      </button>
+    }
+  </div>
+</app-breadcrumb>
+
+<div class="row g-3 mb-4 pb-3">
+  @for (kpi of kpiCards(); track kpi.label) {
+    <div class="col-12 col-sm-6 col-lg-3">
+      <lib-kpi-card
+        [data]="kpi"
+        [loading]="loadingStats()"
+      />
+    </div>
+  }
+</div>
+
+<div class="mb-5 pt-2">
+  <lib-filter-bar
+    [filters]="filters()"
+    [sortOptions]="sortOptions()"
+    [showSearch]="true"
+    [showViewSelector]="false"
+    [selectedCount]="-1"
+    [useFilterState]="true"
+  />
+</div>
+
+<div class="pb-5">
+  <lib-data-list
+    [data]="listManager.items()"
+    [columns]="columns()"
+    [actions]="actions()"
+    [loading]="listManager.loading()"
+    [pagination]="listManager.pagination()"
+    [currentSort]="listManager.currentSort()"
+    [view]="listManager.currentView()"
+    [selectable]="false"
+    [clickable]="true"
+    [emptyStateTitle]="emptyTitle()"
+    [emptyStateMessage]="emptyMessage()"
+    [emptyStateIcon]="'subscriptions'"
+    (sortChange)="listManager.onSortChange($any($event))"
+    (pageChange)="listManager.onPageChange($any($event))"
+    (actionClick)="onActionClick($any($event))"
+    (itemClick)="onRowClick($any($event))"
+  />
+</div>
