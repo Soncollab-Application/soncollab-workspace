@@ -167,6 +167,16 @@ export const adminRoutes: Routes = [
         canActivate: [apiPermissionGuard('billing-plan', 'billing-plan', 'findOne')]
       },
       {
+        path: 'system/billing/addons',
+        loadComponent: () => import('../../../pages/admin/system/addons/addons-list/addons-list').then(c => c.AddonsList),
+        canActivate: [apiPermissionGuard('plan-addon', 'plan-addon', 'find')]
+      },
+      {
+        path: 'system/billing/addons/:documentId',
+        loadComponent: () => import('../../../pages/admin/system/addons/addon-detail/addon-detail').then(c => c.AddonDetail),
+        canActivate: [apiPermissionGuard('plan-addon', 'plan-addon', 'findOne')]
+      },
+      {
         path: 'system/config',
         loadComponent: () => import('../../../pages/admin/system/config/system-config/system-config').then(c => c.SystemConfig)
       },

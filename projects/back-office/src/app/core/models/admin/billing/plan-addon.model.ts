@@ -1,5 +1,13 @@
 import { FeatureFlag } from './feature-flag.model';
 
+export interface PlanAddonLocalization {
+  id: number;
+  documentId: string;
+  locale: string;
+  addon_name: string;
+  publishedAt: string;
+}
+
 export interface PlanAddon {
   id: number;
   documentId: string;
@@ -10,6 +18,7 @@ export interface PlanAddon {
   is_active: boolean;
   visible_to_users: boolean;
   features_included?: FeatureFlag[];
+  localizations?: PlanAddonLocalization[];
   createdAt: string;
   updatedAt: string;
   publishedAt: string;
@@ -28,6 +37,7 @@ export interface PlanAddonListItem {
   features_included_count?: number;
   used_by_plans_count?: number;
   active_subscriptions_count?: number;
+  localizations?: PlanAddonLocalization[];
   createdAt: string;
   locale: string;
 }
@@ -50,6 +60,7 @@ export interface PlanAddonResponse {
 
 export interface PlanAddonFilters {
   search?: string;
+  locale?: string;
   is_active?: boolean;
   visible_to_users?: boolean;
 }

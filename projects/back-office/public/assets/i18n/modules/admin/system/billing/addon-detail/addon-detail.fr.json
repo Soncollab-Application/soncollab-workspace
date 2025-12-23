@@ -1,0 +1,20 @@
+{
+  "addon-detail": {
+    "page_title": "Détail du module",
+    "view_translations": "Voir les traductions",
+    "monthly": "Mensuel",
+    "yearly": "Annuel",
+    "language": "Langue",
+    "created": "Créé",
+    "updated": "Mis à jour",
+    "description": "Description",
+    "features_included": "Fonctionnalités incluses",
+    "toast": {
+      "delete_success": "Module \"{{name}}\" supprimé avec succès",
+      "delete_error": "Erreur lors de la suppression du module \"{{name}}\""
+    },
+    "error": {
+      "loading": "Erreur lors du chargement du module"
+    }
+  }
+}

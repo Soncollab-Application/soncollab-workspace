@@ -221,6 +221,13 @@ export class BillingService {
 
     params = params.set('populate[features_included][fields][0]', 'name');
     params = params.set('populate[features_included][fields][1]', 'description');
+    params = params.set('populate[localizations][fields][0]', 'locale');
+    params = params.set('populate[localizations][fields][1]', 'documentId');
+    params = params.set('populate[localizations][fields][2]', 'addon_name');
+
+    if (filters?.locale) {
+      params = params.set('locale', filters.locale);
+    }
 
     if (filters?.search) {
       params = params.set('filters[addon_name][$containsi]', filters.search);
@@ -237,12 +244,17 @@ export class BillingService {
     return this.http.get<PlanAddonsResponse>(this.BILLING_ENDPOINTS.plan_addons, { params });
   }
 
-  getPlanAddon(documentId: string): Observable<PlanAddonResponse> {
+  getPlanAddon(documentId: string, locale?: string): Observable<PlanAddonResponse> {
     let params = new HttpParams();
 
     params = params.set('populate[0]', 'features_included');
     params = params.set('populate[1]', 'billing_plans');
     params = params.set('populate[2]', 'subscriptions');
+    params = params.set('populate[3]', 'localizations');
+
+    if (locale) {
+      params = params.set('locale', locale);
+    }
 
     return this.http.get<PlanAddonResponse>(
       this.BILLING_ENDPOINTS.plan_addon_by_id(documentId),

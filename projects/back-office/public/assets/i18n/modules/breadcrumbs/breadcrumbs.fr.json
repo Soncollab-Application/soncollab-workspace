@@ -74,6 +74,16 @@
       "system": "Système",
       "billing": "Facturation",
       "plans": "Plans"
+    },
+    "addons-list": {
+      "dashboard": "Tableau de bord",
+      "system": "Système",
+      "addons": "Modules complémentaires"
+    },
+    "addon-detail": {
+      "dashboard": "Tableau de bord",
+      "system": "Système",
+      "addons": "Modules complémentaires"
     }
   }
 }

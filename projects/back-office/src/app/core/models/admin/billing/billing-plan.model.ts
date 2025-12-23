@@ -3,11 +3,6 @@ import { ProductType } from './product-type.model';
 import { FeatureFlag } from './feature-flag.model';
 import { PlanAddon } from './plan-addon.model';
 
-export const AVAILABLE_LOCALES = [
-  { code: 'fr', label: 'Français', flag: '🇫🇷' },
-  { code: 'en', label: 'English', flag: '🇬🇧' },
-];
-
 export type SupportLevel = 'basic' | 'priority' | 'premium';
 
 export interface BillingPlanLocalization {
