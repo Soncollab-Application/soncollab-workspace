@@ -1,0 +1,307 @@
+<app-breadcrumb [showAvatar]="true" [icon]="'credit_card'" [hasMobileActions]="true">
+  <div breadcrumb-title>
+    <span class="me-2">{{ 'plan-detail.page_title' | translate }}</span>
+    @if (hasLocalizations()) {
+      <span
+        class="badge bg-info text-white cursor-pointer"
+        (click)="viewTranslations()"
+        role="button"
+        [title]="'plan-detail.view_translations' | translate">
+        {{ currentLocaleLabel() }}
+      </span>
+    } @else {
+      <span class="badge bg-primary">{{ currentLocaleLabel() }}</span>
+    }
+  </div>
+
+  <div breadcrumb-actions>
+    <div class="d-flex gap-2">
+      <button class="btn btn-outline-secondary" (click)="goBack()">
+        <span class="material-symbols-outlined me-2">arrow_back</span>
+        {{ 'common.back' | translate }}
+      </button>
+
+      @if (canUpdate()) {
+        <button class="btn btn-primary" (click)="editPlan()">
+          <span class="material-symbols-outlined me-2">edit</span>
+          {{ 'common.edit' | translate }}
+        </button>
+      }
+
+      @if (canDelete()) {
+        <button class="btn btn-outline-danger" (click)="deletePlan()">
+          <span class="material-symbols-outlined me-2">delete</span>
+          {{ 'common.delete' | translate }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <div breadcrumb-actions-mobile>
+    <div class="d-flex flex-column gap-2 w-100">
+
+      @if (canUpdate()) {
+        <button class="btn btn-primary w-100" (click)="editPlan()">
+          <span class="material-symbols-outlined me-2">edit</span>
+          {{ 'common.edit' | translate }}
+        </button>
+      }
+
+      @if (canDelete()) {
+        <button class="btn btn-outline-danger w-100" (click)="deletePlan()">
+          <span class="material-symbols-outlined me-2">delete</span>
+          {{ 'common.delete' | translate }}
+        </button>
+      }
+    </div>
+  </div>
+</app-breadcrumb>
+
+@if (loading()) {
+  <div class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
+    </div>
+  </div>
+} @else if (plan()) {
+  <div class="row py-3 my-3 mb-5">
+    <!-- SIDEBAR -->
+    <div class="col-xl-4">
+      <div class="card mb-4">
+        <div class="card-body text-center">
+          <div class="mb-3">
+            <div class="avatar avatar-xl bg-primary bg-opacity-10 text-primary mx-auto mb-3">
+              <span class="material-symbols-outlined fs-1">credit_card</span>
+            </div>
+            <h4 class="mb-2">{{ plan()!.plan_name }}</h4>
+            <span class="badge" [class]="getSupportLevelBadge()">
+              {{ translateSupportLevel(plan()!.support_level) }}
+            </span>
+          </div>
+
+          <div class="d-flex justify-content-around py-3 border-top border-bottom">
+            <div>
+              <small class="text-muted d-block">{{ 'plan-detail.monthly' | translate }}</small>
+              <h5 class="mb-0">{{ plan()!.currency.symbol }}{{ plan()!.price_monthly }}</h5>
+            </div>
+            <div class="vr"></div>
+            <div>
+              <small class="text-muted d-block">{{ 'plan-detail.yearly' | translate }}</small>
+              <h5 class="mb-0">{{ plan()!.currency.symbol }}{{ plan()!.price_yearly }}</h5>
+            </div>
+          </div>
+
+          <div class="text-start mt-2 pt-3">
+            <div class="mb-3">
+              <small class="text-muted d-block mb-1">
+                <span class="material-symbols-outlined me-1" style="font-size: 1rem;">flag</span>
+                {{ 'plan-detail.language' | translate }}
+              </small>
+              @if (hasLocalizations()) {
+                <div class="mb-0">
+                  <button
+                    class="btn btn-sm btn-outline-info w-100"
+                    (click)="viewTranslations()">
+                    <span class="material-symbols-outlined me-2" style="font-size: 1rem;">language</span>
+                    {{ currentLocaleLabel() }}
+                  </button>
+                </div>
+              } @else {
+                <p class="mb-0 fw-medium">{{ currentLocaleLabel() }}</p>
+              }
+            </div>
+
+            <div class="mb-3">
+              <small class="text-muted d-block mb-1">
+                <span class="material-symbols-outlined me-1" style="font-size: 1rem;">check_circle</span>
+                {{ 'plan-detail.status' | translate }}
+              </small>
+              <lib-badge
+                [text]="plan()!.is_active ? ('plans-list.status.active' | translate) : ('plans-list.status.inactive' | translate)"
+                [type]="plan()!.is_active ? 'success' : 'danger'"
+              />
+            </div>
+
+            <div class="mb-3">
+              <small class="text-muted d-block mb-1">
+                <span class="material-symbols-outlined me-1" style="font-size: 1rem;">schedule</span>
+                {{ 'plan-detail.created' | translate }}
+              </small>
+              <p class="mb-0 fw-medium">{{ plan()!.createdAt | relativeDate }}</p>
+            </div>
+
+            <div class="mb-3">
+              <small class="text-muted d-block mb-1">
+                <span class="material-symbols-outlined me-1" style="font-size: 1rem;">update</span>
+                {{ 'plan-detail.updated' | translate }}
+              </small>
+              <p class="mb-0 fw-medium">{{ plan()!.updatedAt | relativeDate }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="col-xl-8">
+      <!-- Details Card -->
+      <div class="card mb-4">
+        <div class="card-header border-bottom">
+          <h5 class="mb-0">
+            <span class="material-symbols-outlined me-2 text-primary">info</span>
+            {{ 'plan-detail.details' | translate }}
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="row g-4">
+            <div class="col-md-6">
+              <div class="detail-item">
+                <small class="text-muted d-block mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                  {{ 'plan-detail.product_type' | translate }}
+                </small>
+                <p class="mb-0 fw-medium">{{ plan()!.product_type.name }}</p>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="detail-item">
+                <small class="text-muted d-block mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                  {{ 'plan-detail.currency' | translate }}
+                </small>
+                <p class="mb-0 fw-medium">
+                  {{ plan()!.currency.code }} ({{ plan()!.currency.symbol }})
+                </p>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="detail-item">
+                <small class="text-muted d-block mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                  {{ 'plan-detail.asset_limit' | translate }}
+                </small>
+                <p class="mb-0 fw-medium">{{ plan()!.asset_limit | number }}</p>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="detail-item">
+                <small class="text-muted d-block mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                  {{ 'plan-detail.royalty_cap' | translate }}
+                </small>
+                <p class="mb-0 fw-medium">
+                  @if (plan()!.royalty_cap) {
+                    {{ plan()!.currency.symbol }}{{ plan()!.royalty_cap | number }}
+                  } @else {
+                    {{ 'plan-detail.unlimited' | translate }}
+                  }
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Included Features -->
+      @if (plan()!.included_features && plan()!.included_features.length > 0) {
+        <div class="card mb-4">
+          <div class="card-header border-bottom d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+              <span class="material-symbols-outlined me-2 text-success">verified</span>
+              {{ 'plan-detail.included_features' | translate }}
+            </h5>
+            <span class="badge bg-primary-subtle text-primary">
+              {{ plan()!.included_features!.length }}
+            </span>
+          </div>
+          <div class="card-body">
+            <div class="row g-2">
+              @for (feature of plan()!.included_features; track feature.documentId) {
+                <div class="col-md-6">
+                  <div class="p-2 rounded bg-success-subtle">
+                    <span class="material-symbols-outlined me-2 text-success">check_circle</span>
+                    <small class="fw-medium">{{ feature.name }}</small>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Available Addons -->
+      @if (plan()!.available_addons && plan()!.available_addons.length > 0) {
+        <div class="card mb-4">
+          <div class="card-header border-bottom d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+              <span class="material-symbols-outlined me-2 text-info">extension</span>
+              {{ 'plan-detail.available_addons' | translate }}
+            </h5>
+            <span class="badge bg-primary-subtle text-primary">
+              {{ plan()!.available_addons!.length }}
+            </span>
+          </div>
+          <div class="card-body">
+            <div class="row g-2">
+              @for (addon of plan()!.available_addons; track addon.documentId) {
+                <div class="col-md-6">
+                  <div class="p-2 rounded border">
+                    <span class="material-symbols-outlined me-2 text-info">extension</span>
+                    <small class="fw-medium">{{ addon.addon_name }}</small>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Statistics -->
+      @if (plan()!.statistics) {
+        <div class="card">
+          <div class="card-header border-bottom">
+            <h5 class="mb-0">
+              <span class="material-symbols-outlined me-2 text-warning">analytics</span>
+              {{ 'plan-detail.statistics' | translate }}
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="p-3 rounded bg-primary-subtle">
+                  <small class="text-muted d-block mb-1">{{ 'plan-detail.active_subscriptions' | translate }}</small>
+                  <h4 class="mb-0 text-primary">{{ plan()!.statistics.active_subscriptions }}</h4>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="p-3 rounded bg-success-subtle">
+                  <small class="text-muted d-block mb-1">{{ 'plan-detail.total_revenue' | translate }}</small>
+                  <h4 class="mb-0 text-success">
+                    {{ plan()!.currency.symbol }}{{ plan()!.statistics.total_revenue | number }}
+                  </h4>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="p-3 rounded bg-info-subtle">
+                  <small class="text-muted d-block mb-1">{{ 'plan-detail.mrr' | translate }}</small>
+                  <h4 class="mb-0 text-info">
+                    {{ plan()!.currency.symbol }}{{ plan()!.statistics.monthly_recurring_revenue | number }}
+                  </h4>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="p-3 rounded bg-warning-subtle">
+                  <small class="text-muted d-block mb-1">{{ 'plan-detail.arr' | translate }}</small>
+                  <h4 class="mb-0 text-warning">
+                    {{ plan()!.currency.symbol }}{{ plan()!.statistics.annual_recurring_revenue | number }}
+                  </h4>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+}
+
+<app-translations-modal />

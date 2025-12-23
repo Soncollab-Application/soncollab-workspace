@@ -68,6 +68,12 @@
       "system": "Système",
       "billing": "Facturation",
       "plans": "Plans"
+    },
+    "plan-detail": {
+      "dashboard": "Tableau de bord",
+      "system": "Système",
+      "billing": "Facturation",
+      "plans": "Plans"
     }
   }
 }

@@ -162,6 +162,11 @@ export const adminRoutes: Routes = [
         canActivate: [apiPermissionGuard('billing-plan', 'billing-plan', 'find')]
       },
       {
+        path: 'system/billing/plans/:documentId',
+        loadComponent: () => import('../../../pages/admin/system/plans/plan-detail/plan-detail').then(c => c.PlanDetail),
+        canActivate: [apiPermissionGuard('billing-plan', 'billing-plan', 'findOne')]
+      },
+      {
         path: 'system/config',
         loadComponent: () => import('../../../pages/admin/system/config/system-config/system-config').then(c => c.SystemConfig)
       },

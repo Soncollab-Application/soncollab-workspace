@@ -68,6 +68,12 @@
       "system": "System",
       "billing": "Billing",
       "plans": "Plans"
+    },
+    "plan-detail": {
+      "dashboard": "Dashboard",
+      "system": "System",
+      "billing": "Billing",
+      "plans": "Plans"
     }
   }
 }

@@ -1,29 +1,29 @@
-// Currency
-export * from './currency.model';
-
-// Product Type
-export * from './product-type.model';
-
-// Feature Flag
-export * from './feature-flag.model';
-
-// Billing Plan
+// Billing Plans
 export * from './billing-plan.model';
 
-// Plan Addon
+// Plan Addons
 export * from './plan-addon.model';
 
-// Subscription
+// Subscriptions
 export * from './subscription.model';
 
-// Payment Link
+// Payment Links
 export * from './payment-link.model';
 
-// Payment Method
+// Payment Methods
 export * from './payment-method.model';
 
-// Invoice
+// Invoices
 export * from './invoice.model';
 
-// Transaction
+// Transactions
 export * from './transaction.model';
+
+// Currencies
+export * from './currency.model';
+
+// Feature Flags
+export * from './feature-flag.model';
+
+// Product Types
+export * from './product-type.model';
