@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject, forkJoin, takeUntil } from 'rxjs';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -25,8 +25,7 @@ import {
     CommonModule,
     Breadcrumb,
     TranslatePipe,
-    KpiCardComponent,
-    DecimalPipe
+    KpiCardComponent
   ],
   templateUrl: './billing-dashboard.html',
   styleUrl: './billing-dashboard.css'
@@ -46,6 +45,7 @@ export class BillingDashboard implements OnInit, OnDestroy {
   paymentLinkStats = signal<PaymentLinkDashboard | null>(null);
 
   loading = signal(true);
+  currentLang = signal<string>(''); // Signal pour forcer le recalcul
 
   canViewSubscriptions = computed(() =>
     this.permissionsService.hasPermission('subscription', 'subscription', 'find')
@@ -62,6 +62,7 @@ export class BillingDashboard implements OnInit, OnDestroy {
   // KPIs Subscriptions
   subscriptionKpis = computed<KpiData[]>(() => {
     const stats = this.subscriptionStats();
+    const lang = this.currentLang(); // Force recalcul au changement de langue
     if (!stats) return [];
 
     return [
@@ -99,20 +100,25 @@ export class BillingDashboard implements OnInit, OnDestroy {
   // KPIs Invoices
   invoiceKpis = computed<KpiData[]>(() => {
     const stats = this.invoiceStats();
+    const lang = this.currentLang(); // Force recalcul au changement de langue
     if (!stats) return [];
+
+    // Déterminer la devise principale
+    let mainCurrency = 'EUR';
+    if (stats.by_currency && Object.keys(stats.by_currency).length > 0) {
+      const currencies = Object.entries(stats.by_currency);
+      if (currencies.length > 0) {
+        mainCurrency = currencies.reduce((prev, curr) =>
+          curr[1].total > prev[1].total ? curr : prev
+        )[0];
+      }
+    }
 
     return [
       {
         label: this.translate.instant('billing-dashboard.invoices.total_revenue'),
-        value: `$${(stats.total_revenue || 0).toLocaleString()}`,
+        value: `${(stats.total_revenue || 0).toLocaleString()} ${mainCurrency}`,
         icon: 'attach_money',
-        iconClass: 'text-success',
-        bgClass: 'bg-success bg-opacity-10'
-      },
-      {
-        label: this.translate.instant('billing-dashboard.invoices.paid'),
-        value: stats.by_status?.paid || 0,
-        icon: 'check_circle',
         iconClass: 'text-success',
         bgClass: 'bg-success bg-opacity-10'
       },
@@ -124,11 +130,11 @@ export class BillingDashboard implements OnInit, OnDestroy {
         bgClass: 'bg-primary bg-opacity-10'
       },
       {
-        label: this.translate.instant('billing-dashboard.invoices.overdue'),
-        value: stats.overdue_count || 0,
-        icon: 'error',
-        iconClass: 'text-danger',
-        bgClass: 'bg-danger bg-opacity-10'
+        label: this.translate.instant('billing-dashboard.invoices.avg_amount'),
+        value: `${(stats.avg_invoice_amount || 0).toLocaleString()} ${mainCurrency}`,
+        icon: 'analytics',
+        iconClass: 'text-info',
+        bgClass: 'bg-info bg-opacity-10'
       }
     ];
   });
@@ -136,34 +142,35 @@ export class BillingDashboard implements OnInit, OnDestroy {
   // KPIs Payment Links
   paymentLinkKpis = computed<KpiData[]>(() => {
     const stats = this.paymentLinkStats();
-    if (!stats?.summary) return [];
+    const lang = this.currentLang(); // Force recalcul au changement de langue
+    if (!stats?.metrics) return [];
 
-    const summary = stats.summary;
+    const metrics = stats.metrics;
     return [
       {
         label: this.translate.instant('billing-dashboard.payment_links.total'),
-        value: summary.total_links || 0,
+        value: metrics.total_links || 0,
         icon: 'link',
         iconClass: 'text-primary',
         bgClass: 'bg-primary bg-opacity-10'
       },
       {
         label: this.translate.instant('billing-dashboard.payment_links.converted'),
-        value: summary.converted_links || 0,
+        value: metrics.converted_links || 0,
         icon: 'check_circle',
         iconClass: 'text-success',
         bgClass: 'bg-success bg-opacity-10'
       },
       {
         label: this.translate.instant('billing-dashboard.payment_links.conversion_rate'),
-        value: summary.conversion_rate || '0%',
+        value: metrics.conversion_rate || '0%',
         icon: 'trending_up',
         iconClass: 'text-info',
         bgClass: 'bg-info bg-opacity-10'
       },
       {
         label: this.translate.instant('billing-dashboard.payment_links.avg_deal'),
-        value: `$${(summary.avg_deal_size || 0).toLocaleString()}`,
+        value: `${(metrics.avg_deal_size || 0).toLocaleString()} EUR`,
         icon: 'attach_money',
         iconClass: 'text-warning',
         bgClass: 'bg-warning bg-opacity-10'
@@ -172,9 +179,19 @@ export class BillingDashboard implements OnInit, OnDestroy {
   });
 
   ngOnInit(): void {
+    this.currentLang.set(this.translate.currentLang);
     this.setBreadcrumbs();
     this.updatePageTitle();
     this.loadAllStats();
+
+    // Écouter les changements de langue
+    this.translate.onLangChange
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((event) => {
+        this.currentLang.set(event.lang); // Mise à jour du signal
+        this.setBreadcrumbs();
+        this.updatePageTitle();
+      });
   }
 
   ngOnDestroy(): void {

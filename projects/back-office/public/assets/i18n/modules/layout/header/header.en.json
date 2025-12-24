@@ -36,7 +36,8 @@
           "payment-links": "Payment Links",
           "config": "System Configuration",
           "billing": "Billing Management",
-          "maintenance": "System Maintenance"
+          "maintenance": "System Maintenance",
+          "payment-link-detail": "Payment Link Details"
         }
       },
       "sales": {

@@ -46,28 +46,22 @@
           </div>
           <div class="card-body">
             <div class="row">
-              <div class="col-md-3">
-                <div class="text-center p-3">
-                  <h3 class="mb-1">{{ usageStats()!.total_subscriptions }}</h3>
-                  <small class="text-muted">{{ 'billing-dashboard.usage.total_subscriptions' | translate }}</small>
-                </div>
-              </div>
-              <div class="col-md-3">
+              <div class="col-md-4">
                 <div class="text-center p-3">
                   <h3 class="mb-1">{{ usageStats()!.total_quotas }}</h3>
                   <small class="text-muted">{{ 'billing-dashboard.usage.total_quotas' | translate }}</small>
                 </div>
               </div>
-              <div class="col-md-3">
+              <div class="col-md-4">
                 <div class="text-center p-3">
-                  <h3 class="mb-1 text-danger">{{ usageStats()!.quotas_over_limit }}</h3>
+                  <h3 class="mb-1 text-danger">{{ usageStats()!.over_quota_count }}</h3>
                   <small class="text-muted">{{ 'billing-dashboard.usage.over_limit' | translate }}</small>
                 </div>
               </div>
-              <div class="col-md-3">
+              <div class="col-md-4">
                 <div class="text-center p-3">
-                  <h3 class="mb-1">{{ usageStats()!.average_usage_percentage | number:'1.0-0' }}%</h3>
-                  <small class="text-muted">{{ 'billing-dashboard.usage.avg_usage' | translate }}</small>
+                  <h3 class="mb-1 text-warning">{{ usageStats()!.warning_quotas }}</h3>
+                  <small class="text-muted">{{ 'billing-dashboard.usage.warning' | translate }}</small>
                 </div>
               </div>
             </div>

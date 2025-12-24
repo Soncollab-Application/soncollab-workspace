@@ -104,6 +104,12 @@
       "dashboard": "Tableau de bord",
       "system": "Système",
       "payment_links": "Liens de paiement"
+    },
+    "payment-link-detail": {
+      "dashboard": "Tableau de bord",
+      "system": "Système",
+      "payment_links": "Liens de paiement",
+      "detail": "Détails"
     }
   }
 }

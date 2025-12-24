@@ -197,6 +197,11 @@ export const adminRoutes: Routes = [
         canActivate: [apiPermissionGuard('subscription-payment-link', 'subscription-payment-link', 'find')]
       },
       {
+        path: 'system/billing/payment-links/:documentId',
+        loadComponent: () => import('../../../pages/admin/system/payment-links/payment-link-detail/payment-link-detail').then(c => c.PaymentLinkDetail),
+        canActivate: [apiPermissionGuard('subscription-payment-link', 'subscription-payment-link', 'findOne')]
+      },
+      {
         path: 'system/config',
         loadComponent: () => import('../../../pages/admin/system/config/system-config/system-config').then(c => c.SystemConfig)
       },

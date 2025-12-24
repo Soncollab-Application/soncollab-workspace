@@ -1,0 +1,53 @@
+{
+  "payment-link-detail": {
+    "page_title": "Payment Link Details",
+    "customer": {
+      "title": "Customer Information",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone"
+    },
+    "plan": {
+      "title": "Plan Details",
+      "name": "Plan",
+      "billing_cycle": "Billing cycle",
+      "amount": "Total amount",
+      "addons": "Add-ons"
+    },
+    "billing_cycle": {
+      "monthly": "Monthly",
+      "yearly": "Yearly"
+    },
+    "status": {
+      "title": "Status",
+      "current": "Current status",
+      "active": "Active",
+      "used": "Used",
+      "expired": "Expired",
+      "cancelled": "Cancelled",
+      "expires_at": "Expires at",
+      "accessed_at": "Accessed at",
+      "completed_at": "Completed at",
+      "created_at": "Created at"
+    },
+    "link": {
+      "title": "Payment Link",
+      "open": "Open link"
+    },
+    "notes": {
+      "title": "Notes"
+    },
+    "created_by": {
+      "title": "Created by"
+    },
+    "toast": {
+      "link_copied": "Link copied to clipboard",
+      "link_copy_error": "Error copying link",
+      "delete_success": "Payment link deleted successfully",
+      "delete_error": "Error deleting payment link"
+    },
+    "error": {
+      "load_failed": "Error loading payment link"
+    }
+  }
+}

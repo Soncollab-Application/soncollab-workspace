@@ -104,6 +104,12 @@
       "dashboard": "Dashboard",
       "system": "System",
       "payment_links": "Payment Links"
+    },
+    "payment-link-detail": {
+      "dashboard": "Dashboard",
+      "system": "System",
+      "payment_links": "Payment Links",
+      "detail": "Details"
     }
   }
 }
