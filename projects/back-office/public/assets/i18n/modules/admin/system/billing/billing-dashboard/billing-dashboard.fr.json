@@ -11,17 +11,15 @@
     },
     "usage": {
       "title": "Utilisation des quotas",
-      "total_subscriptions": "Total abonnements",
       "total_quotas": "Total quotas",
       "over_limit": "Dépassés",
-      "avg_usage": "Utilisation moyenne"
+      "warning": "Avertissements"
     },
     "invoices": {
       "title": "Factures",
       "total_revenue": "Revenu total",
-      "paid": "Payées",
-      "total": "Total",
-      "overdue": "En retard"
+      "total": "Total factures",
+      "avg_amount": "Montant moyen"
     },
     "payment_links": {
       "title": "Liens de paiement",

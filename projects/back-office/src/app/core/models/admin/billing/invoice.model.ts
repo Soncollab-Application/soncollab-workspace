@@ -28,8 +28,22 @@ export interface Invoice {
   publishedAt: string;
 }
 
+export interface InvoiceListItem {
+  id: number;
+  documentId: string;
+  invoice_number: string;
+  invoice_status: InvoiceStatus;
+  invoice_type: InvoiceType;
+  invoice_date: string;
+  total_amount: number;
+  currency: string;
+  customer_email?: string;
+  customer_name?: string;
+  createdAt: string;
+}
+
 export interface InvoicesResponse {
-  data: Invoice[];
+  data: InvoiceListItem[];
   meta: {
     pagination: {
       page: number;
@@ -44,13 +58,26 @@ export interface InvoiceResponse {
   data: Invoice;
 }
 
+export interface InvoiceFilters {
+  search?: string;
+  invoice_status?: InvoiceStatus;
+  invoice_type?: InvoiceType;
+  date_from?: string;
+  date_to?: string;
+}
 
 export interface InvoiceStats {
   total_invoices: number;
-  by_status: Record<InvoiceStatus, number>;
   total_revenue: number;
-  outstanding_amount: number;
-  overdue_count: number;
+  avg_invoice_amount: number;
+  by_currency: Record<string, {
+    count: number;
+    total: number;
+  }>;
+  by_type: Record<string, {
+    count: number;
+    total: number;
+  }>;
 }
 
 export interface RecentInvoicesResponse {

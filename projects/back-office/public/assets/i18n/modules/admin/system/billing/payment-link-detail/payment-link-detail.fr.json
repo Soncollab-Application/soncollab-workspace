@@ -1,0 +1,53 @@
+{
+  "payment-link-detail": {
+    "page_title": "Détails du lien de paiement",
+    "customer": {
+      "title": "Informations client",
+      "name": "Nom",
+      "email": "Email",
+      "phone": "Téléphone"
+    },
+    "plan": {
+      "title": "Détails du plan",
+      "name": "Plan",
+      "billing_cycle": "Cycle de facturation",
+      "amount": "Montant total",
+      "addons": "Modules complémentaires"
+    },
+    "billing_cycle": {
+      "monthly": "Mensuel",
+      "yearly": "Annuel"
+    },
+    "status": {
+      "title": "Statut",
+      "current": "Statut actuel",
+      "active": "Actif",
+      "used": "Utilisé",
+      "expired": "Expiré",
+      "cancelled": "Annulé",
+      "expires_at": "Expire le",
+      "accessed_at": "Consulté le",
+      "completed_at": "Complété le",
+      "created_at": "Créé le"
+    },
+    "link": {
+      "title": "Lien de paiement",
+      "open": "Ouvrir le lien"
+    },
+    "notes": {
+      "title": "Notes"
+    },
+    "created_by": {
+      "title": "Créé par"
+    },
+    "toast": {
+      "link_copied": "Lien copié dans le presse-papier",
+      "link_copy_error": "Erreur lors de la copie du lien",
+      "delete_success": "Lien de paiement supprimé avec succès",
+      "delete_error": "Erreur lors de la suppression du lien de paiement"
+    },
+    "error": {
+      "load_failed": "Erreur lors du chargement du lien de paiement"
+    }
+  }
+}

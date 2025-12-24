@@ -11,17 +11,15 @@
     },
     "usage": {
       "title": "Quota Usage",
-      "total_subscriptions": "Total subscriptions",
       "total_quotas": "Total quotas",
       "over_limit": "Over limit",
-      "avg_usage": "Average usage"
+      "warning": "Warnings"
     },
     "invoices": {
       "title": "Invoices",
       "total_revenue": "Total revenue",
-      "paid": "Paid",
-      "total": "Total",
-      "overdue": "Overdue"
+      "total": "Total invoices",
+      "avg_amount": "Average amount"
     },
     "payment_links": {
       "title": "Payment Links",

@@ -1,0 +1,241 @@
+<app-breadcrumb [showAvatar]="true" [icon]="'link'" [hasMobileActions]="true">
+  <div breadcrumb-title>
+    {{ 'payment-link-detail.page_title' | translate }}
+  </div>
+
+  <div breadcrumb-actions>
+    <div class="d-flex gap-2">
+      <button class="btn btn-outline-secondary" (click)="goBack()">
+        <span class="material-symbols-outlined me-2">arrow_back</span>
+        {{ 'common.back' | translate }}
+      </button>
+
+      @if (canDelete() && paymentLink()) {
+        <button class="btn btn-outline-danger" (click)="deletePaymentLink()">
+          <span class="material-symbols-outlined me-2">delete</span>
+          {{ 'common.delete' | translate }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <div breadcrumb-actions-mobile>
+    @if (canDelete() && paymentLink()) {
+      <button class="btn btn-outline-danger w-100" (click)="deletePaymentLink()">
+        <span class="material-symbols-outlined me-2">delete</span>
+        {{ 'common.delete' | translate }}
+      </button>
+    }
+  </div>
+</app-breadcrumb>
+
+@if (loading()) {
+  <div class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
+    </div>
+  </div>
+} @else if (paymentLink()) {
+  <div class="row">
+    <!-- LEFT COLUMN - Main Info -->
+    <div class="col-lg-8">
+      <!-- Customer Information -->
+      <div class="card mb-4">
+        <div class="card-header border-bottom">
+          <h5 class="mb-0">
+            <span class="material-symbols-outlined me-2 text-primary">person</span>
+            {{ 'payment-link-detail.customer.title' | translate }}
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label text-muted small">{{ 'payment-link-detail.customer.name' | translate }}</label>
+              <div class="fw-semibold">{{ paymentLink()!.customer_name }}</div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label text-muted small">{{ 'payment-link-detail.customer.email' | translate }}</label>
+              <div class="fw-semibold">
+                <a [href]="'mailto:' + paymentLink()!.customer_email" class="text-decoration-none">
+                  {{ paymentLink()!.customer_email }}
+                </a>
+              </div>
+            </div>
+            @if (paymentLink()!.customer_phone) {
+              <div class="col-md-6 mb-3">
+                <label class="form-label text-muted small">{{ 'payment-link-detail.customer.phone' | translate }}</label>
+                <div class="fw-semibold">{{ paymentLink()!.customer_phone }}</div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Plan Details -->
+      <div class="card mb-4">
+        <div class="card-header border-bottom">
+          <h5 class="mb-0">
+            <span class="material-symbols-outlined me-2 text-info">credit_card</span>
+            {{ 'payment-link-detail.plan.title' | translate }}
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label text-muted small">{{ 'payment-link-detail.plan.name' | translate }}</label>
+              <div class="fw-semibold">{{ paymentLink()!.plan_details?.name || '-' }}</div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label text-muted small">{{ 'payment-link-detail.plan.billing_cycle' | translate }}</label>
+              <div class="fw-semibold">
+                <span class="badge bg-primary-subtle text-primary">
+                  {{ 'payment-link-detail.billing_cycle.' + paymentLink()!.billing_cycle | translate }}
+                </span>
+              </div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label text-muted small">{{ 'payment-link-detail.plan.amount' | translate }}</label>
+              <div class="fw-semibold fs-4 text-success">
+                {{ paymentLink()!.total_amount }} {{ paymentLink()!.currency }}
+              </div>
+            </div>
+          </div>
+
+          @if (paymentLink()!.addons_details && paymentLink()!.addons_details!.length > 0) {
+            <div class="mt-3">
+              <label class="form-label text-muted small">{{ 'payment-link-detail.plan.addons' | translate }}</label>
+              <ul class="list-unstyled mb-0">
+                @for (addon of paymentLink()!.addons_details; track addon.documentId) {
+                  <li class="mb-2">
+                    <span class="material-symbols-outlined me-2 text-success align-middle" style="font-size: 1.2rem;">check_circle</span>
+                    <span class="fw-semibold">{{ addon.name }}</span>
+                  </li>
+                }
+              </ul>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Notes -->
+      @if (paymentLink()!.notes) {
+        <div class="card mb-4">
+          <div class="card-header border-bottom">
+            <h5 class="mb-0">
+              <span class="material-symbols-outlined me-2 text-warning">note</span>
+              {{ 'payment-link-detail.notes.title' | translate }}
+            </h5>
+          </div>
+          <div class="card-body">
+            <p class="mb-0">{{ paymentLink()!.notes }}</p>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- RIGHT COLUMN - Status & Actions -->
+    <div class="col-lg-4">
+      <!-- Status Card -->
+      <div class="card mb-4">
+        <div class="card-header border-bottom">
+          <h5 class="mb-0">
+            <span class="material-symbols-outlined me-2">info</span>
+            {{ 'payment-link-detail.status.title' | translate }}
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label class="form-label text-muted small">{{ 'payment-link-detail.status.current' | translate }}</label>
+            <div>
+              <span [class]="'badge ' + statusBadgeClass()">
+                {{ 'payment-link-detail.status.' + paymentLink()!.link_status | translate }}
+              </span>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label text-muted small">{{ 'payment-link-detail.status.expires_at' | translate }}</label>
+            <div class="fw-semibold">
+              {{ paymentLink()!.expires_at | date:'dd/MM/yyyy HH:mm' }}
+              @if (isExpired()) {
+                <span class="badge bg-danger-subtle text-danger ms-2">
+                  {{ 'payment-link-detail.status.expired' | translate }}
+                </span>
+              }
+            </div>
+          </div>
+
+          @if (paymentLink()!.accessed_at) {
+            <div class="mb-3">
+              <label class="form-label text-muted small">{{ 'payment-link-detail.status.accessed_at' | translate }}</label>
+              <div class="fw-semibold">{{ paymentLink()!.accessed_at | date:'dd/MM/yyyy HH:mm' }}</div>
+            </div>
+          }
+
+          @if (paymentLink()!.payment_completed_at) {
+            <div class="mb-3">
+              <label class="form-label text-muted small">{{ 'payment-link-detail.status.completed_at' | translate }}</label>
+              <div class="fw-semibold text-success">{{ paymentLink()!.payment_completed_at | date:'dd/MM/yyyy HH:mm' }}</div>
+            </div>
+          }
+
+          <div class="mb-0">
+            <label class="form-label text-muted small">{{ 'payment-link-detail.status.created_at' | translate }}</label>
+            <div class="fw-semibold">{{ paymentLink()!.createdAt | date:'dd/MM/yyyy HH:mm' }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Link Actions -->
+      <div class="card mb-4">
+        <div class="card-header border-bottom">
+          <h5 class="mb-0">
+            <span class="material-symbols-outlined me-2">link</span>
+            {{ 'payment-link-detail.link.title' | translate }}
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="input-group mb-3">
+            <input
+              type="text"
+              class="form-control"
+              [value]="publicUrl()"
+              readonly>
+            <button
+              class="btn btn-outline-primary"
+              (click)="copyLinkToClipboard()"
+              [disabled]="paymentLink()!.link_status !== 'active'">
+              <span class="material-symbols-outlined">content_copy</span>
+            </button>
+          </div>
+
+          <div class="d-grid gap-2">
+            <button
+              class="btn btn-primary"
+              (click)="openPublicLink()"
+              [disabled]="paymentLink()!.link_status !== 'active'">
+              <span class="material-symbols-outlined me-2">open_in_new</span>
+              {{ 'payment-link-detail.link.open' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Created By -->
+      @if (paymentLink()!.created_by) {
+        <div class="card">
+          <div class="card-header border-bottom">
+            <h5 class="mb-0">
+              <span class="material-symbols-outlined me-2">person</span>
+              {{ 'payment-link-detail.created_by.title' | translate }}
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="fw-semibold">{{ paymentLink()!.created_by.username }}</div>
+            <small class="text-muted">{{ paymentLink()!.created_by.email }}</small>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+}

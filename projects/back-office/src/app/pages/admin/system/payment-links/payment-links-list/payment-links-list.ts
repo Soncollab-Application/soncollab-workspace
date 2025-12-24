@@ -75,34 +75,34 @@ export class PaymentLinksList implements OnInit, OnDestroy {
 
   kpiCards = computed<KpiData[]>(() => {
     const stats = this.dashboardStats();
-    if (!stats?.summary) return [];
+    if (!stats?.metrics) return [];
 
-    const summary = stats.summary;
+    const metrics = stats.metrics;
     return [
       {
         label: this.translate.instant('payment-links-list.kpi.total'),
-        value: summary.total_links || 0,
+        value: metrics.total_links || 0,
         icon: 'link',
         iconClass: 'text-primary',
         bgClass: 'bg-primary bg-opacity-10'
       },
       {
         label: this.translate.instant('payment-links-list.kpi.active'),
-        value: summary.active_links || 0,
+        value: metrics.active_links || 0,
         icon: 'check_circle',
         iconClass: 'text-success',
         bgClass: 'bg-success bg-opacity-10'
       },
       {
         label: this.translate.instant('payment-links-list.kpi.converted'),
-        value: summary.converted_links || 0,
+        value: metrics.converted_links || 0,
         icon: 'shopping_cart',
         iconClass: 'text-info',
         bgClass: 'bg-info bg-opacity-10'
       },
       {
         label: this.translate.instant('payment-links-list.kpi.conversion_rate'),
-        value: summary.conversion_rate || '0%',
+        value: metrics.conversion_rate || '0%',
         icon: 'trending_up',
         iconClass: 'text-warning',
         bgClass: 'bg-warning bg-opacity-10'
