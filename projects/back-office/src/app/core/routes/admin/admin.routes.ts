@@ -202,6 +202,26 @@ export const adminRoutes: Routes = [
         canActivate: [apiPermissionGuard('subscription-payment-link', 'subscription-payment-link', 'findOne')]
       },
       {
+        path: 'system/billing/invoices',
+        loadComponent: () => import('../../../pages/admin/system/invoices/invoices-list/invoices-list').then(c => c.InvoicesList),
+        canActivate: [apiPermissionGuard('subscription-invoice', 'subscription-invoice', 'find')]
+      },
+      {
+        path: 'system/billing/invoices/:documentId',
+        loadComponent: () => import('../../../pages/admin/system/invoices/invoice-detail/invoice-detail').then(c => c.InvoiceDetail),
+        canActivate: [apiPermissionGuard('subscription-invoice', 'subscription-invoice', 'findOne')]
+      },
+      {
+        path: 'system/billing/transactions',
+        loadComponent: () => import('../../../pages/admin/system/transactions/transactions-list/transactions-list').then(c => c.TransactionsList),
+        canActivate: [apiPermissionGuard('subscription-transaction', 'subscription-transaction', 'find')]
+      },
+      {
+        path: 'system/billing/transactions/:documentId',
+        loadComponent: () => import('../../../pages/admin/system/transactions/transaction-detail/transaction-detail').then(c => c.TransactionDetail),
+        canActivate: [apiPermissionGuard('subscription-transaction', 'subscription-transaction', 'findOne')]
+      },
+      {
         path: 'system/config',
         loadComponent: () => import('../../../pages/admin/system/config/system-config/system-config').then(c => c.SystemConfig)
       },

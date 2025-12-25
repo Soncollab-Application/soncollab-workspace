@@ -1,0 +1,254 @@
+<app-breadcrumb [showAvatar]="true" [icon]="'receipt'" [hasMobileActions]="true">
+  <div breadcrumb-title>
+    {{ 'invoice-detail.page_title' | translate }}
+  </div>
+
+  <div breadcrumb-actions>
+    <div class="d-flex gap-2">
+      <button class="btn btn-outline-secondary" (click)="goBack()">
+        <span class="material-symbols-outlined me-2">arrow_back</span>
+        {{ 'common.back' | translate }}
+      </button>
+
+      @if (invoice()?.pdf_file) {
+        <button class="btn btn-primary" (click)="downloadPDF()">
+          <span class="material-symbols-outlined me-2">download</span>
+          {{ 'invoice-detail.download_pdf' | translate }}
+        </button>
+      }
+
+      @if (canDelete()) {
+        <button class="btn btn-outline-danger" (click)="deleteInvoice()">
+          <span class="material-symbols-outlined me-2">delete</span>
+          {{ 'common.delete' | translate }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <div breadcrumb-actions-mobile>
+    <div class="d-flex flex-column gap-2 w-100">
+      @if (invoice()?.pdf_file) {
+        <button class="btn btn-primary w-100" (click)="downloadPDF()">
+          <span class="material-symbols-outlined me-2">download</span>
+          {{ 'invoice-detail.download_pdf' | translate }}
+        </button>
+      }
+
+      @if (canDelete()) {
+        <button class="btn btn-outline-danger w-100" (click)="deleteInvoice()">
+          <span class="material-symbols-outlined me-2">delete</span>
+          {{ 'common.delete' | translate }}
+        </button>
+      }
+    </div>
+  </div>
+</app-breadcrumb>
+
+@if (loading()) {
+  <div class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
+    </div>
+  </div>
+} @else if (invoice()) {
+  <div class="row py-3 my-3 mb-5">
+    <div class="col-lg-8">
+      <!-- INVOICE DETAILS -->
+      <div class="card mb-4">
+        <div class="card-header border-bottom">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">{{ 'invoice-detail.invoice_details' | translate }}</h5>
+            <span class="badge" [ngClass]="statusBadgeClass()">
+              {{ 'invoices-list.status.' + invoice()!.invoice_status | translate }}
+            </span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row mb-3">
+            <div class="col-sm-6">
+              <label class="text-muted small">{{ 'invoice-detail.invoice_number' | translate }}</label>
+              <p class="mb-0 fw-semibold">{{ invoice()!.invoice_number }}</p>
+            </div>
+            <div class="col-sm-6">
+              <label class="text-muted small">{{ 'invoice-detail.invoice_type' | translate }}</label>
+              <p class="mb-0">{{ 'invoices-list.type.' + invoice()!.invoice_type | translate }}</p>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-sm-6">
+              <label class="text-muted small">{{ 'invoice-detail.invoice_date' | translate }}</label>
+              <p class="mb-0">{{ invoice()!.invoice_date | date:'dd/MM/yyyy' }}</p>
+            </div>
+            @if (invoice()!.due_date) {
+              <div class="col-sm-6">
+                <label class="text-muted small">{{ 'invoice-detail.due_date' | translate }}</label>
+                <p class="mb-0">{{ invoice()!.due_date | date:'dd/MM/yyyy' }}</p>
+              </div>
+            }
+          </div>
+
+          @if (invoice()!.billing_period_start && invoice()!.billing_period_end) {
+            <div class="row mb-3">
+              <div class="col-sm-6">
+                <label class="text-muted small">{{ 'invoice-detail.period_start' | translate }}</label>
+                <p class="mb-0">{{ invoice()!.billing_period_start | date:'dd/MM/yyyy' }}</p>
+              </div>
+              <div class="col-sm-6">
+                <label class="text-muted small">{{ 'invoice-detail.period_end' | translate }}</label>
+                <p class="mb-0">{{ invoice()!.billing_period_end | date:'dd/MM/yyyy' }}</p>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- CUSTOMER DETAILS -->
+      <div class="card mb-4">
+        <div class="card-header border-bottom">
+          <h5 class="mb-0">{{ 'invoice-detail.customer_details' | translate }}</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-6 mb-3">
+              <label class="text-muted small">{{ 'invoice-detail.customer_name' | translate }}</label>
+              <p class="mb-0">{{ customerName() }}</p>
+            </div>
+            <div class="col-sm-6 mb-3">
+              <label class="text-muted small">{{ 'invoice-detail.customer_email' | translate }}</label>
+              <p class="mb-0">{{ customerEmail() }}</p>
+            </div>
+          </div>
+
+          @if (subscriberInfo()) {
+            <div class="row">
+              <div class="col-12">
+                <label class="text-muted small">{{ 'invoice-detail.subscriber' | translate }}</label>
+                <p class="mb-0">
+                  @if (subscriberInfo()!.type === 'team') {
+                    <span class="material-symbols-outlined me-2 align-middle" style="font-size: 1.2rem;">groups</span>
+                  } @else {
+                    <span class="material-symbols-outlined me-2 align-middle" style="font-size: 1.2rem;">person</span>
+                  }
+                  {{ subscriberInfo()!.name }}
+                  @if (subscriberInfo()!.email) {
+                    <small class="text-muted">({{ subscriberInfo()!.email }})</small>
+                  }
+                </p>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- LINE ITEMS -->
+      @if (invoice()!.line_items && invoice()!.line_items.length > 0) {
+        <div class="card mb-4">
+          <div class="card-header border-bottom">
+            <h5 class="mb-0">{{ 'invoice-detail.line_items' | translate }}</h5>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-hover mb-0">
+                <thead class="table-light">
+                <tr>
+                  <th>{{ 'invoice-detail.description' | translate }}</th>
+                  <th class="text-end">{{ 'invoice-detail.quantity' | translate }}</th>
+                  <th class="text-end">{{ 'invoice-detail.unit_price' | translate }}</th>
+                  <th class="text-end">{{ 'invoice-detail.total' | translate }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                  @for (item of invoice()!.line_items; track $index) {
+                    <tr>
+                      <td>{{ item.description }}</td>
+                      <td class="text-end">{{ item.quantity }}</td>
+                      <td class="text-end">{{ item.unit_price | number:'1.2-2' }} {{ invoice()!.currency }}</td>
+                      <td class="text-end">{{ item.total_price | number:'1.2-2' }} {{ invoice()!.currency }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- NOTES -->
+      @if (invoice()!.notes) {
+        <div class="card mb-4">
+          <div class="card-header border-bottom">
+            <h5 class="mb-0">{{ 'invoice-detail.notes' | translate }}</h5>
+          </div>
+          <div class="card-body">
+            <p class="mb-0 text-muted">{{ invoice()!.notes }}</p>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="col-lg-4">
+      <!-- AMOUNTS -->
+      <div class="card mb-4">
+        <div class="card-header border-bottom">
+          <h5 class="mb-0">{{ 'invoice-detail.amounts' | translate }}</h5>
+        </div>
+        <div class="card-body">
+          <div class="d-flex justify-content-between mb-2">
+            <span class="text-muted">{{ 'invoice-detail.subtotal' | translate }}</span>
+            <span>{{ invoice()!.subtotal | number:'1.2-2' }} {{ invoice()!.currency }}</span>
+          </div>
+          <div class="d-flex justify-content-between mb-2">
+            <span class="text-muted">{{ 'invoice-detail.tax' | translate }}</span>
+            <span>{{ invoice()!.tax_amount | number:'1.2-2' }} {{ invoice()!.currency }}</span>
+          </div>
+          <hr>
+          <div class="d-flex justify-content-between">
+            <strong>{{ 'invoice-detail.total' | translate }}</strong>
+            <strong class="text-success fs-5">{{ invoice()!.total_amount | number:'1.2-2' }} {{ invoice()!.currency }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- TRANSACTION INFO -->
+      @if (invoice()!.subscription_transaction) {
+        <div class="card mb-4">
+          <div class="card-header border-bottom">
+            <h5 class="mb-0">{{ 'invoice-detail.transaction' | translate }}</h5>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <label class="text-muted small">{{ 'invoice-detail.reference' | translate }}</label>
+              <p class="mb-0 font-monospace small">{{ invoice()!.subscription_transaction.transaction_reference }}</p>
+            </div>
+            <div class="mb-3">
+              <label class="text-muted small">{{ 'invoice-detail.provider' | translate }}</label>
+              <p class="mb-0">{{ invoice()!.subscription_transaction.payment_provider }}</p>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- METADATA -->
+      <div class="card">
+        <div class="card-header border-bottom">
+          <h5 class="mb-0">{{ 'invoice-detail.metadata' | translate }}</h5>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label class="text-muted small">{{ 'invoice-detail.created_at' | translate }}</label>
+            <p class="mb-0">{{ invoice()!.createdAt | date:'dd/MM/yyyy HH:mm' }}</p>
+          </div>
+          @if (invoice()!.generated_by) {
+            <div class="mb-3">
+              <label class="text-muted small">{{ 'invoice-detail.generated_by' | translate }}</label>
+              <p class="mb-0">{{ invoice()!.generated_by.username }}</p>
+              <small class="text-muted">{{ invoice()!.generated_by.email }}</small>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+}

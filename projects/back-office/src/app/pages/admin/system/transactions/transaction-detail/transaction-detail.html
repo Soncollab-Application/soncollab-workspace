@@ -1,0 +1,184 @@
+<app-breadcrumb [showAvatar]="true" [icon]="'receipt_long'" [hasMobileActions]="false">
+  <div breadcrumb-title>
+    {{ 'transaction-detail.page_title' | translate }}
+  </div>
+
+  <div breadcrumb-actions>
+    <button class="btn btn-outline-secondary" (click)="goBack()">
+      <span class="material-symbols-outlined me-2">arrow_back</span>
+      {{ 'common.back' | translate }}
+    </button>
+  </div>
+</app-breadcrumb>
+
+@if (loading()) {
+  <div class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
+    </div>
+  </div>
+} @else if (transaction()) {
+  <div class="row py-3 my-3 mb-5">
+    <div class="col-lg-8">
+      <!-- TRANSACTION DETAILS -->
+      <div class="card mb-4">
+        <div class="card-header border-bottom">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">{{ 'transaction-detail.transaction_details' | translate }}</h5>
+            <span class="badge" [ngClass]="statusBadgeClass()">
+              {{ 'transactions-list.status.' + transaction()!.transaction_status | translate }}
+            </span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row mb-3">
+            <div class="col-sm-6">
+              <label class="text-muted small">{{ 'transaction-detail.reference' | translate }}</label>
+              <p class="mb-0 font-monospace">{{ transaction()!.transaction_reference }}</p>
+            </div>
+            <div class="col-sm-6">
+              <label class="text-muted small">{{ 'transaction-detail.type' | translate }}</label>
+              <p class="mb-0">{{ 'transactions-list.type.' + transaction()!.transaction_type | translate }}</p>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-sm-6">
+              <label class="text-muted small">{{ 'transaction-detail.amount' | translate }}</label>
+              <p class="mb-0 fw-semibold fs-5 text-success">
+                {{ transaction()!.amount | number:'1.2-2' }} {{ transaction()!.currency }}
+              </p>
+            </div>
+            <div class="col-sm-6">
+              <label class="text-muted small">{{ 'transaction-detail.provider' | translate }}</label>
+              <p class="mb-0">{{ transaction()!.payment_provider || '-' }}</p>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-sm-6">
+              <label class="text-muted small">{{ 'transaction-detail.transaction_date' | translate }}</label>
+              <p class="mb-0">{{ transaction()!.transaction_date | date:'dd/MM/yyyy HH:mm' }}</p>
+            </div>
+            @if (transaction()!.processed_date) {
+              <div class="col-sm-6">
+                <label class="text-muted small">{{ 'transaction-detail.processed_date' | translate }}</label>
+                <p class="mb-0">{{ transaction()!.processed_date | date:'dd/MM/yyyy HH:mm' }}</p>
+              </div>
+            }
+          </div>
+
+          @if (transaction()!.provider_transaction_id) {
+            <div class="row mb-3">
+              <div class="col-12">
+                <label class="text-muted small">{{ 'transaction-detail.provider_id' | translate }}</label>
+                <p class="mb-0 font-monospace small">{{ transaction()!.provider_transaction_id }}</p>
+              </div>
+            </div>
+          }
+
+          @if (transaction()!.failure_reason) {
+            <div class="row">
+              <div class="col-12">
+                <div class="alert alert-danger">
+                  <strong>{{ 'transaction-detail.failure_reason' | translate }}</strong>
+                  <p class="mb-0 mt-2">{{ transaction()!.failure_reason }}</p>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- CUSTOMER DETAILS -->
+      <div class="card mb-4">
+        <div class="card-header border-bottom">
+          <h5 class="mb-0">{{ 'transaction-detail.customer_details' | translate }}</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-6 mb-3">
+              <label class="text-muted small">{{ 'transaction-detail.customer_email' | translate }}</label>
+              <p class="mb-0">{{ transaction()!.customer_email }}</p>
+            </div>
+            @if (transaction()!.customer_name) {
+              <div class="col-sm-6 mb-3">
+                <label class="text-muted small">{{ 'transaction-detail.customer_name' | translate }}</label>
+                <p class="mb-0">{{ transaction()!.customer_name }}</p>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- PAYMENT METHOD DETAILS -->
+      @if (transaction()!.payment_method_details) {
+        <div class="card mb-4">
+          <div class="card-header border-bottom">
+            <h5 class="mb-0">{{ 'transaction-detail.payment_method' | translate }}</h5>
+          </div>
+          <div class="card-body">
+            <pre class="mb-0"><code>{{ transaction()!.payment_method_details | json }}</code></pre>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="col-lg-4">
+      <!-- RELATED RECORDS -->
+      <div class="card mb-4">
+        <div class="card-header border-bottom">
+          <h5 class="mb-0">{{ 'transaction-detail.related' | translate }}</h5>
+        </div>
+        <div class="card-body">
+          @if (hasInvoice()) {
+            <div class="mb-3">
+              <label class="text-muted small">{{ 'transaction-detail.invoice' | translate }}</label>
+              <button class="btn btn-sm btn-outline-primary w-100 mt-1" (click)="viewInvoice()">
+                <span class="material-symbols-outlined me-2" style="font-size: 1rem;">receipt</span>
+                {{ 'transaction-detail.view_invoice' | translate }}
+              </button>
+            </div>
+          }
+
+          @if (hasSubscription()) {
+            <div class="mb-3">
+              <label class="text-muted small">{{ 'transaction-detail.subscription' | translate }}</label>
+              <button class="btn btn-sm btn-outline-primary w-100 mt-1" (click)="viewSubscription()">
+                <span class="material-symbols-outlined me-2" style="font-size: 1rem;">subscriptions</span>
+                {{ 'transaction-detail.view_subscription' | translate }}
+              </button>
+            </div>
+          }
+
+          @if (transaction()!.sales_contact) {
+            <div class="mb-3">
+              <label class="text-muted small">{{ 'transaction-detail.sales_contact' | translate }}</label>
+              <p class="mb-0">{{ transaction()!.sales_contact.email || '-' }}</p>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- METADATA -->
+      <div class="card">
+        <div class="card-header border-bottom">
+          <h5 class="mb-0">{{ 'transaction-detail.metadata' | translate }}</h5>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label class="text-muted small">{{ 'transaction-detail.created_at' | translate }}</label>
+            <p class="mb-0">{{ transaction()!.createdAt | date:'dd/MM/yyyy HH:mm' }}</p>
+          </div>
+          @if (transaction()!.processed_by) {
+            <div class="mb-3">
+              <label class="text-muted small">{{ 'transaction-detail.processed_by' | translate }}</label>
+              <p class="mb-0">{{ transaction()!.processed_by.username }}</p>
+              <small class="text-muted">{{ transaction()!.processed_by.email }}</small>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+}

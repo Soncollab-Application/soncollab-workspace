@@ -1,0 +1,39 @@
+{
+  "invoice-detail": {
+    "page_title": "Détails de la facture",
+    "download_pdf": "Télécharger PDF",
+    "invoice_details": "Détails de la facture",
+    "invoice_number": "Numéro",
+    "invoice_type": "Type",
+    "invoice_date": "Date de facturation",
+    "due_date": "Date d'échéance",
+    "period_start": "Début de période",
+    "period_end": "Fin de période",
+    "customer_details": "Informations client",
+    "customer_name": "Nom",
+    "customer_email": "Email",
+    "subscriber": "Abonné",
+    "line_items": "Détails de facturation",
+    "description": "Description",
+    "quantity": "Quantité",
+    "unit_price": "Prix unitaire",
+    "total": "Total",
+    "amounts": "Montants",
+    "subtotal": "Sous-total",
+    "tax": "Taxes",
+    "transaction": "Transaction",
+    "reference": "Référence",
+    "provider": "Fournisseur de paiement",
+    "metadata": "Métadonnées",
+    "created_at": "Créée le",
+    "generated_by": "Générée par",
+    "notes": "Notes",
+    "toast": {
+      "delete_not_allowed": "La suppression des factures n'est pas autorisée",
+      "pdf_not_available": "PDF non disponible"
+    },
+    "error": {
+      "load_failed": "Erreur lors du chargement de la facture"
+    }
+  }
+}

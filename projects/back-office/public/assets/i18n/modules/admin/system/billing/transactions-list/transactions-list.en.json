@@ -1,0 +1,49 @@
+{
+  "transactions-list": {
+    "page_title": "Transactions",
+    "kpi": {
+      "total_volume": "Total Volume",
+      "total": "Total Transactions",
+      "success_rate": "Success Rate"
+    },
+    "filters": {
+      "status": "Status",
+      "type": "Type",
+      "provider": "Provider"
+    },
+    "status": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "completed": "Completed",
+      "failed": "Failed",
+      "cancelled": "Cancelled",
+      "refunded": "Refunded"
+    },
+    "type": {
+      "subscription_payment": "Subscription Payment",
+      "upgrade": "Upgrade",
+      "downgrade": "Downgrade",
+      "addon_purchase": "Add-on Purchase",
+      "refund": "Refund"
+    },
+    "sort": {
+      "newest": "Newest",
+      "date_desc": "Date (recent)",
+      "amount_high": "Amount (high)",
+      "reference": "Reference"
+    },
+    "columns": {
+      "reference": "Reference",
+      "customer": "Customer",
+      "type": "Type",
+      "amount": "Amount",
+      "provider": "Provider",
+      "date": "Date",
+      "status": "Status"
+    },
+    "empty": {
+      "title": "No transactions",
+      "message": "No transactions have been found."
+    }
+  }
+}

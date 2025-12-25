@@ -1,0 +1,30 @@
+{
+  "transaction-detail": {
+    "page_title": "Transaction Details",
+    "transaction_details": "Transaction Details",
+    "reference": "Reference",
+    "type": "Type",
+    "amount": "Amount",
+    "provider": "Payment Provider",
+    "transaction_date": "Transaction Date",
+    "processed_date": "Processed Date",
+    "provider_id": "Provider ID",
+    "failure_reason": "Failure Reason",
+    "customer_details": "Customer Details",
+    "customer_email": "Email",
+    "customer_name": "Name",
+    "payment_method": "Payment Method",
+    "related": "Related Records",
+    "invoice": "Invoice",
+    "subscription": "Subscription",
+    "sales_contact": "Sales Contact",
+    "view_invoice": "View Invoice",
+    "view_subscription": "View Subscription",
+    "metadata": "Metadata",
+    "created_at": "Created at",
+    "processed_by": "Processed by",
+    "error": {
+      "load_failed": "Error loading transaction"
+    }
+  }
+}

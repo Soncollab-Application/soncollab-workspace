@@ -37,7 +37,11 @@
           "config": "System Configuration",
           "billing": "Billing Management",
           "maintenance": "System Maintenance",
-          "payment-link-detail": "Payment Link Details"
+          "payment-link-detail": "Payment Link Details",
+          "invoices-list": "Invoices",
+          "invoice-detail": "Invoice Details",
+          "transactions-list": "Transactions",
+          "transaction-detail": "Transaction Details"
         }
       },
       "sales": {

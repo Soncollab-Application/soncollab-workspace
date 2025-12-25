@@ -45,7 +45,7 @@ import {
   RecentInvoicesResponse,
   TransactionsResponse,
   CreateBillingPlanRequest,
-  UpdateBillingPlanRequest
+  UpdateBillingPlanRequest, TransactionsStatsResponse
 } from '../../models/admin/billing';
 
 @Injectable({ providedIn: 'root' })
@@ -102,6 +102,7 @@ export class BillingService {
     // Transactions
     transactions: `${this.API_URL}/subscription-transactions`,
     transaction_by_id: (documentId: string) => `${this.API_URL}/subscription-transactions/${documentId}`,
+    transaction_stats: `${this.API_URL}/subscription-transactions/stats`,
 
     // Currencies
     currencies: `${this.API_URL}/billing-currencies`,
@@ -610,6 +611,10 @@ export class BillingService {
     params = params.set('populate[3]', 'payment_link');
 
     return this.http.get(this.BILLING_ENDPOINTS.transaction_by_id(documentId), { params });
+  }
+
+  getTransactionStats(): Observable<TransactionsStatsResponse> {
+    return this.http.get<TransactionsStatsResponse>(this.BILLING_ENDPOINTS.transaction_stats);
   }
 
   // ==================== CURRENCIES ====================

@@ -110,6 +110,28 @@
       "system": "System",
       "payment_links": "Payment Links",
       "detail": "Details"
+    },
+    "invoices-list": {
+      "dashboard": "Dashboard",
+      "system": "System",
+      "invoices": "Invoices"
+    },
+    "invoice-detail": {
+      "dashboard": "Dashboard",
+      "system": "System",
+      "invoices": "Invoices",
+      "detail": "Details"
+    },
+    "transactions-list": {
+      "dashboard": "Dashboard",
+      "system": "System",
+      "transactions": "Transactions"
+    },
+    "transaction-detail": {
+      "dashboard": "Dashboard",
+      "system": "System",
+      "transactions": "Transactions",
+      "detail": "Details"
     }
   }
 }
