@@ -1,0 +1,284 @@
+<div
+  class="offcanvas offcanvas-end"
+  [class.show]="offcanvasService.isOpen()"
+  [style.visibility]="offcanvasService.isOpen() ? 'visible' : 'hidden'"
+  tabindex="-1">
+  <div class="offcanvas-header border-bottom">
+    <h5 class="offcanvas-title d-flex align-items-center gap-2">
+    <span>
+      {{
+        offcanvasService.mode() === 'create'
+          ? ('plan-offcanvas.title.create' | translate)
+          : ('plan-offcanvas.title.edit' | translate)
+      }}
+    </span>
+      <span class="badge bg-secondary">{{ offcanvasService.locale().toUpperCase() }}</span>
+    </h5>
+    <button
+      type="button"
+      class="btn-close"
+      (click)="onCancel()"
+      [disabled]="isSubmitting()"></button>
+  </div>
+
+  <div class="offcanvas-body">
+    @if (loadingData()) {
+      <div class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
+        </div>
+      </div>
+    } @else {
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <!-- Plan Name -->
+        <div class="mb-3">
+          <label class="form-label">
+            {{ 'plan-offcanvas.fields.plan_name' | translate }}
+            <span class="text-danger">*</span>
+          </label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="plan_name"
+            [placeholder]="'plan-offcanvas.fields.plan_name_placeholder' | translate"
+            [class.is-invalid]="form.get('plan_name')?.invalid && form.get('plan_name')?.touched" />
+          @if (form.get('plan_name')?.invalid && form.get('plan_name')?.touched) {
+            <div class="invalid-feedback">
+              {{ 'plan-offcanvas.errors.plan_name_required' | translate }}
+            </div>
+          }
+        </div>
+
+        <!-- Currency -->
+        <div class="mb-3">
+          <label class="form-label">
+            {{ 'plan-offcanvas.fields.currency' | translate }}
+            <span class="text-danger">*</span>
+          </label>
+          <lib-choice
+            [options]="currencyOptions()"
+            [config]="choiceConfig"
+            [(ngModel)]="selectedCurrency"
+            [ngModelOptions]="{ standalone: true }"
+            (ngModelChange)="onCurrencyChange($event)"
+            [placeholder]="'plan-offcanvas.fields.currency_placeholder' | translate">
+          </lib-choice>
+        </div>
+
+        <!-- Pricing -->
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">
+              {{ 'plan-offcanvas.fields.price_monthly' | translate }}
+              <span class="text-danger">*</span>
+            </label>
+            <div class="input-group">
+              <input
+                type="number"
+                class="form-control"
+                formControlName="price_monthly"
+                min="0"
+                step="0.01"
+                [class.is-invalid]="form.get('price_monthly')?.invalid && form.get('price_monthly')?.touched" />
+              <span class="input-group-text">
+                {{ selectedCurrencySymbol() }}
+              </span>
+            </div>
+            @if (form.get('price_monthly')?.invalid && form.get('price_monthly')?.touched) {
+              <div class="invalid-feedback d-block">
+                {{ 'plan-offcanvas.errors.price_required' | translate }}
+              </div>
+            }
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label">
+              {{ 'plan-offcanvas.fields.price_yearly' | translate }}
+              <span class="text-danger">*</span>
+            </label>
+            <div class="input-group">
+              <input
+                type="number"
+                class="form-control"
+                formControlName="price_yearly"
+                min="0"
+                step="0.01"
+                [class.is-invalid]="form.get('price_yearly')?.invalid && form.get('price_yearly')?.touched" />
+              <span class="input-group-text">
+                {{ selectedCurrencySymbol() }}
+              </span>
+            </div>
+            @if (form.get('price_yearly')?.invalid && form.get('price_yearly')?.touched) {
+              <div class="invalid-feedback d-block">
+                {{ 'plan-offcanvas.errors.price_required' | translate }}
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Limits -->
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">
+              {{ 'plan-offcanvas.fields.asset_limit' | translate }}
+              <span class="text-danger">*</span>
+            </label>
+            <input
+              type="number"
+              class="form-control"
+              formControlName="asset_limit"
+              min="1"
+              [class.is-invalid]="form.get('asset_limit')?.invalid && form.get('asset_limit')?.touched" />
+            @if (form.get('asset_limit')?.invalid && form.get('asset_limit')?.touched) {
+              <div class="invalid-feedback">
+                {{ 'plan-offcanvas.errors.asset_limit_required' | translate }}
+              </div>
+            }
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label">
+              {{ 'plan-offcanvas.fields.royalty_cap' | translate }}
+            </label>
+            <div class="input-group">
+              <input
+                type="number"
+                class="form-control"
+                formControlName="royalty_cap"
+                min="0"
+                step="0.01"
+                [placeholder]="'plan-offcanvas.fields.royalty_cap_placeholder' | translate" />
+              <span class="input-group-text">
+                {{ selectedCurrencySymbol() }}
+              </span>
+            </div>
+            <small class="form-text text-muted">
+              {{ 'plan-offcanvas.fields.royalty_cap_hint' | translate }}
+            </small>
+          </div>
+        </div>
+
+        <!-- Support Level -->
+        <div class="mb-3">
+          <label class="form-label">
+            {{ 'plan-offcanvas.fields.support_level' | translate }}
+            <span class="text-danger">*</span>
+          </label>
+          <lib-choice
+            [options]="supportLevelOptions()"
+            [config]="choiceConfig"
+            [(ngModel)]="selectedSupportLevel"
+            [ngModelOptions]="{ standalone: true }"
+            (ngModelChange)="onSupportLevelChange($event)">
+          </lib-choice>
+        </div>
+
+        <!-- Product Type (Optional) -->
+        <div class="mb-3">
+          <label class="form-label">
+            {{ 'plan-offcanvas.fields.product_type' | translate }}
+          </label>
+          <lib-choice
+            [options]="productTypeOptions()"
+            [config]="choiceConfig"
+            [(ngModel)]="selectedProductType"
+            [ngModelOptions]="{ standalone: true }"
+            (ngModelChange)="onProductTypeChange($event)"
+            [placeholder]="'plan-offcanvas.fields.product_type_placeholder' | translate">
+          </lib-choice>
+          <small class="form-text text-muted">
+            {{ 'plan-offcanvas.fields.product_type_hint' | translate }}
+          </small>
+        </div>
+
+        <!-- Feature Flags (Multiple) -->
+        <div class="mb-3">
+          <label class="form-label">
+            {{ 'plan-offcanvas.fields.included_features' | translate }}
+          </label>
+          <lib-choice
+            [options]="featureFlagOptions()"
+            [config]="multipleChoiceConfig"
+            [(ngModel)]="selectedFeatures"
+            [ngModelOptions]="{ standalone: true }"
+            (ngModelChange)="onFeaturesChange($event)"
+            [placeholder]="'plan-offcanvas.fields.included_features_placeholder' | translate"
+            [multiple]="true">
+          </lib-choice>
+          <small class="form-text text-muted">
+            {{ 'plan-offcanvas.fields.included_features_hint' | translate }}
+          </small>
+        </div>
+
+        <!-- Available Addons (Multiple) -->
+        <div class="mb-3">
+          <label class="form-label">
+            {{ 'plan-offcanvas.fields.available_addons' | translate }}
+          </label>
+          <lib-choice
+            [options]="addonOptions()"
+            [config]="multipleChoiceConfig"
+            [(ngModel)]="selectedAddons"
+            [ngModelOptions]="{ standalone: true }"
+            (ngModelChange)="onAddonsChange($event)"
+            [placeholder]="'plan-offcanvas.fields.available_addons_placeholder' | translate"
+            [multiple]="true">
+          </lib-choice>
+          <small class="form-text text-muted">
+            {{ 'plan-offcanvas.fields.available_addons_hint' | translate }}
+          </small>
+        </div>
+
+        <!-- Active Status -->
+        <div class="mb-3">
+          <div class="form-check form-switch">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              role="switch"
+              id="is_active"
+              formControlName="is_active" />
+            <label class="form-check-label" for="is_active">
+              {{ 'plan-offcanvas.fields.is_active' | translate }}
+            </label>
+          </div>
+          <small class="form-text text-muted">
+            {{ 'plan-offcanvas.fields.is_active_hint' | translate }}
+          </small>
+        </div>
+      </form>
+    }
+  </div>
+
+  <div class="offcanvas-footer border-top p-3">
+    <div class="d-flex gap-2">
+      <button
+        type="button"
+        class="btn btn-outline-secondary flex-fill"
+        (click)="onCancel()"
+        [disabled]="isSubmitting()">
+        {{ 'plan-offcanvas.buttons.cancel' | translate }}
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary flex-fill"
+        (click)="onSubmit()"
+        [disabled]="form.invalid || isSubmitting() || !selectedCurrency() || loadingData()">
+        @if (isSubmitting()) {
+          <span class="spinner-border spinner-border-sm me-2"></span>
+        }
+        {{
+          offcanvasService.mode() === 'create'
+            ? ('plan-offcanvas.buttons.create' | translate)
+            : ('plan-offcanvas.buttons.save' | translate)
+        }}
+      </button>
+    </div>
+  </div>
+</div>
+
+@if (offcanvasService.isOpen()) {
+  <div class="offcanvas-backdrop fade show"></div>
+}
+
+

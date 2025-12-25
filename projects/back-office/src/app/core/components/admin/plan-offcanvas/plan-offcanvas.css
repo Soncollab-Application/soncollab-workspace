@@ -1,0 +1,8 @@
+.offcanvas {
+  width: 600px !important;
+  max-width: 100vw;
+}
+
+.offcanvas-footer {
+  background-color: var(--fn-body-bg);
+}

@@ -36,7 +36,11 @@
       "premium": "Premium"
     },
     "actions": {
-      "view_translations": "View translations"
+      "view_translations": "View translations",
+      "create_translation": "Create translation"
+    },
+    "messages": {
+      "all_translations_exist": "All translations already exist"
     },
     "toast": {
       "delete_success": "Plan \"{{name}}\" deleted successfully",

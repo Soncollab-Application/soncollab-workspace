@@ -19,11 +19,13 @@ import {
   TranslationsModalService
 } from '../../../../../core/services/admin/translations-modal.service';
 import {DecimalPipe} from '@angular/common';
+import {PlanOffcanvasService} from '../../../../../core/services/admin/plan-offcanvas.service';
+import {PlanOffcanvas} from '../../../../../core/components/admin/plan-offcanvas/plan-offcanvas';
 
 @Component({
   selector: 'app-plan-detail',
   standalone: true,
-  imports: [Breadcrumb, TranslatePipe, Badge, RelativeDatePipe, TranslationsModal, DecimalPipe],
+  imports: [Breadcrumb, TranslatePipe, Badge, RelativeDatePipe, TranslationsModal, DecimalPipe, PlanOffcanvas],
   templateUrl: './plan-detail.html',
   styleUrl: './plan-detail.css'
 })
@@ -37,6 +39,7 @@ export class PlanDetail implements OnInit, OnDestroy {
   private toastService = inject(ToastService);
   private permissionsService = inject(PermissionService);
   private translationsModalService = inject(TranslationsModalService);
+  private planOffcanvasService = inject(PlanOffcanvasService);
 
   private destroy$ = new Subject<void>();
   private componentId = 'plan-detail';
@@ -177,7 +180,7 @@ export class PlanDetail implements OnInit, OnDestroy {
   editPlan(): void {
     const p = this.plan();
     if (!p || !this.canUpdate()) return;
-    console.log('Edit plan:', p.documentId);
+    this.planOffcanvasService.openEdit(p);
   }
 
   deletePlan(): void {

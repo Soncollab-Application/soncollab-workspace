@@ -37,6 +37,10 @@ import {
   TranslationOption,
   TranslationsModalService
 } from '../../../../../core/services/admin/translations-modal.service';
+import {PlanOffcanvasService} from '../../../../../core/services/admin/plan-offcanvas.service';
+import {PlanOffcanvas} from '../../../../../core/components/admin/plan-offcanvas/plan-offcanvas';
+import {LocaleSelectorModalService} from '../../../../../core/services/admin/locale-selector-modal.service';
+import {LocaleSelectorModal} from '../../../../../core/components/admin/locale-selector-modal/locale-selector-modal';
 
 @Component({
   selector: 'app-plans-list',
@@ -50,7 +54,9 @@ import {
     KpiCardComponent,
     DataList,
     Choice,
-    TranslationsModal
+    TranslationsModal,
+    PlanOffcanvas,
+    LocaleSelectorModal
   ],
   templateUrl: './plans-list.html',
   styleUrl: './plans-list.css',
@@ -66,6 +72,10 @@ export class PlansList implements OnInit, OnDestroy {
   private toastService = inject(ToastService);
   protected listManager = inject(ListStateManager<BillingPlanListItem, BillingPlanFilters>);
   private translationsModalService = inject(TranslationsModalService);
+  private planOffcanvasService = inject(PlanOffcanvasService);
+  private localeSelectorService = inject(LocaleSelectorModalService);
+
+
 
   private destroy$ = new Subject<void>();
   private componentId = 'plans-list';
@@ -297,12 +307,29 @@ export class PlansList implements OnInit, OnDestroy {
     ];
 
     if (this.canUpdate()) {
-      baseActions.push({
-        label: this.translate.instant('common.edit'),
-        icon: 'edit',
-        class: 'btn-outline-primary',
-        handler: (row: BillingPlanListItem) => this.editPlan(row)
-      });
+      baseActions.push(
+        {
+          label: this.translate.instant('common.edit'),
+          icon: 'edit',
+          class: 'btn-outline-primary',
+          handler: (row: BillingPlanListItem) => this.editPlan(row)
+        },
+
+        {
+          label: this.translate.instant('plans-list.actions.create_translation'),
+          icon: 'translate',
+          class: 'btn-outline-info',
+          handler: (plan) => this.createTranslation(plan),
+          condition: (plan) => {
+            const existingLocales = [
+              plan.locale,
+              ...(plan.localizations?.map(l => l.locale) || [])
+            ];
+            return existingLocales.length < this.availableLocales.length;
+          }
+        }
+
+      );
 
       baseActions.push({
         label: this.translate.instant('plans-list.actions.view_translations'),
@@ -328,6 +355,8 @@ export class PlansList implements OnInit, OnDestroy {
     this.emptyTitle.set(this.translate.instant('plans-list.empty.title'));
     this.emptyMessage.set(this.translate.instant('plans-list.empty.message'));
   }
+
+
 
   private buildFilters(search: string, filterValues: FilterValue): BillingPlanFilters {
     const filters: BillingPlanFilters = {
@@ -437,9 +466,64 @@ export class PlansList implements OnInit, OnDestroy {
     this.router.navigate(['/admin/system/billing/plans', plan.documentId]);
   }
 
-  editPlan(plan: BillingPlanListItem): void {
-    console.log('Edit plan:', plan);
+  createPlan(): void {
+    if (!this.canCreate()) return;
+    this.planOffcanvasService.openCreate(this.currentLocale() as 'fr' | 'en');
   }
+
+  editPlan(plan: BillingPlanListItem): void {
+    if (!this.canUpdate()) return;
+
+    this.billingService.getBillingPlan(plan.documentId, this.currentLocale())
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.planOffcanvasService.openEdit(response.data);
+        },
+        error: (err) => {
+          console.error('Error loading plan:', err);
+          this.toastService.showError(
+            this.translate.instant('plans-list.error.loading')
+          );
+        }
+      });
+  }
+
+  createTranslation(plan: BillingPlanListItem): void {
+    const existingLocales = [
+      plan.locale,
+      ...(plan.localizations?.map(l => l.locale) || [])
+    ];
+
+    const availableLocales = this.availableLocales
+      .filter(loc => !existingLocales.includes(loc.code))
+      .map(loc => ({
+        code: loc.code,
+        label: loc.label,
+        flag: loc.flag
+      }));
+
+    if (availableLocales.length === 0) {
+      this.toastService.showWarning(
+        this.translate.instant('plans-list.messages.all_translations_exist')
+      );
+      return;
+    }
+
+    if (availableLocales.length === 1) {
+      this.openCreateTranslationOffcanvas(plan.documentId, availableLocales[0].code);
+      return;
+    }
+
+    this.localeSelectorService.open(availableLocales, (selectedLocale) => {
+      this.openCreateTranslationOffcanvas(plan.documentId, selectedLocale);
+    });
+  }
+
+  private openCreateTranslationOffcanvas(sourceDocumentId: string, targetLocale: string): void {
+    this.planOffcanvasService.openCreate(targetLocale as 'fr' | 'en', sourceDocumentId);
+  }
+
 
   viewTranslations(plan: BillingPlanListItem): void {
     const allTranslations: TranslationOption[] = [];

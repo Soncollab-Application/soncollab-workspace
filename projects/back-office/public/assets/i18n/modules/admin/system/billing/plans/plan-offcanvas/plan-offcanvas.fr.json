@@ -1,0 +1,51 @@
+{
+  "plan-offcanvas": {
+    "title": {
+      "create": "Créer un plan",
+      "edit": "Modifier le plan"
+    },
+    "fields": {
+      "plan_name": "Nom du plan",
+      "plan_name_placeholder": "Ex: Plan Starter",
+      "currency": "Devise",
+      "currency_placeholder": "Sélectionner une devise",
+      "price_monthly": "Prix mensuel",
+      "price_yearly": "Prix annuel",
+      "asset_limit": "Limite d'assets",
+      "royalty_cap": "Plafond de royalties",
+      "royalty_cap_placeholder": "Illimité",
+      "royalty_cap_hint": "Montant maximum de royalties par mois (optionnel)",
+      "support_level": "Niveau de support",
+      "product_type": "Type de produit",
+      "product_type_placeholder": "Optionnel",
+      "product_type_hint": "Le type de produit auquel ce plan appartient",
+      "included_features": "Fonctionnalités incluses",
+      "included_features_placeholder": "Sélectionner les fonctionnalités",
+      "included_features_hint": "Les fonctionnalités qui sont incluses dans ce plan",
+      "available_addons": "Modules complémentaires disponibles",
+      "available_addons_placeholder": "Sélectionner les modules",
+      "available_addons_hint": "Les modules que les clients peuvent ajouter à ce plan",
+      "is_active": "Plan actif",
+      "is_active_hint": "Les plans actifs sont visibles pour les clients"
+    },
+    "errors": {
+      "plan_name_required": "Le nom du plan est requis",
+      "currency_required": "La devise est requise",
+      "price_required": "Le prix est requis et doit être positif",
+      "asset_limit_required": "La limite d'assets est requise"
+    },
+    "buttons": {
+      "cancel": "Annuler",
+      "create": "Créer le plan",
+      "save": "Enregistrer"
+    },
+    "success": {
+      "created": "Plan créé avec succès",
+      "updated": "Plan mis à jour avec succès"
+    },
+    "error": {
+      "save": "Erreur lors de l'enregistrement du plan",
+      "loading_data": "Erreur lors du chargement des données"
+    }
+  }
+}
