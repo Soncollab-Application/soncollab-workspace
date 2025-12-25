@@ -118,7 +118,7 @@ export class BillingDashboard implements OnInit, OnDestroy {
       {
         label: this.translate.instant('billing-dashboard.invoices.total_revenue'),
         value: `${(stats.total_revenue || 0).toLocaleString()} ${mainCurrency}`,
-        icon: 'attach_money',
+        icon: 'universal_currency_alt',
         iconClass: 'text-success',
         bgClass: 'bg-success bg-opacity-10'
       },
@@ -171,7 +171,7 @@ export class BillingDashboard implements OnInit, OnDestroy {
       {
         label: this.translate.instant('billing-dashboard.payment_links.avg_deal'),
         value: `${(metrics.avg_deal_size || 0).toLocaleString()} EUR`,
-        icon: 'attach_money',
+        icon: 'universal_currency_alt',
         iconClass: 'text-warning',
         bgClass: 'bg-warning bg-opacity-10'
       }

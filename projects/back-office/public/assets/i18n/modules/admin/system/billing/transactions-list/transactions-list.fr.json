@@ -1,0 +1,49 @@
+{
+  "transactions-list": {
+    "page_title": "Transactions",
+    "kpi": {
+      "total_volume": "Volume total",
+      "total": "Total transactions",
+      "success_rate": "Taux de succès"
+    },
+    "filters": {
+      "status": "Statut",
+      "type": "Type",
+      "provider": "Fournisseur"
+    },
+    "status": {
+      "pending": "En attente",
+      "processing": "En traitement",
+      "completed": "Complétée",
+      "failed": "Échouée",
+      "cancelled": "Annulée",
+      "refunded": "Remboursée"
+    },
+    "type": {
+      "subscription_payment": "Paiement d'abonnement",
+      "upgrade": "Mise à niveau",
+      "downgrade": "Rétrogradation",
+      "addon_purchase": "Achat de module",
+      "refund": "Remboursement"
+    },
+    "sort": {
+      "newest": "Plus récentes",
+      "date_desc": "Date (récent)",
+      "amount_high": "Montant (élevé)",
+      "reference": "Référence"
+    },
+    "columns": {
+      "reference": "Référence",
+      "customer": "Client",
+      "type": "Type",
+      "amount": "Montant",
+      "provider": "Fournisseur",
+      "date": "Date",
+      "status": "Statut"
+    },
+    "empty": {
+      "title": "Aucune transaction",
+      "message": "Aucune transaction n'a été trouvée."
+    }
+  }
+}

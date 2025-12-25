@@ -53,6 +53,8 @@ export class PageTitleService {
     '/admin/system/billing/addons': 'header.pages.admin.system.addons',
     '/admin/system/billing/subscriptions': 'header.pages.admin.system.subscriptions',
     '/admin/system/billing/payment-links': 'header.pages.admin.system.payment-links',
+    '/admin/system/billing/invoices': 'header.pages.admin.system.invoices-list',
+    '/admin/system/billing/transactions': 'header.pages.admin.system.transactions-list',
     '/admin/system/config': 'header.pages.admin.system.config',
     '/admin/system/maintenance': 'header.pages.admin.system.maintenance',
 

@@ -1,0 +1,49 @@
+{
+  "invoices-list": {
+    "page_title": "Factures",
+    "create_invoice": "Créer une facture",
+    "kpi": {
+      "total_revenue": "Revenu total",
+      "total": "Total factures",
+      "avg_amount": "Montant moyen"
+    },
+    "filters": {
+      "status": "Statut",
+      "type": "Type"
+    },
+    "status": {
+      "draft": "Brouillon",
+      "sent": "Envoyée",
+      "paid": "Payée",
+      "overdue": "En retard",
+      "cancelled": "Annulée"
+    },
+    "type": {
+      "subscription": "Abonnement",
+      "addon": "Module",
+      "upgrade": "Mise à niveau",
+      "refund": "Remboursement"
+    },
+    "sort": {
+      "newest": "Plus récentes",
+      "date_desc": "Date (récent)",
+      "amount_high": "Montant (élevé)",
+      "number": "Numéro"
+    },
+    "columns": {
+      "invoice_number": "Numéro",
+      "customer": "Client",
+      "type": "Type",
+      "amount": "Montant",
+      "date": "Date",
+      "status": "Statut"
+    },
+    "empty": {
+      "title": "Aucune facture",
+      "message": "Aucune facture n'a été trouvée."
+    },
+    "toast": {
+      "delete_not_allowed": "La suppression des factures n'est pas autorisée"
+    }
+  }
+}

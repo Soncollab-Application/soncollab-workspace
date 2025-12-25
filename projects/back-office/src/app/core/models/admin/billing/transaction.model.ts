@@ -31,7 +31,7 @@ export interface Transaction {
 }
 
 export interface TransactionsResponse {
-  data: Transaction[];
+  data: TransactionListItem[];
   meta: {
     pagination: {
       page: number;
@@ -39,5 +39,58 @@ export interface TransactionsResponse {
       pageCount: number;
       total: number;
     };
+  };
+}
+
+
+
+
+export interface TransactionListItem {
+  id: number;
+  documentId: string;
+  transaction_reference: string;
+  transaction_type: TransactionType;
+  transaction_status: TransactionStatus;
+  amount: number;
+  currency: string;
+  transaction_date: string;
+  payment_provider?: PaymentProvider;
+  customer_email: string;
+  customer_name?: string;
+  createdAt: string;
+}
+
+export interface TransactionFilters {
+  search?: string;
+  transaction_status?: TransactionStatus;
+  transaction_type?: TransactionType;
+  payment_provider?: PaymentProvider;
+  date_from?: string;
+  date_to?: string;
+}
+
+export interface TransactionStats {
+  total_transactions: number;
+  total_volume: number;
+  by_status: Record<TransactionStatus, {
+    count: number;
+    total: number;
+  }>;
+  by_provider: Record<string, {
+    count: number;
+    total: number;
+  }>;
+  success_rate: string;
+}
+
+export interface TransactionResponse {
+  data: Transaction;
+}
+
+export interface TransactionsStatsResponse {
+  data: TransactionStats;
+  meta: {
+    period: string;
+    generated_at: string;
   };
 }

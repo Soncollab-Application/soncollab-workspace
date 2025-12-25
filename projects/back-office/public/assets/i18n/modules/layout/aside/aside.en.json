@@ -35,6 +35,8 @@
       "addons": "Add-ons",
       "subscriptions": "Subscriptions",
       "payment-links": "Payment Links",
+      "invoices": "Invoices",
+      "transactions": "Transactions",
       "config": "Configuration",
       "maintenance": "Maintenance",
       "my-contacts": "My Contacts",

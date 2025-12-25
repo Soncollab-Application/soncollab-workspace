@@ -110,6 +110,28 @@
       "system": "Système",
       "payment_links": "Liens de paiement",
       "detail": "Détails"
+    },
+    "invoices-list": {
+      "dashboard": "Tableau de bord",
+      "system": "Système",
+      "invoices": "Factures"
+    },
+    "invoice-detail": {
+      "dashboard": "Tableau de bord",
+      "system": "Système",
+      "invoices": "Factures",
+      "detail": "Détails"
+    },
+    "transactions-list": {
+      "dashboard": "Tableau de bord",
+      "system": "Système",
+      "transactions": "Transactions"
+    },
+    "transaction-detail": {
+      "dashboard": "Tableau de bord",
+      "system": "Système",
+      "transactions": "Transactions",
+      "detail": "Détails"
     }
   }
 }
