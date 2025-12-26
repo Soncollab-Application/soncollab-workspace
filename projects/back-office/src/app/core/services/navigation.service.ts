@@ -78,6 +78,7 @@ export class NavigationService {
               { key: 'billing-dashboard', icon: 'dashboard', route: '/admin/system/billing/dashboard' },
               { key: 'plans', icon: 'list', route: '/admin/system/billing/plans' },
               { key: 'addons', icon: 'extension', route: '/admin/system/billing/addons' },
+              { key: 'features', icon: 'flag', route: '/admin/system/billing/features' },
               { key: 'subscriptions', icon: 'subscriptions', route: '/admin/system/billing/subscriptions' },
               { key: 'payment-links', icon: 'link', route: '/admin/system/billing/payment-links' },
               { key: 'invoices', icon: 'receipt', route: '/admin/system/billing/invoices' },

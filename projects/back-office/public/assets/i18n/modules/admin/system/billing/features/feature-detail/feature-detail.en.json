@@ -1,0 +1,14 @@
+{
+  "feature-detail": {
+    "overview": "Overview",
+    "name": "Name",
+    "description": "Description",
+    "status": "Status",
+    "enabled_by_default": "Enabled by default",
+    "metadata": "Metadata",
+    "created_at": "Created",
+    "updated_at": "Updated",
+    "language": "Language",
+    "actions": "Actions"
+  }
+}

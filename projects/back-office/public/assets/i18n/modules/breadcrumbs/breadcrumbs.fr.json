@@ -132,6 +132,17 @@
       "system": "Système",
       "transactions": "Transactions",
       "detail": "Détails"
+    },
+    "features-list": {
+      "dashboard": "Tableau de bord",
+      "system": "Système",
+      "billing": "Facturation",
+      "features": "Fonctionnalités"
+    },
+    "feature-detail": {
+      "dashboard": "Tableau de bord",
+      "system": "Système",
+      "features": "Fonctionnalités"
     }
   }
 }

@@ -158,7 +158,7 @@ export const adminRoutes: Routes = [
       // Système
       {
         path: 'system/billing/dashboard',
-        loadComponent: () => import('../../../pages/admin/system/billing-dashboard/billing-dashboard').then(c => c.BillingDashboard),
+        loadComponent: () => import('../../../pages/admin/system/billing/billing-dashboard/billing-dashboard').then(c => c.BillingDashboard),
         canActivate: [apiPermissionGuard('subscription', 'subscription', 'find')]
       },
       {
@@ -222,12 +222,18 @@ export const adminRoutes: Routes = [
         canActivate: [apiPermissionGuard('subscription-transaction', 'subscription-transaction', 'findOne')]
       },
       {
-        path: 'system/config',
-        loadComponent: () => import('../../../pages/admin/system/config/system-config/system-config').then(c => c.SystemConfig)
+        path: 'system/billing/features',
+        loadComponent: () => import('../../../pages/admin/system/features/features-list/features-list').then(c => c.FeaturesList),
+        canActivate: [apiPermissionGuard('feature-flag', 'feature-flag', 'find')]
       },
       {
-        path: 'system/billing',
-        loadComponent: () => import('../../../pages/admin/system/billing/billing-management/billing-management').then(c => c.BillingManagement)
+        path: 'system/billing/features/:documentId',
+        loadComponent: () => import('../../../pages/admin/system/features/feature-detail/feature-detail').then(c => c.FeatureDetail),
+        canActivate: [apiPermissionGuard('feature-flag', 'feature-flag', 'findOne')]
+      },
+      {
+        path: 'system/config',
+        loadComponent: () => import('../../../pages/admin/system/config/system-config/system-config').then(c => c.SystemConfig)
       },
       {
         path: 'system/maintenance',

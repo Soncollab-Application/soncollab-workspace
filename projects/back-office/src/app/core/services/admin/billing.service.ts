@@ -45,7 +45,12 @@ import {
   RecentInvoicesResponse,
   TransactionsResponse,
   CreateBillingPlanRequest,
-  UpdateBillingPlanRequest, TransactionsStatsResponse
+  UpdateBillingPlanRequest,
+  TransactionsStatsResponse,
+  FeatureFlagFilters,
+  FeatureFlagResponse,
+  FeatureFlagCreateRequest,
+  FeatureFlagStats, BillingPlanStats
 } from '../../models/admin/billing';
 
 @Injectable({ providedIn: 'root' })
@@ -58,6 +63,8 @@ export class BillingService {
     billing_plans: `${this.API_URL}/billing-plans`,
     billing_plan_by_id: (documentId: string) => `${this.API_URL}/billing-plans/${documentId}`,
     billing_plan_pricing: (locale: string) => `${this.API_URL}/billing-plans/pricing/${locale}`,
+    billing_plans_stats: `${this.API_URL}/billing-plans/stats`,
+
 
     // Plan Addons
     plan_addons: `${this.API_URL}/plan-addons`,
@@ -111,6 +118,7 @@ export class BillingService {
     // Feature Flags
     feature_flags: `${this.API_URL}/feature-flags`,
     feature_flag_by_id: (documentId: string) => `${this.API_URL}/feature-flags/${documentId}`,
+    feature_flags_stats: `${this.API_URL}/feature-flags/stats`,
 
     // Product Types
     product_types: `${this.API_URL}/product-types`
@@ -192,9 +200,15 @@ export class BillingService {
   }
 
   updateBillingPlan(documentId: string, data: UpdateBillingPlanRequest): Observable<BillingPlanResponse> {
+    let params = new HttpParams();
+    if (data.locale) {
+      params = params.set('locale', data.locale);
+    }
+
     return this.http.put<BillingPlanResponse>(
       this.BILLING_ENDPOINTS.billing_plan_by_id(documentId),
-      { data }
+      { data },
+      { params }
     );
   }
 
@@ -204,6 +218,14 @@ export class BillingService {
 
   getBillingPlanPricing(locale: string): Observable<any> {
     return this.http.get(this.BILLING_ENDPOINTS.billing_plan_pricing(locale));
+  }
+
+  getBillingPlanStats(locale: string): Observable<{ data: BillingPlanStats }> {
+    const params = new HttpParams().set('locale', locale);
+    return this.http.get<{ data: BillingPlanStats }>(
+      this.BILLING_ENDPOINTS.billing_plans_stats,
+      { params }
+    );
   }
 
   // ==================== PLAN ADDONS ====================
@@ -636,20 +658,81 @@ export class BillingService {
 
   // ==================== FEATURE FLAGS ====================
 
-  getFeatureFlags(): Observable<FeatureFlagsResponse> {
-    const params = new HttpParams()
-      .set('pagination[pageSize]', '100')
-      .set('sort[0]', 'name:asc');
+  getFeatureFlags(
+    page = 1,
+    pageSize = 10,
+    filters?: FeatureFlagFilters,
+    sortField = 'createdAt',
+    sortOrder: 'asc' | 'desc' = 'desc'
+  ): Observable<FeatureFlagsResponse> {
+    let params = new HttpParams()
+      .set('pagination[page]', page.toString())
+      .set('pagination[pageSize]', pageSize.toString())
+      .set('sort[0]', `${sortField}:${sortOrder}`);
+
+    params = params.set('populate[localizations][fields][0]', 'locale');
+    params = params.set('populate[localizations][fields][1]', 'documentId');
+    params = params.set('populate[localizations][fields][2]', 'name');
+
+    if (filters?.locale) {
+      params = params.set('locale', filters.locale);
+    }
+
+    if (filters?.search) {
+      params = params.set('filters[name][$containsi]', filters.search);
+    }
+
+    if (filters?.feature_flag_status) {
+      params = params.set('filters[feature_flag_status][$eq]', filters.feature_flag_status);
+    }
+
+    if (filters?.is_enabled_by_default !== undefined) {
+      params = params.set('filters[is_enabled_by_default][$eq]', filters.is_enabled_by_default.toString());
+    }
 
     return this.http.get<FeatureFlagsResponse>(this.BILLING_ENDPOINTS.feature_flags, { params });
   }
 
-  updateFeatureFlag(documentId: string, data: FeatureFlagUpdateRequest): Observable<{ data: FeatureFlag }> {
-    return this.http.put<{ data: FeatureFlag }>(
+  getFeatureFlag(documentId: string, locale?: string): Observable<FeatureFlagResponse> {
+    let params = new HttpParams();
+
+    params = params.set('populate[localizations][fields][0]', 'locale');
+    params = params.set('populate[localizations][fields][1]', 'documentId');
+    params = params.set('populate[localizations][fields][2]', 'name');
+
+    if (locale) {
+      params = params.set('locale', locale);
+    }
+
+    return this.http.get<FeatureFlagResponse>(
+      this.BILLING_ENDPOINTS.feature_flag_by_id(documentId),
+      { params }
+    );
+  }
+
+  createFeatureFlag(data: FeatureFlagCreateRequest): Observable<FeatureFlagResponse> {
+    return this.http.post<FeatureFlagResponse>(this.BILLING_ENDPOINTS.feature_flags, { data });
+  }
+
+  updateFeatureFlag(documentId: string, data: FeatureFlagUpdateRequest): Observable<FeatureFlagResponse> {
+    return this.http.put<FeatureFlagResponse>(
       this.BILLING_ENDPOINTS.feature_flag_by_id(documentId),
       { data }
     );
   }
+
+  deleteFeatureFlag(documentId: string): Observable<void> {
+    return this.http.delete<void>(this.BILLING_ENDPOINTS.feature_flag_by_id(documentId));
+  }
+
+  getFeatureFlagStats(locale: string): Observable<{ data: FeatureFlagStats }> {
+    const params = new HttpParams().set('locale', locale);
+    return this.http.get<{ data: FeatureFlagStats }>(
+      this.BILLING_ENDPOINTS.feature_flags_stats,
+      { params }
+    );
+  }
+
 
   // ==================== PRODUCT TYPES ====================
 

@@ -1,0 +1,39 @@
+{
+  "feature-flag-offcanvas": {
+    "title": {
+      "create": "Créer une fonctionnalité",
+      "edit": "Modifier la fonctionnalité"
+    },
+    "fields": {
+      "name": "Nom",
+      "name_placeholder": "Ex: Accès API",
+      "description": "Description",
+      "description_placeholder": "Décrivez cette fonctionnalité...",
+      "description_hint": "Description détaillée de la fonctionnalité",
+      "status": "Statut",
+      "status_hint": "Statut de développement de la fonctionnalité",
+      "is_enabled_by_default": "Activée par défaut",
+      "is_enabled_by_default_hint": "Cette fonctionnalité sera activée automatiquement pour les nouveaux plans"
+    },
+    "status": {
+      "stable": "Stable",
+      "beta": "Beta",
+      "deprecated": "Obsolète"
+    },
+    "errors": {
+      "name_required": "Le nom est requis"
+    },
+    "buttons": {
+      "cancel": "Annuler",
+      "create": "Créer la fonctionnalité",
+      "save": "Enregistrer"
+    },
+    "success": {
+      "created": "Fonctionnalité créée avec succès",
+      "updated": "Fonctionnalité mise à jour avec succès"
+    },
+    "error": {
+      "save": "Erreur lors de l'enregistrement de la fonctionnalité"
+    }
+  }
+}

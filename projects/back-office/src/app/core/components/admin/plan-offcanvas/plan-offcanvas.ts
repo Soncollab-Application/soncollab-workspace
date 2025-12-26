@@ -10,9 +10,7 @@ import {
   SupportLevel,
   Currency,
   ProductType,
-  FeatureFlag,
-  PlanAddon,
-  PlanAddonListItem
+  PlanAddonListItem, FeatureFlag, FeatureFlagListItem
 } from '../../../models/admin/billing';
 
 @Component({
@@ -37,7 +35,7 @@ export class PlanOffcanvas implements OnInit, OnDestroy {
 
   currencies = signal<Currency[]>([]);
   productTypes = signal<ProductType[]>([]);
-  featureFlags = signal<FeatureFlag[]>([]);
+  featureFlags = signal<FeatureFlagListItem[]>([]);
   planAddons = signal<PlanAddonListItem[]>([]);
 
   currencyOptions = signal<ChoiceOption[]>([]);
@@ -325,7 +323,6 @@ export class PlanOffcanvas implements OnInit, OnDestroy {
         );
         this.isSubmitting.set(false);
         this.offcanvasService.close();
-        window.location.reload();
       },
       error: (err) => {
         console.error('Error saving plan:', err);

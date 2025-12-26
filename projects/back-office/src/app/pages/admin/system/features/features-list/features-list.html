@@ -1,0 +1,97 @@
+<app-breadcrumb [showAvatar]="true" [icon]="'flag'" [hasMobileActions]="true">
+  <div breadcrumb-title>
+    <span class="me-2">{{ 'features-list.page_title' | translate }}</span>
+    <span class="badge bg-primary">{{ currentLocale().toUpperCase() }}</span>
+  </div>
+
+  <div breadcrumb-actions>
+    <div class="d-flex gap-2">
+      <div class="position-relative" style="min-width: 150px;">
+        <lib-choice
+          [type]="'select-one'"
+          [options]="languageOptions()"
+          [config]="languageConfig"
+          [cssClass]="'form-select'"
+          [(ngModel)]="selectedLocale"
+          (change)="onLanguageChoiceChange($any($event))"
+        />
+      </div>
+
+      @if (canCreate()) {
+        <button class="btn btn-primary" (click)="createFeature()">
+          <span class="material-symbols-outlined me-2">add</span>
+          {{ 'features-list.create_feature' | translate }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <div breadcrumb-actions-mobile>
+    <div class="d-flex flex-column gap-2 w-100">
+      <div class="position-relative w-100">
+        <lib-choice
+          [type]="'select-one'"
+          [options]="languageOptions()"
+          [config]="languageConfig"
+          [cssClass]="'form-select'"
+          [(ngModel)]="selectedLocale"
+          (change)="onLanguageChoiceChange($any($event))"
+        />
+      </div>
+
+      @if (canCreate()) {
+        <button class="btn btn-primary w-100" (click)="createFeature()">
+          <span class="material-symbols-outlined me-2">add</span>
+          {{ 'features-list.create_feature' | translate }}
+        </button>
+      }
+    </div>
+  </div>
+</app-breadcrumb>
+
+<div class="row g-3 mb-4 pb-3">
+  @for (kpi of kpiCards(); track kpi.label) {
+    <div class="col-12 col-sm-6 col-lg-4 col-xl">
+      <lib-kpi-card
+        [data]="kpi"
+        [loading]="loadingStats()"
+      />
+    </div>
+  }
+</div>
+
+<div class="mb-5 pt-2">
+  <lib-filter-bar
+    [filters]="filters()"
+    [sortOptions]="sortOptions()"
+    [showSearch]="true"
+    [showViewSelector]="false"
+    [selectedCount]="-1"
+    [useFilterState]="true"
+  />
+</div>
+
+<div class="pb-5">
+  <lib-data-list
+    [data]="listManager.items()"
+    [columns]="columns()"
+    [actions]="actions()"
+    [loading]="listManager.loading()"
+    [pagination]="listManager.pagination()"
+    [currentSort]="listManager.currentSort()"
+    [view]="listManager.currentView()"
+    [selectable]="false"
+    [clickable]="true"
+    [emptyStateTitle]="emptyTitle()"
+    [emptyStateMessage]="emptyMessage()"
+    [emptyStateIcon]="'flag'"
+    (sortChange)="listManager.onSortChange($any($event))"
+    (pageChange)="listManager.onPageChange($any($event))"
+    (actionClick)="onActionClick($any($event))"
+    (itemClick)="onRowClick($any($event))"
+  />
+</div>
+
+<app-feature-flag-offcanvas />
+<app-translations-modal />
+<app-locale-selector-modal />

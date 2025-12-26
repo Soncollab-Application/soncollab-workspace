@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import {Component, computed, effect, inject, OnDestroy, OnInit, signal} from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -160,6 +160,21 @@ export class PlansList implements OnInit, OnDestroy {
     ];
   });
 
+  constructor() {
+    let wasOpen = false;
+
+    effect(() => {
+      const isOpen = this.planOffcanvasService.isOpen();
+
+      if (wasOpen && !isOpen) {
+        this.loadStats();
+        this.listManager.reload();
+      }
+
+      wasOpen = isOpen;
+    });
+  }
+
   ngOnInit(): void {
     this.loadLocaleFromStorage();
     this.setBreadcrumbs();
@@ -184,6 +199,8 @@ export class PlansList implements OnInit, OnDestroy {
         this.loadPlans(page, pageSize, filters, sortField, sortDirection),
       this.canFind
     );
+
+    this.loadStats();
   }
 
   ngOnDestroy(): void {
@@ -210,6 +227,7 @@ export class PlansList implements OnInit, OnDestroy {
       this.currentLocale.set(newLocale);
       this.selectedLocale.set(newLocale);
       this.saveLocaleToStorage(newLocale);
+      this.loadStats();
       this.listManager.reload();
     }
   }
@@ -398,6 +416,22 @@ export class PlansList implements OnInit, OnDestroy {
         error: (err) => {
           console.error('Error loading plans:', err);
           this.listManager.setError();
+        }
+      });
+  }
+
+  private loadStats(): void {
+    this.loadingStats.set(true);
+    this.billingService.getBillingPlanStats(this.currentLocale())
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.stats.set(response.data);
+          this.loadingStats.set(false);
+        },
+        error: (err) => {
+          console.error('Error loading stats:', err);
+          this.loadingStats.set(false);
         }
       });
   }

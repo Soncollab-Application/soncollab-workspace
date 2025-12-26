@@ -1,0 +1,170 @@
+<app-breadcrumb [showAvatar]="true" [icon]="'flag'" [hasMobileActions]="true">
+  <div breadcrumb-title>
+    @if (loading()) {
+      <div class="spinner-border spinner-border-sm" role="status">
+        <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
+      </div>
+    } @else if (feature()) {
+      {{ feature()!.name }}
+    }
+  </div>
+
+  <div breadcrumb-actions>
+    <div class="d-flex gap-2">
+      @if (canUpdate() && feature()) {
+        <button class="btn btn-primary" (click)="editFeature()">
+          <span class="material-symbols-outlined me-2">edit</span>
+          {{ 'common.edit' | translate }}
+        </button>
+      }
+      <button class="btn btn-outline-secondary" (click)="goBack()">
+        <span class="material-symbols-outlined me-2">arrow_back</span>
+        {{ 'common.back' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <div breadcrumb-actions-mobile>
+    <div class="d-flex flex-column gap-2 w-100">
+      @if (canUpdate() && feature()) {
+        <button class="btn btn-primary w-100" (click)="editFeature()">
+          <span class="material-symbols-outlined me-2">edit</span>
+          {{ 'common.edit' | translate }}
+        </button>
+      }
+    </div>
+  </div>
+</app-breadcrumb>
+
+@if (loading()) {
+  <div class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
+    </div>
+  </div>
+} @else if (feature()) {
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Left Column -->
+      <div class="col-lg-8 mb-4">
+        <!-- Overview Card -->
+        <div class="card mb-4">
+          <div class="card-header border-bottom">
+            <h5 class="mb-0">
+              <span class="material-symbols-outlined me-2 text-primary">info</span>
+              {{ 'feature-detail.overview' | translate }}
+            </h5>
+          </div>
+          <div class="card-body">
+            <!-- Name -->
+            <div class="mb-3">
+              <small class="text-muted d-block mb-1">
+                {{ 'feature-detail.name' | translate }}
+              </small>
+              <p class="mb-0 fw-semibold">{{ feature()!.name }}</p>
+            </div>
+
+            <!-- Description -->
+            @if (feature()!.description) {
+              <div class="mb-3">
+                <small class="text-muted d-block mb-1">
+                  {{ 'feature-detail.description' | translate }}
+                </small>
+                <p class="mb-0">{{ feature()!.description }}</p>
+              </div>
+            }
+
+            <!-- Status -->
+            <div class="mb-3">
+              <small class="text-muted d-block mb-1">
+                {{ 'feature-detail.status' | translate }}
+              </small>
+              <lib-badge
+                [text]="'feature-flag-offcanvas.status.' + feature()!.feature_flag_status | translate"
+                [type]="statusBadgeType()"
+              />
+            </div>
+
+            <!-- Enabled by Default -->
+            <div class="mb-3">
+              <small class="text-muted d-block mb-1">
+                {{ 'feature-detail.enabled_by_default' | translate }}
+              </small>
+              <lib-badge
+                [text]="feature()!.is_enabled_by_default ? ('common.yes' | translate) : ('common.no' | translate)"
+                [type]="feature()!.is_enabled_by_default ? 'success' : 'secondary'"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Metadata Card -->
+        <div class="card">
+          <div class="card-header border-bottom">
+            <h5 class="mb-0">
+              <span class="material-symbols-outlined me-2 text-secondary">schedule</span>
+              {{ 'feature-detail.metadata' | translate }}
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <small class="text-muted d-block mb-1">
+                  {{ 'feature-detail.created_at' | translate }}
+                </small>
+                <p class="mb-0">
+                  {{ feature()!.createdAt | relativeDate }}
+                  <small class="text-muted d-block">
+                    {{ feature()!.createdAt | date: 'dd/MM/yyyy HH:mm' }}
+                  </small>
+                </p>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <small class="text-muted d-block mb-1">
+                  {{ 'feature-detail.updated_at' | translate }}
+                </small>
+                <p class="mb-0">
+                  {{ feature()!.updatedAt | relativeDate }}
+                  <small class="text-muted d-block">
+                    {{ feature()!.updatedAt | date: 'dd/MM/yyyy HH:mm' }}
+                  </small>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column -->
+      <div class="col-lg-4">
+        <!-- Language Card -->
+        <div class="card">
+          <div class="card-header border-bottom">
+            <h5 class="mb-0">
+              <span class="material-symbols-outlined me-2 text-info">language</span>
+              {{ 'feature-detail.language' | translate }}
+            </h5>
+          </div>
+          <div class="card-body">
+            @if (hasLocalizations()) {
+              <button
+                class="btn btn-outline-info w-100"
+                (click)="viewTranslations()">
+                <span class="material-symbols-outlined me-2">language</span>
+                {{ currentLocaleLabel() }}
+              </button>
+            } @else {
+              <p class="text-muted mb-0 text-center">
+                {{ currentLocaleLabel() }}
+              </p>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+<app-feature-flag-offcanvas />
+<app-translations-modal />

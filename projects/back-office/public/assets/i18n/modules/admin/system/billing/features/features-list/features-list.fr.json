@@ -1,0 +1,52 @@
+{
+  "features-list": {
+    "page_title": "Fonctionnalités",
+    "create_feature": "Créer une fonctionnalité",
+    "select_language": "Langue active",
+    "search": "Rechercher une fonctionnalité...",
+    "kpi": {
+      "language": "Langue active",
+      "total": "Total",
+      "stable": "Stables",
+      "beta": "Beta"
+    },
+    "filters": {
+      "status": "Statut",
+      "enabled_by_default": "Activée par défaut"
+    },
+    "sort": {
+      "newest": "Plus récentes",
+      "name": "Nom (A-Z)"
+    },
+    "columns": {
+      "name": "Nom",
+      "description": "Description",
+      "status": "Statut",
+      "enabled_by_default": "Activée par défaut",
+      "createdAt": "Créée le"
+    },
+    "status": {
+      "stable": "Stable",
+      "beta": "Beta",
+      "deprecated": "Obsolète"
+    },
+    "actions": {
+      "create_translation": "Créer traduction",
+      "view_translations": "Voir traductions"
+    },
+    "toast": {
+      "delete_success": "Fonctionnalité \"{{name}}\" supprimée avec succès",
+      "delete_error": "Erreur lors de la suppression de \"{{name}}\""
+    },
+    "empty": {
+      "title": "Aucune fonctionnalité",
+      "message": "Aucune fonctionnalité trouvée pour cette langue"
+    },
+    "error": {
+      "loading": "Erreur lors du chargement de la fonctionnalité"
+    },
+    "messages": {
+      "all_translations_exist": "Toutes les traductions existent déjà"
+    }
+  }
+}

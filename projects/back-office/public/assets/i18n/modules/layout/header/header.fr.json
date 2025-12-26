@@ -41,7 +41,9 @@
           "invoices-list": "Factures",
           "invoice-detail": "Détails de la facture",
           "transactions-list": "Transactions",
-          "transaction-detail": "Détails de la transaction"
+          "transaction-detail": "Détails de la transaction",
+          "features-list": "Fonctionnalités",
+          "feature-detail": "Détail de la fonctionnalité"
         }
       },
       "sales": {

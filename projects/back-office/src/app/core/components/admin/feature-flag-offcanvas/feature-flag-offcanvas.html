@@ -1,0 +1,127 @@
+<div
+  class="offcanvas offcanvas-end"
+  [class.show]="offcanvasService.isOpen()"
+  [style.visibility]="offcanvasService.isOpen() ? 'visible' : 'hidden'"
+  tabindex="-1">
+  <div class="offcanvas-header border-bottom">
+    <h5 class="offcanvas-title d-flex align-items-center gap-2">
+      <span>
+        {{
+          offcanvasService.mode() === 'create'
+            ? ('feature-flag-offcanvas.title.create' | translate)
+            : ('feature-flag-offcanvas.title.edit' | translate)
+        }}
+      </span>
+      <span class="badge bg-secondary">{{ offcanvasService.locale().toUpperCase() }}</span>
+    </h5>
+    <button
+      type="button"
+      class="btn-close"
+      (click)="onCancel()"
+      [disabled]="isSubmitting()"></button>
+  </div>
+
+  <div class="offcanvas-body">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <!-- Name -->
+      <div class="mb-3">
+        <label class="form-label">
+          {{ 'feature-flag-offcanvas.fields.name' | translate }}
+          <span class="text-danger">*</span>
+        </label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="name"
+          [placeholder]="'feature-flag-offcanvas.fields.name_placeholder' | translate"
+          [class.is-invalid]="form.get('name')?.invalid && form.get('name')?.touched" />
+        @if (form.get('name')?.invalid && form.get('name')?.touched) {
+          <div class="invalid-feedback">
+            {{ 'feature-flag-offcanvas.errors.name_required' | translate }}
+          </div>
+        }
+      </div>
+
+      <!-- Description -->
+      <div class="mb-3">
+        <label class="form-label">
+          {{ 'feature-flag-offcanvas.fields.description' | translate }}
+        </label>
+        <textarea
+          class="form-control"
+          formControlName="description"
+          rows="3"
+          [placeholder]="'feature-flag-offcanvas.fields.description_placeholder' | translate"></textarea>
+        <small class="form-text text-muted">
+          {{ 'feature-flag-offcanvas.fields.description_hint' | translate }}
+        </small>
+      </div>
+
+      <!-- Status -->
+      <div class="mb-3">
+        <label class="form-label">
+          {{ 'feature-flag-offcanvas.fields.status' | translate }}
+          <span class="text-danger">*</span>
+        </label>
+        <lib-choice
+          [options]="statusOptions()"
+          [config]="choiceConfig"
+          [(ngModel)]="selectedStatus"
+          [ngModelOptions]="{ standalone: true }"
+          (ngModelChange)="onStatusChange($event)">
+        </lib-choice>
+        <small class="form-text text-muted">
+          {{ 'feature-flag-offcanvas.fields.status_hint' | translate }}
+        </small>
+      </div>
+
+      <!-- Enabled by Default -->
+      <div class="mb-3">
+        <div class="form-check form-switch">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            role="switch"
+            id="is_enabled_by_default"
+            formControlName="is_enabled_by_default" />
+          <label class="form-check-label" for="is_enabled_by_default">
+            {{ 'feature-flag-offcanvas.fields.is_enabled_by_default' | translate }}
+          </label>
+        </div>
+        <small class="form-text text-muted">
+          {{ 'feature-flag-offcanvas.fields.is_enabled_by_default_hint' | translate }}
+        </small>
+      </div>
+    </form>
+  </div>
+
+  <div class="offcanvas-footer border-top p-3">
+    <div class="d-flex gap-2">
+      <button
+        type="button"
+        class="btn btn-outline-secondary flex-fill"
+        (click)="onCancel()"
+        [disabled]="isSubmitting()">
+        {{ 'feature-flag-offcanvas.buttons.cancel' | translate }}
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary flex-fill"
+        (click)="onSubmit()"
+        [disabled]="form.invalid || isSubmitting()">
+        @if (isSubmitting()) {
+          <span class="spinner-border spinner-border-sm me-2"></span>
+        }
+        {{
+          offcanvasService.mode() === 'create'
+            ? ('feature-flag-offcanvas.buttons.create' | translate)
+            : ('feature-flag-offcanvas.buttons.save' | translate)
+        }}
+      </button>
+    </div>
+  </div>
+</div>
+
+@if (offcanvasService.isOpen()) {
+  <div class="offcanvas-backdrop fade show"></div>
+}

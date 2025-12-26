@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import {Component, computed, effect, inject, OnDestroy, OnInit, signal} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -67,6 +67,25 @@ export class PlanDetail implements OnInit, OnDestroy {
     const locale = this.availableLocales.find(l => l.code === p.locale);
     return locale ? `${locale.flag} ${locale.label}` : p.locale.toUpperCase();
   });
+
+  constructor() {
+    // Écouter la fermeture de l'offcanvas pour recharger
+    let wasOpen = false;
+
+    effect(() => {
+      const isOpen = this.planOffcanvasService.isOpen();
+      const wasOpenBefore = wasOpen;
+
+      if (wasOpenBefore && !isOpen && this.plan()) {
+        const p = this.plan();
+        if (p) {
+          this.loadPlan(p.documentId, p.locale);
+        }
+      }
+
+      wasOpen = isOpen;
+    });
+  }
 
   ngOnInit(): void {
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe(params => {

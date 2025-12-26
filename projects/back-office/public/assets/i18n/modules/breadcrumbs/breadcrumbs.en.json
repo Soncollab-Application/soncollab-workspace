@@ -132,6 +132,17 @@
       "system": "System",
       "transactions": "Transactions",
       "detail": "Details"
+    },
+    "features-list": {
+      "dashboard": "Dashboard",
+      "system": "System",
+      "billing": "Billing",
+      "features": "Features"
+    },
+    "feature-detail": {
+      "dashboard": "Dashboard",
+      "system": "System",
+      "features": "Features"
     }
   }
 }
