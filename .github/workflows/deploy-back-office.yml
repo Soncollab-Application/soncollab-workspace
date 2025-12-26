@@ -4,9 +4,10 @@ on:
   push:
     branches: [ develop ]
     paths:
-      - .github/workflows/deploy-client.yml
+      - .github/workflows/deploy-back-office.yml
       - k8s/ctx/back-office/**
       - k8s/staging/back-office/**
+      - projects/back-office/**
 
   workflow_dispatch:
     inputs:
