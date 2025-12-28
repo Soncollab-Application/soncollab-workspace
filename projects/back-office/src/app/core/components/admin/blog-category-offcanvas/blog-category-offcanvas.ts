@@ -103,7 +103,12 @@ export class BlogCategoryOffcanvas implements OnDestroy {
     if (this.form.invalid || this.isSubmitting()) return;
 
     this.isSubmitting.set(true);
-    const formData = this.form.value;
+    const formData: any = this.form.value;
+
+    if (this.offcanvasService.mode() === 'create' && this.offcanvasService.sourceDocumentId()) {
+      formData.documentId = this.offcanvasService.sourceDocumentId();
+      formData.locale = this.offcanvasService.locale();
+    }
 
     const request$ =
       this.offcanvasService.mode() === 'create'

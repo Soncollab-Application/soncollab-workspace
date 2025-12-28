@@ -38,6 +38,8 @@ import {
   TranslationsModalService
 } from '../../../../../core/services/admin/translations-modal.service';
 import {TranslationsModal} from '../../../../../core/components/admin/translations-modal/translations-modal';
+import {LocaleSelectorModalService} from '../../../../../core/services/admin/locale-selector-modal.service';
+import {LocaleSelectorModal} from '../../../../../core/components/admin/locale-selector-modal/locale-selector-modal';
 
 @Component({
   selector: 'app-blog-categories',
@@ -53,6 +55,7 @@ import {TranslationsModal} from '../../../../../core/components/admin/translatio
     Choice,
     BlogCategoryOffcanvas,
     TranslationsModal,
+    LocaleSelectorModal,
   ],
   templateUrl: './blog-categories.html',
   styleUrl: './blog-categories.css',
@@ -70,7 +73,7 @@ export class BlogCategories implements OnInit, OnDestroy {
   protected listManager = inject(ListStateManager<BlogCategory, BlogCategoryFilters>);
   private offcanvasService = inject(BlogCategoryOffcanvasService);
   private translationsModalService = inject(TranslationsModalService);
-
+  private localeSelectorService = inject(LocaleSelectorModalService);
 
 
   private destroy$ = new Subject<void>();
@@ -289,9 +292,22 @@ export class BlogCategories implements OnInit, OnDestroy {
 
     this.actions.set([
       {
-        label: this.translate.instant('blog-categories.actions.view_translations'),
+        label: this.translate.instant('blog-categories.actions.create_translation'),
         icon: 'translate',
         class: 'btn-outline-info',
+        handler: (category) => this.createTranslation(category),
+        condition: (category) => {
+          const existingLocales = [
+            category.locale,
+            ...(category.localizations?.map(l => l.locale) || [])
+          ];
+          return existingLocales.length < this.availableLocales.length;
+        },
+      },
+      {
+        label: this.translate.instant('blog-categories.actions.view_translations'),
+        icon: 'language',
+        class: 'btn-outline-secondary',
         handler: (category) => this.viewTranslations(category),
         condition: (category) => (category.localizations?.length || 0) > 0,
       },
@@ -311,8 +327,40 @@ export class BlogCategories implements OnInit, OnDestroy {
       },
     ]);
 
+
     this.emptyTitle.set(this.translate.instant('blog-categories.empty.title'));
     this.emptyMessage.set(this.translate.instant('blog-categories.empty.message'));
+  }
+
+  createTranslation(category: BlogCategory): void {
+    const existingLocales = [
+      category.locale,
+      ...(category.localizations?.map(l => l.locale) || [])
+    ];
+
+    const availableLocales = this.availableLocales
+      .filter(loc => !existingLocales.includes(loc.code))
+      .map(loc => ({
+        code: loc.code,
+        label: loc.label,
+        flag: loc.flag
+      }));
+
+    if (availableLocales.length === 0) {
+      this.toastService.showWarning(
+        this.translate.instant('blog-categories.messages.all_translations_exist')
+      );
+      return;
+    }
+
+    if (availableLocales.length === 1) {
+      this.offcanvasService.openCreate(availableLocales[0].code, category.documentId);
+      return;
+    }
+
+    this.localeSelectorService.open(availableLocales, (selectedLocale) => {
+      this.offcanvasService.openCreate(selectedLocale, category.documentId);
+    });
   }
 
   viewTranslations(category: BlogCategory): void {
