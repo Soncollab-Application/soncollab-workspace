@@ -37,6 +37,7 @@ import {
 } from '../../../../../core/services/admin/translations-modal.service';
 import {TranslationsModal} from '../../../../../core/components/admin/translations-modal/translations-modal';
 import {BlogCategory} from '../../../../../core/models/content/blog-category.model';
+import {LocaleSelectorModalService} from '../../../../../core/services/admin/locale-selector-modal.service';
 
 @Component({
   selector: 'app-blog-tags',
@@ -69,6 +70,7 @@ export class BlogTags implements OnInit, OnDestroy {
   protected listManager = inject(ListStateManager<BlogTag, BlogTagFilters>);
   private offcanvasService = inject(BlogTagOffcanvasService);
   private translationsModalService = inject(TranslationsModalService);
+  private localeSelectorService = inject(LocaleSelectorModalService);
 
   private destroy$ = new Subject<void>();
   private componentId = 'blog-tags';
@@ -249,9 +251,22 @@ export class BlogTags implements OnInit, OnDestroy {
 
     this.actions.set([
       {
-        label: this.translate.instant('blog-tags.actions.view_translations'),
+        label: this.translate.instant('blog-tags.actions.create_translation'),
         icon: 'translate',
         class: 'btn-outline-info',
+        handler: (tag) => this.createTranslation(tag),
+        condition: (tag) => {
+          const existingLocales = [
+            tag.locale,
+            ...(tag.localizations?.map(l => l.locale) || [])
+          ];
+          return existingLocales.length < this.availableLocales.length;
+        },
+      },
+      {
+        label: this.translate.instant('blog-tags.actions.view_translations'),
+        icon: 'language',
+        class: 'btn-outline-secondary',
         handler: (tag) => this.viewTranslations(tag),
         condition: (tag) => (tag.localizations?.length || 0) > 0,
       },
@@ -308,6 +323,37 @@ export class BlogTags implements OnInit, OnDestroy {
 
     this.translationsModalService.open(allTranslations, (translation) => {
       this.onTranslationSelected(translation);
+    });
+  }
+
+  createTranslation(tag: BlogTag): void {
+    const existingLocales = [
+      tag.locale,
+      ...(tag.localizations?.map(l => l.locale) || [])
+    ];
+
+    const availableLocales = this.availableLocales
+      .filter(loc => !existingLocales.includes(loc.code))
+      .map(loc => ({
+        code: loc.code,
+        label: loc.label,
+        flag: loc.flag
+      }));
+
+    if (availableLocales.length === 0) {
+      this.toastService.showWarning(
+        this.translate.instant('blog-tags.messages.all_translations_exist')
+      );
+      return;
+    }
+
+    if (availableLocales.length === 1) {
+      this.offcanvasService.openCreate(availableLocales[0].code, tag.documentId);
+      return;
+    }
+
+    this.localeSelectorService.open(availableLocales, (selectedLocale) => {
+      this.offcanvasService.openCreate(selectedLocale, tag.documentId);
     });
   }
 

@@ -5,26 +5,49 @@ import { HelpCategory } from '../../models/content/help-category.model';
   providedIn: 'root',
 })
 export class HelpCategoryOffcanvasService {
-  isOpen = signal(false);
-  mode = signal<'create' | 'edit'>('create');
-  category = signal<HelpCategory | null>(null);
+  private _isOpen = signal(false);
+  private _mode = signal<'create' | 'edit'>('create');
+  private _category = signal<HelpCategory | null>(null);
+  private _locale = signal<string>('fr');
+  private _sourceDocumentId = signal<string | null>(null);
+
+  isOpen = this._isOpen.asReadonly();
+  mode = this._mode.asReadonly();
+  category = this._category.asReadonly();
+  locale = this._locale.asReadonly();
+  sourceDocumentId = this._sourceDocumentId.asReadonly();
+
+  openCreate(locale: string = 'fr', sourceDocumentId?: string): void {
+    this._mode.set('create');
+    this._category.set(null);
+    this._locale.set(locale);
+    this._sourceDocumentId.set(sourceDocumentId || null);
+    this._isOpen.set(true);
+  }
+
+  openEdit(category: HelpCategory): void {
+    this._mode.set('edit');
+    this._category.set(category);
+    this._locale.set(category.locale || 'fr');
+    this._sourceDocumentId.set(null);
+    this._isOpen.set(true);
+  }
 
   open(category?: HelpCategory): void {
     if (category) {
-      this.mode.set('edit');
-      this.category.set(category);
+      this.openEdit(category);
     } else {
-      this.mode.set('create');
-      this.category.set(null);
+      this.openCreate();
     }
-    this.isOpen.set(true);
   }
 
   close(): void {
-    this.isOpen.set(false);
+    this._isOpen.set(false);
     setTimeout(() => {
-      this.category.set(null);
-      this.mode.set('create');
+      this._category.set(null);
+      this._mode.set('create');
+      this._sourceDocumentId.set(null);
+      this._locale.set('fr');
     }, 300);
   }
 }
