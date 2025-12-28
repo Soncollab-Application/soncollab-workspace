@@ -3,13 +3,13 @@ export interface Currency {
   documentId: string;
   code: string;
   symbol: string;
-  symbol_position: 'before' | 'after';
+  symbol_position: 'left' | 'right';
   conversion_rate: number;
   is_active: boolean;
+  is_default: boolean;
   createdAt: string;
   updatedAt: string;
   publishedAt: string;
-  locale: string;
 }
 
 export interface CurrencyListItem extends Currency {}

@@ -1,7 +1,9 @@
 {
   "addons-list": {
-    "page_title": "Modules complémentaires",
-    "create_addon": "Créer un module",
+    "title": "Add-ons",
+    "page_title": "Gestion des Add-ons",
+    "create_addon": "Créer un Add-on",
+    "search_placeholder": "Rechercher un add-on...",
     "kpi": {
       "language": "Langue active",
       "total": "Total",
@@ -19,7 +21,7 @@
       "price_desc": "Prix (décroissant)"
     },
     "columns": {
-      "name": "Nom du module",
+      "name": "Nom de l'add-on",
       "price_monthly": "Prix mensuel",
       "price_yearly": "Prix annuel",
       "status": "Statut",
@@ -36,13 +38,17 @@
     "actions": {
       "view_translations": "Voir les traductions"
     },
-    "toast": {
-      "delete_success": "Module \"{{name}}\" supprimé avec succès",
-      "delete_error": "Erreur lors de la suppression du module \"{{name}}\""
+    "messages": {
+      "delete_success": "Add-on \"{{ name }}\" supprimé avec succès",
+      "delete_error": "Erreur lors de la suppression de l'add-on",
+      "all_translations_exist": "Toutes les traductions existent déjà"
+    },
+    "error": {
+      "loading": "Erreur lors du chargement de l'add-on"
     },
     "empty": {
-      "title": "Aucun module",
-      "message": "Aucun module trouvé pour cette langue"
+      "title": "Aucun add-on",
+      "message": "Aucun add-on trouvé pour cette langue"
     }
   }
 }

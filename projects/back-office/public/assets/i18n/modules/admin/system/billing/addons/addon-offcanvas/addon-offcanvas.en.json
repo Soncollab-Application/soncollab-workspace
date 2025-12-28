@@ -1,0 +1,40 @@
+{
+  "addon-offcanvas": {
+    "title": {
+      "create": "Create Add-on",
+      "edit": "Edit Add-on"
+    },
+    "fields": {
+      "addon_name": "Add-on Name",
+      "addon_name_placeholder": "E.g: Extra Storage",
+      "description": "Description",
+      "description_placeholder": "Describe the add-on...",
+      "currency": "Currency",
+      "currency_placeholder": "Select a currency",
+      "price_monthly": "Monthly Price",
+      "price_yearly": "Yearly Price",
+      "features_included": "Included Features",
+      "features_placeholder": "Select features",
+      "features_hint": "Features included in this add-on",
+      "is_active": "Active Add-on",
+      "is_active_hint": "Active add-ons can be added to subscriptions",
+      "visible_to_users": "Visible to Users",
+      "visible_to_users_hint": "Visible add-ons appear on the pricing page"
+    },
+    "errors": {
+      "addon_name_required": "Add-on name is required",
+      "currency_required": "Currency is required",
+      "save": "Error saving add-on",
+      "loading_data": "Error loading data"
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "create": "Create Add-on",
+      "save": "Save"
+    },
+    "success": {
+      "created": "Add-on created successfully",
+      "updated": "Add-on updated successfully"
+    }
+  }
+}

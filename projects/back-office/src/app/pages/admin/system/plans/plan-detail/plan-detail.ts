@@ -208,7 +208,7 @@ export class PlanDetail implements OnInit, OnDestroy {
 
     this.confirmDialog.confirmDelete(p.plan_name).then((confirmed) => {
       if (confirmed) {
-        this.billingService.deleteBillingPlan(p.documentId)
+        this.billingService.deleteBillingPlan(p.documentId, p.locale)
           .pipe(takeUntil(this.destroy$))
           .subscribe({
             next: () => {
@@ -217,9 +217,10 @@ export class PlanDetail implements OnInit, OnDestroy {
               );
               this.router.navigate(['/admin/system/billing/plans']);
             },
-            error: () => {
+            error: (err) => {
+              console.error('Error deleting plan:', err);
               this.toastService.showError(
-                this.translate.instant('plan-detail.toast.delete_error', { name: p.plan_name })
+                this.translate.instant('plan-detail.toast.delete_error')
               );
             }
           });

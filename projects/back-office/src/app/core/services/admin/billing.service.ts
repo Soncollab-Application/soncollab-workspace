@@ -178,6 +178,10 @@ export class BillingService {
   getBillingPlan(documentId: string, locale?: string): Observable<BillingPlanResponse> {
     let params = new HttpParams();
 
+    // IMPORTANT: Strapi 5 i18n EXIGE une locale
+    const planLocale = locale || 'fr';
+    params = params.set('locale', planLocale);
+
     params = params.set('populate[0]', 'currency');
     params = params.set('populate[1]', 'product_type');
     params = params.set('populate[2]', 'included_features');
@@ -185,25 +189,18 @@ export class BillingService {
     params = params.set('populate[4]', 'subscriptions');
     params = params.set('populate[5]', 'localizations');
 
-    if (locale) {
-      params = params.set('locale', locale);
-    }
-
     return this.http.get<BillingPlanResponse>(
       this.BILLING_ENDPOINTS.billing_plan_by_id(documentId),
       { params }
     );
   }
 
-  createBillingPlan(data: CreateBillingPlanRequest): Observable<BillingPlanResponse> {
-    return this.http.post<BillingPlanResponse>(this.BILLING_ENDPOINTS.billing_plans, { data });
-  }
-
-  updateBillingPlan(documentId: string, data: UpdateBillingPlanRequest): Observable<BillingPlanResponse> {
+  updateBillingPlan(documentId: string, data: UpdateBillingPlanRequest, locale?: string): Observable<BillingPlanResponse> {
     let params = new HttpParams();
-    if (data.locale) {
-      params = params.set('locale', data.locale);
-    }
+
+    // IMPORTANT: Strapi 5 i18n EXIGE une locale
+    const planLocale = locale || data.locale || 'fr';
+    params = params.set('locale', planLocale);
 
     return this.http.put<BillingPlanResponse>(
       this.BILLING_ENDPOINTS.billing_plan_by_id(documentId),
@@ -212,8 +209,21 @@ export class BillingService {
     );
   }
 
-  deleteBillingPlan(documentId: string): Observable<void> {
-    return this.http.delete<void>(this.BILLING_ENDPOINTS.billing_plan_by_id(documentId));
+  deleteBillingPlan(documentId: string, locale?: string): Observable<void> {
+    let params = new HttpParams();
+
+    // IMPORTANT: Strapi 5 i18n - passer locale pour supprimer la bonne version
+    const planLocale = locale || 'fr';
+    params = params.set('locale', planLocale);
+
+    return this.http.delete<void>(
+      this.BILLING_ENDPOINTS.billing_plan_by_id(documentId),
+      { params }
+    );
+  }
+
+  createBillingPlan(data: CreateBillingPlanRequest): Observable<BillingPlanResponse> {
+    return this.http.post<BillingPlanResponse>(this.BILLING_ENDPOINTS.billing_plans, { data });
   }
 
   getBillingPlanPricing(locale: string): Observable<any> {
@@ -248,6 +258,12 @@ export class BillingService {
     params = params.set('populate[localizations][fields][1]', 'documentId');
     params = params.set('populate[localizations][fields][2]', 'addon_name');
 
+    // Populate currency
+    params = params.set('populate[currency][fields][0]', 'code');
+    params = params.set('populate[currency][fields][1]', 'symbol');
+    params = params.set('populate[currency][fields][2]', 'symbol_position');
+    params = params.set('populate[currency][fields][3]', 'is_default');
+
     if (filters?.locale) {
       params = params.set('locale', filters.locale);
     }
@@ -270,14 +286,31 @@ export class BillingService {
   getPlanAddon(documentId: string, locale?: string): Observable<PlanAddonResponse> {
     let params = new HttpParams();
 
-    params = params.set('populate[0]', 'features_included');
-    params = params.set('populate[1]', 'billing_plans');
-    params = params.set('populate[2]', 'subscriptions');
-    params = params.set('populate[3]', 'localizations');
+    const addonLocale = locale || 'fr';
+    params = params.set('locale', addonLocale);
 
-    if (locale) {
-      params = params.set('locale', locale);
-    }
+    // Populate features_included
+    params = params.set('populate[features_included][fields][0]', 'name');
+    params = params.set('populate[features_included][fields][1]', 'description');
+
+    // Populate billing_plans
+    params = params.set('populate[billing_plans][fields][0]', 'plan_name');
+    params = params.set('populate[billing_plans][fields][1]', 'documentId');
+
+    // Populate subscriptions
+    params = params.set('populate[subscriptions][fields][0]', 'documentId');
+
+    // Populate localizations
+    params = params.set('populate[localizations][fields][0]', 'locale');
+    params = params.set('populate[localizations][fields][1]', 'documentId');
+    params = params.set('populate[localizations][fields][2]', 'addon_name');
+
+    // Populate currency
+    params = params.set('populate[currency][fields][0]', 'code');
+    params = params.set('populate[currency][fields][1]', 'symbol');
+    params = params.set('populate[currency][fields][2]', 'symbol_position');
+    params = params.set('populate[currency][fields][3]', 'is_default');
+    params = params.set('populate[currency][fields][4]', 'documentId');
 
     return this.http.get<PlanAddonResponse>(
       this.BILLING_ENDPOINTS.plan_addon_by_id(documentId),
@@ -289,15 +322,30 @@ export class BillingService {
     return this.http.post<PlanAddonResponse>(this.BILLING_ENDPOINTS.plan_addons, { data });
   }
 
-  updatePlanAddon(documentId: string, data: PlanAddonUpdateRequest): Observable<PlanAddonResponse> {
+  updatePlanAddon(documentId: string, data: PlanAddonUpdateRequest, locale?: string): Observable<PlanAddonResponse> {
+    let params = new HttpParams();
+
+    const addonLocale = locale || data.locale || 'fr';
+    params = params.set('locale', addonLocale);
+
     return this.http.put<PlanAddonResponse>(
       this.BILLING_ENDPOINTS.plan_addon_by_id(documentId),
-      { data }
+      { data },
+      { params }
     );
   }
 
-  deletePlanAddon(documentId: string): Observable<void> {
-    return this.http.delete<void>(this.BILLING_ENDPOINTS.plan_addon_by_id(documentId));
+  deletePlanAddon(documentId: string, locale?: string): Observable<void> {
+    let params = new HttpParams();
+
+    // IMPORTANT: Strapi 5 i18n - passer locale pour supprimer la bonne version
+    const addonLocale = locale || 'fr';
+    params = params.set('locale', addonLocale);
+
+    return this.http.delete<void>(
+      this.BILLING_ENDPOINTS.plan_addon_by_id(documentId),
+      { params }
+    );
   }
 
   // ==================== SUBSCRIPTIONS ====================

@@ -1,14 +1,18 @@
-import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { DecimalPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import {
   Badge,
   ConfirmDialogService,
   RelativeDatePipe,
   ToastService,
   PermissionService,
+  Choice,
+  ChoiceConfig,
+  ChoiceOption,
 } from 'shared-lib';
 import { Breadcrumb } from '../../../../../core/components/breadcrumb/breadcrumb';
 import { PageTitleService } from '../../../../../core/services/page-title.service';
@@ -19,11 +23,22 @@ import {
   TranslationOption,
   TranslationsModalService
 } from '../../../../../core/services/admin/translations-modal.service';
+import { AddonOffcanvasService } from '../../../../../core/services/admin/addon-offcanvas.service';
+import { AddonOffcanvas } from '../../../../../core/components/admin/addon-offcanvas/addon-offcanvas';
 
 @Component({
   selector: 'app-addon-detail',
   standalone: true,
-  imports: [Breadcrumb, TranslatePipe, Badge, RelativeDatePipe, TranslationsModal],
+  imports: [
+    CommonModule,
+    FormsModule,
+    Breadcrumb,
+    TranslatePipe,
+    Badge,
+    RelativeDatePipe,
+    TranslationsModal,
+    AddonOffcanvas,
+  ],
   templateUrl: './addon-detail.html',
   styleUrl: './addon-detail.css'
 })
@@ -37,13 +52,14 @@ export class AddonDetail implements OnInit, OnDestroy {
   private toastService = inject(ToastService);
   private permissionsService = inject(PermissionService);
   private translationsModalService = inject(TranslationsModalService);
+  private addonOffcanvasService = inject(AddonOffcanvasService);
 
   private destroy$ = new Subject<void>();
-  private componentId = 'addon-detail';
 
   readonly availableLocales = AVAILABLE_LOCALES;
   addon = signal<PlanAddon | null>(null);
   loading = signal(false);
+  selectedLocale = signal<string>('fr');
 
   canUpdate = computed(() =>
     this.permissionsService.hasPermission('plan-addon', 'plan-addon', 'update')
@@ -65,6 +81,66 @@ export class AddonDetail implements OnInit, OnDestroy {
     return locale ? `${locale.flag} ${locale.label}` : a.locale.toUpperCase();
   });
 
+  currencySymbol = computed(() => {
+    const a = this.addon();
+    return a?.currency?.symbol || '€';
+  });
+
+  currencyPosition = computed(() => {
+    const a = this.addon();
+    return a?.currency?.symbol_position || 'right';
+  });
+
+  formattedPriceMonthly = computed(() => {
+    const a = this.addon();
+    if (!a) return '-';
+    const symbol = this.currencySymbol();
+    const position = this.currencyPosition();
+
+    if (position === 'left') {
+      return `${symbol}${a.price_monthly}`;
+    } else {
+      return `${a.price_monthly} ${symbol}`;
+    }
+  });
+
+  formattedPriceYearly = computed(() => {
+    const a = this.addon();
+    if (!a) return '-';
+    const symbol = this.currencySymbol();
+    const position = this.currencyPosition();
+
+    if (position === 'left') {
+      return `${symbol}${a.price_yearly}`;
+    } else {
+      return `${a.price_yearly} ${symbol}`;
+    }
+  });
+
+  languageOptions = computed<ChoiceOption[]>(() =>
+    this.availableLocales.map(locale => ({
+      value: locale.code,
+      label: `${locale.flag} ${locale.label}`,
+    }))
+  );
+
+  constructor() {
+    let wasOpen = false;
+
+    effect(() => {
+      const isOpen = this.addonOffcanvasService.isOpen();
+
+      if (wasOpen && !isOpen) {
+        const a = this.addon();
+        if (a) {
+          this.loadAddon(a.documentId, a.locale);
+        }
+      }
+
+      wasOpen = isOpen;
+    });
+  }
+
   ngOnInit(): void {
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe(params => {
       const documentId = params['documentId'];
@@ -80,6 +156,16 @@ export class AddonDetail implements OnInit, OnDestroy {
     this.pageTitleService.resetBreadcrumbs();
   }
 
+  onLanguageChoiceChange(newLocale: any): void {
+    if (newLocale && newLocale !== this.selectedLocale()) {
+      this.selectedLocale.set(newLocale);
+      const a = this.addon();
+      if (a) {
+        this.loadAddon(a.documentId, newLocale);
+      }
+    }
+  }
+
   private loadAddon(documentId: string, locale?: string): void {
     this.loading.set(true);
     this.billingService.getPlanAddon(documentId, locale)
@@ -87,6 +173,7 @@ export class AddonDetail implements OnInit, OnDestroy {
       .subscribe({
         next: (response) => {
           this.addon.set(response.data);
+          this.selectedLocale.set(response.data.locale);
           this.loading.set(false);
           this.setBreadcrumbs();
           this.updatePageTitle();
@@ -156,6 +243,7 @@ export class AddonDetail implements OnInit, OnDestroy {
     }
 
     this.translationsModalService.open(allTranslations, (translation) => {
+      this.selectedLocale.set(translation.locale);
       this.loadAddon(translation.documentId, translation.locale);
     });
   }
@@ -163,7 +251,7 @@ export class AddonDetail implements OnInit, OnDestroy {
   editAddon(): void {
     const a = this.addon();
     if (!a || !this.canUpdate()) return;
-    console.log('Edit addon:', a.documentId);
+    this.addonOffcanvasService.openEdit(a);
   }
 
   deleteAddon(): void {
@@ -172,18 +260,19 @@ export class AddonDetail implements OnInit, OnDestroy {
 
     this.confirmDialog.confirmDelete(a.addon_name).then((confirmed) => {
       if (confirmed) {
-        this.billingService.deletePlanAddon(a.documentId)
+        this.billingService.deletePlanAddon(a.documentId, a.locale)
           .pipe(takeUntil(this.destroy$))
           .subscribe({
             next: () => {
               this.toastService.showSuccess(
-                this.translate.instant('addon-detail.toast.delete_success', { name: a.addon_name })
+                this.translate.instant('addon-detail.messages.delete_success', { name: a.addon_name })
               );
               this.router.navigate(['/admin/system/billing/addons']);
             },
-            error: () => {
+            error: (err) => {
+              console.error('Error deleting addon:', err);
               this.toastService.showError(
-                this.translate.instant('addon-detail.toast.delete_error', { name: a.addon_name })
+                this.translate.instant('addon-detail.messages.delete_error')
               );
             }
           });
