@@ -103,7 +103,8 @@ export class HelpCategoryOffcanvas implements OnDestroy {
         ? this.contentService.createHelpCategory(formData)
         : this.contentService.updateHelpCategory(
           this.offcanvasService.category()!.documentId,
-          formData
+          formData,
+          this.offcanvasService.category()!.locale
         );
 
     request$.pipe(takeUntil(this.destroy$)).subscribe({

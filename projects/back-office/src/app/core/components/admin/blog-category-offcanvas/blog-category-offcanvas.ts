@@ -110,7 +110,8 @@ export class BlogCategoryOffcanvas implements OnDestroy {
         ? this.contentService.createBlogCategory(formData)
         : this.contentService.updateBlogCategory(
           this.offcanvasService.category()!.documentId,
-          formData
+          formData,
+          this.offcanvasService.category()!.locale
         );
 
     request$.pipe(takeUntil(this.destroy$)).subscribe({

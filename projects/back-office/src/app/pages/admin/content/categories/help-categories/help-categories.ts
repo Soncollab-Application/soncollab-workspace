@@ -450,7 +450,7 @@ export class HelpCategories implements OnInit, OnDestroy {
       .then((confirmed: boolean) => {
         if (confirmed) {
           this.contentService
-            .deleteHelpCategory(category.documentId)
+            .deleteHelpCategory(category.documentId, category.locale)
             .pipe(takeUntil(this.destroy$))
             .subscribe({
               next: () => {

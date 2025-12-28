@@ -444,7 +444,7 @@ export class BlogTags implements OnInit, OnDestroy {
       .then((confirmed: boolean) => {
         if (confirmed) {
           this.contentService
-            .deleteBlogTag(tag.documentId)
+            .deleteBlogTag(tag.documentId, tag.locale)
             .pipe(takeUntil(this.destroy$))
             .subscribe({
               next: () => {
