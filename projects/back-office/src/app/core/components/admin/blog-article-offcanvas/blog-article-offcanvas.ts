@@ -343,39 +343,6 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
     }
   }
 
-  private linkImageToArticle(field: 'featured_image' | 'og_image', file: MediaFile): void {
-    const articleId = this.articleId();
-    if (!articleId) return;
-
-    this.saving.set(true);
-
-    // Mettre à jour l'article avec l'ID de l'image
-    const payload: any = {};
-    payload[field] = file.id;
-
-    this.contentService.updateBlogArticle(articleId, payload)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: () => {
-          this.saving.set(false);
-          this.toast.showSuccess(
-            this.translate.instant('blog-articles.messages.image_uploaded')
-          );
-        },
-        error: () => {
-          this.saving.set(false);
-          this.toast.showError(
-            this.translate.instant('blog-articles.messages.image_upload_error')
-          );
-          // Rollback en cas d'erreur
-          if (field === 'featured_image') {
-            this.featuredImage.set(null);
-          } else {
-            this.ogImage.set(null);
-          }
-        }
-      });
-  }
 
   onMediaPickerClose(): void {
     this.showMediaPicker.set(false);
@@ -399,41 +366,6 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
       }
     }
   }
-
-  private unlinkImageFromArticle(field: 'featured_image' | 'og_image'): void {
-    const articleId = this.articleId();
-    if (!articleId) return;
-
-    this.saving.set(true);
-
-    // Mettre à jour l'article en retirant l'image
-    const payload: any = {};
-    payload[field] = null;
-
-    this.contentService.updateBlogArticle(articleId, payload)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: () => {
-          this.saving.set(false);
-          if (field === 'featured_image') {
-            this.featuredImage.set(null);
-          } else {
-            this.ogImage.set(null);
-          }
-          this.toast.showSuccess(
-            this.translate.instant('blog-articles.messages.image_removed')
-          );
-        },
-        error: () => {
-          this.saving.set(false);
-          this.toast.showError(
-            this.translate.instant('blog-articles.messages.image_remove_error')
-          );
-        }
-      });
-  }
-
-
 
   onImageSelectRequestedForRichText(callback: (result: ImageResult) => void): void {
     this.richTextImageCallback.set(callback);
@@ -490,7 +422,7 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
 
     const request = this.mode() === 'create'
       ? this.contentService.createBlogArticle(payload)
-      : this.contentService.updateBlogArticle(this.articleId()!, payload);
+      : this.contentService.updateBlogArticle(this.articleId()!, payload, this.locale());
 
     request.pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -514,6 +446,70 @@ export class BlogArticleOffcanvas implements OnInit, OnDestroy {
         error: () => {
           this.saving.set(false);
           this.toast.showError(this.translate.instant('blog-articles.messages.save_error'));
+        }
+      });
+  }
+
+  private unlinkImageFromArticle(field: 'featured_image' | 'og_image'): void {
+    const articleId = this.articleId();
+    if (!articleId) return;
+
+    this.saving.set(true);
+
+    const payload: any = {};
+    payload[field] = null;
+
+    this.contentService.updateBlogArticle(articleId, payload, this.locale())
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.saving.set(false);
+          if (field === 'featured_image') {
+            this.featuredImage.set(null);
+          } else {
+            this.ogImage.set(null);
+          }
+          this.toast.showSuccess(
+            this.translate.instant('blog-articles.messages.image_removed')
+          );
+        },
+        error: () => {
+          this.saving.set(false);
+          this.toast.showError(
+            this.translate.instant('blog-articles.messages.image_remove_error')
+          );
+        }
+      });
+  }
+
+  private linkImageToArticle(field: 'featured_image' | 'og_image', file: MediaFile): void {
+    const articleId = this.articleId();
+    if (!articleId) return;
+
+    this.saving.set(true);
+
+    const payload: any = {};
+    payload[field] = file.id;
+
+    this.contentService.updateBlogArticle(articleId, payload, this.locale())
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.saving.set(false);
+          this.toast.showSuccess(
+            this.translate.instant('blog-articles.messages.image_uploaded')
+          );
+        },
+        error: () => {
+          this.saving.set(false);
+          this.toast.showError(
+            this.translate.instant('blog-articles.messages.image_upload_error')
+          );
+          if (field === 'featured_image') {
+            this.featuredImage.set(null);
+          } else {
+            this.ogImage.set(null);
+          }
         }
       });
   }

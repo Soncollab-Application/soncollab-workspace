@@ -811,7 +811,7 @@ export class HelpArticles implements OnInit, OnDestroy {
       .then((confirmed: boolean) => {
         if (confirmed) {
           this.contentService
-            .deleteHelpArticle(article.documentId)
+            .deleteHelpArticle(article.documentId, article.locale)
             .pipe(takeUntil(this.destroy$))
             .subscribe({
               next: () => {

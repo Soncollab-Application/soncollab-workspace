@@ -10,9 +10,9 @@ import {
 } from '../../models/content/blog-article.model';
 
 import { ContentStatsResponse } from '../../models/content/content-stats.model';
-import {BlogCategoryFilters, BlogCategoryListResponse} from '../../models/content/blog-category.model';
+import {BlogCategory, BlogCategoryFilters, BlogCategoryListResponse} from '../../models/content/blog-category.model';
 import {HelpArticle, HelpArticleFilters, HelpArticleListResponse} from '../../models/content/help-article.model';
-import {HelpCategoryFilters, HelpCategoryListResponse} from '../../models/content/help-category.model';
+import {HelpCategory, HelpCategoryFilters, HelpCategoryListResponse} from '../../models/content/help-category.model';
 import {BlogTag, BlogTagFilters, BlogTagListResponse} from '../../models/content/blog-tag.model';
 
 @Injectable({ providedIn: 'root' })
@@ -176,15 +176,29 @@ export class AdminContentService {
     );
   }
 
-  updateBlogArticle(documentId: string, data: Partial<BlogArticle>): Observable<{ data: BlogArticle }> {
+  updateBlogArticle(documentId: string, data: Partial<BlogArticle>, locale?: string): Observable<{ data: BlogArticle }> {
+    let params = new HttpParams();
+
+    const articleLocale = locale || data.locale || 'fr';
+    params = params.set('locale', articleLocale);
+
     return this.http.put<{ data: BlogArticle }>(
       this.CONTENT_ENDPOINTS.blog_article_by_id(documentId),
-      { data }
+      { data },
+      { params }
     );
   }
 
-  deleteBlogArticle(documentId: string): Observable<void> {
-    return this.http.delete<void>(this.CONTENT_ENDPOINTS.blog_article_by_id(documentId));
+  deleteBlogArticle(documentId: string, locale?: string): Observable<void> {
+    let params = new HttpParams();
+
+    const articleLocale = locale || 'fr';
+    params = params.set('locale', articleLocale);
+
+    return this.http.delete<void>(
+      this.CONTENT_ENDPOINTS.blog_article_by_id(documentId),
+      { params }
+    );
   }
 
   submitBlogArticleForReview(documentId: string): Observable<{ data: BlogArticle }> {
@@ -397,15 +411,29 @@ export class AdminContentService {
     );
   }
 
-  updateHelpArticle(documentId: string, data: Partial<HelpArticle>): Observable<{ data: HelpArticle }> {
+  updateHelpArticle(documentId: string, data: Partial<HelpArticle>, locale?: string): Observable<{ data: HelpArticle }> {
+    let params = new HttpParams();
+
+    const articleLocale = locale || data.locale || 'fr';
+    params = params.set('locale', articleLocale);
+
     return this.http.put<{ data: HelpArticle }>(
       this.CONTENT_ENDPOINTS.help_article_by_id(documentId),
-      { data }
+      { data },
+      { params }
     );
   }
 
-  deleteHelpArticle(documentId: string): Observable<void> {
-    return this.http.delete<void>(this.CONTENT_ENDPOINTS.help_article_by_id(documentId));
+  deleteHelpArticle(documentId: string, locale?: string): Observable<void> {
+    let params = new HttpParams();
+
+    const articleLocale = locale || 'fr';
+    params = params.set('locale', articleLocale);
+
+    return this.http.delete<void>(
+      this.CONTENT_ENDPOINTS.help_article_by_id(documentId),
+      { params }
+    );
   }
 
   submitHelpArticleForReview(documentId: string): Observable<{ data: HelpArticle }> {
@@ -434,16 +462,28 @@ export class AdminContentService {
     );
   }
 
-  updateBlogCategory(documentId: string, data: Partial<any>): Observable<{ data: any }> {
+  updateBlogCategory(documentId: string, data: Partial<BlogCategory>, locale?: string): Observable<{ data: any }> {
+    let params = new HttpParams();
+
+    const categoryLocale = locale || data.locale || 'fr';
+    params = params.set('locale', categoryLocale);
+
     return this.http.put<{ data: any }>(
       this.CONTENT_ENDPOINTS.blog_category_by_id(documentId),
-      { data }
+      { data },
+      { params }
     );
   }
 
-  deleteBlogCategory(documentId: string): Observable<void> {
+  deleteBlogCategory(documentId: string, locale?: string): Observable<void> {
+    let params = new HttpParams();
+
+    const categoryLocale = locale || 'fr';
+    params = params.set('locale', categoryLocale);
+
     return this.http.delete<void>(
-      this.CONTENT_ENDPOINTS.blog_category_by_id(documentId)
+      this.CONTENT_ENDPOINTS.blog_category_by_id(documentId),
+      { params }
     );
   }
 
@@ -455,16 +495,28 @@ export class AdminContentService {
     );
   }
 
-  updateHelpCategory(documentId: string, data: Partial<any>): Observable<{ data: any }> {
+  updateHelpCategory(documentId: string, data: Partial<HelpCategory>, locale?: string): Observable<{ data: any }> {
+    let params = new HttpParams();
+
+    const categoryLocale = locale || data.locale || 'fr';
+    params = params.set('locale', categoryLocale);
+
     return this.http.put<{ data: any }>(
       this.CONTENT_ENDPOINTS.help_category_by_id(documentId),
-      { data }
+      { data },
+      { params }
     );
   }
 
-  deleteHelpCategory(documentId: string): Observable<void> {
+  deleteHelpCategory(documentId: string, locale?: string): Observable<void> {
+    let params = new HttpParams();
+
+    const categoryLocale = locale || 'fr';
+    params = params.set('locale', categoryLocale);
+
     return this.http.delete<void>(
-      this.CONTENT_ENDPOINTS.help_category_by_id(documentId)
+      this.CONTENT_ENDPOINTS.help_category_by_id(documentId),
+      { params }
     );
   }
 
@@ -502,16 +554,28 @@ export class AdminContentService {
     );
   }
 
-  updateBlogTag(documentId: string, data: Partial<BlogTag>): Observable<{ data: BlogTag }> {
+  updateBlogTag(documentId: string, data: Partial<BlogTag>, locale?: string): Observable<{ data: BlogTag }> {
+    let params = new HttpParams();
+
+    const tagLocale = locale || data.locale || 'fr';
+    params = params.set('locale', tagLocale);
+
     return this.http.put<{ data: BlogTag }>(
       this.CONTENT_ENDPOINTS.blog_tag_by_id(documentId),
-      { data }
+      { data },
+      { params }
     );
   }
 
-  deleteBlogTag(documentId: string): Observable<void> {
+  deleteBlogTag(documentId: string, locale?: string): Observable<void> {
+    let params = new HttpParams();
+
+    const tagLocale = locale || 'fr';
+    params = params.set('locale', tagLocale);
+
     return this.http.delete<void>(
-      this.CONTENT_ENDPOINTS.blog_tag_by_id(documentId)
+      this.CONTENT_ENDPOINTS.blog_tag_by_id(documentId),
+      { params }
     );
   }
 }

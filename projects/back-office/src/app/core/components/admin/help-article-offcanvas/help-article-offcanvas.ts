@@ -410,7 +410,7 @@ export class HelpArticleOffcanvas implements OnInit, OnDestroy {
 
     const request = this.mode() === 'create'
       ? this.contentService.createHelpArticle(payload)
-      : this.contentService.updateHelpArticle(this.articleId()!, payload);
+      : this.contentService.updateHelpArticle(this.articleId()!, payload, this.locale());
 
     request.pipe(takeUntil(this.destroy$))
       .subscribe({

@@ -786,7 +786,7 @@ export class BlogArticles implements OnInit, OnDestroy {
       .then((confirmed: boolean) => {
         if (confirmed) {
           this.contentService
-            .deleteBlogArticle(article.documentId)
+            .deleteBlogArticle(article.documentId, article.locale)
             .pipe(takeUntil(this.destroy$))
             .subscribe({
               next: () => {

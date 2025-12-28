@@ -96,7 +96,8 @@ export class BlogTagOffcanvas implements OnDestroy {
         ? this.contentService.createBlogTag(formData)
         : this.contentService.updateBlogTag(
           this.offcanvasService.tag()!.documentId,
-          formData
+          formData,
+          this.offcanvasService.tag()!.locale
         );
 
     request$.pipe(takeUntil(this.destroy$)).subscribe({

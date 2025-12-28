@@ -488,7 +488,7 @@ export class BlogCategories implements OnInit, OnDestroy {
       .then((confirmed: boolean) => {
         if (confirmed) {
           this.contentService
-            .deleteBlogCategory(category.documentId)
+            .deleteBlogCategory(category.documentId, category.locale)
             .pipe(takeUntil(this.destroy$))
             .subscribe({
               next: () => {
