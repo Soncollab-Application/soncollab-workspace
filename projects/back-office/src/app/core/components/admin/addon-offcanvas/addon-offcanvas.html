@@ -1,0 +1,209 @@
+<div
+  class="offcanvas offcanvas-end"
+  [class.show]="offcanvasService.isOpen()"
+  [style.visibility]="offcanvasService.isOpen() ? 'visible' : 'hidden'"
+  tabindex="-1">
+
+  <div class="offcanvas-header border-bottom">
+    <h5 class="offcanvas-title d-flex align-items-center gap-2">
+      <span>
+        {{
+          offcanvasService.mode() === 'create'
+            ? ('addon-offcanvas.title.create' | translate)
+            : ('addon-offcanvas.title.edit' | translate)
+        }}
+      </span>
+      <span class="badge bg-secondary">{{ offcanvasService.locale().toUpperCase() }}</span>
+    </h5>
+    <button
+      type="button"
+      class="btn-close"
+      (click)="onCancel()"
+      [disabled]="isSubmitting()"></button>
+  </div>
+
+  <div class="offcanvas-body">
+    @if (loadingData()) {
+      <div class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
+        </div>
+      </div>
+    } @else {
+      <form [formGroup]="form">
+
+        <div class="mb-3">
+          <label class="form-label">
+            {{ 'addon-offcanvas.fields.addon_name' | translate }}
+            <span class="text-danger">*</span>
+          </label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="addon_name"
+            [placeholder]="'addon-offcanvas.fields.addon_name_placeholder' | translate"
+            [class.is-invalid]="form.get('addon_name')?.invalid && form.get('addon_name')?.touched" />
+          @if (form.get('addon_name')?.invalid && form.get('addon_name')?.touched) {
+            <div class="invalid-feedback">
+              {{ 'addon-offcanvas.errors.addon_name_required' | translate }}
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">
+            {{ 'addon-offcanvas.fields.description' | translate }}
+          </label>
+          <textarea
+            class="form-control"
+            formControlName="description"
+            rows="3"
+            [placeholder]="'addon-offcanvas.fields.description_placeholder' | translate"></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">
+            {{ 'addon-offcanvas.fields.currency' | translate }}
+            <span class="text-danger">*</span>
+          </label>
+          <lib-choice
+            [options]="currencyOptions()"
+            [config]="choiceConfig"
+            [(ngModel)]="selectedCurrency"
+            [ngModelOptions]="{ standalone: true }"
+            (ngModelChange)="onCurrencyChange($event)"
+            [placeholder]="'addon-offcanvas.fields.currency_placeholder' | translate">
+          </lib-choice>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">
+              {{ 'addon-offcanvas.fields.price_monthly' | translate }}
+              <span class="text-danger">*</span>
+            </label>
+            <div class="input-group">
+              @if (selectedCurrencyPosition() === 'left') {
+                <span class="input-group-text">{{ selectedCurrencySymbol() }}</span>
+              }
+              <input
+                type="number"
+                class="form-control"
+                formControlName="price_monthly"
+                min="0"
+                step="0.01"
+                [class.is-invalid]="form.get('price_monthly')?.invalid && form.get('price_monthly')?.touched" />
+              @if (selectedCurrencyPosition() === 'right') {
+                <span class="input-group-text">{{ selectedCurrencySymbol() }}</span>
+              }
+            </div>
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label">
+              {{ 'addon-offcanvas.fields.price_yearly' | translate }}
+              <span class="text-danger">*</span>
+            </label>
+            <div class="input-group">
+              @if (selectedCurrencyPosition() === 'left') {
+                <span class="input-group-text">{{ selectedCurrencySymbol() }}</span>
+              }
+              <input
+                type="number"
+                class="form-control"
+                formControlName="price_yearly"
+                min="0"
+                step="0.01"
+                [class.is-invalid]="form.get('price_yearly')?.invalid && form.get('price_yearly')?.touched" />
+              @if (selectedCurrencyPosition() === 'right') {
+                <span class="input-group-text">{{ selectedCurrencySymbol() }}</span>
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">
+            {{ 'addon-offcanvas.fields.features_included' | translate }}
+          </label>
+          <lib-choice
+            [options]="featureFlagOptions()"
+            [config]="multipleChoiceConfig"
+            [(ngModel)]="selectedFeatures"
+            [ngModelOptions]="{ standalone: true }"
+            (ngModelChange)="onFeaturesChange($event)"
+            [multiple]="true"
+            [placeholder]="'addon-offcanvas.fields.features_placeholder' | translate">
+          </lib-choice>
+          <small class="form-text text-muted">
+            {{ 'addon-offcanvas.fields.features_hint' | translate }}
+          </small>
+        </div>
+
+        <div class="mb-3">
+          <div class="form-check form-switch">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              role="switch"
+              id="is_active"
+              formControlName="is_active" />
+            <label class="form-check-label" for="is_active">
+              {{ 'addon-offcanvas.fields.is_active' | translate }}
+            </label>
+          </div>
+          <small class="form-text text-muted">
+            {{ 'addon-offcanvas.fields.is_active_hint' | translate }}
+          </small>
+        </div>
+
+        <div class="mb-3">
+          <div class="form-check form-switch">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              role="switch"
+              id="visible_to_users"
+              formControlName="visible_to_users" />
+            <label class="form-check-label" for="visible_to_users">
+              {{ 'addon-offcanvas.fields.visible_to_users' | translate }}
+            </label>
+          </div>
+          <small class="form-text text-muted">
+            {{ 'addon-offcanvas.fields.visible_to_users_hint' | translate }}
+          </small>
+        </div>
+      </form>
+    }
+  </div>
+
+  <div class="offcanvas-footer border-top p-3">
+    <div class="d-flex gap-2">
+      <button
+        type="button"
+        class="btn btn-outline-secondary flex-fill"
+        (click)="onCancel()"
+        [disabled]="isSubmitting()">
+        {{ 'addon-offcanvas.buttons.cancel' | translate }}
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary flex-fill"
+        (click)="onSubmit()"
+        [disabled]="form.invalid || isSubmitting() || !selectedCurrency() || loadingData()">
+        @if (isSubmitting()) {
+          <span class="spinner-border spinner-border-sm me-2"></span>
+        }
+        {{
+          offcanvasService.mode() === 'create'
+            ? ('addon-offcanvas.buttons.create' | translate)
+            : ('addon-offcanvas.buttons.save' | translate)
+        }}
+      </button>
+    </div>
+  </div>
+</div>
+
+@if (offcanvasService.isOpen()) {
+  <div class="offcanvas-backdrop fade show"></div>
+}

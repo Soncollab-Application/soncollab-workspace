@@ -122,6 +122,8 @@
     "of": "of",
     "showing": "Showing",
     "results": "results",
-    "items": "items"
+    "items": "items",
+    "view_translations": "View translations",
+    "add_translation": "Add translation"
   }
 }

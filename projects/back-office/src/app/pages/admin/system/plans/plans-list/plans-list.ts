@@ -597,11 +597,9 @@ export class PlansList implements OnInit, OnDestroy {
   }
 
   deletePlan(plan: BillingPlanListItem): void {
-    if (!this.canDelete()) return;
-
     this.confirmDialog.confirmDelete(plan.plan_name).then((confirmed) => {
       if (confirmed) {
-        this.billingService.deleteBillingPlan(plan.documentId)
+        this.billingService.deleteBillingPlan(plan.documentId, plan.locale)
           .pipe(takeUntil(this.destroy$))
           .subscribe({
             next: () => {
@@ -610,9 +608,10 @@ export class PlansList implements OnInit, OnDestroy {
               );
               this.listManager.reload();
             },
-            error: () => {
+            error: (err) => {
+              console.error('Error deleting plan:', err);
               this.toastService.showError(
-                this.translate.instant('plans-list.toast.delete_error', { name: plan.plan_name })
+                this.translate.instant('plans-list.toast.delete_error')
               );
             }
           });

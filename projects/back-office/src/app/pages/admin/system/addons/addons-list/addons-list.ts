@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import {Component, computed, effect, inject, OnDestroy, OnInit, signal} from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -36,6 +36,10 @@ import {
   TranslationOption,
   TranslationsModalService
 } from '../../../../../core/services/admin/translations-modal.service';
+import {AddonOffcanvasService} from '../../../../../core/services/admin/addon-offcanvas.service';
+import {LocaleSelectorModalService} from '../../../../../core/services/admin/locale-selector-modal.service';
+import {AddonOffcanvas} from '../../../../../core/components/admin/addon-offcanvas/addon-offcanvas';
+import {LocaleSelectorModal} from '../../../../../core/components/admin/locale-selector-modal/locale-selector-modal';
 
 @Component({
   selector: 'app-addons-list',
@@ -49,7 +53,9 @@ import {
     KpiCardComponent,
     DataList,
     Choice,
-    TranslationsModal
+    TranslationsModal,
+    AddonOffcanvas,
+    LocaleSelectorModal
   ],
   templateUrl: './addons-list.html',
   styleUrl: './addons-list.css',
@@ -65,6 +71,8 @@ export class AddonsList implements OnInit, OnDestroy {
   private toastService = inject(ToastService);
   protected listManager = inject(ListStateManager<PlanAddonListItem, PlanAddonFilters>);
   private translationsModalService = inject(TranslationsModalService);
+  private addonOffcanvasService = inject(AddonOffcanvasService);
+  private localeSelectorService = inject(LocaleSelectorModalService);
 
   private destroy$ = new Subject<void>();
   private componentId = 'addons-list';
@@ -78,6 +86,10 @@ export class AddonsList implements OnInit, OnDestroy {
   canCreate = computed(() => this.permissionsService.hasPermission('plan-addon', 'plan-addon', 'create'));
   canUpdate = computed(() => this.permissionsService.hasPermission('plan-addon', 'plan-addon', 'update'));
   canDelete = computed(() => this.permissionsService.hasPermission('plan-addon', 'plan-addon', 'delete'));
+
+  hasLocalizations = computed(() => {
+    return this.availableLocales.length > 1;
+  });
 
   emptyTitle = signal('');
   emptyMessage = signal('');
@@ -149,6 +161,20 @@ export class AddonsList implements OnInit, OnDestroy {
     ];
   });
 
+  constructor() {
+    let wasOpen = false;
+
+    effect(() => {
+      const isOpen = this.addonOffcanvasService.isOpen();
+
+      if (wasOpen && !isOpen) {
+        this.listManager.reload();
+      }
+
+      wasOpen = isOpen;
+    });
+  }
+
   ngOnInit(): void {
     this.loadLocaleFromStorage();
     this.setBreadcrumbs();
@@ -203,6 +229,21 @@ export class AddonsList implements OnInit, OnDestroy {
     }
   }
 
+  private getAddonCurrencySymbol(addon: PlanAddonListItem): string {
+    return addon.currency?.symbol || '€';
+  }
+
+  private formatPrice(amount: number, addon: PlanAddonListItem): string {
+    const symbol = this.getAddonCurrencySymbol(addon);
+    const position = addon.currency?.symbol_position || 'right';
+
+    if (position === 'left') {
+      return `${symbol}${amount}`;
+    } else {
+      return `${amount} ${symbol}`;
+    }
+  }
+
   private initializeConfig(): void {
     this.filters.set([
       {
@@ -246,14 +287,14 @@ export class AddonsList implements OnInit, OnDestroy {
         label: this.translate.instant('addons-list.columns.price_monthly'),
         sortable: true,
         type: 'text',
-        render: (row: PlanAddonListItem) => `$${row.price_monthly}`
+        render: (row: PlanAddonListItem) => this.formatPrice(row.price_monthly, row)
       },
       {
         key: 'price_yearly',
         label: this.translate.instant('addons-list.columns.price_yearly'),
         sortable: true,
         type: 'text',
-        render: (row: PlanAddonListItem) => `$${row.price_yearly}`
+        render: (row: PlanAddonListItem) => this.formatPrice(row.price_yearly, row)
       },
       {
         key: 'is_active',
@@ -280,14 +321,7 @@ export class AddonsList implements OnInit, OnDestroy {
       }
     ]);
 
-    const baseActions: ListAction<PlanAddonListItem>[] = [
-      {
-        label: this.translate.instant('common.view'),
-        icon: 'visibility',
-        class: 'btn-outline-secondary',
-        handler: (row: PlanAddonListItem) => this.viewAddon(row)
-      }
-    ];
+    const baseActions: ListAction<PlanAddonListItem>[] = [];
 
     if (this.canUpdate()) {
       baseActions.push({
@@ -296,14 +330,23 @@ export class AddonsList implements OnInit, OnDestroy {
         class: 'btn-outline-primary',
         handler: (row: PlanAddonListItem) => this.editAddon(row)
       });
+    }
 
+    if (this.hasLocalizations()) {
       baseActions.push({
-        label: this.translate.instant('addons-list.actions.view_translations'),
-        icon: 'language',
+        label: this.translate.instant('common.view_translations'),
+        icon: 'translate',
         class: 'btn-outline-info',
         handler: (row: PlanAddonListItem) => this.viewTranslations(row),
-        condition: (row: PlanAddonListItem) =>
-          !!row.localizations && row.localizations.length > 0
+        condition: (row: PlanAddonListItem) => !!(row.localizations && row.localizations.length > 0)
+      });
+
+      baseActions.push({
+        label: this.translate.instant('common.add_translation'),
+        icon: 'add',
+        class: 'btn-outline-secondary',
+        handler: (row: PlanAddonListItem) => this.createTranslation(row),
+        condition: (row: PlanAddonListItem) => (!row.localizations || row.localizations.length < this.availableLocales.length - 1)
       });
     }
 
@@ -409,29 +452,88 @@ export class AddonsList implements OnInit, OnDestroy {
     this.router.navigate(['/admin/system/billing/addons', addon.documentId]);
   }
 
+  createAddon(): void {
+    if (!this.canCreate()) return;
+    this.addonOffcanvasService.openCreate(this.currentLocale() as 'fr' | 'en');
+  }
+
   editAddon(addon: PlanAddonListItem): void {
-    console.log('Edit addon:', addon);
+    if (!this.canUpdate()) return;
+
+    this.billingService.getPlanAddon(addon.documentId, addon.locale)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.addonOffcanvasService.openEdit(response.data);
+        },
+        error: (err) => {
+          console.error('Error loading addon:', err);
+          this.toastService.showError(
+            this.translate.instant('addons-list.error.loading')
+          );
+        }
+      });
+  }
+
+  createTranslation(addon: PlanAddonListItem): void {
+    const existingLocales = [
+      addon.locale,
+      ...(addon.localizations?.map(l => l.locale) || [])
+    ];
+
+    const availableLocales = this.availableLocales
+      .filter(loc => !existingLocales.includes(loc.code))
+      .map(loc => ({
+        code: loc.code,
+        label: loc.label,
+        flag: loc.flag
+      }));
+
+    if (availableLocales.length === 0) {
+      this.toastService.showWarning(
+        this.translate.instant('addons-list.messages.all_translations_exist')
+      );
+      return;
+    }
+
+    if (availableLocales.length === 1) {
+      this.openCreateTranslationOffcanvas(addon.documentId, availableLocales[0].code);
+      return;
+    }
+
+    this.localeSelectorService.open(availableLocales, (selectedLocale) => {
+      this.openCreateTranslationOffcanvas(addon.documentId, selectedLocale);
+    });
+  }
+
+  private openCreateTranslationOffcanvas(sourceDocumentId: string, targetLocale: string): void {
+    this.addonOffcanvasService.openCreate(targetLocale as 'fr' | 'en', sourceDocumentId);
   }
 
   viewTranslations(addon: PlanAddonListItem): void {
-    const allTranslations: TranslationOption[] = [
-      {
+    const allTranslations: TranslationOption[] = [];
+
+    const currentLocaleConfig = this.availableLocales.find(l => l.code === addon.locale);
+    if (currentLocaleConfig) {
+      allTranslations.push({
         locale: addon.locale,
-        flag: this.availableLocales.find(l => l.code === addon.locale)?.flag || '',
-        label: this.availableLocales.find(l => l.code === addon.locale)?.label || addon.locale.toUpperCase(),
+        flag: currentLocaleConfig.flag,
+        label: currentLocaleConfig.label,
         documentId: addon.documentId
-      }
-    ];
+      });
+    }
 
     if (addon.localizations && addon.localizations.length > 0) {
       addon.localizations.forEach(loc => {
         const localeConfig = this.availableLocales.find(l => l.code === loc.locale);
-        allTranslations.push({
-          locale: loc.locale,
-          flag: localeConfig?.flag || '',
-          label: localeConfig?.label || loc.locale.toUpperCase(),
-          documentId: loc.documentId
-        });
+        if (localeConfig) {
+          allTranslations.push({
+            locale: loc.locale,
+            flag: localeConfig.flag,
+            label: localeConfig.label,
+            documentId: loc.documentId
+          });
+        }
       });
     }
 
@@ -441,22 +543,21 @@ export class AddonsList implements OnInit, OnDestroy {
   }
 
   deleteAddon(addon: PlanAddonListItem): void {
-    if (!this.canDelete()) return;
-
     this.confirmDialog.confirmDelete(addon.addon_name).then((confirmed) => {
       if (confirmed) {
-        this.billingService.deletePlanAddon(addon.documentId)
+        this.billingService.deletePlanAddon(addon.documentId, addon.locale)
           .pipe(takeUntil(this.destroy$))
           .subscribe({
             next: () => {
               this.toastService.showSuccess(
-                this.translate.instant('addons-list.toast.delete_success', { name: addon.addon_name })
+                this.translate.instant('addons-list.messages.delete_success', { name: addon.addon_name })
               );
               this.listManager.reload();
             },
-            error: () => {
+            error: (err) => {
+              console.error('Error deleting addon:', err);
               this.toastService.showError(
-                this.translate.instant('addons-list.toast.delete_error', { name: addon.addon_name })
+                this.translate.instant('addons-list.messages.delete_error')
               );
             }
           });

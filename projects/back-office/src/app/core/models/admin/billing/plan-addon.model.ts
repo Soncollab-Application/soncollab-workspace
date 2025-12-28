@@ -1,4 +1,5 @@
 import { FeatureFlag } from './feature-flag.model';
+import { Currency } from './currency.model';
 
 export interface PlanAddonLocalization {
   id: number;
@@ -17,6 +18,7 @@ export interface PlanAddon {
   price_yearly: number;
   is_active: boolean;
   visible_to_users: boolean;
+  currency?: Currency;
   features_included?: FeatureFlag[];
   localizations?: PlanAddonLocalization[];
   createdAt: string;
@@ -34,6 +36,12 @@ export interface PlanAddonListItem {
   price_yearly: number;
   is_active: boolean;
   visible_to_users: boolean;
+  currency?: {
+    code: string;
+    symbol: string;
+    symbol_position: 'left' | 'right';
+    is_default: boolean;
+  };
   features_included_count?: number;
   used_by_plans_count?: number;
   active_subscriptions_count?: number;
@@ -72,6 +80,7 @@ export interface PlanAddonCreateRequest {
   price_yearly: number;
   is_active: boolean;
   visible_to_users: boolean;
+  currency: string;
   features_included?: string[];
   locale: 'en' | 'fr';
 }
