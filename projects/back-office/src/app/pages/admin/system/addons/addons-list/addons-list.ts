@@ -497,17 +497,17 @@ export class AddonsList implements OnInit, OnDestroy {
     }
 
     if (availableLocales.length === 1) {
-      this.openCreateTranslationOffcanvas(addon.documentId, availableLocales[0].code);
+      this.openCreateTranslationOffcanvas(addon.documentId, addon.locale, availableLocales[0].code);
       return;
     }
 
     this.localeSelectorService.open(availableLocales, (selectedLocale) => {
-      this.openCreateTranslationOffcanvas(addon.documentId, selectedLocale);
+      this.openCreateTranslationOffcanvas(addon.documentId, addon.locale, selectedLocale);
     });
   }
 
-  private openCreateTranslationOffcanvas(sourceDocumentId: string, targetLocale: string): void {
-    this.addonOffcanvasService.openCreate(targetLocale as 'fr' | 'en', sourceDocumentId);
+  private openCreateTranslationOffcanvas(sourceDocumentId: string, sourceLocale: string, targetLocale: string): void {
+    this.addonOffcanvasService.openCreate(targetLocale as 'fr' | 'en', sourceDocumentId, sourceLocale);
   }
 
   viewTranslations(addon: PlanAddonListItem): void {
