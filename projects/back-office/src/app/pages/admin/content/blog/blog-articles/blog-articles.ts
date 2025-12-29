@@ -35,15 +35,15 @@ import { BlogArticleStats } from '../../../../../core/models/content/content-sta
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BlogCategoryFilters } from '../../../../../core/models/content/blog-category.model';
-import {BlogArticleOffcanvasService} from '../../../../../core/services/admin/blog-article-offcanvas.service';
-import {BlogArticleOffcanvas} from '../../../../../core/components/admin/blog-article-offcanvas/blog-article-offcanvas';
-import {TranslationsModal} from '../../../../../core/components/admin/translations-modal/translations-modal';
+import {BlogArticleOffcanvasService} from '../../../../../core/services/admin/offcanvas/blog-article-offcanvas.service';
+import {BlogArticleOffcanvas} from '../../../../../core/components/admin/offcanvas/blog-article-offcanvas/blog-article-offcanvas';
+import {TranslationsModal} from '../../../../../core/components/admin/modals/translations-modal/translations-modal';
 import {
   TranslationOption,
   TranslationsModalService
-} from '../../../../../core/services/admin/translations-modal.service';
-import {LocaleSelectorModalService} from '../../../../../core/services/admin/locale-selector-modal.service';
-import {LocaleSelectorModal} from '../../../../../core/components/admin/locale-selector-modal/locale-selector-modal';
+} from '../../../../../core/services/admin/modals/translations-modal.service';
+import {LocaleSelectorModalService} from '../../../../../core/services/admin/modals/locale-selector-modal.service';
+import {LocaleSelectorModal} from '../../../../../core/components/admin/modals/locale-selector-modal/locale-selector-modal';
 
 @Component({
   selector: 'app-blog-articles',
@@ -74,10 +74,10 @@ export class BlogArticles implements OnInit, OnDestroy {
   private languageOrchestrator = inject(LanguageOrchestratorService);
   private confirmDialog = inject(ConfirmDialogService);
   private toastService = inject(ToastService);
-  private offcanvasService = inject(BlogArticleOffcanvasService);
+  protected offcanvasService = inject(BlogArticleOffcanvasService);
   protected listManager = inject(ListStateManager<BlogArticle, BlogArticleFilters>);
-  private translationsModalService = inject(TranslationsModalService);
-  private localeSelectorService = inject(LocaleSelectorModalService);
+  protected translationsModalService = inject(TranslationsModalService);
+  protected localeSelectorService = inject(LocaleSelectorModalService);
 
   private destroy$ = new Subject<void>();
   private componentId = 'blog-articles';
@@ -786,7 +786,7 @@ export class BlogArticles implements OnInit, OnDestroy {
       .then((confirmed: boolean) => {
         if (confirmed) {
           this.contentService
-            .deleteBlogArticle(article.documentId)
+            .deleteBlogArticle(article.documentId, article.locale)
             .pipe(takeUntil(this.destroy$))
             .subscribe({
               next: () => {

@@ -29,14 +29,16 @@ import { PageTitleService } from '../../../../../core/services/page-title.servic
 import { Breadcrumb } from '../../../../../core/components/breadcrumb/breadcrumb';
 import { AVAILABLE_LOCALES } from '../../../../../core/models/content/blog-article.model';
 import { BlogTag, BlogTagFilters } from '../../../../../core/models/content/blog-tag.model';
-import {BlogTagOffcanvasService} from '../../../../../core/services/admin/blog-tag-offcanvas.service';
-import {BlogTagOffcanvas} from '../../../../../core/components/admin/blog-tag-offcanvas/blog-tag-offcanvas';
+import {BlogTagOffcanvasService} from '../../../../../core/services/admin/offcanvas/blog-tag-offcanvas.service';
+import {BlogTagOffcanvas} from '../../../../../core/components/admin/offcanvas/blog-tag-offcanvas/blog-tag-offcanvas';
 import {
   TranslationOption,
   TranslationsModalService
-} from '../../../../../core/services/admin/translations-modal.service';
-import {TranslationsModal} from '../../../../../core/components/admin/translations-modal/translations-modal';
+} from '../../../../../core/services/admin/modals/translations-modal.service';
+import {TranslationsModal} from '../../../../../core/components/admin/modals/translations-modal/translations-modal';
 import {BlogCategory} from '../../../../../core/models/content/blog-category.model';
+import {LocaleSelectorModalService} from '../../../../../core/services/admin/modals/locale-selector-modal.service';
+import {LocaleSelectorModal} from '../../../../../core/components/admin/modals/locale-selector-modal/locale-selector-modal';
 
 @Component({
   selector: 'app-blog-tags',
@@ -52,6 +54,7 @@ import {BlogCategory} from '../../../../../core/models/content/blog-category.mod
     Choice,
     BlogTagOffcanvas,
     TranslationsModal,
+    LocaleSelectorModal,
   ],
   templateUrl: './blog-tags.html',
   styleUrl: './blog-tags.css',
@@ -67,8 +70,9 @@ export class BlogTags implements OnInit, OnDestroy {
   private confirmDialog = inject(ConfirmDialogService);
   private toastService = inject(ToastService);
   protected listManager = inject(ListStateManager<BlogTag, BlogTagFilters>);
-  private offcanvasService = inject(BlogTagOffcanvasService);
-  private translationsModalService = inject(TranslationsModalService);
+  protected offcanvasService = inject(BlogTagOffcanvasService);
+  protected translationsModalService = inject(TranslationsModalService);
+  protected localeSelectorService = inject(LocaleSelectorModalService);
 
   private destroy$ = new Subject<void>();
   private componentId = 'blog-tags';
@@ -249,9 +253,22 @@ export class BlogTags implements OnInit, OnDestroy {
 
     this.actions.set([
       {
-        label: this.translate.instant('blog-tags.actions.view_translations'),
+        label: this.translate.instant('blog-tags.actions.create_translation'),
         icon: 'translate',
         class: 'btn-outline-info',
+        handler: (tag) => this.createTranslation(tag),
+        condition: (tag) => {
+          const existingLocales = [
+            tag.locale,
+            ...(tag.localizations?.map(l => l.locale) || [])
+          ];
+          return existingLocales.length < this.availableLocales.length;
+        },
+      },
+      {
+        label: this.translate.instant('blog-tags.actions.view_translations'),
+        icon: 'language',
+        class: 'btn-outline-secondary',
         handler: (tag) => this.viewTranslations(tag),
         condition: (tag) => (tag.localizations?.length || 0) > 0,
       },
@@ -311,6 +328,24 @@ export class BlogTags implements OnInit, OnDestroy {
     });
   }
 
+  createTranslation(tag: BlogTag): void {
+    const availableLocales = this.availableLocales.filter(
+      locale => locale.code !== tag.locale
+    );
+
+    this.localeSelectorService.open(availableLocales, (selectedLocale) => {
+      this.offcanvasService.open(
+        'create',
+        null,
+        selectedLocale,
+        tag.documentId,
+        () => {
+          this.listManager.reload();
+        }
+      );
+    });
+  }
+
 
   private onTranslationSelected(translation: TranslationOption): void {
     this.contentService
@@ -320,7 +355,9 @@ export class BlogTags implements OnInit, OnDestroy {
         next: (response) => {
           const tag = response.data.find(t => t.documentId === translation.documentId);
           if (tag) {
-            this.offcanvasService.open(tag);
+            this.offcanvasService.open('edit', tag, tag.locale!, null, () => {
+              this.listManager.reload();
+            });
           } else {
             this.toastService.showError(
               this.translate.instant('blog-tags.error.not_found')
@@ -421,11 +458,15 @@ export class BlogTags implements OnInit, OnDestroy {
   }
 
   createTag(): void {
-    this.offcanvasService.open();
+    this.offcanvasService.open('create', null, this.currentLocale(), null, () => {
+      this.listManager.reload();
+    });
   }
 
   editTag(tag: BlogTag): void {
-    this.offcanvasService.open(tag);
+    this.offcanvasService.open('edit', tag, tag.locale!, null, () => {
+      this.listManager.reload();
+    });
   }
 
   deleteTag(tag: BlogTag): void {
@@ -444,7 +485,7 @@ export class BlogTags implements OnInit, OnDestroy {
       .then((confirmed: boolean) => {
         if (confirmed) {
           this.contentService
-            .deleteBlogTag(tag.documentId)
+            .deleteBlogTag(tag.documentId, tag.locale)
             .pipe(takeUntil(this.destroy$))
             .subscribe({
               next: () => {

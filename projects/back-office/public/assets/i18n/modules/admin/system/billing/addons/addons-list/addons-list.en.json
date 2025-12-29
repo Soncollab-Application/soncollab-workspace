@@ -1,7 +1,9 @@
 {
   "addons-list": {
-    "page_title": "Add-ons",
+    "title": "Add-ons",
+    "page_title": "Add-ons Management",
     "create_addon": "Create Add-on",
+    "search_placeholder": "Search add-on...",
     "kpi": {
       "language": "Active language",
       "total": "Total",
@@ -36,9 +38,13 @@
     "actions": {
       "view_translations": "View translations"
     },
-    "toast": {
-      "delete_success": "Add-on \"{{name}}\" deleted successfully",
-      "delete_error": "Error deleting add-on \"{{name}}\""
+    "messages": {
+      "delete_success": "Add-on \"{{ name }}\" deleted successfully",
+      "delete_error": "Error deleting add-on",
+      "all_translations_exist": "All translations already exist"
+    },
+    "error": {
+      "loading": "Error loading add-on"
     },
     "empty": {
       "title": "No add-ons",

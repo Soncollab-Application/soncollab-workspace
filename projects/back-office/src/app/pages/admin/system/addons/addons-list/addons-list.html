@@ -18,7 +18,7 @@
       </div>
 
       @if (canCreate()) {
-        <button class="btn btn-primary" (click)="router.navigate(['/admin/system/billing/addons/new'])">
+        <button class="btn btn-primary" (click)="createAddon()">
           <span class="material-symbols-outlined me-2">add</span>
           {{ 'addons-list.create_addon' | translate }}
         </button>
@@ -40,7 +40,7 @@
       </div>
 
       @if (canCreate()) {
-        <button class="btn btn-primary w-100" (click)="router.navigate(['/admin/system/billing/addons/new'])">
+        <button class="btn btn-primary w-100" (click)="createAddon()">
           <span class="material-symbols-outlined me-2">add</span>
           {{ 'addons-list.create_addon' | translate }}
         </button>
@@ -92,4 +92,6 @@
   />
 </div>
 
+<app-addon-offcanvas />
+<app-locale-selector-modal />
 <app-translations-modal />

@@ -94,6 +94,12 @@
   />
 </div>
 
-<app-blog-article-offcanvas />
-<app-translations-modal />
-<app-locale-selector-modal />
+@if (offcanvasService.getState().isOpen) {
+  <app-blog-article-offcanvas />
+}
+@if (translationsModalService.getState().isOpen) {
+  <app-translations-modal />
+}
+@if (localeSelectorService.getState().isOpen) {
+  <app-locale-selector-modal />
+}

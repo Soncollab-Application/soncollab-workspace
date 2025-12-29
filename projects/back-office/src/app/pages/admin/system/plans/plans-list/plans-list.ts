@@ -32,15 +32,15 @@ import {
   SupportLevel,
   AVAILABLE_LOCALES
 } from '../../../../../core/models/admin/billing';
-import { TranslationsModal } from '../../../../../core/components/admin/translations-modal/translations-modal';
+import { TranslationsModal } from '../../../../../core/components/admin/modals/translations-modal/translations-modal';
 import {
   TranslationOption,
   TranslationsModalService
-} from '../../../../../core/services/admin/translations-modal.service';
-import {PlanOffcanvasService} from '../../../../../core/services/admin/plan-offcanvas.service';
-import {PlanOffcanvas} from '../../../../../core/components/admin/plan-offcanvas/plan-offcanvas';
-import {LocaleSelectorModalService} from '../../../../../core/services/admin/locale-selector-modal.service';
-import {LocaleSelectorModal} from '../../../../../core/components/admin/locale-selector-modal/locale-selector-modal';
+} from '../../../../../core/services/admin/modals/translations-modal.service';
+import {PlanOffcanvasService} from '../../../../../core/services/admin/offcanvas/plan-offcanvas.service';
+import {PlanOffcanvas} from '../../../../../core/components/admin/offcanvas/plan-offcanvas/plan-offcanvas';
+import {LocaleSelectorModalService} from '../../../../../core/services/admin/modals/locale-selector-modal.service';
+import {LocaleSelectorModal} from '../../../../../core/components/admin/modals/locale-selector-modal/locale-selector-modal';
 
 @Component({
   selector: 'app-plans-list',
@@ -597,11 +597,9 @@ export class PlansList implements OnInit, OnDestroy {
   }
 
   deletePlan(plan: BillingPlanListItem): void {
-    if (!this.canDelete()) return;
-
     this.confirmDialog.confirmDelete(plan.plan_name).then((confirmed) => {
       if (confirmed) {
-        this.billingService.deleteBillingPlan(plan.documentId)
+        this.billingService.deleteBillingPlan(plan.documentId, plan.locale)
           .pipe(takeUntil(this.destroy$))
           .subscribe({
             next: () => {
@@ -610,9 +608,10 @@ export class PlansList implements OnInit, OnDestroy {
               );
               this.listManager.reload();
             },
-            error: () => {
+            error: (err) => {
+              console.error('Error deleting plan:', err);
               this.toastService.showError(
-                this.translate.instant('plans-list.toast.delete_error', { name: plan.plan_name })
+                this.translate.instant('plans-list.toast.delete_error')
               );
             }
           });

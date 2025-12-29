@@ -8,13 +8,13 @@ import { Breadcrumb } from '../../../../../core/components/breadcrumb/breadcrumb
 import { PageTitleService } from '../../../../../core/services/page-title.service';
 import { BillingService } from '../../../../../core/services/admin/billing.service';
 import { FeatureFlag, AVAILABLE_LOCALES } from '../../../../../core/models/admin/billing';
-import { FeatureFlagOffcanvas } from '../../../../../core/components/admin/feature-flag-offcanvas/feature-flag-offcanvas';
-import { FeatureFlagOffcanvasService } from '../../../../../core/services/admin/feature-flag-offcanvas.service';
-import { TranslationsModal } from '../../../../../core/components/admin/translations-modal/translations-modal';
+import { FeatureFlagOffcanvas } from '../../../../../core/components/admin/offcanvas/feature-flag-offcanvas/feature-flag-offcanvas';
+import { FeatureFlagOffcanvasService } from '../../../../../core/services/admin/offcanvas/feature-flag-offcanvas.service';
+import { TranslationsModal } from '../../../../../core/components/admin/modals/translations-modal/translations-modal';
 import {
   TranslationOption,
   TranslationsModalService
-} from '../../../../../core/services/admin/translations-modal.service';
+} from '../../../../../core/services/admin/modals/translations-modal.service';
 
 @Component({
   selector: 'app-feature-detail',

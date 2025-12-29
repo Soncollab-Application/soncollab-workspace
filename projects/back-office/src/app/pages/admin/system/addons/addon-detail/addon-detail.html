@@ -88,12 +88,12 @@
           <div class="d-flex justify-content-around py-3 border-top border-bottom">
             <div>
               <small class="text-muted d-block">{{ 'addon-detail.monthly' | translate }}</small>
-              <h5 class="mb-0">${{ addon()!.price_monthly }}</h5>
+              <h5 class="mb-0">{{ formattedPriceMonthly() }}</h5>
             </div>
             <div class="vr"></div>
             <div>
               <small class="text-muted d-block">{{ 'addon-detail.yearly' | translate }}</small>
-              <h5 class="mb-0">${{ addon()!.price_yearly }}</h5>
+              <h5 class="mb-0">{{ formattedPriceYearly() }}</h5>
             </div>
           </div>
 
@@ -187,4 +187,6 @@
   </div>
 }
 
+<app-translations-modal />
+<app-addon-offcanvas />
 <app-translations-modal />

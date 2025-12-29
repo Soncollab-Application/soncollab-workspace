@@ -27,8 +27,8 @@ import {
   ContactFilters
 } from '../../../../../core/models/sales/sales-contact.model';
 import { PageTitleService } from '../../../../../core/services/page-title.service';
-import { ContactModalService } from '../../../../../core/services/admin/contact-modal.service';
-import { AssignContactModal } from '../../../../../core/components/admin/assign-contact-modal/assign-contact-modal';
+import { ContactModalService } from '../../../../../core/services/admin/modals/contact-modal.service';
+import { AssignContactModal } from '../../../../../core/components/admin/modals/assign-contact-modal/assign-contact-modal';
 
 @Component({
   selector: 'app-unassigned-contacts',

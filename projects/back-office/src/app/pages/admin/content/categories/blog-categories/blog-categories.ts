@@ -29,15 +29,20 @@ import { PageTitleService } from '../../../../../core/services/page-title.servic
 import { Breadcrumb } from '../../../../../core/components/breadcrumb/breadcrumb';
 import { AVAILABLE_LOCALES } from '../../../../../core/models/content/blog-article.model';
 import { BlogCategory, BlogCategoryFilters } from '../../../../../core/models/content/blog-category.model';
-import {BlogCategoryOffcanvasService} from '../../../../../core/services/admin/blog-category-offcanvas.service';
+import {BlogCategoryOffcanvasService} from '../../../../../core/services/admin/offcanvas/blog-category-offcanvas.service';
 import {
   BlogCategoryOffcanvas
-} from '../../../../../core/components/admin/blog-category-offcanvas/blog-category-offcanvas';
+} from '../../../../../core/components/admin/offcanvas/blog-category-offcanvas/blog-category-offcanvas';
 import {
   TranslationOption,
   TranslationsModalService
-} from '../../../../../core/services/admin/translations-modal.service';
-import {TranslationsModal} from '../../../../../core/components/admin/translations-modal/translations-modal';
+} from '../../../../../core/services/admin/modals/translations-modal.service';
+import {TranslationsModal} from '../../../../../core/components/admin/modals/translations-modal/translations-modal';
+import {LocaleSelectorModalService} from '../../../../../core/services/admin/modals/locale-selector-modal.service';
+import {LocaleSelectorModal} from '../../../../../core/components/admin/modals/locale-selector-modal/locale-selector-modal';
+import {
+  HelpCategoryOffcanvas
+} from '../../../../../core/components/admin/offcanvas/help-category-offcanvas/help-category-offcanvas';
 
 @Component({
   selector: 'app-blog-categories',
@@ -53,6 +58,7 @@ import {TranslationsModal} from '../../../../../core/components/admin/translatio
     Choice,
     BlogCategoryOffcanvas,
     TranslationsModal,
+    LocaleSelectorModal,
   ],
   templateUrl: './blog-categories.html',
   styleUrl: './blog-categories.css',
@@ -68,9 +74,9 @@ export class BlogCategories implements OnInit, OnDestroy {
   private confirmDialog = inject(ConfirmDialogService);
   private toastService = inject(ToastService);
   protected listManager = inject(ListStateManager<BlogCategory, BlogCategoryFilters>);
-  private offcanvasService = inject(BlogCategoryOffcanvasService);
-  private translationsModalService = inject(TranslationsModalService);
-
+  protected offcanvasService = inject(BlogCategoryOffcanvasService);
+  protected translationsModalService = inject(TranslationsModalService);
+  protected localeSelectorService = inject(LocaleSelectorModalService);
 
 
   private destroy$ = new Subject<void>();
@@ -289,9 +295,22 @@ export class BlogCategories implements OnInit, OnDestroy {
 
     this.actions.set([
       {
-        label: this.translate.instant('blog-categories.actions.view_translations'),
+        label: this.translate.instant('blog-categories.actions.create_translation'),
         icon: 'translate',
         class: 'btn-outline-info',
+        handler: (category) => this.createTranslation(category),
+        condition: (category) => {
+          const existingLocales = [
+            category.locale,
+            ...(category.localizations?.map(l => l.locale) || [])
+          ];
+          return existingLocales.length < this.availableLocales.length;
+        },
+      },
+      {
+        label: this.translate.instant('blog-categories.actions.view_translations'),
+        icon: 'language',
+        class: 'btn-outline-secondary',
         handler: (category) => this.viewTranslations(category),
         condition: (category) => (category.localizations?.length || 0) > 0,
       },
@@ -311,8 +330,27 @@ export class BlogCategories implements OnInit, OnDestroy {
       },
     ]);
 
+
     this.emptyTitle.set(this.translate.instant('blog-categories.empty.title'));
     this.emptyMessage.set(this.translate.instant('blog-categories.empty.message'));
+  }
+
+  createTranslation(category: BlogCategory): void {
+    const availableLocales = this.availableLocales.filter(
+      locale => locale.code !== category.locale
+    );
+
+    this.localeSelectorService.open(availableLocales, (selectedLocale) => {
+      this.offcanvasService.open(
+        'create',
+        null,
+        selectedLocale,
+        category.documentId,
+        () => {
+          this.listManager.reload();
+        }
+      );
+    });
   }
 
   viewTranslations(category: BlogCategory): void {
@@ -351,7 +389,6 @@ export class BlogCategories implements OnInit, OnDestroy {
   }
 
   private onTranslationSelected(translation: TranslationOption): void {
-    // Charger la catégorie dans la bonne locale
     this.contentService
       .getBlogCategories(1, 100, { locale: translation.locale })
       .pipe(takeUntil(this.destroy$))
@@ -359,8 +396,9 @@ export class BlogCategories implements OnInit, OnDestroy {
         next: (response) => {
           const category = response.data.find(c => c.documentId === translation.documentId);
           if (category) {
-            // Ouvrir l'offcanvas en mode édition
-            this.offcanvasService.open(category);
+            this.offcanvasService.open('edit', category, category.locale!, null, () => {
+              this.listManager.reload();
+            });
           } else {
             this.toastService.showError(
               this.translate.instant('blog-categories.error.not_found')
@@ -464,11 +502,15 @@ export class BlogCategories implements OnInit, OnDestroy {
   }
 
   createCategory(): void {
-    this.offcanvasService.open();
+    this.offcanvasService.open('create', null, this.currentLocale(), null, () => {
+      this.listManager.reload();
+    });
   }
 
   editCategory(category: BlogCategory): void {
-    this.offcanvasService.open(category);
+    this.offcanvasService.open('edit', category, category.locale!, null, () => {
+      this.listManager.reload();
+    });
   }
 
 
@@ -488,7 +530,7 @@ export class BlogCategories implements OnInit, OnDestroy {
       .then((confirmed: boolean) => {
         if (confirmed) {
           this.contentService
-            .deleteBlogCategory(category.documentId)
+            .deleteBlogCategory(category.documentId, category.locale)
             .pipe(takeUntil(this.destroy$))
             .subscribe({
               next: () => {

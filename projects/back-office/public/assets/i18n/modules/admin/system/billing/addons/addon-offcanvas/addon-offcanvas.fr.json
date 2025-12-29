@@ -1,0 +1,40 @@
+{
+  "addon-offcanvas": {
+    "title": {
+      "create": "Créer un Add-on",
+      "edit": "Modifier l'Add-on"
+    },
+    "fields": {
+      "addon_name": "Nom de l'Add-on",
+      "addon_name_placeholder": "Ex: Stockage supplémentaire",
+      "description": "Description",
+      "description_placeholder": "Décrivez l'add-on...",
+      "currency": "Devise",
+      "currency_placeholder": "Sélectionnez une devise",
+      "price_monthly": "Prix mensuel",
+      "price_yearly": "Prix annuel",
+      "features_included": "Fonctionnalités incluses",
+      "features_placeholder": "Sélectionnez des fonctionnalités",
+      "features_hint": "Fonctionnalités incluses dans cet add-on",
+      "is_active": "Add-on actif",
+      "is_active_hint": "Les add-ons actifs peuvent être ajoutés aux abonnements",
+      "visible_to_users": "Visible aux utilisateurs",
+      "visible_to_users_hint": "Les add-ons visibles apparaissent sur la page de tarification"
+    },
+    "errors": {
+      "addon_name_required": "Le nom de l'add-on est requis",
+      "currency_required": "La devise est requise",
+      "save": "Erreur lors de l'enregistrement",
+      "loading_data": "Erreur lors du chargement des données"
+    },
+    "buttons": {
+      "cancel": "Annuler",
+      "create": "Créer l'Add-on",
+      "save": "Enregistrer"
+    },
+    "success": {
+      "created": "Add-on créé avec succès",
+      "updated": "Add-on modifié avec succès"
+    }
+  }
+}
