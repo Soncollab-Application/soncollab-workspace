@@ -38,6 +38,7 @@ import {
 import {TranslationsModal} from '../../../../../core/components/admin/translations-modal/translations-modal';
 import {BlogCategory} from '../../../../../core/models/content/blog-category.model';
 import {LocaleSelectorModalService} from '../../../../../core/services/admin/locale-selector-modal.service';
+import {LocaleSelectorModal} from '../../../../../core/components/admin/locale-selector-modal/locale-selector-modal';
 
 @Component({
   selector: 'app-blog-tags',
@@ -53,6 +54,7 @@ import {LocaleSelectorModalService} from '../../../../../core/services/admin/loc
     Choice,
     BlogTagOffcanvas,
     TranslationsModal,
+    LocaleSelectorModal,
   ],
   templateUrl: './blog-tags.html',
   styleUrl: './blog-tags.css',
@@ -68,9 +70,9 @@ export class BlogTags implements OnInit, OnDestroy {
   private confirmDialog = inject(ConfirmDialogService);
   private toastService = inject(ToastService);
   protected listManager = inject(ListStateManager<BlogTag, BlogTagFilters>);
-  private offcanvasService = inject(BlogTagOffcanvasService);
-  private translationsModalService = inject(TranslationsModalService);
-  private localeSelectorService = inject(LocaleSelectorModalService);
+  protected offcanvasService = inject(BlogTagOffcanvasService);
+  protected translationsModalService = inject(TranslationsModalService);
+  protected localeSelectorService = inject(LocaleSelectorModalService);
 
   private destroy$ = new Subject<void>();
   private componentId = 'blog-tags';

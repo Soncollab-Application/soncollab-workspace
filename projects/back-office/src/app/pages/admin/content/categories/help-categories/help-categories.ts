@@ -39,6 +39,7 @@ import {
 } from '../../../../../core/services/admin/translations-modal.service';
 import {TranslationsModal} from '../../../../../core/components/admin/translations-modal/translations-modal';
 import {LocaleSelectorModalService} from '../../../../../core/services/admin/locale-selector-modal.service';
+import {LocaleSelectorModal} from '../../../../../core/components/admin/locale-selector-modal/locale-selector-modal';
 
 @Component({
   selector: 'app-help-categories',
@@ -54,6 +55,7 @@ import {LocaleSelectorModalService} from '../../../../../core/services/admin/loc
     Choice,
     HelpCategoryOffcanvas,
     TranslationsModal,
+    LocaleSelectorModal,
   ],
   templateUrl: './help-categories.html',
   styleUrl: './help-categories.css',
@@ -69,9 +71,9 @@ export class HelpCategories implements OnInit, OnDestroy {
   private confirmDialog = inject(ConfirmDialogService);
   private toastService = inject(ToastService);
   protected listManager = inject(ListStateManager<HelpCategory, HelpCategoryFilters>);
-  private offcanvasService = inject(HelpCategoryOffcanvasService);
-  private translationsModalService = inject(TranslationsModalService);
-  private localeSelectorService = inject(LocaleSelectorModalService);
+  protected offcanvasService = inject(HelpCategoryOffcanvasService);
+  protected translationsModalService = inject(TranslationsModalService);
+  protected localeSelectorService = inject(LocaleSelectorModalService);
 
   private destroy$ = new Subject<void>();
   private componentId = 'help-categories';

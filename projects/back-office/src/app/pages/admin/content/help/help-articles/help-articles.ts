@@ -42,6 +42,7 @@ import {
   TranslationsModalService
 } from '../../../../../core/services/admin/translations-modal.service';
 import {LocaleSelectorModalService} from '../../../../../core/services/admin/locale-selector-modal.service';
+import {LocaleSelectorModal} from '../../../../../core/components/admin/locale-selector-modal/locale-selector-modal';
 
 const AVAILABLE_LOCALES = [
   { code: 'fr', label: 'Français', flag: '🇫🇷' },
@@ -62,6 +63,7 @@ const AVAILABLE_LOCALES = [
     Choice,
     HelpArticleOffcanvas,
     TranslationsModal,
+    LocaleSelectorModal,
   ],
   templateUrl: './help-articles.html',
   styleUrl: './help-articles.css',
@@ -76,10 +78,10 @@ export class HelpArticles implements OnInit, OnDestroy {
   private languageOrchestrator = inject(LanguageOrchestratorService);
   private confirmDialog = inject(ConfirmDialogService);
   private toastService = inject(ToastService);
-  private offcanvasService = inject(HelpArticleOffcanvasService);
+  protected offcanvasService = inject(HelpArticleOffcanvasService);
   protected listManager = inject(ListStateManager<HelpArticle, HelpArticleFilters>);
-  private translationsModalService = inject(TranslationsModalService);
-  private localeSelectorService = inject(LocaleSelectorModalService);
+  protected translationsModalService = inject(TranslationsModalService);
+  protected localeSelectorService = inject(LocaleSelectorModalService);
 
   private destroy$ = new Subject<void>();
   private componentId = 'help-articles';
