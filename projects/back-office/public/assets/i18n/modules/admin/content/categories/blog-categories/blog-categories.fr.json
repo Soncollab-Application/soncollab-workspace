@@ -29,13 +29,12 @@
       "featured": "⭐ En vedette",
       "not_featured": "Non en vedette"
     },
-
     "actions": {
+      "create_translation": "Créer traduction",
       "view_translations": "Voir traductions",
       "edit": "Modifier",
       "delete": "Supprimer"
     },
-
     "delete": {
       "title": "Supprimer la catégorie",
       "message": "Êtes-vous sûr de vouloir supprimer \"{{name}}\" ?",
@@ -51,6 +50,9 @@
     "error": {
       "loading": "Erreur lors du chargement",
       "not_found": "Catégorie non trouvée"
+    },
+    "messages": {
+      "all_translations_exist": "Toutes les traductions existent déjà"
     },
     "no_translations": "Aucune traduction disponible"
   }

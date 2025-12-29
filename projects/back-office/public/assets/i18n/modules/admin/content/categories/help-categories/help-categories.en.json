@@ -19,9 +19,10 @@
       "createdAt": "Created"
     },
     "actions": {
+      "create_translation": "Create translation",
+      "view_translations": "View translations",
       "edit": "Edit",
-      "delete": "Delete",
-      "view_translations": "View translations"
+      "delete": "Delete"
     },
     "delete": {
       "title": "Delete category",
@@ -38,6 +39,9 @@
     "error": {
       "loading": "Error loading data",
       "not_found": "Category not found"
+    },
+    "messages": {
+      "all_translations_exist": "All translations already exist"
     },
     "no_translations": "No translations available"
   }
