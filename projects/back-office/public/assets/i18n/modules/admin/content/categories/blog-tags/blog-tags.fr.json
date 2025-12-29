@@ -17,9 +17,10 @@
       "createdAt": "Créé le"
     },
     "actions": {
+      "create_translation": "Créer traduction",
+      "view_translations": "Voir traductions",
       "edit": "Modifier",
-      "delete": "Supprimer",
-      "view_translations": "Voir traductions"
+      "delete": "Supprimer"
     },
     "delete": {
       "title": "Supprimer le tag",
@@ -36,6 +37,9 @@
     "error": {
       "loading": "Erreur lors du chargement",
       "not_found": "Tag non trouvé"
+    },
+    "messages": {
+      "all_translations_exist": "Toutes les traductions existent déjà"
     },
     "no_translations": "Aucune traduction disponible"
   }
