@@ -18,13 +18,13 @@ import { Breadcrumb } from '../../../../../core/components/breadcrumb/breadcrumb
 import { PageTitleService } from '../../../../../core/services/page-title.service';
 import { BillingService } from '../../../../../core/services/admin/billing.service';
 import { PlanAddon, AVAILABLE_LOCALES } from '../../../../../core/models/admin/billing';
-import { TranslationsModal } from '../../../../../core/components/admin/translations-modal/translations-modal';
+import { TranslationsModal } from '../../../../../core/components/admin/modals/translations-modal/translations-modal';
 import {
   TranslationOption,
   TranslationsModalService
-} from '../../../../../core/services/admin/translations-modal.service';
-import { AddonOffcanvasService } from '../../../../../core/services/admin/addon-offcanvas.service';
-import { AddonOffcanvas } from '../../../../../core/components/admin/addon-offcanvas/addon-offcanvas';
+} from '../../../../../core/services/admin/modals/translations-modal.service';
+import { AddonOffcanvasService } from '../../../../../core/services/admin/offcanvas/addon-offcanvas.service';
+import { AddonOffcanvas } from '../../../../../core/components/admin/offcanvas/addon-offcanvas/addon-offcanvas';
 
 @Component({
   selector: 'app-addon-detail',

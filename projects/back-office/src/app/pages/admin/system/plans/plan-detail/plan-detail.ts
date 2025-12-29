@@ -13,14 +13,14 @@ import { Breadcrumb } from '../../../../../core/components/breadcrumb/breadcrumb
 import { PageTitleService } from '../../../../../core/services/page-title.service';
 import { BillingService } from '../../../../../core/services/admin/billing.service';
 import { BillingPlanDetail, SupportLevel, AVAILABLE_LOCALES } from '../../../../../core/models/admin/billing';
-import { TranslationsModal } from '../../../../../core/components/admin/translations-modal/translations-modal';
+import { TranslationsModal } from '../../../../../core/components/admin/modals/translations-modal/translations-modal';
 import {
   TranslationOption,
   TranslationsModalService
-} from '../../../../../core/services/admin/translations-modal.service';
+} from '../../../../../core/services/admin/modals/translations-modal.service';
 import {DecimalPipe} from '@angular/common';
-import {PlanOffcanvasService} from '../../../../../core/services/admin/plan-offcanvas.service';
-import {PlanOffcanvas} from '../../../../../core/components/admin/plan-offcanvas/plan-offcanvas';
+import {PlanOffcanvasService} from '../../../../../core/services/admin/offcanvas/plan-offcanvas.service';
+import {PlanOffcanvas} from '../../../../../core/components/admin/offcanvas/plan-offcanvas/plan-offcanvas';
 
 @Component({
   selector: 'app-plan-detail',

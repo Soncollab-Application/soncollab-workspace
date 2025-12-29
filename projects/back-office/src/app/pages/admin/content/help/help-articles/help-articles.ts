@@ -34,15 +34,15 @@ import { HelpArticleStats } from '../../../../../core/models/content/content-sta
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HelpCategoryFilters } from '../../../../../core/models/content/help-category.model';
-import { HelpArticleOffcanvasService } from '../../../../../core/services/admin/help-article-offcanvas.service';
-import { HelpArticleOffcanvas } from '../../../../../core/components/admin/help-article-offcanvas/help-article-offcanvas';
-import { TranslationsModal } from '../../../../../core/components/admin/translations-modal/translations-modal';
+import { HelpArticleOffcanvasService } from '../../../../../core/services/admin/offcanvas/help-article-offcanvas.service';
+import { HelpArticleOffcanvas } from '../../../../../core/components/admin/offcanvas/help-article-offcanvas/help-article-offcanvas';
+import { TranslationsModal } from '../../../../../core/components/admin/modals/translations-modal/translations-modal';
 import {
   TranslationOption,
   TranslationsModalService
-} from '../../../../../core/services/admin/translations-modal.service';
-import {LocaleSelectorModalService} from '../../../../../core/services/admin/locale-selector-modal.service';
-import {LocaleSelectorModal} from '../../../../../core/components/admin/locale-selector-modal/locale-selector-modal';
+} from '../../../../../core/services/admin/modals/translations-modal.service';
+import {LocaleSelectorModalService} from '../../../../../core/services/admin/modals/locale-selector-modal.service';
+import {LocaleSelectorModal} from '../../../../../core/components/admin/modals/locale-selector-modal/locale-selector-modal';
 
 const AVAILABLE_LOCALES = [
   { code: 'fr', label: 'Français', flag: '🇫🇷' },

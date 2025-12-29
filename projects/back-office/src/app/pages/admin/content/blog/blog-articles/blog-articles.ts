@@ -35,15 +35,15 @@ import { BlogArticleStats } from '../../../../../core/models/content/content-sta
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BlogCategoryFilters } from '../../../../../core/models/content/blog-category.model';
-import {BlogArticleOffcanvasService} from '../../../../../core/services/admin/blog-article-offcanvas.service';
-import {BlogArticleOffcanvas} from '../../../../../core/components/admin/blog-article-offcanvas/blog-article-offcanvas';
-import {TranslationsModal} from '../../../../../core/components/admin/translations-modal/translations-modal';
+import {BlogArticleOffcanvasService} from '../../../../../core/services/admin/offcanvas/blog-article-offcanvas.service';
+import {BlogArticleOffcanvas} from '../../../../../core/components/admin/offcanvas/blog-article-offcanvas/blog-article-offcanvas';
+import {TranslationsModal} from '../../../../../core/components/admin/modals/translations-modal/translations-modal';
 import {
   TranslationOption,
   TranslationsModalService
-} from '../../../../../core/services/admin/translations-modal.service';
-import {LocaleSelectorModalService} from '../../../../../core/services/admin/locale-selector-modal.service';
-import {LocaleSelectorModal} from '../../../../../core/components/admin/locale-selector-modal/locale-selector-modal';
+} from '../../../../../core/services/admin/modals/translations-modal.service';
+import {LocaleSelectorModalService} from '../../../../../core/services/admin/modals/locale-selector-modal.service';
+import {LocaleSelectorModal} from '../../../../../core/components/admin/modals/locale-selector-modal/locale-selector-modal';
 
 @Component({
   selector: 'app-blog-articles',

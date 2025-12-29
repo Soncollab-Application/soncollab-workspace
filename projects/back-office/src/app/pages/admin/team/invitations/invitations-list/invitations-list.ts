@@ -27,8 +27,8 @@ import {
   TargetRole
 } from '../../../../../core/models/admin/invitation.model';
 import {Breadcrumb} from '../../../../../core/components/breadcrumb/breadcrumb';
-import {InviteOffcanvas} from '../../../../../core/components/admin/invite-offcanvas/invite-offcanvas';
-import {InviteOffcanvasService} from '../../../../../core/services/admin/invite-offcanvas.service';
+import {InviteOffcanvas} from '../../../../../core/components/admin/offcanvas/invite-offcanvas/invite-offcanvas';
+import {InviteOffcanvasService} from '../../../../../core/services/admin/offcanvas/invite-offcanvas.service';
 
 @Component({
   selector: 'app-invitations-list',

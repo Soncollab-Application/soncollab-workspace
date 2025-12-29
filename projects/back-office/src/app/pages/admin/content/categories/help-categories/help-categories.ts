@@ -29,17 +29,17 @@ import { PageTitleService } from '../../../../../core/services/page-title.servic
 import { Breadcrumb } from '../../../../../core/components/breadcrumb/breadcrumb';
 import { AVAILABLE_LOCALES } from '../../../../../core/models/content/blog-article.model';
 import { HelpCategory, HelpCategoryFilters } from '../../../../../core/models/content/help-category.model';
-import {HelpCategoryOffcanvasService} from '../../../../../core/services/admin/help-category-offcanvas.service';
+import {HelpCategoryOffcanvasService} from '../../../../../core/services/admin/offcanvas/help-category-offcanvas.service';
 import {
   HelpCategoryOffcanvas
-} from '../../../../../core/components/admin/help-category-offcanvas/help-category-offcanvas';
+} from '../../../../../core/components/admin/offcanvas/help-category-offcanvas/help-category-offcanvas';
 import {
   TranslationOption,
   TranslationsModalService
-} from '../../../../../core/services/admin/translations-modal.service';
-import {TranslationsModal} from '../../../../../core/components/admin/translations-modal/translations-modal';
-import {LocaleSelectorModalService} from '../../../../../core/services/admin/locale-selector-modal.service';
-import {LocaleSelectorModal} from '../../../../../core/components/admin/locale-selector-modal/locale-selector-modal';
+} from '../../../../../core/services/admin/modals/translations-modal.service';
+import {TranslationsModal} from '../../../../../core/components/admin/modals/translations-modal/translations-modal';
+import {LocaleSelectorModalService} from '../../../../../core/services/admin/modals/locale-selector-modal.service';
+import {LocaleSelectorModal} from '../../../../../core/components/admin/modals/locale-selector-modal/locale-selector-modal';
 
 @Component({
   selector: 'app-help-categories',
@@ -299,33 +299,20 @@ export class HelpCategories implements OnInit, OnDestroy {
   }
 
   createTranslation(category: HelpCategory): void {
-    const existingLocales = [
-      category.locale,
-      ...(category.localizations?.map(l => l.locale) || [])
-    ];
-
-    const availableLocales = this.availableLocales
-      .filter(loc => !existingLocales.includes(loc.code))
-      .map(loc => ({
-        code: loc.code,
-        label: loc.label,
-        flag: loc.flag
-      }));
-
-    if (availableLocales.length === 0) {
-      this.toastService.showWarning(
-        this.translate.instant('help-categories.messages.all_translations_exist')
-      );
-      return;
-    }
-
-    if (availableLocales.length === 1) {
-      this.offcanvasService.openCreate(availableLocales[0].code, category.documentId);
-      return;
-    }
+    const availableLocales = this.availableLocales.filter(
+      locale => locale.code !== category.locale
+    );
 
     this.localeSelectorService.open(availableLocales, (selectedLocale) => {
-      this.offcanvasService.openCreate(selectedLocale, category.documentId);
+      this.offcanvasService.open(
+        'create',
+        null,
+        selectedLocale,
+        category.documentId,
+        () => {
+          this.listManager.reload();
+        }
+      );
     });
   }
 
@@ -374,7 +361,9 @@ export class HelpCategories implements OnInit, OnDestroy {
         next: (response) => {
           const category = response.data.find(c => c.documentId === translation.documentId);
           if (category) {
-            this.offcanvasService.open(category);
+            this.offcanvasService.open('edit', category, category.locale!, null, () => {
+              this.listManager.reload();
+            });
           } else {
             this.toastService.showError(
               this.translate.instant('help-categories.error.not_found')
@@ -474,11 +463,15 @@ export class HelpCategories implements OnInit, OnDestroy {
   }
 
   createCategory(): void {
-    this.offcanvasService.open();
+    this.offcanvasService.open('create', null, this.currentLocale(), null, () => {
+      this.listManager.reload();
+    });
   }
 
   editCategory(category: HelpCategory): void {
-    this.offcanvasService.open(category);
+    this.offcanvasService.open('edit', category, category.locale!, null, () => {
+      this.listManager.reload();
+    });
   }
 
   deleteCategory(category: HelpCategory): void {

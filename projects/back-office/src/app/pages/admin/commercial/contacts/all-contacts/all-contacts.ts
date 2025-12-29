@@ -28,9 +28,9 @@ import { PageTitleService } from '../../../../../core/services/page-title.servic
 import { Breadcrumb } from '../../../../../core/components/breadcrumb/breadcrumb';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject, takeUntil } from 'rxjs';
-import { ContactModalService } from '../../../../../core/services/admin/contact-modal.service';
-import { QualifyContactModal } from '../../../../../core/components/admin/qualify-contact-modal/qualify-contact-modal';
-import { AssignContactModal } from '../../../../../core/components/admin/assign-contact-modal/assign-contact-modal';
+import { ContactModalService } from '../../../../../core/services/admin/modals/contact-modal.service';
+import { QualifyContactModal } from '../../../../../core/components/admin/modals/qualify-contact-modal/qualify-contact-modal';
+import { AssignContactModal } from '../../../../../core/components/admin/modals/assign-contact-modal/assign-contact-modal';
 
 @Component({
   selector: 'app-all-contacts',

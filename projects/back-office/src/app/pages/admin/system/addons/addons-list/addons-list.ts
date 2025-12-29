@@ -31,15 +31,15 @@ import {
   PlanAddonListItem,
   AVAILABLE_LOCALES
 } from '../../../../../core/models/admin/billing';
-import { TranslationsModal } from '../../../../../core/components/admin/translations-modal/translations-modal';
+import { TranslationsModal } from '../../../../../core/components/admin/modals/translations-modal/translations-modal';
 import {
   TranslationOption,
   TranslationsModalService
-} from '../../../../../core/services/admin/translations-modal.service';
-import {AddonOffcanvasService} from '../../../../../core/services/admin/addon-offcanvas.service';
-import {LocaleSelectorModalService} from '../../../../../core/services/admin/locale-selector-modal.service';
-import {AddonOffcanvas} from '../../../../../core/components/admin/addon-offcanvas/addon-offcanvas';
-import {LocaleSelectorModal} from '../../../../../core/components/admin/locale-selector-modal/locale-selector-modal';
+} from '../../../../../core/services/admin/modals/translations-modal.service';
+import {AddonOffcanvasService} from '../../../../../core/services/admin/offcanvas/addon-offcanvas.service';
+import {LocaleSelectorModalService} from '../../../../../core/services/admin/modals/locale-selector-modal.service';
+import {AddonOffcanvas} from '../../../../../core/components/admin/offcanvas/addon-offcanvas/addon-offcanvas';
+import {LocaleSelectorModal} from '../../../../../core/components/admin/modals/locale-selector-modal/locale-selector-modal';
 
 @Component({
   selector: 'app-addons-list',

@@ -29,16 +29,16 @@ import { PageTitleService } from '../../../../../core/services/page-title.servic
 import { Breadcrumb } from '../../../../../core/components/breadcrumb/breadcrumb';
 import { AVAILABLE_LOCALES } from '../../../../../core/models/content/blog-article.model';
 import { BlogTag, BlogTagFilters } from '../../../../../core/models/content/blog-tag.model';
-import {BlogTagOffcanvasService} from '../../../../../core/services/admin/blog-tag-offcanvas.service';
-import {BlogTagOffcanvas} from '../../../../../core/components/admin/blog-tag-offcanvas/blog-tag-offcanvas';
+import {BlogTagOffcanvasService} from '../../../../../core/services/admin/offcanvas/blog-tag-offcanvas.service';
+import {BlogTagOffcanvas} from '../../../../../core/components/admin/offcanvas/blog-tag-offcanvas/blog-tag-offcanvas';
 import {
   TranslationOption,
   TranslationsModalService
-} from '../../../../../core/services/admin/translations-modal.service';
-import {TranslationsModal} from '../../../../../core/components/admin/translations-modal/translations-modal';
+} from '../../../../../core/services/admin/modals/translations-modal.service';
+import {TranslationsModal} from '../../../../../core/components/admin/modals/translations-modal/translations-modal';
 import {BlogCategory} from '../../../../../core/models/content/blog-category.model';
-import {LocaleSelectorModalService} from '../../../../../core/services/admin/locale-selector-modal.service';
-import {LocaleSelectorModal} from '../../../../../core/components/admin/locale-selector-modal/locale-selector-modal';
+import {LocaleSelectorModalService} from '../../../../../core/services/admin/modals/locale-selector-modal.service';
+import {LocaleSelectorModal} from '../../../../../core/components/admin/modals/locale-selector-modal/locale-selector-modal';
 
 @Component({
   selector: 'app-blog-tags',
@@ -329,33 +329,20 @@ export class BlogTags implements OnInit, OnDestroy {
   }
 
   createTranslation(tag: BlogTag): void {
-    const existingLocales = [
-      tag.locale,
-      ...(tag.localizations?.map(l => l.locale) || [])
-    ];
-
-    const availableLocales = this.availableLocales
-      .filter(loc => !existingLocales.includes(loc.code))
-      .map(loc => ({
-        code: loc.code,
-        label: loc.label,
-        flag: loc.flag
-      }));
-
-    if (availableLocales.length === 0) {
-      this.toastService.showWarning(
-        this.translate.instant('blog-tags.messages.all_translations_exist')
-      );
-      return;
-    }
-
-    if (availableLocales.length === 1) {
-      this.offcanvasService.openCreate(availableLocales[0].code, tag.documentId);
-      return;
-    }
+    const availableLocales = this.availableLocales.filter(
+      locale => locale.code !== tag.locale
+    );
 
     this.localeSelectorService.open(availableLocales, (selectedLocale) => {
-      this.offcanvasService.openCreate(selectedLocale, tag.documentId);
+      this.offcanvasService.open(
+        'create',
+        null,
+        selectedLocale,
+        tag.documentId,
+        () => {
+          this.listManager.reload();
+        }
+      );
     });
   }
 
@@ -368,7 +355,9 @@ export class BlogTags implements OnInit, OnDestroy {
         next: (response) => {
           const tag = response.data.find(t => t.documentId === translation.documentId);
           if (tag) {
-            this.offcanvasService.open(tag);
+            this.offcanvasService.open('edit', tag, tag.locale!, null, () => {
+              this.listManager.reload();
+            });
           } else {
             this.toastService.showError(
               this.translate.instant('blog-tags.error.not_found')
@@ -469,11 +458,15 @@ export class BlogTags implements OnInit, OnDestroy {
   }
 
   createTag(): void {
-    this.offcanvasService.open();
+    this.offcanvasService.open('create', null, this.currentLocale(), null, () => {
+      this.listManager.reload();
+    });
   }
 
   editTag(tag: BlogTag): void {
-    this.offcanvasService.open(tag);
+    this.offcanvasService.open('edit', tag, tag.locale!, null, () => {
+      this.listManager.reload();
+    });
   }
 
   deleteTag(tag: BlogTag): void {

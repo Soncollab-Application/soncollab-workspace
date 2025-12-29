@@ -32,15 +32,15 @@ import {
   FeatureFlagStatus,
   AVAILABLE_LOCALES
 } from '../../../../../core/models/admin/billing';
-import { FeatureFlagOffcanvas } from '../../../../../core/components/admin/feature-flag-offcanvas/feature-flag-offcanvas';
-import { FeatureFlagOffcanvasService } from '../../../../../core/services/admin/feature-flag-offcanvas.service';
-import { TranslationsModal } from '../../../../../core/components/admin/translations-modal/translations-modal';
+import { FeatureFlagOffcanvas } from '../../../../../core/components/admin/offcanvas/feature-flag-offcanvas/feature-flag-offcanvas';
+import { FeatureFlagOffcanvasService } from '../../../../../core/services/admin/offcanvas/feature-flag-offcanvas.service';
+import { TranslationsModal } from '../../../../../core/components/admin/modals/translations-modal/translations-modal';
 import {
   TranslationOption,
   TranslationsModalService
-} from '../../../../../core/services/admin/translations-modal.service';
-import { LocaleSelectorModalService } from '../../../../../core/services/admin/locale-selector-modal.service';
-import { LocaleSelectorModal } from '../../../../../core/components/admin/locale-selector-modal/locale-selector-modal';
+} from '../../../../../core/services/admin/modals/translations-modal.service';
+import { LocaleSelectorModalService } from '../../../../../core/services/admin/modals/locale-selector-modal.service';
+import { LocaleSelectorModal } from '../../../../../core/components/admin/modals/locale-selector-modal/locale-selector-modal';
 
 @Component({
   selector: 'app-features-list',
