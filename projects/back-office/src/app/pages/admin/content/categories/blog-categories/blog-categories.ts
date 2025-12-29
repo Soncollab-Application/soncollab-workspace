@@ -40,6 +40,9 @@ import {
 import {TranslationsModal} from '../../../../../core/components/admin/translations-modal/translations-modal';
 import {LocaleSelectorModalService} from '../../../../../core/services/admin/locale-selector-modal.service';
 import {LocaleSelectorModal} from '../../../../../core/components/admin/locale-selector-modal/locale-selector-modal';
+import {
+  HelpCategoryOffcanvas
+} from '../../../../../core/components/admin/help-category-offcanvas/help-category-offcanvas';
 
 @Component({
   selector: 'app-blog-categories',
@@ -71,9 +74,9 @@ export class BlogCategories implements OnInit, OnDestroy {
   private confirmDialog = inject(ConfirmDialogService);
   private toastService = inject(ToastService);
   protected listManager = inject(ListStateManager<BlogCategory, BlogCategoryFilters>);
-  private offcanvasService = inject(BlogCategoryOffcanvasService);
-  private translationsModalService = inject(TranslationsModalService);
-  private localeSelectorService = inject(LocaleSelectorModalService);
+  protected offcanvasService = inject(BlogCategoryOffcanvasService);
+  protected translationsModalService = inject(TranslationsModalService);
+  protected localeSelectorService = inject(LocaleSelectorModalService);
 
 
   private destroy$ = new Subject<void>();

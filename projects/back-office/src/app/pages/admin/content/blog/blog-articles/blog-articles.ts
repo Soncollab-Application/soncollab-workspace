@@ -74,10 +74,10 @@ export class BlogArticles implements OnInit, OnDestroy {
   private languageOrchestrator = inject(LanguageOrchestratorService);
   private confirmDialog = inject(ConfirmDialogService);
   private toastService = inject(ToastService);
-  private offcanvasService = inject(BlogArticleOffcanvasService);
+  protected offcanvasService = inject(BlogArticleOffcanvasService);
   protected listManager = inject(ListStateManager<BlogArticle, BlogArticleFilters>);
-  private translationsModalService = inject(TranslationsModalService);
-  private localeSelectorService = inject(LocaleSelectorModalService);
+  protected translationsModalService = inject(TranslationsModalService);
+  protected localeSelectorService = inject(LocaleSelectorModalService);
 
   private destroy$ = new Subject<void>();
   private componentId = 'blog-articles';
