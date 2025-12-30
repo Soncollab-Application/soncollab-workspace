@@ -50,7 +50,7 @@ import {
   FeatureFlagFilters,
   FeatureFlagResponse,
   FeatureFlagCreateRequest,
-  FeatureFlagStats, BillingPlanStats
+  FeatureFlagStats, BillingPlanStats, PlanAddonStats
 } from '../../models/admin/billing';
 
 @Injectable({ providedIn: 'root' })
@@ -69,6 +69,7 @@ export class BillingService {
     // Plan Addons
     plan_addons: `${this.API_URL}/plan-addons`,
     plan_addon_by_id: (documentId: string) => `${this.API_URL}/plan-addons/${documentId}`,
+    plan_addons_stats: `${this.API_URL}/plan-addons/stats`,
 
     // Subscriptions
     subscriptions: `${this.API_URL}/subscriptions`,
@@ -344,6 +345,14 @@ export class BillingService {
 
     return this.http.delete<void>(
       this.BILLING_ENDPOINTS.plan_addon_by_id(documentId),
+      { params }
+    );
+  }
+
+  getPlanAddonStats(locale: string): Observable<{ data: PlanAddonStats }> {
+    const params = new HttpParams().set('locale', locale);
+    return this.http.get<{ data: PlanAddonStats }>(
+      this.BILLING_ENDPOINTS.plan_addons_stats,
       { params }
     );
   }
