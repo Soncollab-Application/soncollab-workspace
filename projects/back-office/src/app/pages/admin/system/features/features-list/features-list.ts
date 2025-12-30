@@ -542,7 +542,7 @@ export class FeaturesList implements OnInit, OnDestroy {
   deleteFeature(feature: FeatureFlagListItem): void {
     this.confirmDialog.confirmDelete(feature.name).then((confirmed) => {
       if (confirmed) {
-        this.billingService.deleteFeatureFlag(feature.documentId)
+        this.billingService.deleteFeatureFlag(feature.documentId, feature.locale)
           .pipe(takeUntil(this.destroy$))
           .subscribe({
             next: () => {
