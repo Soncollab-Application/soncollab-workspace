@@ -771,15 +771,29 @@ export class BillingService {
     return this.http.post<FeatureFlagResponse>(this.BILLING_ENDPOINTS.feature_flags, { data });
   }
 
-  updateFeatureFlag(documentId: string, data: FeatureFlagUpdateRequest): Observable<FeatureFlagResponse> {
+  updateFeatureFlag(documentId: string, data: FeatureFlagUpdateRequest, locale?: string): Observable<FeatureFlagResponse> {
+    let params = new HttpParams();
+
+    const featureLocale = locale || data.locale || 'fr';
+    params = params.set('locale', featureLocale);
+
     return this.http.put<FeatureFlagResponse>(
       this.BILLING_ENDPOINTS.feature_flag_by_id(documentId),
-      { data }
+      { data },
+      { params }
     );
   }
 
-  deleteFeatureFlag(documentId: string): Observable<void> {
-    return this.http.delete<void>(this.BILLING_ENDPOINTS.feature_flag_by_id(documentId));
+  deleteFeatureFlag(documentId: string, locale?: string): Observable<void> {
+    let params = new HttpParams();
+
+    const featureLocale = locale || 'fr';
+    params = params.set('locale', featureLocale);
+
+    return this.http.delete<void>(
+      this.BILLING_ENDPOINTS.feature_flag_by_id(documentId),
+      { params }
+    );
   }
 
   getFeatureFlagStats(locale: string): Observable<{ data: FeatureFlagStats }> {
