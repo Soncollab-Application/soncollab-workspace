@@ -50,7 +50,7 @@ import {
   FeatureFlagFilters,
   FeatureFlagResponse,
   FeatureFlagCreateRequest,
-  FeatureFlagStats, BillingPlanStats
+  FeatureFlagStats, BillingPlanStats, PlanAddonStats
 } from '../../models/admin/billing';
 
 @Injectable({ providedIn: 'root' })
@@ -69,6 +69,7 @@ export class BillingService {
     // Plan Addons
     plan_addons: `${this.API_URL}/plan-addons`,
     plan_addon_by_id: (documentId: string) => `${this.API_URL}/plan-addons/${documentId}`,
+    plan_addons_stats: `${this.API_URL}/plan-addons/stats`,
 
     // Subscriptions
     subscriptions: `${this.API_URL}/subscriptions`,
@@ -223,7 +224,15 @@ export class BillingService {
   }
 
   createBillingPlan(data: CreateBillingPlanRequest): Observable<BillingPlanResponse> {
-    return this.http.post<BillingPlanResponse>(this.BILLING_ENDPOINTS.billing_plans, { data });
+    let params = new HttpParams();
+    if (data.locale) {
+      params = params.set('locale', data.locale);
+    }
+    return this.http.post<BillingPlanResponse>(
+      this.BILLING_ENDPOINTS.billing_plans,
+      { data },
+      { params }
+    );
   }
 
   getBillingPlanPricing(locale: string): Observable<any> {
@@ -319,7 +328,15 @@ export class BillingService {
   }
 
   createPlanAddon(data: PlanAddonCreateRequest): Observable<PlanAddonResponse> {
-    return this.http.post<PlanAddonResponse>(this.BILLING_ENDPOINTS.plan_addons, { data });
+    let params = new HttpParams();
+    if (data.locale) {
+      params = params.set('locale', data.locale);
+    }
+    return this.http.post<PlanAddonResponse>(
+      this.BILLING_ENDPOINTS.plan_addons,
+      { data },
+      { params }
+    );
   }
 
   updatePlanAddon(documentId: string, data: PlanAddonUpdateRequest, locale?: string): Observable<PlanAddonResponse> {
@@ -338,12 +355,19 @@ export class BillingService {
   deletePlanAddon(documentId: string, locale?: string): Observable<void> {
     let params = new HttpParams();
 
-    // IMPORTANT: Strapi 5 i18n - passer locale pour supprimer la bonne version
     const addonLocale = locale || 'fr';
     params = params.set('locale', addonLocale);
 
     return this.http.delete<void>(
       this.BILLING_ENDPOINTS.plan_addon_by_id(documentId),
+      { params }
+    );
+  }
+
+  getPlanAddonStats(locale: string): Observable<{ data: PlanAddonStats }> {
+    const params = new HttpParams().set('locale', locale);
+    return this.http.get<{ data: PlanAddonStats }>(
+      this.BILLING_ENDPOINTS.plan_addons_stats,
       { params }
     );
   }
@@ -759,18 +783,39 @@ export class BillingService {
   }
 
   createFeatureFlag(data: FeatureFlagCreateRequest): Observable<FeatureFlagResponse> {
-    return this.http.post<FeatureFlagResponse>(this.BILLING_ENDPOINTS.feature_flags, { data });
-  }
+    let params = new HttpParams();
+    params = params.set('locale', data.locale);
 
-  updateFeatureFlag(documentId: string, data: FeatureFlagUpdateRequest): Observable<FeatureFlagResponse> {
-    return this.http.put<FeatureFlagResponse>(
-      this.BILLING_ENDPOINTS.feature_flag_by_id(documentId),
-      { data }
+    return this.http.post<FeatureFlagResponse>(
+      this.BILLING_ENDPOINTS.feature_flags,
+      { data },
+      { params }
     );
   }
 
-  deleteFeatureFlag(documentId: string): Observable<void> {
-    return this.http.delete<void>(this.BILLING_ENDPOINTS.feature_flag_by_id(documentId));
+  updateFeatureFlag(documentId: string, data: FeatureFlagUpdateRequest, locale?: string): Observable<FeatureFlagResponse> {
+    let params = new HttpParams();
+
+    const featureLocale = locale || data.locale || 'fr';
+    params = params.set('locale', featureLocale);
+
+    return this.http.put<FeatureFlagResponse>(
+      this.BILLING_ENDPOINTS.feature_flag_by_id(documentId),
+      { data },
+      { params }
+    );
+  }
+
+  deleteFeatureFlag(documentId: string, locale?: string): Observable<void> {
+    let params = new HttpParams();
+
+    const featureLocale = locale || 'fr';
+    params = params.set('locale', featureLocale);
+
+    return this.http.delete<void>(
+      this.BILLING_ENDPOINTS.feature_flag_by_id(documentId),
+      { params }
+    );
   }
 
   getFeatureFlagStats(locale: string): Observable<{ data: FeatureFlagStats }> {

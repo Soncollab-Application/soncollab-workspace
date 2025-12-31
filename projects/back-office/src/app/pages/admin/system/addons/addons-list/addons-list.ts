@@ -168,6 +168,7 @@ export class AddonsList implements OnInit, OnDestroy {
       const isOpen = this.addonOffcanvasService.isOpen();
 
       if (wasOpen && !isOpen) {
+        this.loadStats();
         this.listManager.reload();
       }
 
@@ -199,6 +200,8 @@ export class AddonsList implements OnInit, OnDestroy {
         this.loadAddons(page, pageSize, filters, sortField, sortDirection),
       this.canFind
     );
+
+    this.loadStats();
   }
 
   ngOnDestroy(): void {
@@ -225,6 +228,7 @@ export class AddonsList implements OnInit, OnDestroy {
       this.currentLocale.set(newLocale);
       this.selectedLocale.set(newLocale);
       this.saveLocaleToStorage(newLocale);
+      this.loadStats();
       this.listManager.reload();
     }
   }
@@ -408,6 +412,24 @@ export class AddonsList implements OnInit, OnDestroy {
         }
       });
   }
+
+
+  private loadStats(): void {
+    this.loadingStats.set(true);
+    this.billingService.getPlanAddonStats(this.currentLocale())
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.stats.set(response.data);
+          this.loadingStats.set(false);
+        },
+        error: (err) => {
+          console.error('Error loading stats:', err);
+          this.loadingStats.set(false);
+        }
+      });
+  }
+
 
   private onLanguageChange(): void {
     setTimeout(() => {

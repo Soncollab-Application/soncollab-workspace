@@ -2,7 +2,7 @@ import { Component, inject, signal, effect, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { Subject, takeUntil } from 'rxjs';
+import {Observable, Subject, takeUntil} from 'rxjs';
 import { ToastService } from 'shared-lib';
 import { BlogTagOffcanvasService } from '../../../../services/admin/offcanvas/blog-tag-offcanvas.service';
 import { AdminContentService } from '../../../../services/admin/admin-content.service';
@@ -91,19 +91,26 @@ export class BlogTagOffcanvas implements OnDestroy {
     this.isSubmitting.set(true);
     const formData: any = this.form.value;
 
-    if (this.offcanvasService.mode() === 'create' && this.offcanvasService.sourceDocumentId()) {
-      formData.documentId = this.offcanvasService.sourceDocumentId();
-      formData.locale = this.offcanvasService.locale();
-    }
+    let request$: Observable<{ data: BlogTag }>;
 
-    const request$ =
-      this.offcanvasService.mode() === 'create'
-        ? this.contentService.createBlogTag(formData)
-        : this.contentService.updateBlogTag(
-          this.offcanvasService.tag()!.documentId,
+    if (this.offcanvasService.mode() === 'create') {
+      if (this.offcanvasService.sourceDocumentId()) {
+        request$ = this.contentService.updateBlogTag(
+          this.offcanvasService.sourceDocumentId()!,
           formData,
-          this.offcanvasService.tag()!.locale
+          this.offcanvasService.locale()
         );
+      } else {
+        formData.locale = this.offcanvasService.locale();
+        request$ = this.contentService.createBlogTag(formData);
+      }
+    } else {
+      request$ = this.contentService.updateBlogTag(
+        this.offcanvasService.tag()!.documentId,
+        formData,
+        this.offcanvasService.tag()!.locale
+      );
+    }
 
     request$.pipe(takeUntil(this.destroy$)).subscribe({
       next: () => {

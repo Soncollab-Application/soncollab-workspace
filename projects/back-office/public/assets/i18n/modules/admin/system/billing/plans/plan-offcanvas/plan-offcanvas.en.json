@@ -32,7 +32,8 @@
       "plan_name_required": "Plan name is required",
       "currency_required": "Currency is required",
       "price_required": "Price is required and must be positive",
-      "asset_limit_required": "Asset limit is required"
+      "asset_limit_required": "Asset limit is required",
+      "royalty_cap_max": "Royalty cap cannot exceed 99,999,999"
     },
     "buttons": {
       "cancel": "Cancel",

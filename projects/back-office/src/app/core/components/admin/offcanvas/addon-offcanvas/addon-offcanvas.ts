@@ -1,12 +1,12 @@
 import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import { Subject, takeUntil, forkJoin } from 'rxjs';
+import {Subject, takeUntil, forkJoin, Observable} from 'rxjs';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { ToastService, Choice, ChoiceConfig, ChoiceOption } from 'shared-lib';
 import { BillingService } from '../../../../services/admin/billing.service';
 import { AddonOffcanvasService } from '../../../../services/admin/offcanvas/addon-offcanvas.service';
-import { FeatureFlagListItem, Currency } from '../../../../models/admin/billing';
+import {FeatureFlagListItem, Currency, PlanAddonResponse} from '../../../../models/admin/billing';
 
 @Component({
   selector: 'app-addon-offcanvas',
@@ -231,18 +231,29 @@ export class AddonOffcanvas implements OnInit, OnDestroy {
     const formData = {
       ...this.form.value,
       currency: this.selectedCurrency(),
-      features_included: this.selectedFeatures().length > 0 ? this.selectedFeatures() : undefined,
-      locale: this.offcanvasService.locale()
+      features_included: this.selectedFeatures().length > 0 ? this.selectedFeatures() : undefined
     };
 
-    const request$ =
-      this.offcanvasService.mode() === 'create'
-        ? this.billingService.createPlanAddon(formData)
-        : this.billingService.updatePlanAddon(
-          this.offcanvasService.addon()!.documentId,
+    let request$: Observable<PlanAddonResponse>;
+
+    if (this.offcanvasService.mode() === 'create') {
+      if (this.offcanvasService.sourceDocumentId()) {
+        request$ = this.billingService.updatePlanAddon(
+          this.offcanvasService.sourceDocumentId()!,
           formData,
           this.offcanvasService.locale()
         );
+      } else {
+        formData.locale = this.offcanvasService.locale();
+        request$ = this.billingService.createPlanAddon(formData);
+      }
+    } else {
+      request$ = this.billingService.updatePlanAddon(
+        this.offcanvasService.addon()!.documentId,
+        formData,
+        this.offcanvasService.locale()
+      );
+    }
 
     request$.pipe(takeUntil(this.destroy$)).subscribe({
       next: () => {

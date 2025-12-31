@@ -2,7 +2,7 @@ import { Component, inject, signal, effect, OnDestroy, OnInit, computed } from '
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { Subject, takeUntil, forkJoin } from 'rxjs';
+import {Subject, takeUntil, forkJoin, Observable} from 'rxjs';
 import { ToastService, Choice, ChoiceOption, ChoiceConfig } from 'shared-lib';
 import { PlanOffcanvasService } from '../../../../services/admin/offcanvas/plan-offcanvas.service';
 import { BillingService } from '../../../../services/admin/billing.service';
@@ -10,7 +10,7 @@ import {
   SupportLevel,
   Currency,
   ProductType,
-  PlanAddonListItem, FeatureFlag, FeatureFlagListItem
+  PlanAddonListItem, FeatureFlag, FeatureFlagListItem, BillingPlanResponse
 } from '../../../../models/admin/billing';
 
 @Component({
@@ -78,7 +78,7 @@ export class PlanOffcanvas implements OnInit, OnDestroy {
       price_monthly: [0, [Validators.required, Validators.min(0)]],
       price_yearly: [0, [Validators.required, Validators.min(0)]],
       asset_limit: [1000, [Validators.required, Validators.min(1)]],
-      royalty_cap: [null],
+      royalty_cap: [null, [Validators.min(0), Validators.max(99999999)]],
       is_active: [true]
     });
 
@@ -300,17 +300,29 @@ export class PlanOffcanvas implements OnInit, OnDestroy {
       product_type: this.selectedProductType() || undefined,
       support_level: this.selectedSupportLevel(),
       included_features: this.selectedFeatures().length > 0 ? this.selectedFeatures() : undefined,
-      available_addons: this.selectedAddons().length > 0 ? this.selectedAddons() : undefined,
-      locale: this.offcanvasService.locale()
+      available_addons: this.selectedAddons().length > 0 ? this.selectedAddons() : undefined
     };
 
-    const request$ =
-      this.offcanvasService.mode() === 'create'
-        ? this.billingService.createBillingPlan(formData)
-        : this.billingService.updateBillingPlan(
-          this.offcanvasService.plan()!.documentId,
-          formData
+    let request$: Observable<BillingPlanResponse>;
+
+    if (this.offcanvasService.mode() === 'create') {
+      if (this.offcanvasService.sourceDocumentId()) {
+        request$ = this.billingService.updateBillingPlan(
+          this.offcanvasService.sourceDocumentId()!,
+          formData,
+          this.offcanvasService.locale()
         );
+      } else {
+        formData.locale = this.offcanvasService.locale();
+        request$ = this.billingService.createBillingPlan(formData);
+      }
+    } else {
+      request$ = this.billingService.updateBillingPlan(
+        this.offcanvasService.plan()!.documentId,
+        formData,
+        this.offcanvasService.plan()!.locale as 'fr' | 'en'
+      );
+    }
 
     request$.pipe(takeUntil(this.destroy$)).subscribe({
       next: () => {
