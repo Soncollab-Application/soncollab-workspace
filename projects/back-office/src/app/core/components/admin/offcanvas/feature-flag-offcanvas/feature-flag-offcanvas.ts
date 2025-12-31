@@ -1,4 +1,4 @@
-import { Component, inject, signal, effect, OnDestroy, computed } from '@angular/core';
+import { Component, inject, signal, effect, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -45,64 +45,74 @@ export class FeatureFlagOffcanvas implements OnDestroy {
       is_enabled_by_default: [false]
     });
 
-    // Initialiser les options de status
     this.statusOptions.set([
       { value: 'stable', label: this.translate.instant('feature-flag-offcanvas.status.stable') },
       { value: 'beta', label: this.translate.instant('feature-flag-offcanvas.status.beta') },
       { value: 'deprecated', label: this.translate.instant('feature-flag-offcanvas.status.deprecated') }
     ]);
 
-    // EFFECT 1: EDIT MODE
     effect(() => {
       const featureFlag = this.offcanvasService.featureFlag();
       const isOpen = this.offcanvasService.isOpen();
       const mode = this.offcanvasService.mode();
+      const sourceDocId = this.offcanvasService.sourceDocumentId();
 
+      if (!isOpen) {
+        this.resetForm();
+        return;
+      }
 
-      if (isOpen && mode === 'edit' && featureFlag) {
+      if (mode === 'edit' && featureFlag) {
         this.form.patchValue({
           name: featureFlag.name,
           description: featureFlag.description || '',
           is_enabled_by_default: featureFlag.is_enabled_by_default
         });
-
         this.selectedStatus.set(featureFlag.feature_flag_status);
-      } else if (isOpen && mode === 'create' && !this.offcanvasService.sourceDocumentId()) {
-        // Mode create normal
-        this.resetForm();
-      } else if (!isOpen) {
-        // Fermeture
+      } else if (mode === 'create' && sourceDocId) {
+        this.loadSourceFeatureFlag(sourceDocId);
+      } else if (mode === 'create' && !sourceDocId) {
         this.resetForm();
       }
     });
+  }
 
-    // EFFECT 2: CREATE TRANSLATION MODE
-    effect(() => {
-      const sourceDocId = this.offcanvasService.sourceDocumentId();
-      const isOpen = this.offcanvasService.isOpen();
-      const mode = this.offcanvasService.mode();
+  private loadSourceFeatureFlag(sourceDocId: string): void {
+    this.billingService.getFeatureFlags(1, 100)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          const allFlags = response.data;
+          let sourceFlag = allFlags.find(f => f.documentId === sourceDocId);
 
-      if (isOpen && mode === 'create' && sourceDocId) {
-        this.billingService.getFeatureFlag(sourceDocId)
-          .pipe(takeUntil(this.destroy$))
-          .subscribe({
-            next: (response) => {
-              const sourceFlag = response.data;
-              this.form.patchValue({
-                name: '', // Vide pour traduction
-                description: sourceFlag.description || '',
-                is_enabled_by_default: sourceFlag.is_enabled_by_default
-              });
-
-              this.selectedStatus.set(sourceFlag.feature_flag_status);
-            },
-            error: (err) => {
-              console.error('Error loading source feature flag:', err);
+          if (!sourceFlag) {
+            for (const flag of allFlags) {
+              if (flag.localizations) {
+                const localization = flag.localizations.find(l => l.documentId === sourceDocId);
+                if (localization) {
+                  sourceFlag = flag;
+                  break;
+                }
+              }
             }
-          });
-      }
-    });
+          }
 
+          if (sourceFlag) {
+            this.form.patchValue({
+              name: '',
+              description: sourceFlag.description || '',
+              is_enabled_by_default: sourceFlag.is_enabled_by_default
+            });
+            this.selectedStatus.set(sourceFlag.feature_flag_status);
+          }
+        },
+        error: (err) => {
+          console.error('Error loading source feature flag:', err);
+          this.toastService.showError(
+            this.translate.instant('feature-flag-offcanvas.error.save')
+          );
+        }
+      });
   }
 
   ngOnDestroy(): void {
@@ -116,9 +126,7 @@ export class FeatureFlagOffcanvas implements OnDestroy {
       description: '',
       is_enabled_by_default: false
     });
-
     this.selectedStatus.set('stable');
-
     this.form.markAsUntouched();
     this.form.markAsPristine();
   }
@@ -134,16 +142,22 @@ export class FeatureFlagOffcanvas implements OnDestroy {
 
     const formData = {
       ...this.form.value,
-      feature_flag_status: this.selectedStatus(),
-      locale: this.offcanvasService.locale()
+      feature_flag_status: this.selectedStatus()
     };
+
+    if (this.offcanvasService.mode() === 'create' && this.offcanvasService.sourceDocumentId()) {
+      formData.documentId = this.offcanvasService.sourceDocumentId();
+    }
+
+    const locale = this.offcanvasService.locale();
 
     const request$ =
       this.offcanvasService.mode() === 'create'
-        ? this.billingService.createFeatureFlag(formData)
+        ? this.billingService.createFeatureFlag({ ...formData, locale })
         : this.billingService.updateFeatureFlag(
           this.offcanvasService.featureFlag()!.documentId,
-          formData
+          formData,
+          locale
         );
 
     request$.pipe(takeUntil(this.destroy$)).subscribe({
