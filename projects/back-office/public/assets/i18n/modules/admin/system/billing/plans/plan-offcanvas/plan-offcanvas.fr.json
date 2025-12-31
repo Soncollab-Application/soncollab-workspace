@@ -32,7 +32,8 @@
       "plan_name_required": "Le nom du plan est requis",
       "currency_required": "La devise est requise",
       "price_required": "Le prix est requis et doit être positif",
-      "asset_limit_required": "La limite d'assets est requise"
+      "asset_limit_required": "La limite d'assets est requise",
+      "royalty_cap_max": "Le plafond de royalties ne peut pas dépasser 99,999,999"
     },
     "buttons": {
       "cancel": "Annuler",

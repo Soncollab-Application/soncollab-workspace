@@ -224,7 +224,15 @@ export class BillingService {
   }
 
   createBillingPlan(data: CreateBillingPlanRequest): Observable<BillingPlanResponse> {
-    return this.http.post<BillingPlanResponse>(this.BILLING_ENDPOINTS.billing_plans, { data });
+    let params = new HttpParams();
+    if (data.locale) {
+      params = params.set('locale', data.locale);
+    }
+    return this.http.post<BillingPlanResponse>(
+      this.BILLING_ENDPOINTS.billing_plans,
+      { data },
+      { params }
+    );
   }
 
   getBillingPlanPricing(locale: string): Observable<any> {
@@ -320,7 +328,15 @@ export class BillingService {
   }
 
   createPlanAddon(data: PlanAddonCreateRequest): Observable<PlanAddonResponse> {
-    return this.http.post<PlanAddonResponse>(this.BILLING_ENDPOINTS.plan_addons, { data });
+    let params = new HttpParams();
+    if (data.locale) {
+      params = params.set('locale', data.locale);
+    }
+    return this.http.post<PlanAddonResponse>(
+      this.BILLING_ENDPOINTS.plan_addons,
+      { data },
+      { params }
+    );
   }
 
   updatePlanAddon(documentId: string, data: PlanAddonUpdateRequest, locale?: string): Observable<PlanAddonResponse> {
@@ -339,7 +355,6 @@ export class BillingService {
   deletePlanAddon(documentId: string, locale?: string): Observable<void> {
     let params = new HttpParams();
 
-    // IMPORTANT: Strapi 5 i18n - passer locale pour supprimer la bonne version
     const addonLocale = locale || 'fr';
     params = params.set('locale', addonLocale);
 

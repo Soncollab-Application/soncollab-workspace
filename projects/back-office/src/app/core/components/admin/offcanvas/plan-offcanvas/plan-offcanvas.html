@@ -146,15 +146,23 @@
                 class="form-control"
                 formControlName="royalty_cap"
                 min="0"
+                max="99999999"
                 step="0.01"
-                [placeholder]="'plan-offcanvas.fields.royalty_cap_placeholder' | translate" />
+                [placeholder]="'plan-offcanvas.fields.royalty_cap_placeholder' | translate"
+                [class.is-invalid]="form.get('royalty_cap')?.invalid && form.get('royalty_cap')?.touched" />
               <span class="input-group-text">
-                {{ selectedCurrencySymbol() }}
-              </span>
+      {{ selectedCurrencySymbol() }}
+    </span>
             </div>
-            <small class="form-text text-muted">
-              {{ 'plan-offcanvas.fields.royalty_cap_hint' | translate }}
-            </small>
+            @if (form.get('royalty_cap')?.invalid && form.get('royalty_cap')?.touched) {
+              <div class="invalid-feedback d-block">
+                {{ 'plan-offcanvas.errors.royalty_cap_max' | translate }}
+              </div>
+            } @else {
+              <small class="form-text text-muted">
+                {{ 'plan-offcanvas.fields.royalty_cap_hint' | translate }}
+              </small>
+            }
           </div>
         </div>
 

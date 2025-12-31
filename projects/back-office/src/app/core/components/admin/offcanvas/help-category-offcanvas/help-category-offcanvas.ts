@@ -2,10 +2,11 @@ import { Component, inject, signal, effect, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { Subject, takeUntil } from 'rxjs';
+import {Observable, Subject, takeUntil} from 'rxjs';
 import { ToastService } from 'shared-lib';
 import { HelpCategoryOffcanvasService } from '../../../../services/admin/offcanvas/help-category-offcanvas.service';
 import { AdminContentService } from '../../../../services/admin/admin-content.service';
+import {HelpCategory} from '../../../../models/content/help-category.model';
 
 @Component({
   selector: 'app-help-category-offcanvas',
@@ -98,19 +99,26 @@ export class HelpCategoryOffcanvas implements OnDestroy {
     this.isSubmitting.set(true);
     const formData: any = this.form.value;
 
-    if (this.offcanvasService.mode() === 'create' && this.offcanvasService.sourceDocumentId()) {
-      formData.documentId = this.offcanvasService.sourceDocumentId();
-      formData.locale = this.offcanvasService.locale();
-    }
+    let request$: Observable<{ data: HelpCategory }>;
 
-    const request$ =
-      this.offcanvasService.mode() === 'create'
-        ? this.contentService.createHelpCategory(formData)
-        : this.contentService.updateHelpCategory(
-          this.offcanvasService.category()!.documentId,
+    if (this.offcanvasService.mode() === 'create') {
+      if (this.offcanvasService.sourceDocumentId()) {
+        request$ = this.contentService.updateHelpCategory(
+          this.offcanvasService.sourceDocumentId()!,
           formData,
-          this.offcanvasService.category()!.locale
+          this.offcanvasService.locale()
         );
+      } else {
+        formData.locale = this.offcanvasService.locale();
+        request$ = this.contentService.createHelpCategory(formData);
+      }
+    } else {
+      request$ = this.contentService.updateHelpCategory(
+        this.offcanvasService.category()!.documentId,
+        formData,
+        this.offcanvasService.category()!.locale
+      );
+    }
 
     request$.pipe(takeUntil(this.destroy$)).subscribe({
       next: () => {
