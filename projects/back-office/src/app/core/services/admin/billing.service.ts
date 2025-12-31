@@ -768,7 +768,14 @@ export class BillingService {
   }
 
   createFeatureFlag(data: FeatureFlagCreateRequest): Observable<FeatureFlagResponse> {
-    return this.http.post<FeatureFlagResponse>(this.BILLING_ENDPOINTS.feature_flags, { data });
+    let params = new HttpParams();
+    params = params.set('locale', data.locale);
+
+    return this.http.post<FeatureFlagResponse>(
+      this.BILLING_ENDPOINTS.feature_flags,
+      { data },
+      { params }
+    );
   }
 
   updateFeatureFlag(documentId: string, data: FeatureFlagUpdateRequest, locale?: string): Observable<FeatureFlagResponse> {

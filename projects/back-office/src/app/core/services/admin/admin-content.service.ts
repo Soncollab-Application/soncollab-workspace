@@ -170,9 +170,14 @@ export class AdminContentService {
   }
 
   createBlogArticle(data: Partial<BlogArticle>): Observable<{ data: BlogArticle }> {
+    let params = new HttpParams();
+    if (data.locale) {
+      params = params.set('locale', data.locale);
+    }
     return this.http.post<{ data: BlogArticle }>(
       this.CONTENT_ENDPOINTS.blog_articles,
-      { data }
+      { data },
+      { params }
     );
   }
 
@@ -455,12 +460,18 @@ export class AdminContentService {
   }
 
   // ========== BLOG CATEGORIES ==========
-  createBlogCategory(data: Partial<any>): Observable<{ data: any }> {
+  createBlogCategory(data: Partial<BlogCategory>): Observable<{ data: BlogCategory }> {
+    let params = new HttpParams();
+    if (data.locale) {
+      params = params.set('locale', data.locale);
+    }
     return this.http.post<{ data: any }>(
       this.CONTENT_ENDPOINTS.blog_categories,
-      { data }
+      { data },
+      { params }
     );
   }
+
 
   updateBlogCategory(documentId: string, data: Partial<BlogCategory>, locale?: string): Observable<{ data: any }> {
     let params = new HttpParams();
@@ -488,10 +499,15 @@ export class AdminContentService {
   }
 
 // ========== HELP CATEGORIES ==========
-  createHelpCategory(data: Partial<any>): Observable<{ data: any }> {
+  createHelpCategory(data: Partial<HelpCategory>): Observable<{ data: HelpCategory }> {
+    let params = new HttpParams();
+    if (data.locale) {
+      params = params.set('locale', data.locale);
+    }
     return this.http.post<{ data: any }>(
       this.CONTENT_ENDPOINTS.help_categories,
-      { data }
+      { data },
+      { params }
     );
   }
 
@@ -548,9 +564,14 @@ export class AdminContentService {
   }
 
   createBlogTag(data: Partial<BlogTag>): Observable<{ data: BlogTag }> {
+    let params = new HttpParams();
+    if (data.locale) {
+      params = params.set('locale', data.locale);
+    }
     return this.http.post<{ data: BlogTag }>(
       this.CONTENT_ENDPOINTS.blog_tags,
-      { data }
+      { data },
+      { params }
     );
   }
 
